@@ -42,7 +42,7 @@ class PasswordAnnotationTest {
     }
 
     @BeforeAll
-    static void setUp() throws Exception {
+    static void setup() throws Exception {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
         validPasswords = readFileFromResources("data/valid_passwords.txt");
         invalidPasswords = readFileFromResources("data/invalid_passwords.txt");
