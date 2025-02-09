@@ -35,20 +35,21 @@ class MetricsServiceTest {
 
     private static Profile profile;
     private static Metrics metrics;
-    private static MetricsDTO expected;
 
     @BeforeAll
     static void setup() {
         Account account = new Account("test", "test");
-        Profile profile = new Profile(account);
-        Metrics metrics = new Metrics(profile);
-        expected = MetricsMapper.toDTO(metrics);
+        profile = new Profile(account);
+        metrics = new Metrics(profile);
     }
 
     @Test
     void MetricsService_GetMetrics_ReturnMetrics() {
         // arrange
-        when(metricsRepository.findById(profile.getProfileId())).thenReturn(Optional.of(metrics));
+        Metrics uniqueMetrics = new Metrics(profile);
+        MetricsDTO expected = MetricsMapper.toDTO(uniqueMetrics);
+
+        when(metricsRepository.findById(profile.getProfileId())).thenReturn(Optional.of(uniqueMetrics));
 
         // act
         MetricsDTO actual = metricsService.getMetrics(profile);
