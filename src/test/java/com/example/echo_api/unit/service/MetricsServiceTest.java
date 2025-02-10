@@ -43,6 +43,10 @@ class MetricsServiceTest {
         metrics = new Metrics(profile);
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#getMetrics(Profile)} correctly
+     * returns a {@link MetricsDTO} for the requested {@link Profile}.
+     */
     @Test
     void MetricsService_GetMetrics_ReturnMetrics() {
         // arrange
@@ -60,6 +64,11 @@ class MetricsServiceTest {
         verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#getMetrics(Profile)} correctly
+     * queries {@link MetricsRepository} and throws {@link IdNotFoundException} when
+     * no metrics are found for the supplied {@link Profile} id.
+     */
     @Test
     void MetricsService_GetMetrics_ThrowIdNotFound() {
         // arrange
@@ -71,8 +80,11 @@ class MetricsServiceTest {
 
     }
 
-    // following
-
+    /**
+     * Test ensures that {@link MetricsServiceImpl#incrementFollowing(Profile)}
+     * correctly queries {@link MetricsRepository} and does not throw any exceptions
+     * when called.
+     */
     @Test
     void MetricsService_IncrementFollowing_ReturnVoid() {
         // arrange
@@ -83,6 +95,12 @@ class MetricsServiceTest {
         verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#incrementFollowing(Profile)}
+     * correctly queries {@link MetricsRepository} and throws
+     * {@link IdNotFoundException} when no metrics are found for the supplied
+     * {@link Profile} id.
+     */
     @Test
     void MetricsService_IncrementFollowing_ThrowIdNotFound() {
         // arrange
@@ -93,6 +111,11 @@ class MetricsServiceTest {
         verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#decrementFollowing(Profile)}
+     * correctly queries {@link MetricsRepository} and does not throw any exceptions
+     * when called.
+     */
     @Test
     void MetricsService_DecrementFollowing_ReturnVoid() {
         // arrange
@@ -103,6 +126,12 @@ class MetricsServiceTest {
         verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#decrementFollowing(Profile)}
+     * correctly queries {@link MetricsRepository} and throws
+     * {@link IdNotFoundException} when no metrics are found for the supplied
+     * {@link Profile} id.
+     */
     @Test
     void MetricsService_DecrementFollowing_ThrowIdNotFound() {
         // arrange
@@ -113,8 +142,11 @@ class MetricsServiceTest {
         verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
-    // followers
-
+    /**
+     * Test ensures that {@link MetricsServiceImpl#incrementFollowers(Profile)}
+     * correctly queries {@link MetricsRepository} and does not throw any exceptions
+     * when called.
+     */
     @Test
     void MetricsService_IncrementFollowers_ReturnVoid() {
         // arrange
@@ -125,6 +157,12 @@ class MetricsServiceTest {
         verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#incrementFollowers(Profile)}
+     * correctly queries {@link MetricsRepository} and throws
+     * {@link IdNotFoundException} when no metrics are found for the supplied
+     * {@link Profile} id.
+     */
     @Test
     void MetricsService_IncrementFollowers_ThrowIdNotFound() {
         // arrange
@@ -135,6 +173,11 @@ class MetricsServiceTest {
         verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#decrementFollowers(Profile)}
+     * correctly queries {@link MetricsRepository} and does not throw any exceptions
+     * when called.
+     */
     @Test
     void MetricsService_DecrementFollowers_ReturnVoid() {
         // arrange
@@ -145,6 +188,12 @@ class MetricsServiceTest {
         verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#decrementFollowers(Profile)}
+     * correctly queries {@link MetricsRepository} and throws
+     * {@link IdNotFoundException} when no metrics are found for the supplied
+     * {@link Profile} id.
+     */
     @Test
     void MetricsService_DecrementFollowers_ThrowIdNotFound() {
         // arrange
@@ -155,8 +204,11 @@ class MetricsServiceTest {
         verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
-    // posts
-
+    /**
+     * Test ensures that {@link MetricsServiceImpl#incrementPosts(Profile)}
+     * correctly queries {@link MetricsRepository} and does not throw any exceptions
+     * when called.
+     */
     @Test
     void MetricsService_IncrementPosts_ReturnVoid() {
         // arrange
@@ -167,6 +219,12 @@ class MetricsServiceTest {
         verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#incrementPosts(Profile)}
+     * correctly queries {@link MetricsRepository} and throws
+     * {@link IdNotFoundException} when no metrics are found for the supplied
+     * {@link Profile} id.
+     */
     @Test
     void MetricsService_IncrementPosts_ThrowIdNotFound() {
         // arrange
@@ -177,6 +235,11 @@ class MetricsServiceTest {
         verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#decrementPosts(Profile)}
+     * correctly queries {@link MetricsRepository} and does not throw any exceptions
+     * when called.
+     */
     @Test
     void MetricsService_DecrementPosts_ReturnVoid() {
         // arrange
@@ -187,6 +250,12 @@ class MetricsServiceTest {
         verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#decrementPosts(Profile)}
+     * correctly queries {@link MetricsRepository} and throws
+     * {@link IdNotFoundException} when no metrics are found for the supplied
+     * {@link Profile} id.
+     */
     @Test
     void MetricsService_DecrementPosts_ThrowIdNotFound() {
         // arrange
@@ -197,8 +266,11 @@ class MetricsServiceTest {
         verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
-    // media
-
+    /**
+     * Test ensures that {@link MetricsServiceImpl#incrementMedia(Profile)}
+     * correctly queries {@link MetricsRepository} and does not throw any exceptions
+     * when called.
+     */
     @Test
     void MetricsService_IncrementMedia_ReturnVoid() {
         // arrange
@@ -209,6 +281,12 @@ class MetricsServiceTest {
         verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#incrementMedia(Profile)}
+     * correctly queries {@link MetricsRepository} and throws
+     * {@link IdNotFoundException} when no metrics are found for the supplied
+     * {@link Profile} id.
+     */
     @Test
     void MetricsService_IncrementMedia_ThrowIdNotFound() {
         // arrange
@@ -219,6 +297,11 @@ class MetricsServiceTest {
         verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#decrementMedia(Profile)}
+     * correctly queries {@link MetricsRepository} and does not throw any exceptions
+     * when called.
+     */
     @Test
     void MetricsService_DecrementMedia_ReturnVoid() {
         // arrange
@@ -229,6 +312,12 @@ class MetricsServiceTest {
         verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#decrementMedia(Profile)}
+     * correctly queries {@link MetricsRepository} and throws
+     * {@link IdNotFoundException} when no metrics are found for the supplied
+     * {@link Profile} id.
+     */
     @Test
     void MetricsService_DecrementMedia_ThrowIdNotFound() {
         // arrange
