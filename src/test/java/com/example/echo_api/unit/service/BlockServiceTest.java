@@ -17,6 +17,7 @@ import com.example.echo_api.exception.custom.relationship.AlreadyBlockingExcepti
 import com.example.echo_api.exception.custom.relationship.NotBlockingException;
 import com.example.echo_api.exception.custom.relationship.SelfActionException;
 import com.example.echo_api.persistence.model.account.Account;
+import com.example.echo_api.persistence.model.block.Block;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.BlockRepository;
 import com.example.echo_api.service.relationship.block.BlockService;
@@ -64,6 +65,8 @@ class BlockServiceTest {
 
         // act & assert
         assertDoesNotThrow(() -> blockService.block(source, target));
+        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId());
+        verify(blockRepository, times(1)).save(any(Block.class));
     }
 
     /**
@@ -74,6 +77,8 @@ class BlockServiceTest {
     void BlockService_Block_ThrowSelfActionException() {
         // act & assert
         assertThrows(SelfActionException.class, () -> blockService.block(source, source));
+        verify(blockRepository, times(0)).existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId());
+        verify(blockRepository, times(0)).save(any(Block.class));
     }
 
     /**
@@ -89,6 +94,8 @@ class BlockServiceTest {
 
         // act & assert
         assertThrows(AlreadyBlockingException.class, () -> blockService.block(source, target));
+        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId());
+        verify(blockRepository, times(0)).save(any(Block.class));
     }
 
     /**
@@ -103,6 +110,8 @@ class BlockServiceTest {
 
         // act & assert
         assertDoesNotThrow(() -> blockService.unblock(source, target));
+        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId());
+        verify(blockRepository, times(1)).delete(any(Block.class));
     }
 
     /**
@@ -113,6 +122,8 @@ class BlockServiceTest {
     void BlockService_Unblock_ThrowSelfActionException() {
         // act & assert
         assertThrows(SelfActionException.class, () -> blockService.unblock(source, source));
+        verify(blockRepository, times(0)).existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId());
+        verify(blockRepository, times(0)).delete(any(Block.class));
     }
 
     /**
@@ -128,6 +139,8 @@ class BlockServiceTest {
 
         // act & assert
         assertThrows(NotBlockingException.class, () -> blockService.unblock(source, target));
+        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId());
+        verify(blockRepository, times(0)).delete(any(Block.class));
     }
 
     /**
@@ -145,6 +158,7 @@ class BlockServiceTest {
 
         // assert
         assertTrue(isBlocking);
+        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId());
     }
 
     /**
@@ -162,6 +176,7 @@ class BlockServiceTest {
 
         // assert
         assertFalse(isBlocking);
+        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId());
     }
 
     /**
@@ -180,6 +195,7 @@ class BlockServiceTest {
 
         // assert
         assertTrue(isBlockedBy);
+        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(target.getProfileId(), source.getProfileId());
     }
 
     /**
@@ -197,6 +213,7 @@ class BlockServiceTest {
 
         // assert
         assertFalse(isBlockedBy);
+        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(target.getProfileId(), source.getProfileId());
     }
 
 }
