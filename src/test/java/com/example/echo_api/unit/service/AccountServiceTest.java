@@ -63,7 +63,7 @@ class AccountServiceTest {
      * exist.
      */
     @Test
-    void accountService_Register_ReturnAccount() {
+    void AccountService_Register_ReturnAccount() {
         // arrange
         when(accountRepository.save(account)).thenReturn(account);
         when(accountRepository.existsByUsername(account.getUsername())).thenReturn(false);
@@ -84,7 +84,7 @@ class AccountServiceTest {
      * already exists.
      */
     @Test
-    void accountService_Register_ThrowUsernameAlreadyExists() {
+    void AccountService_Register_ThrowUsernameAlreadyExists() {
         // arrange
         when(accountRepository.existsByUsername(account.getUsername())).thenReturn(true);
 
@@ -99,7 +99,7 @@ class AccountServiceTest {
      * method returns true when the username exists in the repository.
      */
     @Test
-    void accountService_IsUsernameAvailable_ReturnTrue() {
+    void AccountService_IsUsernameAvailable_ReturnTrue() {
         // arrange
         when(accountRepository.existsByUsername(account.getUsername())).thenReturn(true);
 
@@ -116,7 +116,7 @@ class AccountServiceTest {
      * method returns false when the username does not exist in the repository.
      */
     @Test
-    void accountService_IsUsernameAvailable_ReturnFalse() {
+    void AccountService_IsUsernameAvailable_ReturnFalse() {
         // arrange
         when(accountRepository.existsByUsername(account.getUsername())).thenReturn(false);
 
@@ -133,7 +133,7 @@ class AccountServiceTest {
      * method succeeds when the username does not already exist.
      */
     @Test
-    void accountService_UpdateUsername_Success() {
+    void AccountService_UpdateUsername_Success() {
         // arrange
         when(accountRepository.existsByUsername("new_username")).thenReturn(false);
         when(sessionService.getAuthenticatedUser()).thenReturn(account);
@@ -155,7 +155,7 @@ class AccountServiceTest {
      * already exists.
      */
     @Test
-    void accountService_UpdateUsername_ThrowUsernameAlreadyExists() {
+    void AccountService_UpdateUsername_ThrowUsernameAlreadyExists() {
         // arrange
         when(accountRepository.existsByUsername("new_username")).thenReturn(true);
 
@@ -171,7 +171,7 @@ class AccountServiceTest {
      * when the request is valid.
      */
     @Test
-    void accountService_UpdatePassword_Success() {
+    void AccountService_UpdatePassword_Success() {
         // arrange
         UpdatePasswordDTO request = new UpdatePasswordDTO(
             "current",
@@ -203,7 +203,7 @@ class AccountServiceTest {
      * stored existing passwords do not match.
      */
     @Test
-    void accountService_UpdatePassword_ThrowIncorrectCurrentPassword() {
+    void AccountService_UpdatePassword_ThrowIncorrectCurrentPassword() {
         // arrange
         UpdatePasswordDTO request = new UpdatePasswordDTO(
             "wrong_password",
