@@ -2,7 +2,7 @@ package com.example.echo_api.exception.custom.relationship;
 
 /**
  * Thrown if a HTTP request is rejected because the authenticated user tries to
- * create/delte a relationship with their own profile.
+ * create/delete a relationship with their own profile.
  */
 public class SelfActionException extends RelationshipException {
 
