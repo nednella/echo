@@ -42,7 +42,7 @@ class UsernameAnnotationTest {
     }
 
     @BeforeAll
-    static void setUp() throws Exception {
+    static void setup() throws Exception {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
         validUsernames = readFileFromResources("data/valid_usernames.txt");
         invalidUsernames = readFileFromResources("data/invalid_usernames.txt");

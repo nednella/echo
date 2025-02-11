@@ -38,7 +38,7 @@ class ValidationConfigTest {
     }
 
     @BeforeAll
-    static void setUp() {
+    static void setup() {
         // configure a default validator
         defaultValidator = Validation
             .buildDefaultValidatorFactory()

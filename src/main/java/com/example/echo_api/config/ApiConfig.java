@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor(access = PRIVATE)
 public final class ApiConfig {
+
     private static final String BASE_URL = "/api/v1";
 
     @NoArgsConstructor(access = PRIVATE)
@@ -30,9 +31,14 @@ public final class ApiConfig {
     @NoArgsConstructor(access = PRIVATE)
     public static final class Profile {
         private static final String ROOT = BASE_URL + "/profile";
-        public static final String GET_ME = ROOT + "/me";
-        public static final String UPDATE_ME = ROOT + "/me";
+        public static final String ME = ROOT + "/me";
         public static final String GET_BY_USERNAME = ROOT + "/{username}";
+        public static final String GET_FOLLOWERS_BY_USERNAME = ROOT + "/{username}/followers";
+        public static final String GET_FOLLOWING_BY_USERNAME = ROOT + "/{username}/following";
+        public static final String FOLLOW_BY_USERNAME = ROOT + "/{username}/follow";
+        public static final String UNFOLLOW_BY_USERNAME = ROOT + "/{username}/unfollow";
+        public static final String BLOCK_BY_USERNAME = ROOT + "/{username}/block";
+        public static final String UNBLOCK_BY_USERNAME = ROOT + "/{username}/unblock";
     }
 
     @NoArgsConstructor(access = PRIVATE)

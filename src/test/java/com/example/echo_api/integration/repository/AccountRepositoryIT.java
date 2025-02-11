@@ -30,7 +30,7 @@ class AccountRepositoryIT extends RepositoryTest {
      * Save a {@link Account} object to the {@link AccountRepository}..
      */
     @BeforeAll
-    void setUp() {
+    void setup() {
         testAccount = new Account("test", "password1");
         accountRepository.save(testAccount);
     }
@@ -40,7 +40,7 @@ class AccountRepositoryIT extends RepositoryTest {
      * that an account can be found by their username.
      */
     @Test
-    void accountRepository_FindByUsername_ReturnUser() {
+    void AccountRepository_FindByUsername_ReturnUser() {
         Optional<Account> account = accountRepository.findByUsername(testAccount.getUsername());
 
         assertNotNull(account);
@@ -53,7 +53,7 @@ class AccountRepositoryIT extends RepositoryTest {
      * that searching for a non-existent username returns an empty result.
      */
     @Test
-    void accountRepository_FindByUsername_ReturnEmpty() {
+    void AccountRepository_FindByUsername_ReturnEmpty() {
         Optional<Account> account = accountRepository.findByUsername("nonExistentUser");
 
         assertNotNull(account);
@@ -66,7 +66,7 @@ class AccountRepositoryIT extends RepositoryTest {
      * searching for a valid username.
      */
     @Test
-    void accountRepository_ExistsByUsername_ReturnTrue() {
+    void AccountRepository_ExistsByUsername_ReturnTrue() {
         boolean exists = accountRepository.existsByUsername(testAccount.getUsername());
 
         assertTrue(exists);
@@ -78,7 +78,7 @@ class AccountRepositoryIT extends RepositoryTest {
      * searching for a non-existent username.
      */
     @Test
-    void accountRepository_ExistsByUsername_ReturnFalse() {
+    void AccountRepository_ExistsByUsername_ReturnFalse() {
         boolean exists = accountRepository.existsByUsername("nonExistentUser");
 
         assertFalse(exists);

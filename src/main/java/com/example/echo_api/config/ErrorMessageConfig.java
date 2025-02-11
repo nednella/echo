@@ -22,10 +22,20 @@ public final class ErrorMessageConfig {
     public static final String USERNAME_ARLEADY_EXISTS = "Username already exists.";
     /* Password */
     public static final String INCORRECT_CURRENT_PASSWORD = "Incorrect current password.";
+    /* Relationship */
+    public static final String ALREADY_FOLLOWING = "You are already following this profile.";
+    public static final String NOT_FOLLOWING = "You are not following this profile.";
+    public static final String ALREADY_BLOCKING = "You are already blocking this profile.";
+    public static final String NOT_BLOCKING = "You are not blocking this profile.";
+    public static final String SELF_FOLLOW = "You cannot follow yourself.";
+    public static final String SELF_UNFOLLOW = "You cannot unfollow yourself.";
+    public static final String SELF_BLOCK = "You cannot block yourself.";
+    public static final String SELF_UNBLOCK = "You cannot unblock yourself.";
 
     /* 401 UNAUTHORISED */
     public static final String UNAUTHORISED = "Unauthorised request.";
     public static final String ACCOUNT_STATUS = "Account status is abnormal.";
+    public static final String BLOCKED = "Action prohibited - this user has blocked you.";
 
     /* 403 FORBIDDEN */
     public static final String FORBIDDEN = "Access denied.";

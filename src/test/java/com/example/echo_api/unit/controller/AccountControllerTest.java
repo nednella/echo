@@ -50,7 +50,7 @@ class AccountControllerTest {
      * Sets up a {@link Account} object before each test.
      */
     @BeforeEach
-    public void setUp() {
+    public void setup() {
         testAccount = new Account(
             "testUsername",
             "testPassword");

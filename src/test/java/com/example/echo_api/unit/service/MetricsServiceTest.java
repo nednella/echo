@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -14,6 +13,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.echo_api.exception.custom.account.IdNotFoundException;
+import com.example.echo_api.persistence.dto.response.profile.MetricsDTO;
+import com.example.echo_api.persistence.mapper.MetricsMapper;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.profile.Metrics;
 import com.example.echo_api.persistence.model.profile.Profile;
@@ -21,7 +22,7 @@ import com.example.echo_api.persistence.repository.MetricsRepository;
 import com.example.echo_api.service.metrics.MetricsServiceImpl;
 
 /**
- * Unit test class for {@link MetricsServiceTest}.
+ * Unit test class for {@link MetricsService}.
  */
 @ExtendWith(MockitoExtension.class)
 class MetricsServiceTest {
@@ -32,224 +33,299 @@ class MetricsServiceTest {
     @InjectMocks
     private MetricsServiceImpl metricsService;
 
-    private static Metrics expected;
+    private static Profile profile;
+    private static Metrics metrics;
 
     @BeforeAll
     static void setup() {
         Account account = new Account("test", "test");
-        Profile profile = new Profile(account);
-        expected = new Metrics(profile);
+        profile = new Profile(account);
+        metrics = new Metrics(profile);
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#getMetrics(Profile)} correctly
+     * returns a {@link MetricsDTO} for the requested {@link Profile}.
+     */
     @Test
     void MetricsService_GetMetrics_ReturnMetrics() {
         // arrange
-        UUID uuid = UUID.randomUUID();
-        when(metricsRepository.findById(uuid)).thenReturn(Optional.of(expected));
+        Metrics uniqueMetrics = new Metrics(profile);
+        MetricsDTO expected = MetricsMapper.toDTO(uniqueMetrics);
+
+        when(metricsRepository.findById(profile.getProfileId())).thenReturn(Optional.of(uniqueMetrics));
 
         // act
-        Metrics actual = metricsService.getMetrics(uuid);
+        MetricsDTO actual = metricsService.getMetrics(profile);
 
         // assert
         assertNotNull(actual);
         assertEquals(expected, actual);
-        verify(metricsRepository, times(1)).findById(uuid);
+        verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#getMetrics(Profile)} correctly
+     * queries {@link MetricsRepository} and throws {@link IdNotFoundException} when
+     * no metrics are found for the supplied {@link Profile} id.
+     */
     @Test
     void MetricsService_GetMetrics_ThrowIdNotFound() {
         // arrange
-        UUID uuid = UUID.randomUUID();
-        when(metricsRepository.findById(uuid)).thenReturn(Optional.empty());
+        when(metricsRepository.findById(profile.getProfileId())).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(IdNotFoundException.class, () -> metricsService.getMetrics(uuid));
-        verify(metricsRepository, times(1)).findById(uuid);
+        assertThrows(IdNotFoundException.class, () -> metricsService.getMetrics(profile));
+        verify(metricsRepository, times(1)).findById(profile.getProfileId());
 
     }
 
-    // following
-
+    /**
+     * Test ensures that {@link MetricsServiceImpl#incrementFollowing(Profile)}
+     * correctly queries {@link MetricsRepository} and does not throw any exceptions
+     * when called.
+     */
     @Test
     void MetricsService_IncrementFollowing_ReturnVoid() {
         // arrange
-        UUID uuid = UUID.randomUUID();
-        when(metricsRepository.findById(uuid)).thenReturn(Optional.of(expected));
+        when(metricsRepository.findById(profile.getProfileId())).thenReturn(Optional.of(metrics));
 
         // act & assert
-        assertDoesNotThrow(() -> metricsService.incrementFollowing(uuid));
-        verify(metricsRepository, times(1)).findById(uuid);
+        assertDoesNotThrow(() -> metricsService.incrementFollowing(profile));
+        verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#incrementFollowing(Profile)}
+     * correctly queries {@link MetricsRepository} and throws
+     * {@link IdNotFoundException} when no metrics are found for the supplied
+     * {@link Profile} id.
+     */
     @Test
     void MetricsService_IncrementFollowing_ThrowIdNotFound() {
         // arrange
-        UUID uuid = UUID.randomUUID();
-        when(metricsRepository.findById(uuid)).thenReturn(Optional.empty());
+        when(metricsRepository.findById(profile.getProfileId())).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(IdNotFoundException.class, () -> metricsService.incrementFollowing(uuid));
-        verify(metricsRepository, times(1)).findById(uuid);
+        assertThrows(IdNotFoundException.class, () -> metricsService.incrementFollowing(profile));
+        verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#decrementFollowing(Profile)}
+     * correctly queries {@link MetricsRepository} and does not throw any exceptions
+     * when called.
+     */
     @Test
     void MetricsService_DecrementFollowing_ReturnVoid() {
         // arrange
-        UUID uuid = UUID.randomUUID();
-        when(metricsRepository.findById(uuid)).thenReturn(Optional.of(expected));
+        when(metricsRepository.findById(profile.getProfileId())).thenReturn(Optional.of(metrics));
 
         // act & assert
-        assertDoesNotThrow(() -> metricsService.decrementFollowing(uuid));
-        verify(metricsRepository, times(1)).findById(uuid);
+        assertDoesNotThrow(() -> metricsService.decrementFollowing(profile));
+        verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#decrementFollowing(Profile)}
+     * correctly queries {@link MetricsRepository} and throws
+     * {@link IdNotFoundException} when no metrics are found for the supplied
+     * {@link Profile} id.
+     */
     @Test
     void MetricsService_DecrementFollowing_ThrowIdNotFound() {
         // arrange
-        UUID uuid = UUID.randomUUID();
-        when(metricsRepository.findById(uuid)).thenReturn(Optional.empty());
+        when(metricsRepository.findById(profile.getProfileId())).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(IdNotFoundException.class, () -> metricsService.decrementFollowing(uuid));
-        verify(metricsRepository, times(1)).findById(uuid);
+        assertThrows(IdNotFoundException.class, () -> metricsService.decrementFollowing(profile));
+        verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
-    // followers
-
+    /**
+     * Test ensures that {@link MetricsServiceImpl#incrementFollowers(Profile)}
+     * correctly queries {@link MetricsRepository} and does not throw any exceptions
+     * when called.
+     */
     @Test
     void MetricsService_IncrementFollowers_ReturnVoid() {
         // arrange
-        UUID uuid = UUID.randomUUID();
-        when(metricsRepository.findById(uuid)).thenReturn(Optional.of(expected));
+        when(metricsRepository.findById(profile.getProfileId())).thenReturn(Optional.of(metrics));
 
         // act & assert
-        assertDoesNotThrow(() -> metricsService.incrementFollowers(uuid));
-        verify(metricsRepository, times(1)).findById(uuid);
+        assertDoesNotThrow(() -> metricsService.incrementFollowers(profile));
+        verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#incrementFollowers(Profile)}
+     * correctly queries {@link MetricsRepository} and throws
+     * {@link IdNotFoundException} when no metrics are found for the supplied
+     * {@link Profile} id.
+     */
     @Test
     void MetricsService_IncrementFollowers_ThrowIdNotFound() {
         // arrange
-        UUID uuid = UUID.randomUUID();
-        when(metricsRepository.findById(uuid)).thenReturn(Optional.empty());
+        when(metricsRepository.findById(profile.getProfileId())).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(IdNotFoundException.class, () -> metricsService.incrementFollowers(uuid));
-        verify(metricsRepository, times(1)).findById(uuid);
+        assertThrows(IdNotFoundException.class, () -> metricsService.incrementFollowers(profile));
+        verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#decrementFollowers(Profile)}
+     * correctly queries {@link MetricsRepository} and does not throw any exceptions
+     * when called.
+     */
     @Test
     void MetricsService_DecrementFollowers_ReturnVoid() {
         // arrange
-        UUID uuid = UUID.randomUUID();
-        when(metricsRepository.findById(uuid)).thenReturn(Optional.of(expected));
+        when(metricsRepository.findById(profile.getProfileId())).thenReturn(Optional.of(metrics));
 
         // act & assert
-        assertDoesNotThrow(() -> metricsService.decrementFollowers(uuid));
-        verify(metricsRepository, times(1)).findById(uuid);
+        assertDoesNotThrow(() -> metricsService.decrementFollowers(profile));
+        verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#decrementFollowers(Profile)}
+     * correctly queries {@link MetricsRepository} and throws
+     * {@link IdNotFoundException} when no metrics are found for the supplied
+     * {@link Profile} id.
+     */
     @Test
     void MetricsService_DecrementFollowers_ThrowIdNotFound() {
         // arrange
-        UUID uuid = UUID.randomUUID();
-        when(metricsRepository.findById(uuid)).thenReturn(Optional.empty());
+        when(metricsRepository.findById(profile.getProfileId())).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(IdNotFoundException.class, () -> metricsService.decrementFollowers(uuid));
-        verify(metricsRepository, times(1)).findById(uuid);
+        assertThrows(IdNotFoundException.class, () -> metricsService.decrementFollowers(profile));
+        verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
-    // posts
-
+    /**
+     * Test ensures that {@link MetricsServiceImpl#incrementPosts(Profile)}
+     * correctly queries {@link MetricsRepository} and does not throw any exceptions
+     * when called.
+     */
     @Test
     void MetricsService_IncrementPosts_ReturnVoid() {
         // arrange
-        UUID uuid = UUID.randomUUID();
-        when(metricsRepository.findById(uuid)).thenReturn(Optional.of(expected));
+        when(metricsRepository.findById(profile.getProfileId())).thenReturn(Optional.of(metrics));
 
         // act & assert
-        assertDoesNotThrow(() -> metricsService.incrementPosts(uuid));
-        verify(metricsRepository, times(1)).findById(uuid);
+        assertDoesNotThrow(() -> metricsService.incrementPosts(profile));
+        verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#incrementPosts(Profile)}
+     * correctly queries {@link MetricsRepository} and throws
+     * {@link IdNotFoundException} when no metrics are found for the supplied
+     * {@link Profile} id.
+     */
     @Test
     void MetricsService_IncrementPosts_ThrowIdNotFound() {
         // arrange
-        UUID uuid = UUID.randomUUID();
-        when(metricsRepository.findById(uuid)).thenReturn(Optional.empty());
+        when(metricsRepository.findById(profile.getProfileId())).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(IdNotFoundException.class, () -> metricsService.incrementPosts(uuid));
-        verify(metricsRepository, times(1)).findById(uuid);
+        assertThrows(IdNotFoundException.class, () -> metricsService.incrementPosts(profile));
+        verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#decrementPosts(Profile)}
+     * correctly queries {@link MetricsRepository} and does not throw any exceptions
+     * when called.
+     */
     @Test
     void MetricsService_DecrementPosts_ReturnVoid() {
         // arrange
-        UUID uuid = UUID.randomUUID();
-        when(metricsRepository.findById(uuid)).thenReturn(Optional.of(expected));
+        when(metricsRepository.findById(profile.getProfileId())).thenReturn(Optional.of(metrics));
 
         // act & assert
-        assertDoesNotThrow(() -> metricsService.decrementPosts(uuid));
-        verify(metricsRepository, times(1)).findById(uuid);
+        assertDoesNotThrow(() -> metricsService.decrementPosts(profile));
+        verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#decrementPosts(Profile)}
+     * correctly queries {@link MetricsRepository} and throws
+     * {@link IdNotFoundException} when no metrics are found for the supplied
+     * {@link Profile} id.
+     */
     @Test
     void MetricsService_DecrementPosts_ThrowIdNotFound() {
         // arrange
-        UUID uuid = UUID.randomUUID();
-        when(metricsRepository.findById(uuid)).thenReturn(Optional.empty());
+        when(metricsRepository.findById(profile.getProfileId())).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(IdNotFoundException.class, () -> metricsService.decrementPosts(uuid));
-        verify(metricsRepository, times(1)).findById(uuid);
+        assertThrows(IdNotFoundException.class, () -> metricsService.decrementPosts(profile));
+        verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
-    // media
-
+    /**
+     * Test ensures that {@link MetricsServiceImpl#incrementMedia(Profile)}
+     * correctly queries {@link MetricsRepository} and does not throw any exceptions
+     * when called.
+     */
     @Test
     void MetricsService_IncrementMedia_ReturnVoid() {
         // arrange
-        UUID uuid = UUID.randomUUID();
-        when(metricsRepository.findById(uuid)).thenReturn(Optional.of(expected));
+        when(metricsRepository.findById(profile.getProfileId())).thenReturn(Optional.of(metrics));
 
         // act & assert
-        assertDoesNotThrow(() -> metricsService.incrementMedia(uuid));
-        verify(metricsRepository, times(1)).findById(uuid);
+        assertDoesNotThrow(() -> metricsService.incrementMedia(profile));
+        verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#incrementMedia(Profile)}
+     * correctly queries {@link MetricsRepository} and throws
+     * {@link IdNotFoundException} when no metrics are found for the supplied
+     * {@link Profile} id.
+     */
     @Test
     void MetricsService_IncrementMedia_ThrowIdNotFound() {
         // arrange
-        UUID uuid = UUID.randomUUID();
-        when(metricsRepository.findById(uuid)).thenReturn(Optional.empty());
+        when(metricsRepository.findById(profile.getProfileId())).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(IdNotFoundException.class, () -> metricsService.incrementMedia(uuid));
-        verify(metricsRepository, times(1)).findById(uuid);
+        assertThrows(IdNotFoundException.class, () -> metricsService.incrementMedia(profile));
+        verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#decrementMedia(Profile)}
+     * correctly queries {@link MetricsRepository} and does not throw any exceptions
+     * when called.
+     */
     @Test
     void MetricsService_DecrementMedia_ReturnVoid() {
         // arrange
-        UUID uuid = UUID.randomUUID();
-        when(metricsRepository.findById(uuid)).thenReturn(Optional.of(expected));
+        when(metricsRepository.findById(profile.getProfileId())).thenReturn(Optional.of(metrics));
 
         // act & assert
-        assertDoesNotThrow(() -> metricsService.decrementMedia(uuid));
-        verify(metricsRepository, times(1)).findById(uuid);
+        assertDoesNotThrow(() -> metricsService.decrementMedia(profile));
+        verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
+    /**
+     * Test ensures that {@link MetricsServiceImpl#decrementMedia(Profile)}
+     * correctly queries {@link MetricsRepository} and throws
+     * {@link IdNotFoundException} when no metrics are found for the supplied
+     * {@link Profile} id.
+     */
     @Test
     void MetricsService_DecrementMedia_ThrowIdNotFound() {
         // arrange
-        UUID uuid = UUID.randomUUID();
-        when(metricsRepository.findById(uuid)).thenReturn(Optional.empty());
+        when(metricsRepository.findById(profile.getProfileId())).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(IdNotFoundException.class, () -> metricsService.decrementMedia(uuid));
-        verify(metricsRepository, times(1)).findById(uuid);
+        assertThrows(IdNotFoundException.class, () -> metricsService.decrementMedia(profile));
+        verify(metricsRepository, times(1)).findById(profile.getProfileId());
     }
 
 }
