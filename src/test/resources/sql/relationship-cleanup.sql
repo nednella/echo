@@ -1,0 +1,2 @@
+DELETE FROM follow;
+DELETE FROM block;
