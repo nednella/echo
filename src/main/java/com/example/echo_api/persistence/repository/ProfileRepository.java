@@ -23,7 +23,8 @@ public interface ProfileRepository extends CrudRepository<Profile, UUID>, Paging
     Optional<Profile> findByUsername(String username);
 
     /**
-     * Find all {@link Profile} for followers of the supplied {@code profileId}.
+     * Find all {@link Profile} for followers of the supplied {@code profileId} in
+     * descending order (newest first).
      * 
      * @param profileId The id of the profile to search against.
      * @return A list containing the profiles of matches if any exist, otherwise
@@ -31,12 +32,13 @@ public interface ProfileRepository extends CrudRepository<Profile, UUID>, Paging
      */
     @Query("SELECT p FROM Profile p " +
         "JOIN Follow f ON p.id = f.followerId " +
-        "WHERE f.followingId = :profileId")
+        "WHERE f.followingId = :profileId " +
+        "ORDER BY f.createdAt DESC")
     List<Profile> findAllFollowersById(@Param("profileId") UUID profileId);
 
     /**
-     * Find all {@link Profile} for those followed by the supplied
-     * {@code profileId}.
+     * Find all {@link Profile} for those followed by the supplied {@code profileId}
+     * in descending order (newest first).
      * 
      * @param profileId The id of the profile to search against.
      * @return A list containing the profiles of matches if any exist, otherwise
@@ -44,7 +46,8 @@ public interface ProfileRepository extends CrudRepository<Profile, UUID>, Paging
      */
     @Query("SELECT p FROM Profile p " +
         "JOIN Follow f ON p.id = f.followingId " +
-        "WHERE f.followerId = :profileId")
+        "WHERE f.followerId = :profileId " +
+        "ORDER BY f.createdAt DESC")
     List<Profile> findAllFollowingById(@Param("profileId") UUID profileId);
 
 }
