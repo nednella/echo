@@ -3,7 +3,7 @@ package com.example.echo_api.persistence.dto.response.profile;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Represents a standardised response format for profile {@link Metrics}.
+ * Represents a standardised response format for profile metrics.
  *
  * @param followingCount The number of profiles this profile is following.
  * @param followerCount  The number of followers this profile has.

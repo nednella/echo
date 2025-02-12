@@ -12,7 +12,6 @@ import com.example.echo_api.persistence.mapper.ProfileMapper;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
-import com.example.echo_api.service.metrics.MetricsService;
 import com.example.echo_api.service.relationship.RelationshipService;
 import com.example.echo_api.service.session.SessionService;
 
@@ -22,7 +21,6 @@ import lombok.RequiredArgsConstructor;
  * Service implementation for managing CRUD operations of a {@link Profile}.
  * 
  * @see SessionService
- * @see MetricsService
  * @see ProfileRepository
  */
 @Service
@@ -30,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 public class ProfileServiceImpl implements ProfileService {
 
     private final SessionService sessionService;
-    private final MetricsService metricsService;
     private final RelationshipService relationshipService;
 
     private final ProfileRepository profileRepository;
@@ -39,7 +36,7 @@ public class ProfileServiceImpl implements ProfileService {
     public ProfileDTO getByUsername(String username) throws UsernameNotFoundException {
         Profile me = findMe();
         Profile target = findByUsername(username);
-        MetricsDTO metrics = metricsService.getMetrics(target);
+        MetricsDTO metrics = null;
         RelationshipDTO relationship = relationshipService.getRelationship(me, target);
         return ProfileMapper.toDTO(target, metrics, relationship);
     }
@@ -47,7 +44,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public ProfileDTO getMe() {
         Profile me = findMe();
-        MetricsDTO metrics = metricsService.getMetrics(me);
+        MetricsDTO metrics = null;
         return ProfileMapper.toDTO(me, metrics, null);
     }
 
