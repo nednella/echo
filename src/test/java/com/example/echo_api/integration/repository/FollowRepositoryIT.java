@@ -1,7 +1,6 @@
 package com.example.echo_api.integration.repository;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.UUID;
 
@@ -52,6 +51,7 @@ class FollowRepositoryIT extends RepositoryTest {
         target = new Profile(targetAcc);
         profileRepository.save(target); // save profile to provide foreign key for follow table
 
+        // save a follow to db
         Follow follow = new Follow(source, target);
         followRepository.save(follow);
     }
@@ -83,6 +83,46 @@ class FollowRepositoryIT extends RepositoryTest {
         boolean exists = followRepository.existsByFollowerIdAndFollowingId(UUID.randomUUID(), UUID.randomUUID());
 
         assertFalse(exists);
+    }
+
+    /**
+     * Test ensures {@link FollowRepository#countFollowers(UUID)} returns a count of
+     * 0 when supplied with an id of a profile which has no followers.
+     */
+    @Test
+    void FollowRepository_CountFollowers_Return0() {
+        int followers = followRepository.countFollowers(source.getProfileId());
+        assertEquals(0, followers);
+    }
+
+    /**
+     * Test ensures {@link FollowRepository#countFollowers(UUID)} returns a count of
+     * 1 when supplied with an id of a profile which has 1 follower.
+     */
+    @Test
+    void FollowRepository_CountFollowers_Return1() {
+        int followers = followRepository.countFollowers(target.getProfileId());
+        assertEquals(1, followers);
+    }
+
+    /**
+     * Test ensures {@link FollowRepository#countFollowing(UUID)} returns a count of
+     * 0 when supplied with an id of a profile which has no following.
+     */
+    @Test
+    void FollowRepository_CountFollowing_Return0() {
+        int following = followRepository.countFollowing(target.getProfileId());
+        assertEquals(0, following);
+    }
+
+    /**
+     * Test ensures {@link FollowRepository#countFollowing(UUID)} returns a count of
+     * 1 when supplied with an id of a profile which has 1 following.
+     */
+    @Test
+    void FollowRepository_CountFollowing_Return1() {
+        int following = followRepository.countFollowing(source.getProfileId());
+        assertEquals(1, following);
     }
 
 }
