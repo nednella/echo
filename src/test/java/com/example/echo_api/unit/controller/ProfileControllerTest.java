@@ -30,10 +30,8 @@ import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.persistence.dto.response.profile.MetricsDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
 import com.example.echo_api.persistence.dto.response.profile.RelationshipDTO;
-import com.example.echo_api.persistence.mapper.MetricsMapper;
 import com.example.echo_api.persistence.mapper.ProfileMapper;
 import com.example.echo_api.persistence.model.account.Account;
-import com.example.echo_api.persistence.model.profile.Metrics;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.service.profile.ProfileService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -61,9 +59,8 @@ class ProfileControllerTest {
 
         Account account = new Account("test", "test");
         Profile profile = new Profile(account);
-        Metrics metrics = new Metrics(profile);
-        MetricsDTO metricsDto = MetricsMapper.toDTO(metrics);
-        ProfileDTO expected = ProfileMapper.toDTO(profile, metricsDto, null);
+        MetricsDTO metrics = new MetricsDTO(0, 0, 0, 0);
+        ProfileDTO expected = ProfileMapper.toDTO(profile, metrics, null);
 
         when(profileService.getMe()).thenReturn(expected);
 
@@ -246,10 +243,9 @@ class ProfileControllerTest {
 
         Account account = new Account("test", "test");
         Profile profile = new Profile(account);
-        Metrics metrics = new Metrics(profile);
-        MetricsDTO metricsDto = MetricsMapper.toDTO(metrics);
-        RelationshipDTO relationshipDto = new RelationshipDTO(false, false, false, false);
-        ProfileDTO expected = ProfileMapper.toDTO(profile, metricsDto, relationshipDto);
+        MetricsDTO metrics = new MetricsDTO(0, 0, 0, 0);
+        RelationshipDTO relationship = new RelationshipDTO(false, false, false, false);
+        ProfileDTO expected = ProfileMapper.toDTO(profile, metrics, relationship);
 
         when(profileService.getByUsername(expected.username())).thenReturn(expected);
 

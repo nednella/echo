@@ -20,7 +20,6 @@ import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.follow.Follow;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.FollowRepository;
-import com.example.echo_api.service.metrics.MetricsService;
 import com.example.echo_api.service.relationship.follow.FollowService;
 import com.example.echo_api.service.relationship.follow.FollowServiceImpl;
 
@@ -29,9 +28,6 @@ import com.example.echo_api.service.relationship.follow.FollowServiceImpl;
  */
 @ExtendWith(MockitoExtension.class)
 class FollowServiceTest {
-
-    @Mock
-    private MetricsService metricsService;
 
     @Mock
     private FollowRepository followRepository;
