@@ -1,5 +1,7 @@
 package com.example.echo_api.controller.profile;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,15 +50,15 @@ public class ProfileController {
     // --- following/follower list ----
 
     @GetMapping(ApiConfig.Profile.GET_FOLLOWERS_BY_USERNAME)
-    public ResponseEntity<Void> getFollowers(@PathVariable("username") String username) {
-        // TODO: implement
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<List<ProfileDTO>> getFollowers(@PathVariable("username") String username) {
+        List<ProfileDTO> response = profileService.getFollowers(username);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping(ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME)
-    public ResponseEntity<Void> getFollowing(@PathVariable("username") String username) {
-        // TODO: implement
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<List<ProfileDTO>> getFollowing(@PathVariable("username") String username) {
+        List<ProfileDTO> response = profileService.getFollowing(username);
+        return ResponseEntity.ok(response);
     }
 
     // --- follow ----

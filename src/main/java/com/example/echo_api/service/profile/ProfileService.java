@@ -1,5 +1,7 @@
 package com.example.echo_api.service.profile;
 
+import java.util.List;
+
 import com.example.echo_api.exception.custom.username.UsernameNotFoundException;
 import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
@@ -35,6 +37,26 @@ public interface ProfileService {
      *                profile information.
      */
     public void updateMeProfile(UpdateProfileDTO request);
+
+    /**
+     * Fetches a {@link List} of {@link Profile} for the followers list of the
+     * supplied {@code username}.
+     * 
+     * @param username The username of the profile to search against.
+     * @return A {@link List} of {@link Profile} for matches, otherwise empty.
+     * @throws UsernameNotFoundException If the username is not found.
+     */
+    public List<ProfileDTO> getFollowers(String username) throws UsernameNotFoundException;
+
+    /**
+     * Fetches a {@link List} of {@link Profile} for the following list of the
+     * supplied {@code username}.
+     * 
+     * @param username The username of the profile to search against.
+     * @return A {@link List} of {@link Profile} for matches, otherwise empty.
+     * @throws UsernameNotFoundException If the username is not found.
+     */
+    public List<ProfileDTO> getFollowing(String username) throws UsernameNotFoundException;
 
     /**
      * Create a {@link Follow} relationship between the authenticated profile and
