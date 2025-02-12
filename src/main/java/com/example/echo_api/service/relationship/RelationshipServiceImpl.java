@@ -1,5 +1,7 @@
 package com.example.echo_api.service.relationship;
 
+import java.util.Objects;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +39,10 @@ public class RelationshipServiceImpl implements RelationshipService {
 
     @Override
     public RelationshipDTO getRelationship(Profile source, Profile target) {
+        if (isSelfAction(source, target)) {
+            return null;
+        }
+
         boolean isFollowing = followService.isFollowing(source, target);
         boolean isFollowedBy = followService.isFollowedBy(source, target);
         boolean isBlocking = blockService.isBlocking(source, target);
@@ -71,6 +77,17 @@ public class RelationshipServiceImpl implements RelationshipService {
     @Override
     public void unblock(Profile source, Profile target) throws SelfActionException, NotBlockingException {
         blockService.unblock(source, target);
+    }
+
+    /**
+     * Internal method for checking if {@link Profile} pairs match.
+     * 
+     * @param source The source {@link Profile}.
+     * @param target The target {@link Profile}.
+     * @return Boolean indicating whether the profiles are a match.
+     */
+    private boolean isSelfAction(Profile source, Profile target) {
+        return Objects.equals(source.getProfileId(), target.getProfileId());
     }
 
     /**
