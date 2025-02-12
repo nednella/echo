@@ -33,18 +33,6 @@ CREATE UNIQUE INDEX
         ON "profile"(Lower(username));
 
 CREATE TABLE
-    IF NOT EXISTS "profile_metrics" (
-        profile_id       UUID PRIMARY KEY UNIQUE NOT NULL,
-        following_count  INT NOT NULL DEFAULT 0,
-        follower_count   INT NOT NULL DEFAULT 0,
-        post_count       INT NOT NULL DEFAULT 0,
-        media_count      INT NOT NULL DEFAULT 0,
-        created_at       TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        updated_at       TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        CONSTRAINT fk_profile_id FOREIGN KEY (profile_id) REFERENCES "profile"(profile_id) ON DELETE CASCADE
-    );
-
-CREATE TABLE
     IF NOT EXISTS "follow" (
         follower_id   UUID NOT NULL,
         following_id  UUID NOT NULL,

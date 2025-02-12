@@ -12,7 +12,6 @@ import com.example.echo_api.exception.custom.relationship.SelfActionException;
 import com.example.echo_api.persistence.model.follow.Follow;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.FollowRepository;
-import com.example.echo_api.service.metrics.MetricsService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,8 +26,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FollowServiceImpl implements FollowService {
 
-    private final MetricsService metricsService;
-
     private final FollowRepository followRepository;
 
     @Override
@@ -41,8 +38,6 @@ public class FollowServiceImpl implements FollowService {
             throw new AlreadyFollowingException();
         }
 
-        metricsService.incrementFollowing(source);
-        metricsService.incrementFollowers(target);
         followRepository.save(new Follow(source, target));
     }
 
@@ -56,8 +51,6 @@ public class FollowServiceImpl implements FollowService {
             throw new NotFollowingException();
         }
 
-        metricsService.decrementFollowing(source);
-        metricsService.decrementFollowers(target);
         followRepository.delete(new Follow(source, target));
     }
 

@@ -4,7 +4,6 @@ import com.example.echo_api.exception.custom.password.IncorrectCurrentPasswordEx
 import com.example.echo_api.exception.custom.username.UsernameAlreadyExistsException;
 import com.example.echo_api.persistence.model.account.Role;
 import com.example.echo_api.persistence.model.account.Account;
-import com.example.echo_api.persistence.model.profile.Metrics;
 import com.example.echo_api.persistence.model.profile.Profile;
 
 public interface AccountService {
@@ -15,8 +14,7 @@ public interface AccountService {
      * 
      * <p>
      * If the username is available, it creates an {@link Account} object, and
-     * associated {@link Profile} object, and an associated profile {@link Metrics}
-     * object.
+     * associated {@link Profile} object.
      * 
      * @param username The username of the account to register.
      * @param password The password of the account to register.
@@ -31,8 +29,7 @@ public interface AccountService {
      * 
      * <p>
      * If the username is available, it creates an {@link Account} object, and
-     * associated {@link Profile} object, and an associated profile {@link Metrics}
-     * object.
+     * associated {@link Profile} object.
      * 
      * @param username The username of the account to register.
      * @param password The password of the account to register.

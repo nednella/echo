@@ -17,7 +17,6 @@ import com.example.echo_api.exception.custom.username.UsernameAlreadyExistsExcep
 import com.example.echo_api.persistence.dto.request.account.UpdatePasswordDTO;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.repository.AccountRepository;
-import com.example.echo_api.persistence.repository.MetricsRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.service.account.AccountService;
 import com.example.echo_api.service.account.AccountServiceImpl;
@@ -37,9 +36,6 @@ class AccountServiceTest {
 
     @Mock
     private ProfileRepository profileRepository;
-
-    @Mock
-    private MetricsRepository metricsRepository;
 
     @Mock
     private PasswordEncoder passwordEncoder;

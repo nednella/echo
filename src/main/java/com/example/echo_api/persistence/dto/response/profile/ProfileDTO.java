@@ -30,8 +30,8 @@ public record ProfileDTO(
     @JsonProperty("avatar_url") String avatarUrl,
     @JsonProperty("banner_url") String bannerUrl,
     @JsonProperty("created_at") String createdAt,
-    @JsonProperty("profile_metrics") MetricsDTO metrics,
-    @JsonProperty("relationship") @JsonInclude(Include.NON_NULL) RelationshipDTO relationship
+    MetricsDTO metrics,
+    @JsonInclude(Include.NON_NULL) RelationshipDTO relationship
 ) {
 
     public ProfileDTO(

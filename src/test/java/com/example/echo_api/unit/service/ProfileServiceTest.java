@@ -26,13 +26,11 @@ import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
 import com.example.echo_api.persistence.dto.response.profile.MetricsDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
 import com.example.echo_api.persistence.dto.response.profile.RelationshipDTO;
-import com.example.echo_api.persistence.mapper.MetricsMapper;
 import com.example.echo_api.persistence.mapper.ProfileMapper;
 import com.example.echo_api.persistence.model.account.Account;
-import com.example.echo_api.persistence.model.profile.Metrics;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
-import com.example.echo_api.service.metrics.MetricsService;
+import com.example.echo_api.service.metrics.profile.ProfileMetricsService;
 import com.example.echo_api.service.profile.ProfileService;
 import com.example.echo_api.service.profile.ProfileServiceImpl;
 import com.example.echo_api.service.relationship.RelationshipService;
@@ -48,7 +46,7 @@ class ProfileServiceTest {
     private SessionService sessionService;
 
     @Mock
-    private MetricsService metricsService;
+    private ProfileMetricsService profileMetricsService;
 
     @Mock
     private RelationshipService relationshipService;
@@ -82,16 +80,15 @@ class ProfileServiceTest {
         // arrange
         Account account = new Account("test", "test");
         Profile profile = new Profile(account);
-        Metrics metrics = new Metrics(profile);
-        MetricsDTO metricsDto = MetricsMapper.toDTO(metrics);
-        RelationshipDTO relationshipDto = new RelationshipDTO(false, false, false, false);
-        ProfileDTO expected = ProfileMapper.toDTO(profile, metricsDto, relationshipDto);
+        MetricsDTO metrics = new MetricsDTO(0, 0, 0, 0);
+        RelationshipDTO relationship = new RelationshipDTO(false, false, false, false);
+        ProfileDTO expected = ProfileMapper.toDTO(profile, metrics, relationship);
 
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
         when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
         when(profileRepository.findByUsername(account.getUsername())).thenReturn(Optional.of(profile));
-        when(metricsService.getMetrics(profile)).thenReturn(metricsDto);
-        when(relationshipService.getRelationship(me, profile)).thenReturn(relationshipDto);
+        when(profileMetricsService.getMetrics(profile)).thenReturn(metrics);
+        when(relationshipService.getRelationship(me, profile)).thenReturn(relationship);
 
         // act
         ProfileDTO actual = profileService.getByUsername(profile.getUsername());
@@ -128,13 +125,12 @@ class ProfileServiceTest {
     @Test
     void ProfileService_GetMe_ReturnProfileResponse() {
         // arrange
-        Metrics metrics = new Metrics(me);
-        MetricsDTO metricsDto = MetricsMapper.toDTO(metrics);
-        ProfileDTO expected = ProfileMapper.toDTO(me, metricsDto, null);
+        MetricsDTO metrics = new MetricsDTO(0, 0, 0, 0);
+        ProfileDTO expected = ProfileMapper.toDTO(me, metrics, null);
 
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
         when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(metricsService.getMetrics(me)).thenReturn(metricsDto);
+        when(profileMetricsService.getMetrics(me)).thenReturn(metrics);
 
         // act
         ProfileDTO actual = profileService.getMe();
