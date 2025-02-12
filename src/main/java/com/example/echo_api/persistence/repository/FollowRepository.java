@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import com.example.echo_api.persistence.model.follow.Follow;
 import com.example.echo_api.persistence.model.follow.FollowPK;
@@ -26,7 +27,7 @@ public interface FollowRepository extends ListCrudRepository<Follow, FollowPK> {
      * @return The number of followers the profile has.
      */
     @Query("SELECT COUNT(*) FROM Follow WHERE followingId = :followingId")
-    int countFollowers(UUID followingId);
+    int countFollowers(@Param("followingId") UUID followingId);
 
     /**
      * Count the number of profiles a given profile is following.
@@ -35,6 +36,6 @@ public interface FollowRepository extends ListCrudRepository<Follow, FollowPK> {
      * @return The number of profiles the profile is following.
      */
     @Query("SELECT COUNT(*) FROM Follow WHERE followerId = :followerId")
-    int countFollowing(UUID followerId);
+    int countFollowing(@Param("followerId") UUID followerId);
 
 }
