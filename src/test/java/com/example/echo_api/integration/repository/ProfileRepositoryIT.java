@@ -2,6 +2,7 @@ package com.example.echo_api.integration.repository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -10,12 +11,15 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.echo_api.integration.util.RepositoryTest;
 import com.example.echo_api.persistence.model.account.Account;
+import com.example.echo_api.persistence.model.follow.Follow;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.persistence.repository.AccountRepository;
+import com.example.echo_api.persistence.repository.FollowRepository;
 
 /**
  * Integration test class for {@link ProfileRepository}.
@@ -31,22 +35,27 @@ class ProfileRepositoryIT extends RepositoryTest {
     @Autowired
     private ProfileRepository profileRepository;
 
-    private Profile profile;
+    @Autowired
+    private FollowRepository followRepository;
 
-    /**
-     * Save a {@link Profile} object to {@link ProfileRepository}.
-     * 
-     * <p>
-     * Requires a {@link Account} object saved to {@link AccountRepository} to set
-     * the {@code account_id} field.
-     */
+    private Profile source;
+    private Profile target;
+
     @BeforeAll
     void setup() {
-        testAccount = new Account("test", "test");
-        accountRepository.save(testAccount);
+        Account sourceAcc = new Account("source", "test");
+        accountRepository.save(sourceAcc); // save account to repository to generate a UUID
+        source = new Profile(sourceAcc);
+        profileRepository.save(source); // save profile to provide foreign key for follow table
 
-        profile = new Profile(testAccount);
-        profileRepository.save(profile);
+        Account targetAcc = new Account("target", "test");
+        accountRepository.save(targetAcc); // save account to repository to generate a UUID
+        target = new Profile(targetAcc);
+        profileRepository.save(target); // save profile to provide foreign key for follow table
+
+        // save a follow to db
+        Follow follow = new Follow(source, target);
+        followRepository.save(follow);
     }
 
     /**
@@ -55,7 +64,7 @@ class ProfileRepositoryIT extends RepositoryTest {
      */
     @Test
     void ProfileRepository_FindByUsername_ReturnProfile() {
-        Optional<Profile> foundProfile = profileRepository.findByUsername(profile.getUsername());
+        Optional<Profile> foundProfile = profileRepository.findByUsername(source.getUsername());
 
         assertNotNull(foundProfile);
         assertTrue(foundProfile.isPresent());
@@ -63,7 +72,7 @@ class ProfileRepositoryIT extends RepositoryTest {
 
     /**
      * Test {@link ProfileRepository#findByUsername(String)} to verify that
-     * searching for a non-existent profile returns an empty result.
+     * searching for a non-existent username returns an empty result.
      */
     @Test
     void ProfileRepository_FindByUsername_ReturnEmpty() {
@@ -71,6 +80,42 @@ class ProfileRepositoryIT extends RepositoryTest {
 
         assertNotNull(foundProfile);
         assertTrue(foundProfile.isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void ProfileRepository_FindAllFollowersById_ReturnListOfEmpty() {
+        List<Profile> followers = profileRepository.findAllFollowersById(source.getProfileId());
+
+        assertTrue(followers.isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void ProfileRepository_FindAllFollowersById_ReturnListOfProfile() {
+        List<Profile> followers = profileRepository.findAllFollowersById(target.getProfileId());
+
+        assertFalse(followers.isEmpty());
+        assertEquals(1, followers.size());
+        assertEquals(source.getProfileId(), followers.get(0).getProfileId());
+    }
+
+    @Test
+    @Transactional
+    void ProfileRepository_FindAllFollowingById_ReturnListOfEmpty() {
+        List<Profile> following = profileRepository.findAllFollowingById(target.getProfileId());
+
+        assertTrue(following.isEmpty());
+    }
+
+    @Test
+    @Transactional
+    void ProfileRepository_FindAllFollowingById_ReturnListOfProfile() {
+        List<Profile> following = profileRepository.findAllFollowingById(source.getProfileId());
+
+        assertFalse(following.isEmpty());
+        assertEquals(1, following.size());
+        assertEquals(target.getProfileId(), following.get(0).getProfileId());
     }
 
 }
