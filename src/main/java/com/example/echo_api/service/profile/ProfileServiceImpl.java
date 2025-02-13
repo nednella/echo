@@ -1,5 +1,7 @@
 package com.example.echo_api.service.profile;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,6 +57,34 @@ public class ProfileServiceImpl implements ProfileService {
         Profile me = findMe();
         ProfileMapper.updateProfile(request, me);
         profileRepository.save(me);
+    }
+
+    @Override
+    public List<ProfileDTO> getFollowers(String username) throws UsernameNotFoundException {
+        Profile me = findMe();
+        Profile target = findByUsername(username);
+        List<Profile> followersList = profileRepository.findAllFollowersById(target.getProfileId());
+
+        return followersList.stream()
+            .map(follower -> ProfileMapper.toDTO(
+                follower,
+                profileMetricsService.getMetrics(follower),
+                relationshipService.getRelationship(me, follower)))
+            .toList();
+    }
+
+    @Override
+    public List<ProfileDTO> getFollowing(String username) throws UsernameNotFoundException {
+        Profile me = findMe();
+        Profile target = findByUsername(username);
+        List<Profile> followingList = profileRepository.findAllFollowingById(target.getProfileId());
+
+        return followingList.stream()
+            .map(following -> ProfileMapper.toDTO(
+                following,
+                profileMetricsService.getMetrics(following),
+                relationshipService.getRelationship(me, following)))
+            .toList();
     }
 
     @Override

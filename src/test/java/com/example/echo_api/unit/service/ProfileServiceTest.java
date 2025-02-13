@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -207,6 +209,160 @@ class ProfileServiceTest {
         assertThrows(UsernameNotFoundException.class, () -> profileService.updateMeProfile(request));
         verify(sessionService, times(1)).getAuthenticatedUser();
         verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
+    }
+
+    /**
+     * Test ensures that {@link ProfileServiceImpl#getFollowers(String)} correctly
+     * returns an empty {@link List} of {@link ProfileDTO} when the {@link Profile}
+     * associated to the {@code username} has no followers.
+     */
+    @Test
+    void ProfileService_GetFollowers_ReturnListOfEmpty() {
+        // arrange
+        Account account = new Account("test", "test");
+        Profile profile = new Profile(account);
+
+        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
+        when(profileRepository.findByUsername(account.getUsername())).thenReturn(Optional.of(profile));
+        when(profileRepository.findAllFollowersById(profile.getProfileId())).thenReturn(new ArrayList<>());
+
+        // act
+        List<ProfileDTO> list = profileService.getFollowers(profile.getUsername());
+
+        // assert
+        assertTrue(list.isEmpty());
+        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
+        verify(profileRepository, times(1)).findByUsername(profile.getUsername());
+        verify(profileRepository, times(1)).findAllFollowersById(profile.getProfileId());
+    }
+
+    /**
+     * Test ensures that {@link ProfileServiceImpl#getFollowers(String)} correctly
+     * returns a non-empty {@link List} of {@link ProfileDTO} when the
+     * {@link Profile} associated to the {@code username} has at least 1 follower.
+     */
+    @Test
+    void ProfileService_GetFollowers_ReturnListOfProfileDto() {
+        // arrange
+        Account account = new Account("test", "test");
+        Profile profile = new Profile(account);
+        MetricsDTO metrics = new MetricsDTO(0, 0, 0, 0);
+        RelationshipDTO relationship = new RelationshipDTO(false, false, false, false);
+        ProfileDTO expected = ProfileMapper.toDTO(profile, metrics, relationship);
+
+        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
+        when(profileRepository.findByUsername(account.getUsername())).thenReturn(Optional.of(profile));
+        when(profileRepository.findAllFollowersById(profile.getProfileId())).thenReturn(List.of(profile));
+        when(profileMetricsService.getMetrics(profile)).thenReturn(metrics);
+        when(relationshipService.getRelationship(me, profile)).thenReturn(relationship);
+
+        // act
+        List<ProfileDTO> list = profileService.getFollowers(profile.getUsername());
+
+        // assert
+        assertFalse(list.isEmpty());
+        assertEquals(expected, list.get(0));
+        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
+        verify(profileRepository, times(1)).findByUsername(profile.getUsername());
+        verify(profileRepository, times(1)).findAllFollowersById(profile.getProfileId());
+    }
+
+    /**
+     * Test ensures that {@link ProfileServiceImpl#getFollowers(String)} throws
+     * {@link UsernameNotFoundException} when no such profile with the authenticated
+     * account's username exists.
+     */
+    @Test
+    void ProfileService_GetFollowers_ThrowsUsernameNotFound() {
+        // arrange
+        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
+        when(profileRepository.findByUsername("non-existent-username")).thenThrow(new UsernameNotFoundException());
+
+        // act & assert
+        assertThrows(UsernameNotFoundException.class, () -> profileService.getFollowers("non-existent-username"));
+        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
+        verify(profileRepository, times(1)).findByUsername("non-existent-username");
+        verify(profileRepository, never()).findAllFollowersById(any(UUID.class));
+    }
+
+    /**
+     * Test ensures that {@link ProfileServiceImpl#getFollowing(String)} correctly
+     * returns an empty {@link List} of {@link ProfileDTO} when the {@link Profile}
+     * associated to the {@code username} has no followers.
+     */
+    @Test
+    void ProfileService_GetFollowing_ReturnListOfEmpty() {
+        // arrange
+        Account account = new Account("test", "test");
+        Profile profile = new Profile(account);
+
+        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
+        when(profileRepository.findByUsername(account.getUsername())).thenReturn(Optional.of(profile));
+        when(profileRepository.findAllFollowingById(profile.getProfileId())).thenReturn(new ArrayList<>());
+
+        // act
+        List<ProfileDTO> list = profileService.getFollowing(profile.getUsername());
+
+        // assert
+        assertTrue(list.isEmpty());
+        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
+        verify(profileRepository, times(1)).findByUsername(profile.getUsername());
+        verify(profileRepository, times(1)).findAllFollowingById(profile.getProfileId());
+    }
+
+    /**
+     * Test ensures that {@link ProfileServiceImpl#getFollowing(String)} correctly
+     * returns a non-empty {@link List} of {@link ProfileDTO} when the
+     * {@link Profile} associated to the {@code username} has at least 1 follower.
+     */
+    @Test
+    void ProfileService_GetFollowing_ReturnListOfProfileDto() {
+        // arrange
+        Account account = new Account("test", "test");
+        Profile profile = new Profile(account);
+        MetricsDTO metrics = new MetricsDTO(0, 0, 0, 0);
+        RelationshipDTO relationship = new RelationshipDTO(false, false, false, false);
+        ProfileDTO expected = ProfileMapper.toDTO(profile, metrics, relationship);
+
+        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
+        when(profileRepository.findByUsername(account.getUsername())).thenReturn(Optional.of(profile));
+        when(profileRepository.findAllFollowingById(profile.getProfileId())).thenReturn(List.of(profile));
+        when(profileMetricsService.getMetrics(profile)).thenReturn(metrics);
+        when(relationshipService.getRelationship(me, profile)).thenReturn(relationship);
+
+        // act
+        List<ProfileDTO> list = profileService.getFollowing(profile.getUsername());
+
+        // assert
+        assertFalse(list.isEmpty());
+        assertEquals(expected, list.get(0));
+        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
+        verify(profileRepository, times(1)).findByUsername(profile.getUsername());
+        verify(profileRepository, times(1)).findAllFollowingById(profile.getProfileId());
+    }
+
+    /**
+     * Test ensures that {@link ProfileServiceImpl#getFollowing(String)} throws
+     * {@link UsernameNotFoundException} when no such profile with the authenticated
+     * account's username exists.
+     */
+    @Test
+    void ProfileService_GetFollowing_ThrowsUsernameNotFound() {
+        // arrange
+        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
+        when(profileRepository.findByUsername("non-existent-username")).thenThrow(new UsernameNotFoundException());
+
+        // act & assert
+        assertThrows(UsernameNotFoundException.class, () -> profileService.getFollowing("non-existent-username"));
+        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
+        verify(profileRepository, times(1)).findByUsername("non-existent-username");
+        verify(profileRepository, never()).findAllFollowersById(any(UUID.class));
     }
 
     /**
