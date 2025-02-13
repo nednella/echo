@@ -1,7 +1,6 @@
 package com.example.echo_api.service.profile;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +17,7 @@ import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.service.metrics.profile.ProfileMetricsService;
 import com.example.echo_api.service.relationship.RelationshipService;
 import com.example.echo_api.service.session.SessionService;
+import com.example.echo_api.util.OffsetLimitRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -62,7 +62,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public Page<ProfileDTO> getFollowers(String username, int offset, int limit) throws UsernameNotFoundException {
-        Pageable page = PageRequest.of((offset / limit), limit);
+        Pageable page = new OffsetLimitRequest(offset, limit);
         Profile me = findMe();
         Profile target = findByUsername(username);
         Page<Profile> followersList = profileRepository.findAllFollowersById(target.getProfileId(), page);
@@ -75,7 +75,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public Page<ProfileDTO> getFollowing(String username, int offset, int limit) throws UsernameNotFoundException {
-        Pageable page = PageRequest.of((offset / limit), limit);
+        Pageable page = new OffsetLimitRequest(offset, limit);
         Profile me = findMe();
         Profile target = findByUsername(username);
         Page<Profile> followingList = profileRepository.findAllFollowingById(target.getProfileId(), page);
