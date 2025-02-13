@@ -20,6 +20,7 @@ import com.example.echo_api.exception.custom.relationship.BlockedException;
 import com.example.echo_api.exception.custom.relationship.NotBlockingException;
 import com.example.echo_api.exception.custom.relationship.NotFollowingException;
 import com.example.echo_api.exception.custom.relationship.SelfActionException;
+import com.example.echo_api.persistence.dto.response.profile.RelationshipDTO;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.service.relationship.RelationshipService;
@@ -58,6 +59,42 @@ class RelationshipServiceTest {
         idField.setAccessible(true);
         idField.set(source, UUID.randomUUID());
         idField.set(target, UUID.randomUUID());
+    }
+
+    /**
+     * Test ensures that
+     * {@link RelationshipServiceImpl#getRelationship(Profile, Profile)} correctly
+     * returns {@link RelationshipDTO}.
+     */
+    @Test
+    void RelationshipService_GetRelationship_ReturnRelationshipDto() {
+        // arrange
+        RelationshipDTO expected = new RelationshipDTO(false, false, false, false);
+        when(followService.isFollowing(source, target)).thenReturn(false);
+        when(followService.isFollowedBy(source, target)).thenReturn(false);
+        when(blockService.isBlocking(source, target)).thenReturn(false);
+        when(blockService.isBlockedBy(source, target)).thenReturn(false);
+
+        // act
+        RelationshipDTO actual = relationshipService.getRelationship(source, target);
+
+        // assert
+        assertNotNull(actual);
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * Test ensures that
+     * {@link RelationshipServiceImpl#getRelationship(Profile, Profile)} correctly
+     * returns {@code null} when the supplied {@link Profile} are equal.
+     */
+    @Test
+    void RelationshipService_GetRelationship_ReturnNull() {
+        // act
+        RelationshipDTO relationship = relationshipService.getRelationship(source, source);
+
+        // assert
+        assertNull(relationship);
     }
 
     /**
