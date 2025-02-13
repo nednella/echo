@@ -1,12 +1,12 @@
 package com.example.echo_api.controller.profile;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
+import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
 import com.example.echo_api.service.profile.ProfileService;
 import com.example.echo_api.validation.sequence.ValidationOrder;
@@ -51,22 +51,22 @@ public class ProfileController {
 
     // @formatter:off
     @GetMapping(ApiConfig.Profile.GET_FOLLOWERS_BY_USERNAME)
-    public ResponseEntity<Page<ProfileDTO>> getFollowers(
+    public ResponseEntity<PageDTO<ProfileDTO>> getFollowers(
         @PathVariable("username") String username,
         @RequestParam(required = true) int offset,
         @RequestParam(required = true) int limit
     ) {
-        Page<ProfileDTO> response = profileService.getFollowers(username, offset, limit);
+        PageDTO<ProfileDTO> response = profileService.getFollowers(username, offset, limit);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping(ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME)
-    public ResponseEntity<Page<ProfileDTO>> getFollowing(
+    public ResponseEntity<PageDTO<ProfileDTO>> getFollowing(
         @PathVariable("username") String username,
         @RequestParam(required = true) int offset,
         @RequestParam(required = true) int limit
     ) {
-        Page<ProfileDTO> response = profileService.getFollowing(username, offset, limit);
+        PageDTO<ProfileDTO> response = profileService.getFollowing(username, offset, limit);
         return ResponseEntity.ok(response);
     }
     // @formatter:on

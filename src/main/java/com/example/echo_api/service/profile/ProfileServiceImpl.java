@@ -7,9 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.echo_api.exception.custom.username.UsernameNotFoundException;
 import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
+import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.profile.MetricsDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
 import com.example.echo_api.persistence.dto.response.profile.RelationshipDTO;
+import com.example.echo_api.persistence.mapper.PageMapper;
 import com.example.echo_api.persistence.mapper.ProfileMapper;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.profile.Profile;
@@ -17,7 +19,7 @@ import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.service.metrics.profile.ProfileMetricsService;
 import com.example.echo_api.service.relationship.RelationshipService;
 import com.example.echo_api.service.session.SessionService;
-import com.example.echo_api.util.OffsetLimitRequest;
+import com.example.echo_api.util.pagination.OffsetLimitRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -61,29 +63,33 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Page<ProfileDTO> getFollowers(String username, int offset, int limit) throws UsernameNotFoundException {
+    public PageDTO<ProfileDTO> getFollowers(String username, int offset, int limit) throws UsernameNotFoundException {
         Pageable page = new OffsetLimitRequest(offset, limit);
         Profile me = findMe();
         Profile target = findByUsername(username);
         Page<Profile> followersList = profileRepository.findAllFollowersById(target.getProfileId(), page);
 
-        return followersList.map(following -> ProfileMapper.toDTO(
+        Page<ProfileDTO> mappedFollowersList = followersList.map(following -> ProfileMapper.toDTO(
             following,
             profileMetricsService.getMetrics(following),
             relationshipService.getRelationship(me, following)));
+
+        return PageMapper.toDTO(mappedFollowersList, offset, limit);
     }
 
     @Override
-    public Page<ProfileDTO> getFollowing(String username, int offset, int limit) throws UsernameNotFoundException {
+    public PageDTO<ProfileDTO> getFollowing(String username, int offset, int limit) throws UsernameNotFoundException {
         Pageable page = new OffsetLimitRequest(offset, limit);
         Profile me = findMe();
         Profile target = findByUsername(username);
         Page<Profile> followingList = profileRepository.findAllFollowingById(target.getProfileId(), page);
 
-        return followingList.map(following -> ProfileMapper.toDTO(
+        Page<ProfileDTO> mappedfollowingList = followingList.map(following -> ProfileMapper.toDTO(
             following,
             profileMetricsService.getMetrics(following),
             relationshipService.getRelationship(me, following)));
+
+        return PageMapper.toDTO(mappedfollowingList, offset, limit);
     }
 
     @Override
