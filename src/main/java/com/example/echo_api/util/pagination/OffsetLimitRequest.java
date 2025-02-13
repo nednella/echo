@@ -1,12 +1,24 @@
-package com.example.echo_api.util;
+package com.example.echo_api.util.pagination;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
-import org.springframework.util.Assert;
 
 /**
+ * A custom implementation of {@link Pageable} that supports pagination using
+ * <b>offset</b> and <b>limit</b> instead of the traditional page number and
+ * page size.
  * 
+ * <p>
+ * Example usage:
+ * 
+ * <pre>
+ * OffsetLimitRequest pageRequest = new OffsetLimitRequest(10, 20); // Fetch 20 items starting from the 10th item
+ * Page<Item> page = repository.findAll(pageRequest);
+ * </pre>
+ * 
+ * @see Pageable
+ * @see Sort
  */
 public class OffsetLimitRequest implements Pageable {
 
@@ -17,19 +29,23 @@ public class OffsetLimitRequest implements Pageable {
     /**
      * Creates a new {@link OffsetLimitRequest} with sort parameters applied.
      * 
-     * @param offset Zero-indexed starting position, must not be negative.
-     * @param limit  Maximum number of items to be returned, must be greater than 0.
-     * @param sort   Must not be {@literal null}, use {@link Sort#unsorted()}
-     *               instead.
+     * @param offset Zero-indexed starting position.
+     * @param limit  Maximum number of items to be returned.
+     * @param sort   Sort parameters for the data.
+     * @throws IllegalArgumentException if {@code offset} is negative..
+     * @throws IllegalArgumentException if {@code limit} is less than 1.
+     * @throws IllegalArgumentException if {@code sort} is {@literal null}.
      */
-    public OffsetLimitRequest(int offset, int limit, Sort sort) {
+    public OffsetLimitRequest(int offset, int limit, Sort sort) throws IllegalArgumentException {
         if (offset < 0) {
             throw new IllegalArgumentException("Offset index must not be negative.");
         }
         if (limit < 1) {
             throw new IllegalArgumentException("Limit must be greater than 0.");
         }
-        Assert.notNull(sort, "Sort must not be null");
+        if (sort == null) {
+            throw new IllegalArgumentException("Sort must not be null");
+        }
 
         this.offset = offset;
         this.limit = limit;
@@ -39,10 +55,10 @@ public class OffsetLimitRequest implements Pageable {
     /**
      * Creates a new unsorted {@link OffsetLimitRequest}.
      * 
-     * @param offset Zero-indexed starting position, must not be negative.
-     * @param limit  Maximum number of items to be returned, must be greater than 0.
+     * @param offset Zero-indexed starting position.
+     * @param limit  Maximum number of items to be returned.
      */
-    public OffsetLimitRequest(int offset, int limit) {
+    public OffsetLimitRequest(int offset, int limit) throws IllegalArgumentException {
         this(offset, limit, Sort.unsorted());
     }
 
