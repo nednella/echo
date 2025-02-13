@@ -1,7 +1,6 @@
 package com.example.echo_api.controller.profile;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,17 +49,27 @@ public class ProfileController {
 
     // --- following/follower list ----
 
+    // @formatter:off
     @GetMapping(ApiConfig.Profile.GET_FOLLOWERS_BY_USERNAME)
-    public ResponseEntity<List<ProfileDTO>> getFollowers(@PathVariable("username") String username) {
-        List<ProfileDTO> response = profileService.getFollowers(username);
+    public ResponseEntity<Page<ProfileDTO>> getFollowers(
+        @PathVariable("username") String username,
+        @RequestParam(required = true) int offset,
+        @RequestParam(required = true) int limit
+    ) {
+        Page<ProfileDTO> response = profileService.getFollowers(username, offset, limit);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping(ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME)
-    public ResponseEntity<List<ProfileDTO>> getFollowing(@PathVariable("username") String username) {
-        List<ProfileDTO> response = profileService.getFollowing(username);
+    public ResponseEntity<Page<ProfileDTO>> getFollowing(
+        @PathVariable("username") String username,
+        @RequestParam(required = true) int offset,
+        @RequestParam(required = true) int limit
+    ) {
+        Page<ProfileDTO> response = profileService.getFollowing(username, offset, limit);
         return ResponseEntity.ok(response);
     }
+    // @formatter:on
 
     // --- follow ----
 

@@ -2,6 +2,8 @@ package com.example.echo_api.service.profile;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import com.example.echo_api.exception.custom.username.UsernameNotFoundException;
 import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
@@ -46,7 +48,7 @@ public interface ProfileService {
      * @return A {@link List} of {@link Profile} for matches, otherwise empty.
      * @throws UsernameNotFoundException If the username is not found.
      */
-    public List<ProfileDTO> getFollowers(String username) throws UsernameNotFoundException;
+    public Page<ProfileDTO> getFollowers(String username, int offset, int limit) throws UsernameNotFoundException;
 
     /**
      * Fetches a {@link List} of {@link Profile} for the following list of the
@@ -56,7 +58,7 @@ public interface ProfileService {
      * @return A {@link List} of {@link Profile} for matches, otherwise empty.
      * @throws UsernameNotFoundException If the username is not found.
      */
-    public List<ProfileDTO> getFollowing(String username) throws UsernameNotFoundException;
+    public Page<ProfileDTO> getFollowing(String username, int offset, int limit) throws UsernameNotFoundException;
 
     /**
      * Create a {@link Follow} relationship between the authenticated profile and

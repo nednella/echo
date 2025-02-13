@@ -1,9 +1,10 @@
 package com.example.echo_api.persistence.repository;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -34,7 +35,7 @@ public interface ProfileRepository extends CrudRepository<Profile, UUID>, Paging
         "JOIN Follow f ON p.id = f.followerId " +
         "WHERE f.followingId = :profileId " +
         "ORDER BY f.createdAt DESC")
-    List<Profile> findAllFollowersById(@Param("profileId") UUID profileId);
+    Page<Profile> findAllFollowersById(@Param("profileId") UUID profileId, Pageable p);
 
     /**
      * Find all {@link Profile} for those followed by the supplied {@code profileId}
@@ -48,6 +49,6 @@ public interface ProfileRepository extends CrudRepository<Profile, UUID>, Paging
         "JOIN Follow f ON p.id = f.followingId " +
         "WHERE f.followerId = :profileId " +
         "ORDER BY f.createdAt DESC")
-    List<Profile> findAllFollowingById(@Param("profileId") UUID profileId);
+    Page<Profile> findAllFollowingById(@Param("profileId") UUID profileId, Pageable p);
 
 }

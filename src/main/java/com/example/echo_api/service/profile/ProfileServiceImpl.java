@@ -1,7 +1,8 @@
 package com.example.echo_api.service.profile;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,31 +61,29 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<ProfileDTO> getFollowers(String username) throws UsernameNotFoundException {
+    public Page<ProfileDTO> getFollowers(String username, int offset, int limit) throws UsernameNotFoundException {
+        Pageable page = PageRequest.of((offset / limit), limit);
         Profile me = findMe();
         Profile target = findByUsername(username);
-        List<Profile> followersList = profileRepository.findAllFollowersById(target.getProfileId());
+        Page<Profile> followersList = profileRepository.findAllFollowersById(target.getProfileId(), page);
 
-        return followersList.stream()
-            .map(follower -> ProfileMapper.toDTO(
-                follower,
-                profileMetricsService.getMetrics(follower),
-                relationshipService.getRelationship(me, follower)))
-            .toList();
+        return followersList.map(following -> ProfileMapper.toDTO(
+            following,
+            profileMetricsService.getMetrics(following),
+            relationshipService.getRelationship(me, following)));
     }
 
     @Override
-    public List<ProfileDTO> getFollowing(String username) throws UsernameNotFoundException {
+    public Page<ProfileDTO> getFollowing(String username, int offset, int limit) throws UsernameNotFoundException {
+        Pageable page = PageRequest.of((offset / limit), limit);
         Profile me = findMe();
         Profile target = findByUsername(username);
-        List<Profile> followingList = profileRepository.findAllFollowingById(target.getProfileId());
+        Page<Profile> followingList = profileRepository.findAllFollowingById(target.getProfileId(), page);
 
-        return followingList.stream()
-            .map(following -> ProfileMapper.toDTO(
-                following,
-                profileMetricsService.getMetrics(following),
-                relationshipService.getRelationship(me, following)))
-            .toList();
+        return followingList.map(following -> ProfileMapper.toDTO(
+            following,
+            profileMetricsService.getMetrics(following),
+            relationshipService.getRelationship(me, following)));
     }
 
     @Override
