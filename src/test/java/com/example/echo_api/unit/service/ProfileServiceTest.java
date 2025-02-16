@@ -3,18 +3,18 @@ package com.example.echo_api.unit.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.exception.custom.relationship.AlreadyBlockingException;
@@ -25,9 +25,11 @@ import com.example.echo_api.exception.custom.relationship.NotFollowingException;
 import com.example.echo_api.exception.custom.relationship.SelfActionException;
 import com.example.echo_api.exception.custom.username.UsernameNotFoundException;
 import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
+import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.profile.MetricsDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
 import com.example.echo_api.persistence.dto.response.profile.RelationshipDTO;
+import com.example.echo_api.persistence.mapper.PageMapper;
 import com.example.echo_api.persistence.mapper.ProfileMapper;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.profile.Profile;
@@ -37,6 +39,9 @@ import com.example.echo_api.service.profile.ProfileService;
 import com.example.echo_api.service.profile.ProfileServiceImpl;
 import com.example.echo_api.service.relationship.RelationshipService;
 import com.example.echo_api.service.session.SessionService;
+import com.example.echo_api.util.pagination.OffsetLimitRequest;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Unit test class for {@link ProfileService}.
@@ -56,22 +61,53 @@ class ProfileServiceTest {
     @Mock
     private ProfileRepository profileRepository;
 
+    @Mock
+    private HttpServletRequest httpRequest;
+
     @InjectMocks
     private ProfileServiceImpl profileService;
 
-    private static Account authenticatedUser;
-    private static Profile me;
+    private final Account authenticatedAccount = new Account("authenticatedUser", "password");
+    private final Profile authenticatedProfile = new Profile(authenticatedAccount);
 
-    @BeforeAll
-    static void setup() throws Exception {
-        authenticatedUser = new Account("me", "test");
-        me = new Profile(authenticatedUser);
+    // ---- helper methods ----
 
-        // set id with reflection
-        Field idField = Profile.class.getDeclaredField("profileId");
-        idField.setAccessible(true);
-        idField.set(me, UUID.randomUUID());
+    private Profile createTestProfile(String username, String password) {
+        Account account = new Account(username, password);
+        return new Profile(account);
     }
+
+    private MetricsDTO createMetricsDto() {
+        return new MetricsDTO(0, 0, 0, 0);
+    }
+
+    private RelationshipDTO createRelationshipDto() {
+        return new RelationshipDTO(false, false, false, false);
+    }
+
+    private ProfileDTO createProfileDto(Profile profile, MetricsDTO metrics, RelationshipDTO relationship) {
+        return ProfileMapper.toDTO(profile, metrics, relationship);
+    }
+
+    private void mockAuthenticatedUser() {
+        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedAccount);
+        when(profileRepository.findByUsername(authenticatedAccount.getUsername()))
+            .thenReturn(Optional.of(authenticatedProfile));
+    }
+
+    private void mockProfileRepository(Profile profile) {
+        when(profileRepository.findByUsername(profile.getUsername())).thenReturn(Optional.of(profile));
+    }
+
+    private void mockMetricsService(Profile profile) {
+        when(profileMetricsService.getMetrics(profile)).thenReturn(createMetricsDto());
+    }
+
+    private void mockRelationshipService(Profile profile) {
+        when(relationshipService.getRelationship(authenticatedProfile, profile)).thenReturn(createRelationshipDto());
+    }
+
+    // ---- tests ----
 
     /**
      * Test ensures that the {@link ProfileServiceImpl#getByUsername(String)} method
@@ -80,26 +116,23 @@ class ProfileServiceTest {
     @Test
     void ProfileService_GetByUsername_ReturnProfileDTO() {
         // arrange
-        Account account = new Account("test", "test");
-        Profile profile = new Profile(account);
-        MetricsDTO metrics = new MetricsDTO(0, 0, 0, 0);
-        RelationshipDTO relationship = new RelationshipDTO(false, false, false, false);
-        ProfileDTO expected = ProfileMapper.toDTO(profile, metrics, relationship);
+        String username = "existing-user";
+        Profile testProfile = createTestProfile(username, "test");
+        ProfileDTO expected = createProfileDto(testProfile, createMetricsDto(), createRelationshipDto());
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(profileRepository.findByUsername(account.getUsername())).thenReturn(Optional.of(profile));
-        when(profileMetricsService.getMetrics(profile)).thenReturn(metrics);
-        when(relationshipService.getRelationship(me, profile)).thenReturn(relationship);
+        // mock
+        mockAuthenticatedUser();
+        mockProfileRepository(testProfile);
+        mockMetricsService(testProfile);
+        mockRelationshipService(testProfile);
 
         // act
-        ProfileDTO actual = profileService.getByUsername(profile.getUsername());
+        ProfileDTO actual = profileService.getByUsername(username);
 
         // assert
         assertNotNull(actual);
         assertEquals(expected, actual);
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
-        verify(profileRepository, times(1)).findByUsername(profile.getUsername());
+        verify(profileRepository, times(1)).findByUsername(username);
     }
 
     /**
@@ -111,8 +144,9 @@ class ProfileServiceTest {
     void ProfileService_GetByUsername_ThrowUsernameNotFound() {
         // arrange
         String username = "non-existent-user";
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
+
+        // mock
+        mockAuthenticatedUser();
         when(profileRepository.findByUsername(username)).thenReturn(Optional.empty());
 
         // act & assert
@@ -125,14 +159,13 @@ class ProfileServiceTest {
      * returns the authenticated account's profile.
      */
     @Test
-    void ProfileService_GetMe_ReturnProfileResponse() {
+    void ProfileService_GetMe_ReturnProfileDTO() {
         // arrange
-        MetricsDTO metrics = new MetricsDTO(0, 0, 0, 0);
-        ProfileDTO expected = ProfileMapper.toDTO(me, metrics, null);
+        ProfileDTO expected = createProfileDto(authenticatedProfile, createMetricsDto(), null);
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(profileMetricsService.getMetrics(me)).thenReturn(metrics);
+        // mock
+        mockAuthenticatedUser();
+        mockMetricsService(authenticatedProfile);
 
         // act
         ProfileDTO actual = profileService.getMe();
@@ -140,8 +173,7 @@ class ProfileServiceTest {
         // assert
         assertNotNull(actual);
         assertEquals(expected, actual);
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
+        verify(profileRepository, times(1)).findByUsername(authenticatedAccount.getUsername());
     }
 
     /**
@@ -150,219 +182,245 @@ class ProfileServiceTest {
      * authenticated account's username exists.
      */
     @Test
-    void ProfileService_GetMe_ThrowUsernameNotFound() {
+    void ProfileService_GetMe_ThrowsUsernameNotFound() {
         // arrange
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.empty());
+        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedAccount);
+        when(profileRepository.findByUsername(authenticatedAccount.getUsername())).thenReturn(Optional.empty());
 
         // act & assert
         assertThrows(UsernameNotFoundException.class, () -> profileService.getMe());
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
+        verify(profileRepository, times(1)).findByUsername(authenticatedAccount.getUsername());
     }
 
     /**
      * Test ensures that the
-     * {@link ProfileServiceImpl#updateMeProfileInfo(UpdateProfileDTO)} method
-     * correctly updates the authenticated account's profile information.
+     * {@link ProfileServiceImpl#updateMeProfile(UpdateProfileDTO)} method correctly
+     * updates the authenticated account's profile information.
      */
     @Test
-    void ProfileService_UpdateMeProfileInfo_ReturnVoid() {
+    void ProfileService_UpdateMeProfile_ReturnVoid() {
         // arrange
         UpdateProfileDTO request = new UpdateProfileDTO(
             "John Doe",
             "Bio",
             "Location");
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
+        mockAuthenticatedUser();
 
         // act
         profileService.updateMeProfile(request);
 
         // assert
-        assertEquals(request.name(), me.getName());
-        assertEquals(request.bio(), me.getBio());
-        assertEquals(request.location(), me.getLocation());
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
+        assertEquals(request.name(), authenticatedProfile.getName());
+        assertEquals(request.bio(), authenticatedProfile.getBio());
+        assertEquals(request.location(), authenticatedProfile.getLocation());
+        verify(profileRepository, times(1)).findByUsername(authenticatedProfile.getUsername());
     }
 
     /**
      * Test ensures that the
-     * {@link ProfileServiceImpl#updateMeProfileInfo(UpdateProfileDTO)} method
-     * correctly throws a {@link UsernameNotFoundException} when no such profile
-     * with the authenticated account's username exists.
+     * {@link ProfileServiceImpl#updateMeProfile(UpdateProfileDTO)} method correctly
+     * throws a {@link UsernameNotFoundException} when no such profile with the
+     * authenticated account's username exists.
      */
     @Test
-    void ProfileService_UpdateMeProfileInfo_ThrowUsernameNotFound() {
+    void ProfileService_UpdateMeProfile_ThrowUsernameNotFound() {
         // arrange
         UpdateProfileDTO request = new UpdateProfileDTO(
-            "name",
-            "bio",
-            "location");
+            "John Doe",
+            "Bio",
+            "Location");
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.empty());
+        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedAccount);
+        when(profileRepository.findByUsername(authenticatedAccount.getUsername())).thenReturn(Optional.empty());
 
         // act & assert
         assertThrows(UsernameNotFoundException.class, () -> profileService.updateMeProfile(request));
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
+        verify(profileRepository, times(1)).findByUsername(authenticatedAccount.getUsername());
     }
 
     /**
      * Test ensures that {@link ProfileServiceImpl#getFollowers(String)} correctly
-     * returns an empty {@link List} of {@link ProfileDTO} when the {@link Profile}
-     * associated to the {@code username} has no followers.
+     * returns an empty {@link PageDTO} of {@link ProfileDTO} when the
+     * {@link Profile} associated to the {@code username} has no followers.
      */
     @Test
-    void ProfileService_GetFollowers_ReturnListOfEmpty() {
+    void ProfileService_GetFollowers_ReturnPageOfEmpty() throws Exception {
         // arrange
-        Account account = new Account("test", "test");
-        Profile profile = new Profile(account);
+        String username = "existing-user";
+        Profile testProfile = createTestProfile(username, "test");
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(profileRepository.findByUsername(account.getUsername())).thenReturn(Optional.of(profile));
-        when(profileRepository.findAllFollowersById(profile.getProfileId())).thenReturn(new ArrayList<>());
+        String uri = "/some/api/uri";
+        int offset = 0;
+        int limit = 1;
+        Pageable page = new OffsetLimitRequest(offset, limit);
+
+        Page<Profile> emptyFollowers = new PageImpl<>(new ArrayList<>(), page, 0);
+        Page<ProfileDTO> emptyFollowersDto = new PageImpl<>(new ArrayList<>(), page, 0);
+        PageDTO<ProfileDTO> expected = PageMapper.toDTO(emptyFollowersDto, uri);
+
+        mockAuthenticatedUser();
+        mockProfileRepository(testProfile);
+        when(profileRepository.findAllFollowersById(testProfile.getProfileId(), page)).thenReturn(emptyFollowers);
+        when(httpRequest.getRequestURI()).thenReturn(uri);
 
         // act
-        List<ProfileDTO> list = profileService.getFollowers(profile.getUsername());
+        PageDTO<ProfileDTO> actual = profileService.getFollowers(username, page);
 
         // assert
-        assertTrue(list.isEmpty());
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
-        verify(profileRepository, times(1)).findByUsername(profile.getUsername());
-        verify(profileRepository, times(1)).findAllFollowersById(profile.getProfileId());
+        assertTrue(actual.items().isEmpty());
+        assertEquals(expected, actual);
+        verify(profileRepository, times(1)).findAllFollowersById(testProfile.getProfileId(), page);
     }
 
     /**
      * Test ensures that {@link ProfileServiceImpl#getFollowers(String)} correctly
-     * returns a non-empty {@link List} of {@link ProfileDTO} when the
+     * returns a non-empty {@link PageDTO} of {@link ProfileDTO} when the
      * {@link Profile} associated to the {@code username} has at least 1 follower.
      */
     @Test
-    void ProfileService_GetFollowers_ReturnListOfProfileDto() {
+    void ProfileService_GetFollowers_ReturnPageOfProfileDto() {
         // arrange
-        Account account = new Account("test", "test");
-        Profile profile = new Profile(account);
-        MetricsDTO metrics = new MetricsDTO(0, 0, 0, 0);
-        RelationshipDTO relationship = new RelationshipDTO(false, false, false, false);
-        ProfileDTO expected = ProfileMapper.toDTO(profile, metrics, relationship);
+        String username = "existing-user";
+        Profile testProfile = createTestProfile(username, "test");
+        ProfileDTO testProfileDto = createProfileDto(testProfile, createMetricsDto(), createRelationshipDto());
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(profileRepository.findByUsername(account.getUsername())).thenReturn(Optional.of(profile));
-        when(profileRepository.findAllFollowersById(profile.getProfileId())).thenReturn(List.of(profile));
-        when(profileMetricsService.getMetrics(profile)).thenReturn(metrics);
-        when(relationshipService.getRelationship(me, profile)).thenReturn(relationship);
+        String uri = "/some/api/uri";
+        int offset = 0;
+        int limit = 1;
+        Pageable page = new OffsetLimitRequest(offset, limit);
+
+        Page<Profile> followers = new PageImpl<>(List.of(testProfile), page, 0);
+        Page<ProfileDTO> followersDto = new PageImpl<>(List.of(testProfileDto), page, 0);
+        PageDTO<ProfileDTO> expected = PageMapper.toDTO(followersDto, uri);
+
+        mockAuthenticatedUser();
+        mockProfileRepository(testProfile);
+        mockMetricsService(testProfile);
+        mockRelationshipService(testProfile);
+        when(profileRepository.findAllFollowersById(testProfile.getProfileId(), page)).thenReturn(followers);
+        when(httpRequest.getRequestURI()).thenReturn(uri);
 
         // act
-        List<ProfileDTO> list = profileService.getFollowers(profile.getUsername());
+        PageDTO<ProfileDTO> actual = profileService.getFollowers(username, page);
 
         // assert
-        assertFalse(list.isEmpty());
-        assertEquals(expected, list.get(0));
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
-        verify(profileRepository, times(1)).findByUsername(profile.getUsername());
-        verify(profileRepository, times(1)).findAllFollowersById(profile.getProfileId());
+        assertFalse(actual.items().isEmpty());
+        assertEquals(expected, actual);
+        verify(profileRepository, times(1)).findAllFollowersById(testProfile.getProfileId(), page);
     }
 
     /**
      * Test ensures that {@link ProfileServiceImpl#getFollowers(String)} throws
-     * {@link UsernameNotFoundException} when no such profile with the authenticated
-     * account's username exists.
+     * {@link UsernameNotFoundException} when no such profile with the supplied
+     * username exists.
      */
     @Test
     void ProfileService_GetFollowers_ThrowsUsernameNotFound() {
         // arrange
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(profileRepository.findByUsername("non-existent-username")).thenThrow(new UsernameNotFoundException());
+        String username = "non-existing-user";
+
+        int offset = 0;
+        int limit = 1;
+        Pageable page = new OffsetLimitRequest(offset, limit);
+
+        mockAuthenticatedUser();
+        when(profileRepository.findByUsername(username)).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(UsernameNotFoundException.class, () -> profileService.getFollowers("non-existent-username"));
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
-        verify(profileRepository, times(1)).findByUsername("non-existent-username");
-        verify(profileRepository, never()).findAllFollowersById(any(UUID.class));
+        assertThrows(UsernameNotFoundException.class, () -> profileService.getFollowers(username, page));
     }
 
     /**
      * Test ensures that {@link ProfileServiceImpl#getFollowing(String)} correctly
-     * returns an empty {@link List} of {@link ProfileDTO} when the {@link Profile}
-     * associated to the {@code username} has no followers.
+     * returns an empty {@link PageDTO} of {@link ProfileDTO} when the
+     * {@link Profile} associated to the {@code username} has no following.
      */
     @Test
-    void ProfileService_GetFollowing_ReturnListOfEmpty() {
+    void ProfileService_GetFollowing_ReturnPageOfEmpty() {
         // arrange
-        Account account = new Account("test", "test");
-        Profile profile = new Profile(account);
+        String username = "existing-user";
+        Profile testProfile = createTestProfile(username, "test");
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(profileRepository.findByUsername(account.getUsername())).thenReturn(Optional.of(profile));
-        when(profileRepository.findAllFollowingById(profile.getProfileId())).thenReturn(new ArrayList<>());
+        String uri = "/some/api/uri";
+        int offset = 0;
+        int limit = 1;
+        Pageable page = new OffsetLimitRequest(offset, limit);
+
+        Page<Profile> emptyFollowers = new PageImpl<>(new ArrayList<>(), page, 0);
+        Page<ProfileDTO> emptyFollowersDto = new PageImpl<>(new ArrayList<>(), page, 0);
+        PageDTO<ProfileDTO> expected = PageMapper.toDTO(emptyFollowersDto, uri);
+
+        mockAuthenticatedUser();
+        mockProfileRepository(testProfile);
+        when(profileRepository.findAllFollowingById(testProfile.getProfileId(), page)).thenReturn(emptyFollowers);
+        when(httpRequest.getRequestURI()).thenReturn(uri);
 
         // act
-        List<ProfileDTO> list = profileService.getFollowing(profile.getUsername());
+        PageDTO<ProfileDTO> actual = profileService.getFollowing(username, page);
 
         // assert
-        assertTrue(list.isEmpty());
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
-        verify(profileRepository, times(1)).findByUsername(profile.getUsername());
-        verify(profileRepository, times(1)).findAllFollowingById(profile.getProfileId());
+        assertTrue(actual.items().isEmpty());
+        assertEquals(expected, actual);
+        verify(profileRepository, times(1)).findAllFollowingById(testProfile.getProfileId(), page);
     }
 
     /**
      * Test ensures that {@link ProfileServiceImpl#getFollowing(String)} correctly
-     * returns a non-empty {@link List} of {@link ProfileDTO} when the
-     * {@link Profile} associated to the {@code username} has at least 1 follower.
+     * returns a non-empty {@link PageDTO} of {@link ProfileDTO} when the
+     * {@link Profile} associated to the {@code username} has at least 1 following.
      */
     @Test
-    void ProfileService_GetFollowing_ReturnListOfProfileDto() {
+    void ProfileService_GetFollowing_ReturnPageOfProfileDto() {
         // arrange
-        Account account = new Account("test", "test");
-        Profile profile = new Profile(account);
-        MetricsDTO metrics = new MetricsDTO(0, 0, 0, 0);
-        RelationshipDTO relationship = new RelationshipDTO(false, false, false, false);
-        ProfileDTO expected = ProfileMapper.toDTO(profile, metrics, relationship);
+        String username = "existing-user";
+        Profile testProfile = createTestProfile(username, "test");
+        ProfileDTO testProfileDto = createProfileDto(testProfile, createMetricsDto(), createRelationshipDto());
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(profileRepository.findByUsername(account.getUsername())).thenReturn(Optional.of(profile));
-        when(profileRepository.findAllFollowingById(profile.getProfileId())).thenReturn(List.of(profile));
-        when(profileMetricsService.getMetrics(profile)).thenReturn(metrics);
-        when(relationshipService.getRelationship(me, profile)).thenReturn(relationship);
+        String uri = "/some/api/uri";
+        int offset = 0;
+        int limit = 1;
+        Pageable page = new OffsetLimitRequest(offset, limit);
+
+        Page<Profile> followers = new PageImpl<>(List.of(testProfile), page, 0);
+        Page<ProfileDTO> followersDto = new PageImpl<>(List.of(testProfileDto), page, 0);
+        PageDTO<ProfileDTO> expected = PageMapper.toDTO(followersDto, uri);
+
+        mockAuthenticatedUser();
+        mockProfileRepository(testProfile);
+        mockMetricsService(testProfile);
+        mockRelationshipService(testProfile);
+        when(profileRepository.findAllFollowingById(testProfile.getProfileId(), page)).thenReturn(followers);
+        when(httpRequest.getRequestURI()).thenReturn(uri);
 
         // act
-        List<ProfileDTO> list = profileService.getFollowing(profile.getUsername());
+        PageDTO<ProfileDTO> actual = profileService.getFollowing(username, page);
 
         // assert
-        assertFalse(list.isEmpty());
-        assertEquals(expected, list.get(0));
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
-        verify(profileRepository, times(1)).findByUsername(profile.getUsername());
-        verify(profileRepository, times(1)).findAllFollowingById(profile.getProfileId());
+        assertFalse(actual.items().isEmpty());
+        assertEquals(expected, actual);
+        verify(profileRepository, times(1)).findAllFollowingById(testProfile.getProfileId(), page);
     }
 
     /**
      * Test ensures that {@link ProfileServiceImpl#getFollowing(String)} throws
-     * {@link UsernameNotFoundException} when no such profile with the authenticated
-     * account's username exists.
+     * {@link UsernameNotFoundException} when no such profile with the supplied
+     * username exists.
      */
     @Test
     void ProfileService_GetFollowing_ThrowsUsernameNotFound() {
         // arrange
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(profileRepository.findByUsername("non-existent-username")).thenThrow(new UsernameNotFoundException());
+        String username = "non-existing-user";
+
+        int offset = 0;
+        int limit = 1;
+        Pageable page = new OffsetLimitRequest(offset, limit);
+
+        mockAuthenticatedUser();
+        when(profileRepository.findByUsername(username)).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(UsernameNotFoundException.class, () -> profileService.getFollowing("non-existent-username"));
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
-        verify(profileRepository, times(1)).findByUsername("non-existent-username");
-        verify(profileRepository, never()).findAllFollowersById(any(UUID.class));
+        assertThrows(UsernameNotFoundException.class, () -> profileService.getFollowing(username, page));
     }
 
     /**
@@ -372,20 +430,17 @@ class ProfileServiceTest {
     @Test
     void ProfileService_Follow_ReturnVoid() {
         // arrange
-        Account account = new Account("test", "test");
-        Profile target = new Profile(account);
+        String username = "existing-user";
+        Profile testProfile = createTestProfile(username, "test");
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(profileRepository.findByUsername(account.getUsername())).thenReturn(Optional.of(target));
-        doNothing().when(relationshipService).follow(me, target);
+        // mock
+        mockAuthenticatedUser();
+        mockProfileRepository(testProfile);
+        doNothing().when(relationshipService).follow(authenticatedProfile, testProfile);
 
         // act & assert
-        assertDoesNotThrow(() -> profileService.follow(account.getUsername()));
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
-        verify(profileRepository, times(1)).findByUsername(account.getUsername());
-        verify(relationshipService, times(1)).follow(me, target);
+        assertDoesNotThrow(() -> profileService.follow(username));
+        verify(relationshipService, times(1)).follow(authenticatedProfile, testProfile);
     }
 
     /**
@@ -395,95 +450,79 @@ class ProfileServiceTest {
     @Test
     void ProfileService_Follow_Throw400UsernameNotFoundException() {
         // arrange
-        String username = "valid-username";
-        Account account = new Account(username, "test");
-        Profile target = new Profile(account);
+        String username = "non-existent-user";
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
+        // mock
+        mockAuthenticatedUser();
         when(profileRepository.findByUsername(username)).thenReturn(Optional.empty());
 
         // act & assert
         assertThrows(UsernameNotFoundException.class, () -> profileService.follow(username));
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
         verify(profileRepository, times(1)).findByUsername(username);
-        verify(relationshipService, never()).follow(me, target);
     }
 
     /**
      * Test ensures that {@link ProfileServiceImpl#follow(String)} throws
-     * {@link UsernameNotFoundException} when the supplied username is equal to the
+     * {@link SelfActionException} when the supplied username is equal to the
      * current authenticated user.
      */
     @Test
     void ProfileService_Follow_ThrowSelfActionException() {
         // arrange
-        String username = "valid-username";
-        Account account = new Account(username, "test");
-        Profile target = new Profile(account);
+        String username = "existing-user";
+        Profile testProfile = createTestProfile(username, "test");
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(profileRepository.findByUsername(username)).thenReturn(Optional.of(target));
-        doThrow(new SelfActionException(ErrorMessageConfig.SELF_FOLLOW)).when(relationshipService).follow(me, target);
+        // mock
+        mockAuthenticatedUser();
+        mockProfileRepository(testProfile);
+        doThrow(new SelfActionException(ErrorMessageConfig.SELF_FOLLOW)).when(relationshipService)
+            .follow(authenticatedProfile, testProfile);
 
         // act & assert
         assertThrows(SelfActionException.class, () -> profileService.follow(username));
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
-        verify(profileRepository, times(1)).findByUsername(account.getUsername());
-        verify(relationshipService, times(1)).follow(me, target);
+        verify(relationshipService, times(1)).follow(authenticatedProfile, testProfile);
     }
 
     /**
      * Test ensures that {@link ProfileServiceImpl#follow(String)} throws
-     * {@link UsernameNotFoundException} when the supplied username is already
+     * {@link AlreadyFollowingException} when the supplied username is already
      * followed by the authenticated user.
      */
     @Test
     void ProfileService_Follow_ThrowAlreadyFollowingException() {
         // arrange
-        String username = "valid-username";
-        Account account = new Account(username, "test");
-        Profile target = new Profile(account);
+        String username = "existing-user";
+        Profile testProfile = createTestProfile(username, "test");
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(profileRepository.findByUsername(username)).thenReturn(Optional.of(target));
-        doThrow(new AlreadyFollowingException()).when(relationshipService).follow(me, target);
+        // mock
+        mockAuthenticatedUser();
+        mockProfileRepository(testProfile);
+        doThrow(new AlreadyFollowingException()).when(relationshipService).follow(authenticatedProfile, testProfile);
 
         // act & assert
         assertThrows(AlreadyFollowingException.class, () -> profileService.follow(username));
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
-        verify(profileRepository, times(1)).findByUsername(account.getUsername());
-        verify(relationshipService, times(1)).follow(me, target);
+        verify(relationshipService, times(1)).follow(authenticatedProfile, testProfile);
     }
 
     /**
      * Test ensures that {@link ProfileServiceImpl#follow(String)} throws
-     * {@link UsernameNotFoundException} when the supplied username is blocking the
+     * {@link BlockedException} when the supplied username is blocking the
      * authenticated user.
      */
     @Test
     void ProfileService_Follow_ThrowBlockedException() {
         // arrange
-        String username = "valid-username";
-        Account account = new Account(username, "test");
-        Profile target = new Profile(account);
+        String username = "existing-user";
+        Profile testProfile = createTestProfile(username, "test");
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(profileRepository.findByUsername(username)).thenReturn(Optional.of(target));
-        doThrow(new BlockedException()).when(relationshipService).follow(me, target);
+        // mock
+        mockAuthenticatedUser();
+        mockProfileRepository(testProfile);
+        doThrow(new BlockedException()).when(relationshipService).follow(authenticatedProfile, testProfile);
 
         // act & assert
         assertThrows(BlockedException.class, () -> profileService.follow(username));
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
-        verify(profileRepository, times(1)).findByUsername(username);
-        verify(relationshipService, times(1)).follow(me, target);
+        verify(relationshipService, times(1)).follow(authenticatedProfile, testProfile);
     }
 
     /**
@@ -493,21 +532,17 @@ class ProfileServiceTest {
     @Test
     void ProfileService_Unfollow_ReturnVoid() {
         // arrange
-        String username = "valid-username";
-        Account account = new Account(username, "test");
-        Profile target = new Profile(account);
+        String username = "existing-user";
+        Profile testProfile = createTestProfile(username, "test");
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(profileRepository.findByUsername(username)).thenReturn(Optional.of(target));
-        doNothing().when(relationshipService).unfollow(me, target);
+        // mock
+        mockAuthenticatedUser();
+        mockProfileRepository(testProfile);
+        doNothing().when(relationshipService).unfollow(authenticatedProfile, testProfile);
 
         // act & assert
         assertDoesNotThrow(() -> profileService.unfollow(username));
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
-        verify(profileRepository, times(1)).findByUsername(username);
-        verify(relationshipService, times(1)).unfollow(me, target);
+        verify(relationshipService, times(1)).unfollow(authenticatedProfile, testProfile);
     }
 
     /**
@@ -517,71 +552,58 @@ class ProfileServiceTest {
     @Test
     void ProfileService_Unfollow_Throw400UsernameNotFound() {
         // arrange
-        String username = "valid-username";
-        Account account = new Account(username, "test");
-        Profile target = new Profile(account);
+        String username = "non-existent-user";
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
+        // mock
+        mockAuthenticatedUser();
         when(profileRepository.findByUsername(username)).thenReturn(Optional.empty());
 
         // act & assert
         assertThrows(UsernameNotFoundException.class, () -> profileService.unfollow(username));
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
         verify(profileRepository, times(1)).findByUsername(username);
-        verify(relationshipService, never()).unfollow(me, target);
     }
 
     /**
      * Test ensures that {@link ProfileServiceImpl#unfollow(String)} throws
-     * {@link UsernameNotFoundException} when the supplied username is equal to the
+     * {@link SelfActionException} when the supplied username is equal to the
      * current authenticated user.
      */
     @Test
     void ProfileService_Unfollow_ThrowSelfActionException() {
         // arrange
-        String username = "valid-username";
-        Account account = new Account(username, "test");
-        Profile target = new Profile(account);
+        String username = "existing-user";
+        Profile testProfile = createTestProfile(username, "test");
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(profileRepository.findByUsername(username)).thenReturn(Optional.of(target));
-        doThrow(new SelfActionException(ErrorMessageConfig.SELF_UNFOLLOW)).when(relationshipService).unfollow(me,
-            target);
+        // mock
+        mockAuthenticatedUser();
+        mockProfileRepository(testProfile);
+        doThrow(new SelfActionException(ErrorMessageConfig.SELF_FOLLOW)).when(relationshipService)
+            .unfollow(authenticatedProfile, testProfile);
 
         // act & assert
         assertThrows(SelfActionException.class, () -> profileService.unfollow(username));
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
-        verify(profileRepository, times(1)).findByUsername(username);
-        verify(relationshipService, times(1)).unfollow(me, target);
+        verify(relationshipService, times(1)).unfollow(authenticatedProfile, testProfile);
     }
 
     /**
      * Test ensures that {@link ProfileServiceImpl#unfollow(String)} throws
-     * {@link UsernameNotFoundException} when the supplied username is already
+     * {@link NotFollowingException} when the supplied username is not already
      * followed by the authenticated user.
      */
     @Test
     void ProfileService_Unfollow_ThrowNotFollowingException() {
         // arrange
-        String username = "valid-username";
-        Account account = new Account(username, "test");
-        Profile target = new Profile(account);
+        String username = "existing-user";
+        Profile testProfile = createTestProfile(username, "test");
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(profileRepository.findByUsername(username)).thenReturn(Optional.of(target));
-        doThrow(new NotFollowingException()).when(relationshipService).unfollow(me, target);
+        // mock
+        mockAuthenticatedUser();
+        mockProfileRepository(testProfile);
+        doThrow(new NotFollowingException()).when(relationshipService).unfollow(authenticatedProfile, testProfile);
 
         // act & assert
         assertThrows(NotFollowingException.class, () -> profileService.unfollow(username));
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
-        verify(profileRepository, times(1)).findByUsername(username);
-        verify(relationshipService, times(1)).unfollow(me, target);
+        verify(relationshipService, times(1)).unfollow(authenticatedProfile, testProfile);
     }
 
     /**
@@ -591,21 +613,17 @@ class ProfileServiceTest {
     @Test
     void ProfileService_Block_ReturnVoid() {
         // arrange
-        String username = "valid-username";
-        Account account = new Account(username, "test");
-        Profile target = new Profile(account);
+        String username = "existing-user";
+        Profile testProfile = createTestProfile(username, "test");
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(profileRepository.findByUsername(username)).thenReturn(Optional.of(target));
-        doNothing().when(relationshipService).block(me, target);
+        // mock
+        mockAuthenticatedUser();
+        mockProfileRepository(testProfile);
+        doNothing().when(relationshipService).block(authenticatedProfile, testProfile);
 
         // act & assert
         assertDoesNotThrow(() -> profileService.block(username));
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
-        verify(profileRepository, times(1)).findByUsername(username);
-        verify(relationshipService, times(1)).block(me, target);
+        verify(relationshipService, times(1)).block(authenticatedProfile, testProfile);
     }
 
     /**
@@ -615,70 +633,58 @@ class ProfileServiceTest {
     @Test
     void ProfileService_Block_Throw400UsernameNotFound() {
         // arrange
-        String username = "valid-username";
-        Account account = new Account(username, "test");
-        Profile target = new Profile(account);
+        String username = "non-existent-user";
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
+        // mock
+        mockAuthenticatedUser();
         when(profileRepository.findByUsername(username)).thenReturn(Optional.empty());
 
         // act & assert
         assertThrows(UsernameNotFoundException.class, () -> profileService.block(username));
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
         verify(profileRepository, times(1)).findByUsername(username);
-        verify(relationshipService, never()).block(me, target);
     }
 
     /**
      * Test ensures that {@link ProfileServiceImpl#block(String)} throws
-     * {@link UsernameNotFoundException} when the supplied username is equal to the
+     * {@link SelfActionException} when the supplied username is equal to the
      * current authenticated user.
      */
     @Test
     void ProfileService_Block_ThrowSelfActionException() {
         // arrange
-        String username = "valid-username";
-        Account account = new Account(username, "test");
-        Profile target = new Profile(account);
+        String username = "existing-user";
+        Profile testProfile = createTestProfile(username, "test");
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(profileRepository.findByUsername(username)).thenReturn(Optional.of(target));
-        doThrow(new SelfActionException(ErrorMessageConfig.SELF_BLOCK)).when(relationshipService).block(me, target);
+        // mock
+        mockAuthenticatedUser();
+        mockProfileRepository(testProfile);
+        doThrow(new SelfActionException(ErrorMessageConfig.SELF_FOLLOW)).when(relationshipService)
+            .block(authenticatedProfile, testProfile);
 
         // act & assert
         assertThrows(SelfActionException.class, () -> profileService.block(username));
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
-        verify(profileRepository, times(1)).findByUsername(username);
-        verify(relationshipService, times(1)).block(me, target);
+        verify(relationshipService, times(1)).block(authenticatedProfile, testProfile);
     }
 
     /**
      * Test ensures that {@link ProfileServiceImpl#block(String)} throws
-     * {@link UsernameNotFoundException} when the supplied username is already
-     * followed by the authenticated user.
+     * {@link AlreadyBlockingException} when the supplied username is already
+     * blocked by the authenticated user.
      */
     @Test
     void ProfileService_Block_ThrowAlreadyBlockingException() {
         // arrange
-        String username = "valid-username";
-        Account account = new Account(username, "test");
-        Profile target = new Profile(account);
+        String username = "existing-user";
+        Profile testProfile = createTestProfile(username, "test");
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(profileRepository.findByUsername(username)).thenReturn(Optional.of(target));
-        doThrow(new AlreadyBlockingException()).when(relationshipService).block(me, target);
+        // mock
+        mockAuthenticatedUser();
+        mockProfileRepository(testProfile);
+        doThrow(new AlreadyBlockingException()).when(relationshipService).block(authenticatedProfile, testProfile);
 
         // act & assert
         assertThrows(AlreadyBlockingException.class, () -> profileService.block(username));
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
-        verify(profileRepository, times(1)).findByUsername(username);
-        verify(relationshipService, times(1)).block(me, target);
+        verify(relationshipService, times(1)).block(authenticatedProfile, testProfile);
     }
 
     /**
@@ -688,21 +694,17 @@ class ProfileServiceTest {
     @Test
     void ProfileService_Unblock_ReturnVoid() {
         // arrange
-        String username = "valid-username";
-        Account account = new Account(username, "test");
-        Profile target = new Profile(account);
+        String username = "existing-user";
+        Profile testProfile = createTestProfile(username, "test");
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(profileRepository.findByUsername(username)).thenReturn(Optional.of(target));
-        doNothing().when(relationshipService).unblock(me, target);
+        // mock
+        mockAuthenticatedUser();
+        mockProfileRepository(testProfile);
+        doNothing().when(relationshipService).unblock(authenticatedProfile, testProfile);
 
         // act & assert
         assertDoesNotThrow(() -> profileService.unblock(username));
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
-        verify(profileRepository, times(1)).findByUsername(username);
-        verify(relationshipService, times(1)).unblock(me, target);
+        verify(relationshipService, times(1)).unblock(authenticatedProfile, testProfile);
     }
 
     /**
@@ -712,70 +714,58 @@ class ProfileServiceTest {
     @Test
     void ProfileService_Unblock_Throw400UsernameNotFound() {
         // arrange
-        String username = "valid-username";
-        Account account = new Account(username, "test");
-        Profile target = new Profile(account);
+        String username = "non-existent-user";
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
+        // mock
+        mockAuthenticatedUser();
         when(profileRepository.findByUsername(username)).thenReturn(Optional.empty());
 
         // act & assert
         assertThrows(UsernameNotFoundException.class, () -> profileService.unblock(username));
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
         verify(profileRepository, times(1)).findByUsername(username);
-        verify(relationshipService, never()).unblock(me, target);
     }
 
     /**
      * Test ensures that {@link ProfileServiceImpl#unblock(String)} throws
-     * {@link UsernameNotFoundException} when the supplied username is equal to the
+     * {@link SelfActionException} when the supplied username is equal to the
      * current authenticated user.
      */
     @Test
     void ProfileService_Unblock_ThrowSelfActionException() {
         // arrange
-        String username = "valid-username";
-        Account account = new Account(username, "test");
-        Profile target = new Profile(account);
+        String username = "existing-user";
+        Profile testProfile = createTestProfile(username, "test");
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(profileRepository.findByUsername(username)).thenReturn(Optional.of(target));
-        doThrow(new SelfActionException(ErrorMessageConfig.SELF_BLOCK)).when(relationshipService).unblock(me, target);
+        // mock
+        mockAuthenticatedUser();
+        mockProfileRepository(testProfile);
+        doThrow(new SelfActionException(ErrorMessageConfig.SELF_FOLLOW)).when(relationshipService)
+            .unblock(authenticatedProfile, testProfile);
 
         // act & assert
         assertThrows(SelfActionException.class, () -> profileService.unblock(username));
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
-        verify(profileRepository, times(1)).findByUsername(username);
-        verify(relationshipService, times(1)).unblock(me, target);
+        verify(relationshipService, times(1)).unblock(authenticatedProfile, testProfile);
     }
 
     /**
      * Test ensures that {@link ProfileServiceImpl#unblock(String)} throws
-     * {@link UsernameNotFoundException} when the supplied username is already
-     * followed by the authenticated user.
+     * {@link NotBlockingException} when the supplied username is already not
+     * already blocked by the authenticated user.
      */
     @Test
     void ProfileService_Unblock_ThrowNotBlockingException() {
         // arrange
-        String username = "valid-username";
-        Account account = new Account(username, "test");
-        Profile target = new Profile(account);
+        String username = "existing-user";
+        Profile testProfile = createTestProfile(username, "test");
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(me));
-        when(profileRepository.findByUsername(username)).thenReturn(Optional.of(target));
-        doThrow(new NotBlockingException()).when(relationshipService).block(me, target);
+        // mock
+        mockAuthenticatedUser();
+        mockProfileRepository(testProfile);
+        doThrow(new NotBlockingException()).when(relationshipService).unblock(authenticatedProfile, testProfile);
 
         // act & assert
-        assertThrows(NotBlockingException.class, () -> profileService.block(username));
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findByUsername(authenticatedUser.getUsername());
-        verify(profileRepository, times(1)).findByUsername(username);
-        verify(relationshipService, times(1)).block(me, target);
+        assertThrows(NotBlockingException.class, () -> profileService.unblock(username));
+        verify(relationshipService, times(1)).unblock(authenticatedProfile, testProfile);
     }
 
 }
