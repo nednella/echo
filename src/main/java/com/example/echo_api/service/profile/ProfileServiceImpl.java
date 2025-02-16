@@ -21,6 +21,7 @@ import com.example.echo_api.service.relationship.RelationshipService;
 import com.example.echo_api.service.session.SessionService;
 import com.example.echo_api.util.pagination.OffsetLimitRequest;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -38,6 +39,8 @@ public class ProfileServiceImpl implements ProfileService {
     private final RelationshipService relationshipService;
 
     private final ProfileRepository profileRepository;
+
+    private final HttpServletRequest httpRequest;
 
     @Override
     public ProfileDTO getByUsername(String username) throws UsernameNotFoundException {
@@ -64,32 +67,36 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public PageDTO<ProfileDTO> getFollowers(String username, int offset, int limit) throws UsernameNotFoundException {
-        Pageable page = new OffsetLimitRequest(offset, limit);
         Profile me = findMe();
         Profile target = findByUsername(username);
-        Page<Profile> followersList = profileRepository.findAllFollowersById(target.getProfileId(), page);
 
-        Page<ProfileDTO> mappedFollowersList = followersList.map(following -> ProfileMapper.toDTO(
-            following,
-            profileMetricsService.getMetrics(following),
-            relationshipService.getRelationship(me, following)));
+        Pageable page = new OffsetLimitRequest(offset, limit);
+        Page<Profile> followersPage = profileRepository.findAllFollowersById(target.getProfileId(), page);
 
-        return PageMapper.toDTO(mappedFollowersList, offset, limit);
+        Page<ProfileDTO> followersDtoPage = followersPage.map(profile -> ProfileMapper.toDTO(
+            profile,
+            profileMetricsService.getMetrics(profile),
+            relationshipService.getRelationship(me, profile)));
+
+        String uri = getCurrentRequestUri();
+        return PageMapper.toDTO(followersDtoPage, uri, offset, limit);
     }
 
     @Override
     public PageDTO<ProfileDTO> getFollowing(String username, int offset, int limit) throws UsernameNotFoundException {
-        Pageable page = new OffsetLimitRequest(offset, limit);
         Profile me = findMe();
         Profile target = findByUsername(username);
-        Page<Profile> followingList = profileRepository.findAllFollowingById(target.getProfileId(), page);
 
-        Page<ProfileDTO> mappedfollowingList = followingList.map(following -> ProfileMapper.toDTO(
-            following,
-            profileMetricsService.getMetrics(following),
-            relationshipService.getRelationship(me, following)));
+        Pageable page = new OffsetLimitRequest(offset, limit);
+        Page<Profile> followingPage = profileRepository.findAllFollowingById(target.getProfileId(), page);
 
-        return PageMapper.toDTO(mappedfollowingList, offset, limit);
+        Page<ProfileDTO> followingDtoPage = followingPage.map(profile -> ProfileMapper.toDTO(
+            profile,
+            profileMetricsService.getMetrics(profile),
+            relationshipService.getRelationship(me, profile)));
+
+        String uri = getCurrentRequestUri();
+        return PageMapper.toDTO(followingDtoPage, uri, offset, limit);
     }
 
     @Override
@@ -123,6 +130,17 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     /**
+     * Internal method for obtaining a {@link Profile} associated to the
+     * authenticated user.
+     * 
+     * @return The found {@link Profile}.
+     */
+    private Profile findMe() {
+        Account me = sessionService.getAuthenticatedUser();
+        return findByUsername(me.getUsername());
+    }
+
+    /**
      * Internal method for obtaining a {@link Profile} via {@code username} from
      * {@link ProfileRepository}.
      * 
@@ -136,14 +154,13 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     /**
-     * Internal method for obtaining a {@link Profile} associated to the
-     * authenticated user.
+     * Internal method for obtaining the current HTTP request URI, to be returned as
+     * part of a {@link PageDTO} response.
      * 
-     * @return The found {@link Profile}.
+     * @return The current request's URI as a string.
      */
-    private Profile findMe() {
-        Account me = sessionService.getAuthenticatedUser();
-        return findByUsername(me.getUsername());
+    private String getCurrentRequestUri() {
+        return httpRequest.getRequestURI();
     }
 
 }

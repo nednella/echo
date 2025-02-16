@@ -3,12 +3,9 @@ package com.example.echo_api.persistence.mapper;
 import static lombok.AccessLevel.PRIVATE;
 
 import org.springframework.data.domain.Page;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.NoArgsConstructor;
 
 /**
@@ -19,10 +16,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PRIVATE)
 public class PageMapper {
 
-    public static <T> PageDTO<T> toDTO(Page<T> page, int offset, int limit) {
-        String path = getCurrentUri();
-        String previous = page.hasPrevious() ? constructPreviousUri(path, offset, limit) : null;
-        String next = page.hasNext() ? constructNextUri(path, offset, limit) : null;
+    public static <T> PageDTO<T> toDTO(Page<T> page, String uri, int offset, int limit) {
+        String previous = page.hasPrevious() ? constructPreviousUri(uri, offset, limit) : null;
+        String next = page.hasNext() ? constructNextUri(uri, offset, limit) : null;
 
         return new PageDTO<>(
             previous,
@@ -31,13 +27,6 @@ public class PageMapper {
             limit,
             (int) page.getTotalElements(),
             page.getContent());
-    }
-
-    private static String getCurrentUri() {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
-            .currentRequestAttributes()).getRequest();
-
-        return request.getRequestURI();
     }
 
     private static String constructPreviousUri(String path, int offset, int limit) {
