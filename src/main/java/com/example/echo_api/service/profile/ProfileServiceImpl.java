@@ -19,7 +19,6 @@ import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.service.metrics.profile.ProfileMetricsService;
 import com.example.echo_api.service.relationship.RelationshipService;
 import com.example.echo_api.service.session.SessionService;
-import com.example.echo_api.util.pagination.OffsetLimitRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -66,11 +65,9 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public PageDTO<ProfileDTO> getFollowers(String username, int offset, int limit) throws UsernameNotFoundException {
+    public PageDTO<ProfileDTO> getFollowers(String username, Pageable page) throws UsernameNotFoundException {
         Profile me = findMe();
         Profile target = findByUsername(username);
-
-        Pageable page = new OffsetLimitRequest(offset, limit);
         Page<Profile> followersPage = profileRepository.findAllFollowersById(target.getProfileId(), page);
 
         Page<ProfileDTO> followersDtoPage = followersPage.map(profile -> ProfileMapper.toDTO(
@@ -79,15 +76,13 @@ public class ProfileServiceImpl implements ProfileService {
             relationshipService.getRelationship(me, profile)));
 
         String uri = getCurrentRequestUri();
-        return PageMapper.toDTO(followersDtoPage, uri, offset, limit);
+        return PageMapper.toDTO(followersDtoPage, uri);
     }
 
     @Override
-    public PageDTO<ProfileDTO> getFollowing(String username, int offset, int limit) throws UsernameNotFoundException {
+    public PageDTO<ProfileDTO> getFollowing(String username, Pageable page) throws UsernameNotFoundException {
         Profile me = findMe();
         Profile target = findByUsername(username);
-
-        Pageable page = new OffsetLimitRequest(offset, limit);
         Page<Profile> followingPage = profileRepository.findAllFollowingById(target.getProfileId(), page);
 
         Page<ProfileDTO> followingDtoPage = followingPage.map(profile -> ProfileMapper.toDTO(
@@ -96,7 +91,7 @@ public class ProfileServiceImpl implements ProfileService {
             relationshipService.getRelationship(me, profile)));
 
         String uri = getCurrentRequestUri();
-        return PageMapper.toDTO(followingDtoPage, uri, offset, limit);
+        return PageMapper.toDTO(followingDtoPage, uri);
     }
 
     @Override

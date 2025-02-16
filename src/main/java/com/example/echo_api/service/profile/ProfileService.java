@@ -2,6 +2,8 @@ package com.example.echo_api.service.profile;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+
 import com.example.echo_api.exception.custom.username.UsernameNotFoundException;
 import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
@@ -41,23 +43,25 @@ public interface ProfileService {
 
     /**
      * Fetches a {@link List} of {@link Profile} for the followers list of the
-     * supplied {@code username}.
+     * supplied {@code username} and {@code page} parameters.
      * 
      * @param username The username of the profile to search against.
+     * @param page     The {@link Pageable} containing the pagination parameters.
      * @return A {@link List} of {@link Profile} for matches, otherwise empty.
      * @throws UsernameNotFoundException If the username is not found.
      */
-    public PageDTO<ProfileDTO> getFollowers(String username, int offset, int limit) throws UsernameNotFoundException;
+    public PageDTO<ProfileDTO> getFollowers(String username, Pageable page) throws UsernameNotFoundException;
 
     /**
      * Fetches a {@link List} of {@link Profile} for the following list of the
-     * supplied {@code username}.
+     * supplied {@code username} and {@code page} parameters.
      * 
      * @param username The username of the profile to search against.
+     * @param page     The {@link Pageable} containing the pagination parameters.
      * @return A {@link List} of {@link Profile} for matches, otherwise empty.
      * @throws UsernameNotFoundException If the username is not found.
      */
-    public PageDTO<ProfileDTO> getFollowing(String username, int offset, int limit) throws UsernameNotFoundException;
+    public PageDTO<ProfileDTO> getFollowing(String username, Pageable page) throws UsernameNotFoundException;
 
     /**
      * Create a {@link Follow} relationship between the authenticated profile and

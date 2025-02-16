@@ -1,5 +1,6 @@
 package com.example.echo_api.controller.profile;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,6 +10,7 @@ import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
 import com.example.echo_api.service.profile.ProfileService;
+import com.example.echo_api.util.pagination.OffsetLimitRequest;
 import com.example.echo_api.validation.sequence.ValidationOrder;
 
 import jakarta.validation.Valid;
@@ -56,7 +58,8 @@ public class ProfileController {
         @RequestParam(required = true) int offset,
         @RequestParam(required = true) int limit
     ) {
-        PageDTO<ProfileDTO> response = profileService.getFollowers(username, offset, limit);
+        Pageable page = new OffsetLimitRequest(offset, limit);
+        PageDTO<ProfileDTO> response = profileService.getFollowers(username, page);
         return ResponseEntity.ok(response);
     }
 
@@ -66,7 +69,8 @@ public class ProfileController {
         @RequestParam(required = true) int offset,
         @RequestParam(required = true) int limit
     ) {
-        PageDTO<ProfileDTO> response = profileService.getFollowing(username, offset, limit);
+        Pageable page = new OffsetLimitRequest(offset, limit);
+        PageDTO<ProfileDTO> response = profileService.getFollowing(username, page);
         return ResponseEntity.ok(response);
     }
     // @formatter:on

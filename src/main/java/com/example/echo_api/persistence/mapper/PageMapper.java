@@ -16,7 +16,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PRIVATE)
 public class PageMapper {
 
-    public static <T> PageDTO<T> toDTO(Page<T> page, String uri, int offset, int limit) {
+    public static <T> PageDTO<T> toDTO(Page<T> page, String uri) {
+        int offset = (int) page.getPageable().getOffset();
+        int limit = page.getPageable().getPageSize();
+
         String previous = page.hasPrevious() ? constructPreviousUri(uri, offset, limit) : null;
         String next = page.hasNext() ? constructNextUri(uri, offset, limit) : null;
 
