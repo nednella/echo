@@ -241,40 +241,6 @@ class ProfileServiceTest {
 
     /**
      * Test ensures that {@link ProfileServiceImpl#getFollowers(String)} correctly
-     * returns an empty {@link PageDTO} of {@link ProfileDTO} when the
-     * {@link Profile} associated to the {@code username} has no followers.
-     */
-    @Test
-    void ProfileService_GetFollowers_ReturnPageOfEmpty() throws Exception {
-        // arrange
-        String username = "existing-user";
-        Profile testProfile = createTestProfile(username, "test");
-
-        String uri = "/some/api/uri";
-        int offset = 0;
-        int limit = 1;
-        Pageable page = new OffsetLimitRequest(offset, limit);
-
-        Page<Profile> emptyFollowers = new PageImpl<>(new ArrayList<>(), page, 0);
-        Page<ProfileDTO> emptyFollowersDto = new PageImpl<>(new ArrayList<>(), page, 0);
-        PageDTO<ProfileDTO> expected = PageMapper.toDTO(emptyFollowersDto, uri);
-
-        mockAuthenticatedUser();
-        mockProfileRepository(testProfile);
-        when(profileRepository.findAllFollowersById(testProfile.getProfileId(), page)).thenReturn(emptyFollowers);
-        when(httpRequest.getRequestURI()).thenReturn(uri);
-
-        // act
-        PageDTO<ProfileDTO> actual = profileService.getFollowers(username, page);
-
-        // assert
-        assertTrue(actual.items().isEmpty());
-        assertEquals(expected, actual);
-        verify(profileRepository, times(1)).findAllFollowersById(testProfile.getProfileId(), page);
-    }
-
-    /**
-     * Test ensures that {@link ProfileServiceImpl#getFollowers(String)} correctly
      * returns a non-empty {@link PageDTO} of {@link ProfileDTO} when the
      * {@link Profile} associated to the {@code username} has at least 1 follower.
      */
@@ -311,6 +277,40 @@ class ProfileServiceTest {
     }
 
     /**
+     * Test ensures that {@link ProfileServiceImpl#getFollowers(String)} correctly
+     * returns an empty {@link PageDTO} of {@link ProfileDTO} when the
+     * {@link Profile} associated to the {@code username} has no followers.
+     */
+    @Test
+    void ProfileService_GetFollowers_ReturnPageOfEmpty() throws Exception {
+        // arrange
+        String username = "existing-user";
+        Profile testProfile = createTestProfile(username, "test");
+
+        String uri = "/some/api/uri";
+        int offset = 0;
+        int limit = 1;
+        Pageable page = new OffsetLimitRequest(offset, limit);
+
+        Page<Profile> emptyFollowers = new PageImpl<>(new ArrayList<>(), page, 0);
+        Page<ProfileDTO> emptyFollowersDto = new PageImpl<>(new ArrayList<>(), page, 0);
+        PageDTO<ProfileDTO> expected = PageMapper.toDTO(emptyFollowersDto, uri);
+
+        mockAuthenticatedUser();
+        mockProfileRepository(testProfile);
+        when(profileRepository.findAllFollowersById(testProfile.getProfileId(), page)).thenReturn(emptyFollowers);
+        when(httpRequest.getRequestURI()).thenReturn(uri);
+
+        // act
+        PageDTO<ProfileDTO> actual = profileService.getFollowers(username, page);
+
+        // assert
+        assertTrue(actual.items().isEmpty());
+        assertEquals(expected, actual);
+        verify(profileRepository, times(1)).findAllFollowersById(testProfile.getProfileId(), page);
+    }
+
+    /**
      * Test ensures that {@link ProfileServiceImpl#getFollowers(String)} throws
      * {@link UsernameNotFoundException} when no such profile with the supplied
      * username exists.
@@ -329,40 +329,6 @@ class ProfileServiceTest {
 
         // act & assert
         assertThrows(UsernameNotFoundException.class, () -> profileService.getFollowers(username, page));
-    }
-
-    /**
-     * Test ensures that {@link ProfileServiceImpl#getFollowing(String)} correctly
-     * returns an empty {@link PageDTO} of {@link ProfileDTO} when the
-     * {@link Profile} associated to the {@code username} has no following.
-     */
-    @Test
-    void ProfileService_GetFollowing_ReturnPageOfEmpty() {
-        // arrange
-        String username = "existing-user";
-        Profile testProfile = createTestProfile(username, "test");
-
-        String uri = "/some/api/uri";
-        int offset = 0;
-        int limit = 1;
-        Pageable page = new OffsetLimitRequest(offset, limit);
-
-        Page<Profile> emptyFollowers = new PageImpl<>(new ArrayList<>(), page, 0);
-        Page<ProfileDTO> emptyFollowersDto = new PageImpl<>(new ArrayList<>(), page, 0);
-        PageDTO<ProfileDTO> expected = PageMapper.toDTO(emptyFollowersDto, uri);
-
-        mockAuthenticatedUser();
-        mockProfileRepository(testProfile);
-        when(profileRepository.findAllFollowingById(testProfile.getProfileId(), page)).thenReturn(emptyFollowers);
-        when(httpRequest.getRequestURI()).thenReturn(uri);
-
-        // act
-        PageDTO<ProfileDTO> actual = profileService.getFollowing(username, page);
-
-        // assert
-        assertTrue(actual.items().isEmpty());
-        assertEquals(expected, actual);
-        verify(profileRepository, times(1)).findAllFollowingById(testProfile.getProfileId(), page);
     }
 
     /**
@@ -398,6 +364,40 @@ class ProfileServiceTest {
 
         // assert
         assertFalse(actual.items().isEmpty());
+        assertEquals(expected, actual);
+        verify(profileRepository, times(1)).findAllFollowingById(testProfile.getProfileId(), page);
+    }
+
+    /**
+     * Test ensures that {@link ProfileServiceImpl#getFollowing(String)} correctly
+     * returns an empty {@link PageDTO} of {@link ProfileDTO} when the
+     * {@link Profile} associated to the {@code username} has no following.
+     */
+    @Test
+    void ProfileService_GetFollowing_ReturnPageOfEmpty() {
+        // arrange
+        String username = "existing-user";
+        Profile testProfile = createTestProfile(username, "test");
+
+        String uri = "/some/api/uri";
+        int offset = 0;
+        int limit = 1;
+        Pageable page = new OffsetLimitRequest(offset, limit);
+
+        Page<Profile> emptyFollowers = new PageImpl<>(new ArrayList<>(), page, 0);
+        Page<ProfileDTO> emptyFollowersDto = new PageImpl<>(new ArrayList<>(), page, 0);
+        PageDTO<ProfileDTO> expected = PageMapper.toDTO(emptyFollowersDto, uri);
+
+        mockAuthenticatedUser();
+        mockProfileRepository(testProfile);
+        when(profileRepository.findAllFollowingById(testProfile.getProfileId(), page)).thenReturn(emptyFollowers);
+        when(httpRequest.getRequestURI()).thenReturn(uri);
+
+        // act
+        PageDTO<ProfileDTO> actual = profileService.getFollowing(username, page);
+
+        // assert
+        assertTrue(actual.items().isEmpty());
         assertEquals(expected, actual);
         verify(profileRepository, times(1)).findAllFollowingById(testProfile.getProfileId(), page);
     }
