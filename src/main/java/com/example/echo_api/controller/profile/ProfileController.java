@@ -56,8 +56,8 @@ public class ProfileController {
     @GetMapping(ApiConfig.Profile.GET_FOLLOWERS_BY_USERNAME)
     public ResponseEntity<PageDTO<ProfileDTO>> getFollowers(
         @PathVariable("username") String username,
-        @RequestParam(defaultValue = "0") @Offset int offset,
-        @RequestParam(defaultValue = "20") @Limit int limit
+        @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
+        @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
     ) {
         Pageable page = new OffsetLimitRequest(offset, limit);
         PageDTO<ProfileDTO> response = profileService.getFollowers(username, page);
@@ -67,8 +67,8 @@ public class ProfileController {
     @GetMapping(ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME)
     public ResponseEntity<PageDTO<ProfileDTO>> getFollowing(
         @PathVariable("username") String username,
-        @RequestParam(defaultValue = "0") @Offset int offset,
-        @RequestParam(defaultValue = "20") @Limit int limit
+        @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
+        @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
     ) {
         Pageable page = new OffsetLimitRequest(offset, limit);
         PageDTO<ProfileDTO> response = profileService.getFollowing(username, page);
