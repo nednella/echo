@@ -1,15 +1,17 @@
 package com.example.echo_api.service.profile;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.echo_api.exception.custom.username.UsernameNotFoundException;
 import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
+import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.profile.MetricsDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
 import com.example.echo_api.persistence.dto.response.profile.RelationshipDTO;
+import com.example.echo_api.persistence.mapper.PageMapper;
 import com.example.echo_api.persistence.mapper.ProfileMapper;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.profile.Profile;
@@ -18,6 +20,7 @@ import com.example.echo_api.service.metrics.profile.ProfileMetricsService;
 import com.example.echo_api.service.relationship.RelationshipService;
 import com.example.echo_api.service.session.SessionService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -35,6 +38,8 @@ public class ProfileServiceImpl implements ProfileService {
     private final RelationshipService relationshipService;
 
     private final ProfileRepository profileRepository;
+
+    private final HttpServletRequest httpRequest;
 
     @Override
     public ProfileDTO getByUsername(String username) throws UsernameNotFoundException {
@@ -60,31 +65,33 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<ProfileDTO> getFollowers(String username) throws UsernameNotFoundException {
+    public PageDTO<ProfileDTO> getFollowers(String username, Pageable page) throws UsernameNotFoundException {
         Profile me = findMe();
         Profile target = findByUsername(username);
-        List<Profile> followersList = profileRepository.findAllFollowersById(target.getProfileId());
+        Page<Profile> followersPage = profileRepository.findAllFollowersById(target.getProfileId(), page);
 
-        return followersList.stream()
-            .map(follower -> ProfileMapper.toDTO(
-                follower,
-                profileMetricsService.getMetrics(follower),
-                relationshipService.getRelationship(me, follower)))
-            .toList();
+        Page<ProfileDTO> followersDtoPage = followersPage.map(profile -> ProfileMapper.toDTO(
+            profile,
+            profileMetricsService.getMetrics(profile),
+            relationshipService.getRelationship(me, profile)));
+
+        String uri = getCurrentRequestUri();
+        return PageMapper.toDTO(followersDtoPage, uri);
     }
 
     @Override
-    public List<ProfileDTO> getFollowing(String username) throws UsernameNotFoundException {
+    public PageDTO<ProfileDTO> getFollowing(String username, Pageable page) throws UsernameNotFoundException {
         Profile me = findMe();
         Profile target = findByUsername(username);
-        List<Profile> followingList = profileRepository.findAllFollowingById(target.getProfileId());
+        Page<Profile> followingPage = profileRepository.findAllFollowingById(target.getProfileId(), page);
 
-        return followingList.stream()
-            .map(following -> ProfileMapper.toDTO(
-                following,
-                profileMetricsService.getMetrics(following),
-                relationshipService.getRelationship(me, following)))
-            .toList();
+        Page<ProfileDTO> followingDtoPage = followingPage.map(profile -> ProfileMapper.toDTO(
+            profile,
+            profileMetricsService.getMetrics(profile),
+            relationshipService.getRelationship(me, profile)));
+
+        String uri = getCurrentRequestUri();
+        return PageMapper.toDTO(followingDtoPage, uri);
     }
 
     @Override
@@ -118,6 +125,17 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     /**
+     * Internal method for obtaining a {@link Profile} associated to the
+     * authenticated user.
+     * 
+     * @return The found {@link Profile}.
+     */
+    private Profile findMe() {
+        Account me = sessionService.getAuthenticatedUser();
+        return findByUsername(me.getUsername());
+    }
+
+    /**
      * Internal method for obtaining a {@link Profile} via {@code username} from
      * {@link ProfileRepository}.
      * 
@@ -131,14 +149,13 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     /**
-     * Internal method for obtaining a {@link Profile} associated to the
-     * authenticated user.
+     * Internal method for obtaining the current HTTP request URI, to be returned as
+     * part of a {@link PageDTO} response.
      * 
-     * @return The found {@link Profile}.
+     * @return The current request's URI as a string.
      */
-    private Profile findMe() {
-        Account me = sessionService.getAuthenticatedUser();
-        return findByUsername(me.getUsername());
+    private String getCurrentRequestUri() {
+        return httpRequest.getRequestURI();
     }
 
 }
