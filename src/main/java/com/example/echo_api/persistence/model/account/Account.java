@@ -35,13 +35,9 @@ public class Account implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    // ---- primary keys / foreign keys ----
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-    // ---- entity-specific attributes ----
 
     @Username
     private String username;
