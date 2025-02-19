@@ -65,8 +65,8 @@ class FollowRepositoryIT extends RepositoryTest {
      */
     @Test
     void FollowRepository_ExistsByFollowerIdAndFollowingId_ReturnTrue() {
-        boolean exists = followRepository.existsByFollowerIdAndFollowingId(source.getProfileId(),
-            target.getProfileId());
+        boolean exists = followRepository.existsByFollowerIdAndFollowingId(source.getId(),
+            target.getId());
 
         assertTrue(exists);
     }
@@ -91,7 +91,7 @@ class FollowRepositoryIT extends RepositoryTest {
      */
     @Test
     void FollowRepository_CountFollowers_Return0() {
-        int followers = followRepository.countFollowers(source.getProfileId());
+        int followers = followRepository.countFollowers(source.getId());
         assertEquals(0, followers);
     }
 
@@ -101,7 +101,7 @@ class FollowRepositoryIT extends RepositoryTest {
      */
     @Test
     void FollowRepository_CountFollowers_Return1() {
-        int followers = followRepository.countFollowers(target.getProfileId());
+        int followers = followRepository.countFollowers(target.getId());
         assertEquals(1, followers);
     }
 
@@ -111,7 +111,7 @@ class FollowRepositoryIT extends RepositoryTest {
      */
     @Test
     void FollowRepository_CountFollowing_Return0() {
-        int following = followRepository.countFollowing(target.getProfileId());
+        int following = followRepository.countFollowing(target.getId());
         assertEquals(0, following);
     }
 
@@ -121,7 +121,7 @@ class FollowRepositoryIT extends RepositoryTest {
      */
     @Test
     void FollowRepository_CountFollowing_Return1() {
-        int following = followRepository.countFollowing(source.getProfileId());
+        int following = followRepository.countFollowing(source.getId());
         assertEquals(1, following);
     }
 

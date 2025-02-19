@@ -21,8 +21,8 @@ public class ProfileMetricsServiceImpl implements ProfileMetricsService {
 
     @Override
     public MetricsDTO getMetrics(Profile profile) {
-        int followers = followRepository.countFollowers(profile.getProfileId());
-        int following = followRepository.countFollowing(profile.getProfileId());
+        int followers = followRepository.countFollowers(profile.getId());
+        int following = followRepository.countFollowing(profile.getId());
         int posts = 0; // no posts implementation available
         int media = 0; // no media implementation available
         return new MetricsDTO(followers, following, posts, media);

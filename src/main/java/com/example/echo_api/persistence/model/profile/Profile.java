@@ -25,17 +25,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Profile {
 
-    // ---- primary keys / foreign keys ----
-
     @Id
     @Column(name = "profile_id", unique = true, nullable = false)
-    private UUID profileId; // PK, FK
+    private UUID id; // PK, FK
 
     @Username
     @Column(unique = true, nullable = false)
     private String username; // FK
-
-    // ---- entity-specific attributes ----
 
     private String name;
 
@@ -60,7 +56,7 @@ public class Profile {
     // ---- constructors ----
 
     public Profile(Account account) {
-        this.profileId = account.getId();
+        this.id = account.getId();
         this.username = account.getUsername();
     }
 

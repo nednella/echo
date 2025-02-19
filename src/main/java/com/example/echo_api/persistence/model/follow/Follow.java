@@ -36,8 +36,8 @@ public class Follow {
     private LocalDateTime createdAt;
 
     public Follow(Profile follower, Profile following) {
-        this.followerId = follower.getProfileId();
-        this.followingId = following.getProfileId();
+        this.followerId = follower.getId();
+        this.followingId = following.getId();
     }
 
 }

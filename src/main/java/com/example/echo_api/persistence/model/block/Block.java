@@ -36,8 +36,8 @@ public class Block {
     private LocalDateTime createdAt;
 
     public Block(Profile blocker, Profile blocking) {
-        this.blockerId = blocker.getProfileId();
-        this.blockingId = blocking.getProfileId();
+        this.blockerId = blocker.getId();
+        this.blockingId = blocking.getId();
     }
 
 }

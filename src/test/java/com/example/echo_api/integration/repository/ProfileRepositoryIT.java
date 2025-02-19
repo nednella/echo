@@ -88,7 +88,7 @@ class ProfileRepositoryIT extends RepositoryTest {
     @Transactional
     void ProfileRepository_FindAllFollowersById_ReturnListOfEmpty() {
         Pageable page = new OffsetLimitRequest(0, 1);
-        Page<Profile> followers = profileRepository.findAllFollowersById(source.getProfileId(), page);
+        Page<Profile> followers = profileRepository.findAllFollowersById(source.getId(), page);
 
         assertTrue(followers.getContent().isEmpty());
     }
@@ -97,18 +97,18 @@ class ProfileRepositoryIT extends RepositoryTest {
     @Transactional
     void ProfileRepository_FindAllFollowersById_ReturnListOfProfile() {
         Pageable page = new OffsetLimitRequest(0, 1);
-        Page<Profile> followers = profileRepository.findAllFollowersById(target.getProfileId(), page);
+        Page<Profile> followers = profileRepository.findAllFollowersById(target.getId(), page);
 
         assertFalse(followers.isEmpty());
         assertEquals(1, followers.getContent().size());
-        assertEquals(source.getProfileId(), followers.getContent().get(0).getProfileId());
+        assertEquals(source.getId(), followers.getContent().get(0).getId());
     }
 
     @Test
     @Transactional
     void ProfileRepository_FindAllFollowingById_ReturnListOfEmpty() {
         Pageable page = new OffsetLimitRequest(0, 1);
-        Page<Profile> following = profileRepository.findAllFollowingById(target.getProfileId(), page);
+        Page<Profile> following = profileRepository.findAllFollowingById(target.getId(), page);
 
         assertTrue(following.getContent().isEmpty());
     }
@@ -117,11 +117,11 @@ class ProfileRepositoryIT extends RepositoryTest {
     @Transactional
     void ProfileRepository_FindAllFollowingById_ReturnListOfProfile() {
         Pageable page = new OffsetLimitRequest(0, 1);
-        Page<Profile> following = profileRepository.findAllFollowingById(source.getProfileId(), page);
+        Page<Profile> following = profileRepository.findAllFollowingById(source.getId(), page);
 
         assertFalse(following.isEmpty());
         assertEquals(1, following.getContent().size());
-        assertEquals(target.getProfileId(), following.getContent().get(0).getProfileId());
+        assertEquals(target.getId(), following.getContent().get(0).getId());
     }
 
 }
