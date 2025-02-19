@@ -41,7 +41,7 @@ class ProfileMetricsServiceTest {
         profile = new Profile(account);
 
         // set id with reflection
-        Field idField = Profile.class.getDeclaredField("profileId");
+        Field idField = Profile.class.getDeclaredField("id");
         idField.setAccessible(true);
         idField.set(profile, UUID.randomUUID());
     }
@@ -51,8 +51,8 @@ class ProfileMetricsServiceTest {
         // arrange
         MetricsDTO expected = new MetricsDTO(0, 0, 0, 0);
 
-        when(followRepository.countFollowers(profile.getProfileId())).thenReturn(0);
-        when(followRepository.countFollowing(profile.getProfileId())).thenReturn(0);
+        when(followRepository.countFollowers(profile.getId())).thenReturn(0);
+        when(followRepository.countFollowing(profile.getId())).thenReturn(0);
 
         // act
         MetricsDTO actual = profileMetricsService.getMetrics(profile);

@@ -56,7 +56,7 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public boolean isFollowing(Profile source, Profile target) {
-        return followRepository.existsByFollowerIdAndFollowingId(source.getProfileId(), target.getProfileId());
+        return followRepository.existsByFollowerIdAndFollowingId(source.getId(), target.getId());
     }
 
     @Override
@@ -72,7 +72,7 @@ public class FollowServiceImpl implements FollowService {
      * @return Boolean indicating whether the profiles are a match.
      */
     private boolean isSelfAction(Profile source, Profile target) {
-        return Objects.equals(source.getProfileId(), target.getProfileId());
+        return Objects.equals(source.getId(), target.getId());
     }
 
 }

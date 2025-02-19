@@ -68,7 +68,7 @@ public class ProfileServiceImpl implements ProfileService {
     public PageDTO<ProfileDTO> getFollowers(String username, Pageable page) throws UsernameNotFoundException {
         Profile me = findMe();
         Profile target = findByUsername(username);
-        Page<Profile> followersPage = profileRepository.findAllFollowersById(target.getProfileId(), page);
+        Page<Profile> followersPage = profileRepository.findAllFollowersById(target.getId(), page);
 
         Page<ProfileDTO> followersDtoPage = followersPage.map(profile -> ProfileMapper.toDTO(
             profile,
@@ -83,7 +83,7 @@ public class ProfileServiceImpl implements ProfileService {
     public PageDTO<ProfileDTO> getFollowing(String username, Pageable page) throws UsernameNotFoundException {
         Profile me = findMe();
         Profile target = findByUsername(username);
-        Page<Profile> followingPage = profileRepository.findAllFollowingById(target.getProfileId(), page);
+        Page<Profile> followingPage = profileRepository.findAllFollowingById(target.getId(), page);
 
         Page<ProfileDTO> followingDtoPage = followingPage.map(profile -> ProfileMapper.toDTO(
             profile,

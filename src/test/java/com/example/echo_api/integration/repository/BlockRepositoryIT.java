@@ -65,7 +65,7 @@ class BlockRepositoryIT extends RepositoryTest {
      */
     @Test
     void BlockRepository_ExistsByBlockerIdAndBlockingId_ReturnTrue() {
-        boolean exists = blockRepository.existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId());
+        boolean exists = blockRepository.existsByBlockerIdAndBlockingId(source.getId(), target.getId());
 
         assertTrue(exists);
     }

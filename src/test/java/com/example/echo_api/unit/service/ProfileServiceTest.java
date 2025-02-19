@@ -264,7 +264,7 @@ class ProfileServiceTest {
         mockProfileRepository(testProfile);
         mockMetricsService(testProfile);
         mockRelationshipService(testProfile);
-        when(profileRepository.findAllFollowersById(testProfile.getProfileId(), page)).thenReturn(followers);
+        when(profileRepository.findAllFollowersById(testProfile.getId(), page)).thenReturn(followers);
         when(httpRequest.getRequestURI()).thenReturn(uri);
 
         // act
@@ -273,7 +273,7 @@ class ProfileServiceTest {
         // assert
         assertFalse(actual.items().isEmpty());
         assertEquals(expected, actual);
-        verify(profileRepository, times(1)).findAllFollowersById(testProfile.getProfileId(), page);
+        verify(profileRepository, times(1)).findAllFollowersById(testProfile.getId(), page);
     }
 
     /**
@@ -298,7 +298,7 @@ class ProfileServiceTest {
 
         mockAuthenticatedUser();
         mockProfileRepository(testProfile);
-        when(profileRepository.findAllFollowersById(testProfile.getProfileId(), page)).thenReturn(emptyFollowers);
+        when(profileRepository.findAllFollowersById(testProfile.getId(), page)).thenReturn(emptyFollowers);
         when(httpRequest.getRequestURI()).thenReturn(uri);
 
         // act
@@ -307,7 +307,7 @@ class ProfileServiceTest {
         // assert
         assertTrue(actual.items().isEmpty());
         assertEquals(expected, actual);
-        verify(profileRepository, times(1)).findAllFollowersById(testProfile.getProfileId(), page);
+        verify(profileRepository, times(1)).findAllFollowersById(testProfile.getId(), page);
     }
 
     /**
@@ -356,7 +356,7 @@ class ProfileServiceTest {
         mockProfileRepository(testProfile);
         mockMetricsService(testProfile);
         mockRelationshipService(testProfile);
-        when(profileRepository.findAllFollowingById(testProfile.getProfileId(), page)).thenReturn(followers);
+        when(profileRepository.findAllFollowingById(testProfile.getId(), page)).thenReturn(followers);
         when(httpRequest.getRequestURI()).thenReturn(uri);
 
         // act
@@ -365,7 +365,7 @@ class ProfileServiceTest {
         // assert
         assertFalse(actual.items().isEmpty());
         assertEquals(expected, actual);
-        verify(profileRepository, times(1)).findAllFollowingById(testProfile.getProfileId(), page);
+        verify(profileRepository, times(1)).findAllFollowingById(testProfile.getId(), page);
     }
 
     /**
@@ -390,7 +390,7 @@ class ProfileServiceTest {
 
         mockAuthenticatedUser();
         mockProfileRepository(testProfile);
-        when(profileRepository.findAllFollowingById(testProfile.getProfileId(), page)).thenReturn(emptyFollowers);
+        when(profileRepository.findAllFollowingById(testProfile.getId(), page)).thenReturn(emptyFollowers);
         when(httpRequest.getRequestURI()).thenReturn(uri);
 
         // act
@@ -399,7 +399,7 @@ class ProfileServiceTest {
         // assert
         assertTrue(actual.items().isEmpty());
         assertEquals(expected, actual);
-        verify(profileRepository, times(1)).findAllFollowingById(testProfile.getProfileId(), page);
+        verify(profileRepository, times(1)).findAllFollowingById(testProfile.getId(), page);
     }
 
     /**

@@ -47,7 +47,7 @@ class BlockServiceTest {
         target = new Profile(targetAcc);
 
         // set ids with reflection
-        Field idField = Profile.class.getDeclaredField("profileId");
+        Field idField = Profile.class.getDeclaredField("id");
         idField.setAccessible(true);
         idField.set(source, UUID.randomUUID());
         idField.set(target, UUID.randomUUID());
@@ -60,12 +60,11 @@ class BlockServiceTest {
     @Test
     void BlockService_Block_ReturnVoid() {
         // arrange
-        when(blockRepository.existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId()))
-            .thenReturn(false);
+        when(blockRepository.existsByBlockerIdAndBlockingId(source.getId(), target.getId())).thenReturn(false);
 
         // act & assert
         assertDoesNotThrow(() -> blockService.block(source, target));
-        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId());
+        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getId(), target.getId());
         verify(blockRepository, times(1)).save(any(Block.class));
     }
 
@@ -77,7 +76,7 @@ class BlockServiceTest {
     void BlockService_Block_ThrowSelfActionException() {
         // act & assert
         assertThrows(SelfActionException.class, () -> blockService.block(source, source));
-        verify(blockRepository, times(0)).existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId());
+        verify(blockRepository, times(0)).existsByBlockerIdAndBlockingId(source.getId(), target.getId());
         verify(blockRepository, times(0)).save(any(Block.class));
     }
 
@@ -89,12 +88,11 @@ class BlockServiceTest {
     @Test
     void BlockService_Block_ThrowAlreadyBlockingException() {
         // arrange
-        when(blockRepository.existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId()))
-            .thenReturn(true);
+        when(blockRepository.existsByBlockerIdAndBlockingId(source.getId(), target.getId())).thenReturn(true);
 
         // act & assert
         assertThrows(AlreadyBlockingException.class, () -> blockService.block(source, target));
-        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId());
+        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getId(), target.getId());
         verify(blockRepository, times(0)).save(any(Block.class));
     }
 
@@ -105,12 +103,11 @@ class BlockServiceTest {
     @Test
     void BlockService_Unblock_ReturnVoid() {
         // arrange
-        when(blockRepository.existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId()))
-            .thenReturn(true);
+        when(blockRepository.existsByBlockerIdAndBlockingId(source.getId(), target.getId())).thenReturn(true);
 
         // act & assert
         assertDoesNotThrow(() -> blockService.unblock(source, target));
-        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId());
+        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getId(), target.getId());
         verify(blockRepository, times(1)).delete(any(Block.class));
     }
 
@@ -122,7 +119,7 @@ class BlockServiceTest {
     void BlockService_Unblock_ThrowSelfActionException() {
         // act & assert
         assertThrows(SelfActionException.class, () -> blockService.unblock(source, source));
-        verify(blockRepository, times(0)).existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId());
+        verify(blockRepository, times(0)).existsByBlockerIdAndBlockingId(source.getId(), target.getId());
         verify(blockRepository, times(0)).delete(any(Block.class));
     }
 
@@ -134,12 +131,11 @@ class BlockServiceTest {
     @Test
     void BlockService_Unblock_ThrowNotBlockingException() {
         // arrange
-        when(blockRepository.existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId()))
-            .thenReturn(false);
+        when(blockRepository.existsByBlockerIdAndBlockingId(source.getId(), target.getId())).thenReturn(false);
 
         // act & assert
         assertThrows(NotBlockingException.class, () -> blockService.unblock(source, target));
-        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId());
+        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getId(), target.getId());
         verify(blockRepository, times(0)).delete(any(Block.class));
     }
 
@@ -150,15 +146,14 @@ class BlockServiceTest {
     @Test
     void BlockService_IsBlocking_ReturnTrue() {
         // arrange
-        when(blockRepository.existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId()))
-            .thenReturn(true);
+        when(blockRepository.existsByBlockerIdAndBlockingId(source.getId(), target.getId())).thenReturn(true);
 
         // act
         boolean isBlocking = blockService.isBlocking(source, target);
 
         // assert
         assertTrue(isBlocking);
-        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId());
+        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getId(), target.getId());
     }
 
     /**
@@ -168,15 +163,14 @@ class BlockServiceTest {
     @Test
     void BlockService_IsBlocking_ReturnFalse() {
         // arrange
-        when(blockRepository.existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId()))
-            .thenReturn(false);
+        when(blockRepository.existsByBlockerIdAndBlockingId(source.getId(), target.getId())).thenReturn(false);
 
         // act
         boolean isBlocking = blockService.isBlocking(source, target);
 
         // assert
         assertFalse(isBlocking);
-        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId());
+        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getId(), target.getId());
     }
 
     /**
@@ -187,15 +181,14 @@ class BlockServiceTest {
     @Test
     void BlockService_IsBlockedBy_ReturnTrue() {
         // arrange
-        when(blockRepository.existsByBlockerIdAndBlockingId(target.getProfileId(), source.getProfileId()))
-            .thenReturn(true);
+        when(blockRepository.existsByBlockerIdAndBlockingId(target.getId(), source.getId())).thenReturn(true);
 
         // act
         boolean isBlockedBy = blockService.isBlockedBy(source, target);
 
         // assert
         assertTrue(isBlockedBy);
-        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(target.getProfileId(), source.getProfileId());
+        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(target.getId(), source.getId());
     }
 
     /**
@@ -205,15 +198,14 @@ class BlockServiceTest {
     @Test
     void BlockService_IsBlockedBy_ReturnFalse() {
         // arrange
-        when(blockRepository.existsByBlockerIdAndBlockingId(target.getProfileId(), source.getProfileId()))
-            .thenReturn(false);
+        when(blockRepository.existsByBlockerIdAndBlockingId(target.getId(), source.getId())).thenReturn(false);
 
         // act
         boolean isBlockedBy = blockService.isBlockedBy(source, target);
 
         // assert
         assertFalse(isBlockedBy);
-        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(target.getProfileId(), source.getProfileId());
+        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(target.getId(), source.getId());
     }
 
 }

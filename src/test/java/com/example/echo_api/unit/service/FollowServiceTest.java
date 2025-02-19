@@ -47,7 +47,7 @@ class FollowServiceTest {
         target = new Profile(targetAcc);
 
         // set ids with reflection
-        Field idField = Profile.class.getDeclaredField("profileId");
+        Field idField = Profile.class.getDeclaredField("id");
         idField.setAccessible(true);
         idField.set(source, UUID.randomUUID());
         idField.set(target, UUID.randomUUID());
@@ -60,13 +60,11 @@ class FollowServiceTest {
     @Test
     void FollowService_Follow_ReturnVoid() {
         // arrange
-        when(followRepository.existsByFollowerIdAndFollowingId(source.getProfileId(), target.getProfileId()))
-            .thenReturn(false);
+        when(followRepository.existsByFollowerIdAndFollowingId(source.getId(), target.getId())).thenReturn(false);
 
         // act & assert
         assertDoesNotThrow(() -> followService.follow(source, target));
-        verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(source.getProfileId(),
-            target.getProfileId());
+        verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(source.getId(), target.getId());
         verify(followRepository, times(1)).save(any(Follow.class));
     }
 
@@ -78,8 +76,7 @@ class FollowServiceTest {
     void FollowService_Follow_ThrowSelfActionException() {
         // act & assert
         assertThrows(SelfActionException.class, () -> followService.follow(source, source));
-        verify(followRepository, times(0)).existsByFollowerIdAndFollowingId(source.getProfileId(),
-            target.getProfileId());
+        verify(followRepository, times(0)).existsByFollowerIdAndFollowingId(source.getId(), target.getId());
         verify(followRepository, times(0)).save(any(Follow.class));
     }
 
@@ -91,13 +88,11 @@ class FollowServiceTest {
     @Test
     void FollowService_Follow_ThrowAlreadyFollowingException() {
         // arrange
-        when(followRepository.existsByFollowerIdAndFollowingId(source.getProfileId(), target.getProfileId()))
-            .thenReturn(true);
+        when(followRepository.existsByFollowerIdAndFollowingId(source.getId(), target.getId())).thenReturn(true);
 
         // act & assert
         assertThrows(AlreadyFollowingException.class, () -> followService.follow(source, target));
-        verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(source.getProfileId(),
-            target.getProfileId());
+        verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(source.getId(), target.getId());
         verify(followRepository, times(0)).save(any(Follow.class));
     }
 
@@ -108,13 +103,11 @@ class FollowServiceTest {
     @Test
     void FollowService_Unfollow_ReturnVoid() {
         // arrange
-        when(followRepository.existsByFollowerIdAndFollowingId(source.getProfileId(), target.getProfileId()))
-            .thenReturn(true);
+        when(followRepository.existsByFollowerIdAndFollowingId(source.getId(), target.getId())).thenReturn(true);
 
         // act & assert
         assertDoesNotThrow(() -> followService.unfollow(source, target));
-        verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(source.getProfileId(),
-            target.getProfileId());
+        verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(source.getId(), target.getId());
         verify(followRepository, times(1)).delete(any(Follow.class));
     }
 
@@ -126,8 +119,7 @@ class FollowServiceTest {
     void FollowService_Unfollow_ThrowSelfActionException() {
         // act & assert
         assertThrows(SelfActionException.class, () -> followService.unfollow(source, source));
-        verify(followRepository, times(0)).existsByFollowerIdAndFollowingId(source.getProfileId(),
-            target.getProfileId());
+        verify(followRepository, times(0)).existsByFollowerIdAndFollowingId(source.getId(), target.getId());
         verify(followRepository, times(0)).delete(any(Follow.class));
     }
 
@@ -139,13 +131,11 @@ class FollowServiceTest {
     @Test
     void FollowService_Unfollow_ThrowNotFollowingException() {
         // arrange
-        when(followRepository.existsByFollowerIdAndFollowingId(source.getProfileId(), target.getProfileId()))
-            .thenReturn(false);
+        when(followRepository.existsByFollowerIdAndFollowingId(source.getId(), target.getId())).thenReturn(false);
 
         // act & assert
         assertThrows(NotFollowingException.class, () -> followService.unfollow(source, target));
-        verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(source.getProfileId(),
-            target.getProfileId());
+        verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(source.getId(), target.getId());
         verify(followRepository, times(0)).delete(any(Follow.class));
     }
 
@@ -156,16 +146,14 @@ class FollowServiceTest {
     @Test
     void FollowService_IsFollowing_ReturnTrue() {
         // arrange
-        when(followRepository.existsByFollowerIdAndFollowingId(source.getProfileId(), target.getProfileId()))
-            .thenReturn(true);
+        when(followRepository.existsByFollowerIdAndFollowingId(source.getId(), target.getId())).thenReturn(true);
 
         // act
         boolean isFollowing = followService.isFollowing(source, target);
 
         // assert
         assertTrue(isFollowing);
-        verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(source.getProfileId(),
-            target.getProfileId());
+        verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(source.getId(), target.getId());
     }
 
     /**
@@ -175,16 +163,14 @@ class FollowServiceTest {
     @Test
     void FollowService_IsFollowing_ReturnFalse() {
         // arrange
-        when(followRepository.existsByFollowerIdAndFollowingId(source.getProfileId(), target.getProfileId()))
-            .thenReturn(false);
+        when(followRepository.existsByFollowerIdAndFollowingId(source.getId(), target.getId())).thenReturn(false);
 
         // act
         boolean isFollowing = followService.isFollowing(source, target);
 
         // assert
         assertFalse(isFollowing);
-        verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(source.getProfileId(),
-            target.getProfileId());
+        verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(source.getId(), target.getId());
     }
 
     /**
@@ -195,16 +181,14 @@ class FollowServiceTest {
     @Test
     void FollowService_IsFollowedBy_ReturnTrue() {
         // arrange
-        when(followRepository.existsByFollowerIdAndFollowingId(target.getProfileId(), source.getProfileId()))
-            .thenReturn(true);
+        when(followRepository.existsByFollowerIdAndFollowingId(target.getId(), source.getId())).thenReturn(true);
 
         // act
         boolean isFollowedBy = followService.isFollowedBy(source, target);
 
         // assert
         assertTrue(isFollowedBy);
-        verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(target.getProfileId(),
-            source.getProfileId());
+        verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(target.getId(), source.getId());
     }
 
     /**
@@ -214,16 +198,14 @@ class FollowServiceTest {
     @Test
     void FollowService_IsFollowedBy_ReturnFalse() {
         // arrange
-        when(followRepository.existsByFollowerIdAndFollowingId(target.getProfileId(), source.getProfileId()))
-            .thenReturn(false);
+        when(followRepository.existsByFollowerIdAndFollowingId(target.getId(), source.getId())).thenReturn(false);
 
         // act
         boolean isFollowedBy = followService.isFollowedBy(source, target);
 
         // assert
         assertFalse(isFollowedBy);
-        verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(target.getProfileId(),
-            source.getProfileId());
+        verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(target.getId(), source.getId());
     }
 
 }

@@ -53,7 +53,7 @@ public class BlockServiceImpl implements BlockService {
 
     @Override
     public boolean isBlocking(Profile source, Profile target) {
-        return blockRepository.existsByBlockerIdAndBlockingId(source.getProfileId(), target.getProfileId());
+        return blockRepository.existsByBlockerIdAndBlockingId(source.getId(), target.getId());
     }
 
     @Override
@@ -69,7 +69,7 @@ public class BlockServiceImpl implements BlockService {
      * @return Boolean indicating whether the profiles are a match.
      */
     private boolean isSelfAction(Profile source, Profile target) {
-        return Objects.equals(source.getProfileId(), target.getProfileId());
+        return Objects.equals(source.getId(), target.getId());
     }
 
 }
