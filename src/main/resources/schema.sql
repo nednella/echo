@@ -12,6 +12,16 @@ CREATE TABLE
 CREATE UNIQUE INDEX 
     IF NOT EXISTS idx_account_username
         ON "account"(Lower(username));
+
+CREATE TABLE
+    IF NOT EXISTS "image" (
+        image_id    UUID PRIMARY KEY,
+        public_id   VARCHAR(255) NOT NULL,
+        height      INTEGER NOT NULL,
+        width       INTEGER NOT NULL,
+        url         VARCHAR(255) NOT NULL,
+        created_at  TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
     
 CREATE TABLE
     IF NOT EXISTS "profile" (
