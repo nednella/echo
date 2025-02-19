@@ -47,7 +47,7 @@ class BlockServiceTest {
         target = new Profile(targetAcc);
 
         // set ids with reflection
-        Field idField = Profile.class.getDeclaredField("profileId");
+        Field idField = Profile.class.getDeclaredField("id");
         idField.setAccessible(true);
         idField.set(source, UUID.randomUUID());
         idField.set(target, UUID.randomUUID());

@@ -41,7 +41,7 @@ class ProfileMetricsServiceTest {
         profile = new Profile(account);
 
         // set id with reflection
-        Field idField = Profile.class.getDeclaredField("profileId");
+        Field idField = Profile.class.getDeclaredField("id");
         idField.setAccessible(true);
         idField.set(profile, UUID.randomUUID());
     }
