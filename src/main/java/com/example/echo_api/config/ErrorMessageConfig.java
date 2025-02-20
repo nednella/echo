@@ -45,5 +45,6 @@ public final class ErrorMessageConfig {
 
     /* 500 INTERNAL SERVER ERROR */
     public static final String INTERNAL_SERVER_ERROR = "An unexpected error occurred.";
+    public static final String CLOUDINARY_SDK_ERROR = "An unexpected error occurred with the Cloudinary API.";
 
 }
