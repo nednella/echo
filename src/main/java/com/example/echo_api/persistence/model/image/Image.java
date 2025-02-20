@@ -3,9 +3,12 @@ package com.example.echo_api.persistence.model.image;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
+
 import com.example.echo_api.persistence.model.account.Account;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,14 +30,27 @@ public class Image {
     @Column(name = "image_id")
     private UUID id;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "image_type")
+    private ImageType type;
+
     @Column(name = "public_id")
     private String publicId;
 
-    private int height;
+    @Column(name = "asset_id")
+    private String assetId;
 
-    private int width;
+    @Column(name = "original_width")
+    private int originalWidth;
 
-    private String url;
+    @Column(name = "original_height")
+    private int originalHeight;
+
+    @Column(name = "original_url")
+    private String originalUrl;
+
+    @Column(name = "transformed_url")
+    private String transformedUrl;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -42,28 +58,21 @@ public class Image {
 
     // ---- constructors ----
 
-    public Image(String publicId, int height, int width, String url) {
+    public Image(
+        ImageType type,
+        String publicId,
+        String assetId,
+        int originalWidth,
+        int originalHeight,
+        String originalUrl,
+        String transformedUrl) {
+        this.type = type;
         this.publicId = publicId;
-        this.height = height;
-        this.width = width;
-        this.url = url;
+        this.assetId = assetId;
+        this.originalWidth = originalWidth;
+        this.originalHeight = originalHeight;
+        this.originalUrl = originalUrl;
+        this.transformedUrl = transformedUrl;
     }
 
-    // ---- setters ----
-
-    public void setPublicId(String publicId) {
-        this.publicId = publicId;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
 }

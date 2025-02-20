@@ -39,11 +39,19 @@ public class CloudinaryServiceImpl implements CloudinaryService {
     @Override
     @SuppressWarnings("rawtypes")
     public void deleteFile(String assetId, Map options) throws CloudinaryDeleteOperationException {
+        // TODO: invalidate cached assets
+
         try {
             cloudinary.uploader().destroy(assetId, options);
         } catch (Exception ex) {
             throw new CloudinaryDeleteOperationException("Delete operation failed: " + ex.getMessage());
         }
+    }
+
+    @Override
+    @SuppressWarnings("rawtypes")
+    public String transformImageUrl(String assetId, Transformation transformations) {
+        return cloudinary.url().transformation(transformations).generate(assetId);
     }
 
 }
