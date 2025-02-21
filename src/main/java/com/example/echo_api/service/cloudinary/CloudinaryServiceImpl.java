@@ -16,6 +16,10 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * Service implementation for interacting with the {@link Cloudinary} SDK.
+ * 
+ * @see https://cloudinary.com/documentation/java_integration
+ * @see https://cloudinary.com/documentation/image_upload_api_reference#upload
+ * @see https://cloudinary.com/documentation/image_upload_api_reference#destroy_by_asset_id
  */
 @Service
 @RequiredArgsConstructor

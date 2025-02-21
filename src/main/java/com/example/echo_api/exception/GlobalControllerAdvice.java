@@ -90,6 +90,17 @@ public class GlobalControllerAdvice extends AbstractControllerAdvice {
             msg);
     }
 
+    /* Cloudinary Exception */
+    @ExceptionHandler({ CloudinaryException.class })
+    ResponseEntity<ErrorDTO> handleCloudinaryException(HttpServletRequest request, Exception ex) {
+        log.debug("Handling exception: {}", ex.getMessage());
+
+        return createExceptionHandler(request,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            ErrorMessageConfig.CLOUDINARY_SDK_ERROR,
+            ex.getMessage());
+    }
+
     /* Custom Bad Request Exception */
     @ExceptionHandler({
             AccountException.class,
@@ -105,17 +116,6 @@ public class GlobalControllerAdvice extends AbstractControllerAdvice {
             HttpStatus.BAD_REQUEST,
             ex.getMessage(),
             null);
-    }
-
-    /* Cloudinary Exception */
-    @ExceptionHandler({ CloudinaryException.class })
-    ResponseEntity<ErrorDTO> handleCloudinaryException(HttpServletRequest request, Exception ex) {
-        log.debug("Handling exception: {}", ex.getMessage());
-
-        return createExceptionHandler(request,
-            HttpStatus.INTERNAL_SERVER_ERROR,
-            ErrorMessageConfig.CLOUDINARY_SDK_ERROR,
-            ex.getMessage());
     }
 
     /* 401 */
