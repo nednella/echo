@@ -42,11 +42,9 @@ public class CloudinaryServiceImpl implements CloudinaryService {
 
     @Override
     @SuppressWarnings("rawtypes")
-    public void deleteFile(String assetId, Map options) throws CloudinaryDeleteOperationException {
-        // TODO: invalidate cached assets
-
+    public void deleteFile(String publicId, Map options) throws CloudinaryDeleteOperationException {
         try {
-            cloudinary.uploader().destroy(assetId, options);
+            cloudinary.uploader().destroy(publicId, options);
         } catch (Exception ex) {
             throw new CloudinaryDeleteOperationException("Delete operation failed: " + ex.getMessage());
         }

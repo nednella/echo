@@ -5,7 +5,7 @@ import static lombok.AccessLevel.PRIVATE;
 import lombok.NoArgsConstructor;
 
 /**
- * 
+ * Config class for defining error messages across the application.
  */
 @NoArgsConstructor(access = PRIVATE)
 public final class ErrorMessageConfig {
@@ -31,6 +31,8 @@ public final class ErrorMessageConfig {
     public static final String SELF_UNFOLLOW = "You cannot unfollow yourself.";
     public static final String SELF_BLOCK = "You cannot block yourself.";
     public static final String SELF_UNBLOCK = "You cannot unblock yourself.";
+    /* Image */
+    public static final String IMAGE_NOT_FOUND = "Image not found.";
 
     /* 401 UNAUTHORISED */
     public static final String UNAUTHORISED = "Unauthorised request.";

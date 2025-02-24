@@ -13,6 +13,7 @@ import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.exception.custom.account.AccountException;
 import com.example.echo_api.exception.custom.cloudinary.CloudinaryException;
 import com.example.echo_api.exception.custom.file.FileException;
+import com.example.echo_api.exception.custom.image.ImageException;
 import com.example.echo_api.exception.custom.password.PasswordException;
 import com.example.echo_api.exception.custom.relationship.BlockedException;
 import com.example.echo_api.exception.custom.relationship.RelationshipException;
@@ -119,7 +120,8 @@ public class GlobalControllerAdvice extends AbstractControllerAdvice {
             AccountException.class,
             UsernameException.class,
             PasswordException.class,
-            RelationshipException.class
+            RelationshipException.class,
+            ImageException.class
     })
     ResponseEntity<ErrorDTO> handleCustomBadRequestException(HttpServletRequest request, Exception ex) {
         log.debug("Handling exception: {}", ex.getMessage());

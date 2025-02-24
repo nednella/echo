@@ -34,17 +34,16 @@ public interface CloudinaryService {
      * Destroys a file from Cloudinary using the {@link Cloudinary} SDK with the
      * specified {@code options}.
      * 
-     * @param assetId The immutable asset ID of the file to destroy. Must not be
-     *                null.
-     * @param options A map of options to use during the destroy operation. Can be
-     *                null.
+     * @param publicId The public ID of the file to destroy. Must not be null.
+     * @param options  A map of options to use during the destroy operation. Can be
+     *                 null.
      * @throws CloudinaryDeleteOperationException If the delete operation fails due
      *                                            to a Cloudinary-related error
      *                                            (e.g., resource not found, invalid
      *                                            credentials, network error).
      */
     @SuppressWarnings("rawtypes")
-    public void deleteFile(String assetId, Map options) throws CloudinaryDeleteOperationException;
+    public void deleteFile(String publicId, Map options) throws CloudinaryDeleteOperationException;
 
     /**
      * Generates a transformed image URL for the specified Cloudinary asset using
