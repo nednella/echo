@@ -12,6 +12,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.exception.custom.account.AccountException;
 import com.example.echo_api.exception.custom.cloudinary.CloudinaryException;
+import com.example.echo_api.exception.custom.file.FileException;
 import com.example.echo_api.exception.custom.password.PasswordException;
 import com.example.echo_api.exception.custom.relationship.BlockedException;
 import com.example.echo_api.exception.custom.relationship.RelationshipException;
@@ -88,6 +89,18 @@ public class GlobalControllerAdvice extends AbstractControllerAdvice {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.INVALID_REQUEST,
             msg);
+    }
+
+    /* File Validation Exception */
+    @ExceptionHandler(FileException.class)
+    ResponseEntity<ErrorDTO> handleInvalidFileException(HttpServletRequest request, Exception ex) {
+        log.debug("Handling exception: {}", ex.getMessage());
+
+        return createExceptionHandler(
+            request,
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.INVALID_REQUEST,
+            ex.getMessage());
     }
 
     /* Cloudinary Exception */

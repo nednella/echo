@@ -8,5 +8,10 @@ spring:
     profiles:
         active: dev
 
+    servlet:
+        multipart:
+            max-file-size: 100MB # set maximum to Cloudinary free tier limit, customise per-file type within application
+            max-request-size: 100MB
+
 server:
     port: 8080
