@@ -52,8 +52,8 @@ public class CloudinaryServiceImpl implements CloudinaryService {
 
     @Override
     @SuppressWarnings("rawtypes")
-    public String transformImageUrl(String assetId, Transformation transformations) {
-        return cloudinary.url().transformation(transformations).generate(assetId);
+    public String transformImageUrl(String publicId, Transformation transformations) {
+        return cloudinary.url().transformation(transformations).generate(publicId);
     }
 
 }
