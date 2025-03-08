@@ -4,7 +4,6 @@ import static lombok.AccessLevel.PRIVATE;
 
 import java.util.List;
 
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,14 +26,14 @@ public class ImageValidator {
     private static final long MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
     private static final List<String> ALLOWED_TYPES = List.of("image/jpeg", "image/png");
 
-    public static boolean supports(@NonNull Class<?> clazz) {
+    public static boolean supports(Class<?> clazz) {
         return MultipartFile.class.equals(clazz);
     }
 
-    public static void validate(@NonNull Object target) {
+    public static void validate(Object target) {
         MultipartFile file = (MultipartFile) target;
 
-        if (file.isEmpty()) {
+        if (file == null || file.isEmpty()) {
             throw new FileInvalidException();
         }
 
