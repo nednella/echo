@@ -24,5 +24,10 @@ spring:
         livereload:
             enabled: true
 
+cloudinary:
+    cloud-name: ${CLOUDINARY_NAME}
+    api-key: ${CLOUDINARY_API_KEY}
+    api-secret: ${CLOUDINARY_API_SECRET}
+
 cors:
     allowed-origins: http://localhost:5173 # comma-separated values

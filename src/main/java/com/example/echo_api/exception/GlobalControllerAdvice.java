@@ -11,6 +11,9 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.exception.custom.account.AccountException;
+import com.example.echo_api.exception.custom.cloudinary.CloudinaryException;
+import com.example.echo_api.exception.custom.file.FileException;
+import com.example.echo_api.exception.custom.image.ImageException;
 import com.example.echo_api.exception.custom.password.PasswordException;
 import com.example.echo_api.exception.custom.relationship.BlockedException;
 import com.example.echo_api.exception.custom.relationship.RelationshipException;
@@ -89,12 +92,36 @@ public class GlobalControllerAdvice extends AbstractControllerAdvice {
             msg);
     }
 
+    /* File Validation Exception */
+    @ExceptionHandler(FileException.class)
+    ResponseEntity<ErrorDTO> handleInvalidFileException(HttpServletRequest request, Exception ex) {
+        log.debug("Handling exception: {}", ex.getMessage());
+
+        return createExceptionHandler(
+            request,
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.INVALID_REQUEST,
+            ex.getMessage());
+    }
+
+    /* Cloudinary Exception */
+    @ExceptionHandler({ CloudinaryException.class })
+    ResponseEntity<ErrorDTO> handleCloudinaryException(HttpServletRequest request, Exception ex) {
+        log.debug("Handling exception: {}", ex.getMessage());
+
+        return createExceptionHandler(request,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            ErrorMessageConfig.CLOUDINARY_SDK_ERROR,
+            ex.getMessage());
+    }
+
     /* Custom Bad Request Exception */
     @ExceptionHandler({
             AccountException.class,
             UsernameException.class,
             PasswordException.class,
-            RelationshipException.class
+            RelationshipException.class,
+            ImageException.class
     })
     ResponseEntity<ErrorDTO> handleCustomBadRequestException(HttpServletRequest request, Exception ex) {
         log.debug("Handling exception: {}", ex.getMessage());

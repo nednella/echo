@@ -41,11 +41,4 @@ public final class ApiConfig {
         public static final String UNBLOCK_BY_USERNAME = ROOT + "/{username}/unblock";
     }
 
-    @NoArgsConstructor(access = PRIVATE)
-    public static final class Test {
-        private static final String ROOT = BASE_URL + "/test";
-        public static final String FIND_ALL = ROOT + "/list";
-        public static final String FIND_BY_USERNAME = ROOT + "/list/{username}";
-    }
-
 }

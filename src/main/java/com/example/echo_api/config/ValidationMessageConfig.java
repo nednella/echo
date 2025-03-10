@@ -5,10 +5,16 @@ import static lombok.AccessLevel.PRIVATE;
 import lombok.NoArgsConstructor;
 
 /**
- * 
+ * Config class for defining client validation messages across the application.
  */
+// @formatter:off
 @NoArgsConstructor(access = PRIVATE)
 public final class ValidationMessageConfig {
+
+    /* File */
+    public static final String INVALID_FILE = "File cannot be null or empty.";
+    public static final String IMAGE_SIZE_TOO_LARGE = "File size exceeds limit of " + FileConfig.Image.MAX_SIZE_MB + " MB.";
+    public static final String IMAGE_FORMAT_UNSUPPORTED = "File type does not match allowed: " + FileConfig.Image.ALLOWED_TYPES;
 
     /* Pagination */
     public static final String INVALID_OFFSET = "Offset index must not be negative.";
@@ -21,3 +27,4 @@ public final class ValidationMessageConfig {
     public static final String NEW_PASSWORD_NOT_UNIQUE = "New password cannot be the same as the current password.";
 
 }
+// @formatter:on
