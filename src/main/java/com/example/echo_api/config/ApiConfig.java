@@ -32,6 +32,9 @@ public final class ApiConfig {
     public static final class Profile {
         private static final String ROOT = BASE_URL + "/profile";
         public static final String ME = ROOT + "/me";
+        public static final String ME_INFO = ROOT + "/me/info";
+        public static final String ME_AVATAR = ROOT + "/me/avatar";
+        public static final String ME_BANNER = ROOT + "/me/banner";
         public static final String GET_BY_USERNAME = ROOT + "/{username}";
         public static final String GET_FOLLOWERS_BY_USERNAME = ROOT + "/{username}/followers";
         public static final String GET_FOLLOWING_BY_USERNAME = ROOT + "/{username}/following";
