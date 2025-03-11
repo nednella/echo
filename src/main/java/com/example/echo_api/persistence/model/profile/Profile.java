@@ -7,11 +7,14 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.example.echo_api.persistence.model.account.Account;
+import com.example.echo_api.persistence.model.image.Image;
 import com.example.echo_api.validation.account.annotations.Username;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,11 +42,13 @@ public class Profile {
 
     private String location;
 
-    @Column(name = "avatar_url")
-    private String avatarUrl;
+    @OneToOne
+    @JoinColumn(name = "avatar_id")
+    private Image avatar;
 
-    @Column(name = "banner_url")
-    private String bannerUrl;
+    @OneToOne
+    @JoinColumn(name = "banner_id")
+    private Image banner;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -74,12 +79,12 @@ public class Profile {
         this.location = location;
     }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
+    public void setAvatar(Image avatar) {
+        this.avatar = avatar;
     }
 
-    public void setBannerUrl(String bannerUrl) {
-        this.bannerUrl = bannerUrl;
+    public void setBanner(Image banner) {
+        this.banner = banner;
     }
 
 }
