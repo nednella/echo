@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
@@ -11,6 +12,7 @@ import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
 import com.example.echo_api.service.profile.ProfileService;
 import com.example.echo_api.util.pagination.OffsetLimitRequest;
+import com.example.echo_api.util.validator.ImageValidator;
 import com.example.echo_api.validation.pagination.annotations.Limit;
 import com.example.echo_api.validation.pagination.annotations.Offset;
 
@@ -41,6 +43,32 @@ public class ProfileController {
     @PutMapping(ApiConfig.Profile.ME)
     public ResponseEntity<Void> updateMeProfile(@RequestBody @Valid UpdateProfileDTO request) {
         profileService.updateMeProfile(request);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping(ApiConfig.Profile.ME_AVATAR)
+    public ResponseEntity<Void> updateMeAvatar(@RequestBody MultipartFile file) {
+        ImageValidator.validate(file);
+        profileService.updateMeAvatar(file);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping(ApiConfig.Profile.ME_AVATAR)
+    public ResponseEntity<Void> deleteMeAvatar() {
+        profileService.deleteMeAvatar();
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping(ApiConfig.Profile.ME_BANNER)
+    public ResponseEntity<Void> updateMeBanner(@RequestBody MultipartFile file) {
+        ImageValidator.validate(file);
+        profileService.updateMeBanner(file);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping(ApiConfig.Profile.ME_BANNER)
+    public ResponseEntity<Void> deleteMeBanner() {
+        profileService.deleteMeBanner();
         return ResponseEntity.noContent().build();
     }
 
