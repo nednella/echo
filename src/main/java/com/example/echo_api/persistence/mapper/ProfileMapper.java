@@ -19,8 +19,8 @@ public class ProfileMapper {
             profile.getName(),
             profile.getBio(),
             profile.getLocation(),
-            profile.getAvatarUrl(),
-            profile.getBannerUrl(),
+            profile.getAvatar() != null ? profile.getAvatar().getTransformedUrl() : null,
+            profile.getBanner() != null ? profile.getBanner().getTransformedUrl() : null,
             profile.getCreatedAt(),
             metrics,
             relationship);
