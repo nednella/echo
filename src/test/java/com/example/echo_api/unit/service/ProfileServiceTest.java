@@ -17,6 +17,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.exception.custom.cloudinary.CloudinaryDeleteOperationException;
+import com.example.echo_api.exception.custom.cloudinary.CloudinaryUploadOperationException;
+import com.example.echo_api.exception.custom.image.ImageNotFoundException;
 import com.example.echo_api.exception.custom.relationship.AlreadyBlockingException;
 import com.example.echo_api.exception.custom.relationship.AlreadyFollowingException;
 import com.example.echo_api.exception.custom.relationship.BlockedException;
@@ -32,8 +35,11 @@ import com.example.echo_api.persistence.dto.response.profile.RelationshipDTO;
 import com.example.echo_api.persistence.mapper.PageMapper;
 import com.example.echo_api.persistence.mapper.ProfileMapper;
 import com.example.echo_api.persistence.model.account.Account;
+import com.example.echo_api.persistence.model.image.Image;
+import com.example.echo_api.persistence.model.image.ImageType;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
+import com.example.echo_api.service.file.FileService;
 import com.example.echo_api.service.metrics.profile.ProfileMetricsService;
 import com.example.echo_api.service.profile.ProfileService;
 import com.example.echo_api.service.profile.ProfileServiceImpl;
@@ -57,6 +63,9 @@ class ProfileServiceTest {
 
     @Mock
     private RelationshipService relationshipService;
+
+    @Mock
+    private FileService fileService;
 
     @Mock
     private ProfileRepository profileRepository;
@@ -237,6 +246,186 @@ class ProfileServiceTest {
         // act & assert
         assertThrows(UsernameNotFoundException.class, () -> profileService.updateMeProfile(request));
         verify(profileRepository, times(1)).findByUsername(authenticatedAccount.getUsername());
+    }
+
+    // update avatar
+
+    @Test
+    void ProfileService_UpdateMeAvatar_ReturnVoid() {
+        // arrange
+        Image expected = new Image(null, null, null, 0, 0, null, null);
+
+        mockAuthenticatedUser();
+        when(fileService.createImage(null, ImageType.AVATAR)).thenReturn(expected);
+
+        // act & assert
+        assertDoesNotThrow(() -> profileService.updateMeAvatar(null));
+    }
+
+    @Test
+    void ProfileService_UpdateMeAvatar_ThrowCloudinaryUploadOperation() {
+        // arrange
+        mockAuthenticatedUser();
+        when(fileService.createImage(null, ImageType.AVATAR)).thenThrow(new CloudinaryUploadOperationException(""));
+
+        // act & assert
+        assertThrows(CloudinaryUploadOperationException.class, () -> profileService.updateMeAvatar(null));
+    }
+
+    @Test
+    void ProfileService_UpdateMeAvatar_ThrowImageNotFound() {
+        // arrange
+        mockAuthenticatedUser();
+        when(fileService.createImage(null, ImageType.AVATAR)).thenThrow(new ImageNotFoundException());
+
+        // act & assert
+        assertThrows(ImageNotFoundException.class, () -> profileService.updateMeAvatar(null));
+    }
+
+    @Test
+    void ProfileService_UpdateMeAvatar_ThrowCloudinaryDeleteOperation() {
+        // arrange
+        Image avatar = new Image(null, null, null, 0, 0, null, null);
+
+        mockAuthenticatedUser();
+        authenticatedProfile.setAvatar(avatar);
+        doThrow(new CloudinaryDeleteOperationException("")).when(fileService)
+            .deleteImage(authenticatedProfile.getAvatar().getId());
+
+        // act & assert
+        assertThrows(CloudinaryDeleteOperationException.class, () -> profileService.updateMeAvatar(null));
+    }
+
+    // delete avatar
+
+    @Test
+    void ProfileService_DeleteMeAvatar_ReturnVoid() {
+        // arrange
+        Image avatar = new Image(null, null, null, 0, 0, null, null);
+
+        mockAuthenticatedUser();
+        authenticatedProfile.setAvatar(avatar);
+        doNothing().when(fileService).deleteImage(authenticatedProfile.getAvatar().getId());
+
+        // act & assert
+        assertDoesNotThrow(() -> profileService.deleteMeAvatar());
+    }
+
+    @Test
+    void ProfileService_DeleteMeAvatar_ThrowImageNotFound() {
+        // arrange
+        Image avatar = new Image(null, null, null, 0, 0, null, null);
+
+        mockAuthenticatedUser();
+        authenticatedProfile.setAvatar(avatar);
+        doThrow(new ImageNotFoundException()).when(fileService).deleteImage(authenticatedProfile.getAvatar().getId());
+
+        // act & assert
+        assertThrows(ImageNotFoundException.class, () -> profileService.deleteMeAvatar());
+    }
+
+    @Test
+    void ProfileService_DeleteMeAvatar_ThrowCloudinaryDeleteOperation() {
+        // arrange
+        Image avatar = new Image(null, null, null, 0, 0, null, null);
+
+        mockAuthenticatedUser();
+        authenticatedProfile.setAvatar(avatar);
+        doThrow(new CloudinaryDeleteOperationException("")).when(fileService)
+            .deleteImage(authenticatedProfile.getAvatar().getId());
+
+        // act & assert
+        assertThrows(CloudinaryDeleteOperationException.class, () -> profileService.deleteMeAvatar());
+    }
+
+    // update banner
+
+    @Test
+    void ProfileService_UpdateMeBanner_ReturnVoid() {
+        // arrange
+        Image expected = new Image(null, null, null, 0, 0, null, null);
+
+        mockAuthenticatedUser();
+        when(fileService.createImage(null, ImageType.BANNER)).thenReturn(expected);
+
+        // act & assert
+        assertDoesNotThrow(() -> profileService.updateMeBanner(null));
+    }
+
+    @Test
+    void ProfileService_UpdateMeBanner_ThrowCloudinaryUploadOperation() {
+        // arrange
+        mockAuthenticatedUser();
+        when(fileService.createImage(null, ImageType.BANNER)).thenThrow(new CloudinaryUploadOperationException(""));
+
+        // act & assert
+        assertThrows(CloudinaryUploadOperationException.class, () -> profileService.updateMeBanner(null));
+    }
+
+    @Test
+    void ProfileService_UpdateMeBanner_ThrowImageNotFound() {
+        // arrange
+        mockAuthenticatedUser();
+        when(fileService.createImage(null, ImageType.BANNER)).thenThrow(new ImageNotFoundException());
+
+        // act & assert
+        assertThrows(ImageNotFoundException.class, () -> profileService.updateMeBanner(null));
+    }
+
+    @Test
+    void ProfileService_UpdateMeBanner_ThrowCloudinaryDeleteOperation() {
+        // arrange
+        Image banner = new Image(null, null, null, 0, 0, null, null);
+
+        mockAuthenticatedUser();
+        authenticatedProfile.setBanner(banner);
+        doThrow(new CloudinaryDeleteOperationException("")).when(fileService)
+            .deleteImage(authenticatedProfile.getBanner().getId());
+
+        // act & assert
+        assertThrows(CloudinaryDeleteOperationException.class, () -> profileService.updateMeBanner(null));
+    }
+
+    // delete banner
+
+    @Test
+    void ProfileService_DeleteMeBanner_ReturnVoid() {
+        // arrange
+        Image banner = new Image(null, null, null, 0, 0, null, null);
+
+        mockAuthenticatedUser();
+        authenticatedProfile.setBanner(banner);
+        doNothing().when(fileService).deleteImage(authenticatedProfile.getBanner().getId());
+
+        // act & assert
+        assertDoesNotThrow(() -> profileService.deleteMeBanner());
+    }
+
+    @Test
+    void ProfileService_DeleteMeBanner_ThrowImageNotFound() {
+        // arrange
+        Image banner = new Image(null, null, null, 0, 0, null, null);
+
+        mockAuthenticatedUser();
+        authenticatedProfile.setBanner(banner);
+        doThrow(new ImageNotFoundException()).when(fileService).deleteImage(authenticatedProfile.getBanner().getId());
+
+        // act & assert
+        assertThrows(ImageNotFoundException.class, () -> profileService.deleteMeBanner());
+    }
+
+    @Test
+    void ProfileService_DeleteMeBanner_ThrowCloudinaryDeleteOperation() {
+        // arrange
+        Image banner = new Image(null, null, null, 0, 0, null, null);
+
+        mockAuthenticatedUser();
+        authenticatedProfile.setBanner(banner);
+        doThrow(new CloudinaryDeleteOperationException("")).when(fileService)
+            .deleteImage(authenticatedProfile.getBanner().getId());
+
+        // act & assert
+        assertThrows(CloudinaryDeleteOperationException.class, () -> profileService.deleteMeBanner());
     }
 
     /**

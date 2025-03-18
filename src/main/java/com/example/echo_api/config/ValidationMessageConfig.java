@@ -26,5 +26,10 @@ public final class ValidationMessageConfig {
     public static final String CONFIRMATION_PASSWORD_MISMATCH = "Confirmation password does not match the new password.";
     public static final String NEW_PASSWORD_NOT_UNIQUE = "New password cannot be the same as the current password.";
 
+    /* PROFILE */
+    public static final String NAME_TOO_LONG = "Name must not exceed 50 characters.";
+    public static final String BIO_TOO_LONG = "Bio must not exceed 160 characters.";
+    public static final String LOCATION_TOO_LONG = "Location must not exceed 30 characters.";
+
 }
 // @formatter:on

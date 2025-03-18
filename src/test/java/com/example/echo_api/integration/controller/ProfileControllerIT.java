@@ -62,9 +62,9 @@ class ProfileControllerIT extends IntegrationTest {
     }
 
     @Test
-    void ProfileController_UpdateMe_Return204NoContent() {
-        // api: PUT /api/v1/profile/me ==> 204 : No Content
-        String path = ApiConfig.Profile.ME;
+    void ProfileController_UpdateMeProfile_Return204NoContent() {
+        // api: PUT /api/v1/profile/me/info ==> 204 : No Content
+        String path = ApiConfig.Profile.ME_INFO;
 
         UpdateProfileDTO body = new UpdateProfileDTO(
             "name",

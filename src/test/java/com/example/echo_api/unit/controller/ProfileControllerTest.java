@@ -8,9 +8,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,12 +23,17 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.config.ValidationMessageConfig;
 import com.example.echo_api.controller.profile.ProfileController;
+import com.example.echo_api.exception.custom.cloudinary.CloudinaryDeleteOperationException;
+import com.example.echo_api.exception.custom.cloudinary.CloudinaryUploadOperationException;
+import com.example.echo_api.exception.custom.image.ImageNotFoundException;
 import com.example.echo_api.exception.custom.relationship.AlreadyBlockingException;
 import com.example.echo_api.exception.custom.relationship.AlreadyFollowingException;
 import com.example.echo_api.exception.custom.relationship.BlockedException;
@@ -63,6 +71,27 @@ class ProfileControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    private static MockMultipartFile validImage;
+    private static MockMultipartFile invalidImageFileSize;
+    private static MockMultipartFile invalidImageFormat;
+
+    @BeforeAll
+    static void setup() throws Exception {
+        validImage = readFileFromResources("data/valid_image.jpg", "image/jpeg");
+        invalidImageFileSize = readFileFromResources("data/invalid_image_file_size.jpg", "image/jpeg");
+        invalidImageFormat = readFileFromResources("data/invalid_image_format.pdf", "application/pdf");
+    }
+
+    private static MockMultipartFile readFileFromResources(String fileName, String fileType) throws IOException {
+        InputStream inputStream = ProfileControllerTest.class.getClassLoader().getResourceAsStream(fileName);
+
+        return new MockMultipartFile(
+            "file",
+            fileName,
+            fileType,
+            inputStream);
+    }
 
     @Test
     void ProfileController_GetMe_ReturnProfileDTO() throws Exception {
@@ -117,9 +146,9 @@ class ProfileControllerTest {
     }
 
     @Test
-    void ProfileController_UpdateMe_Return204NoContent() throws Exception {
-        // api: PUT /api/v1/profile/me ==> 204 : No Content
-        String path = ApiConfig.Profile.ME;
+    void ProfileController_UpdateMeProfile_Return204NoContent() throws Exception {
+        // api: PUT /api/v1/profile/me/info ==> 204 : No Content
+        String path = ApiConfig.Profile.ME_INFO;
 
         UpdateProfileDTO request = new UpdateProfileDTO(
             "name",
@@ -141,9 +170,9 @@ class ProfileControllerTest {
     }
 
     @Test
-    void ProfileController_UpdateMe_Throw400InvalidRequest_NameExceeds50Characters() throws Exception {
-        // api: PUT /api/v1/profile/me ==> 400 : Invalid Request
-        String path = ApiConfig.Profile.ME;
+    void ProfileController_UpdateMeProfile_Throw400InvalidRequest_NameExceeds50Characters() throws Exception {
+        // api: PUT /api/v1/profile/me/info ==> 400 : Invalid Request
+        String path = ApiConfig.Profile.ME_INFO;
 
         UpdateProfileDTO request = new UpdateProfileDTO(
             "ThisNameIsTooLongBy......................1Character",
@@ -167,7 +196,7 @@ class ProfileControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.INVALID_REQUEST,
-            "Name must not exceed 50 characters.",
+            ValidationMessageConfig.NAME_TOO_LONG,
             path);
 
         ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
@@ -177,9 +206,9 @@ class ProfileControllerTest {
     }
 
     @Test
-    void ProfileController_UpdateMe_Throw400InvalidRequest_BioExceeds160Characters() throws Exception {
-        // api: PUT /api/v1/profile/me ==> 400 : Invalid Request
-        String path = ApiConfig.Profile.ME;
+    void ProfileController_UpdateMeProfile_Throw400InvalidRequest_BioExceeds160Characters() throws Exception {
+        // api: PUT /api/v1/profile/me/info ==> 400 : Invalid Request
+        String path = ApiConfig.Profile.ME_INFO;
 
         UpdateProfileDTO request = new UpdateProfileDTO(
             "name",
@@ -203,7 +232,7 @@ class ProfileControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.INVALID_REQUEST,
-            "Bio must not exceed 160 characters.",
+            ValidationMessageConfig.BIO_TOO_LONG,
             path);
 
         ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
@@ -213,9 +242,9 @@ class ProfileControllerTest {
     }
 
     @Test
-    void ProfileController_UpdateMe_Throw400InvalidRequest_LocationExceeds30Characters() throws Exception {
-        // api: PUT /api/v1/profile/me ==> 400 : Invalid Request
-        String path = ApiConfig.Profile.ME;
+    void ProfileController_UpdateMeProfile_Throw400InvalidRequest_LocationExceeds30Characters() throws Exception {
+        // api: PUT /api/v1/profile/me/info ==> 400 : Invalid Request
+        String path = ApiConfig.Profile.ME_INFO;
 
         UpdateProfileDTO request = new UpdateProfileDTO(
             "name",
@@ -239,13 +268,429 @@ class ProfileControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.INVALID_REQUEST,
-            "Location must not exceed 30 characters.",
+            ValidationMessageConfig.LOCATION_TOO_LONG,
             path);
 
         ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
 
         assertEquals(expected, actual);
         verify(profileService, never()).updateMeProfile(request);
+    }
+
+    @Test
+    void ProfileController_UpdateMeAvatar_Return204NoContent() throws Exception {
+        // api: POST /api/v1/profile/me/avatar ==> 204 : No Content
+        String path = ApiConfig.Profile.ME_AVATAR;
+
+        MockMultipartFile file = validImage;
+
+        doNothing().when(profileService).updateMeAvatar(file);
+
+        mockMvc
+            .perform(multipart(path)
+                .file(file))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(profileService, times(1)).updateMeAvatar(file);
+    }
+
+    @Test
+    void ProfileController_UpdateMeAvatar_Throw400ImageFormat() throws Exception {
+        // api: POST /api/v1/profile/me/avatar ==> 400 : ImageFormat
+        String path = ApiConfig.Profile.ME_AVATAR;
+
+        MockMultipartFile file = invalidImageFormat;
+
+        String response = mockMvc
+            .perform(multipart(path)
+                .file(file))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.INVALID_REQUEST,
+            ValidationMessageConfig.IMAGE_FORMAT_UNSUPPORTED,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(profileService, never()).updateMeAvatar(file);
+    }
+
+    @Test
+    void ProfileController_UpdateMeAvatar_Throw400ImageSize() throws Exception {
+        // api: POST /api/v1/profile/me/avatar ==> 400 : ImageSize
+        String path = ApiConfig.Profile.ME_AVATAR;
+
+        MockMultipartFile file = invalidImageFileSize;
+
+        String response = mockMvc
+            .perform(multipart(path)
+                .file(file))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.INVALID_REQUEST,
+            ValidationMessageConfig.IMAGE_SIZE_TOO_LARGE,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(profileService, never()).updateMeAvatar(file);
+    }
+
+    @Test
+    void ProfileController_UpdateMeAvatar_Throw500CloudinaryUpload() throws Exception {
+        // api: POST /api/v1/profile/me/avatar ==> 500 : CloudinaryUploadOperation
+        String path = ApiConfig.Profile.ME_AVATAR;
+
+        MockMultipartFile file = validImage;
+
+        doThrow(new CloudinaryUploadOperationException("Placeholder"))
+            .when(profileService).updateMeAvatar(file);
+
+        String response = mockMvc
+            .perform(multipart(path)
+                .file(file))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            ErrorMessageConfig.CLOUDINARY_SDK_ERROR,
+            "Placeholder",
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(profileService, times(1)).updateMeAvatar(file);
+    }
+
+    @Test
+    void ProfileController_UpdateMeAvatar_Throw500CloudinaryDelete() throws Exception {
+        // api: POST /api/v1/profile/me/avatar ==> 500 : CloudinaryDeleteOperation
+        String path = ApiConfig.Profile.ME_AVATAR;
+
+        MockMultipartFile file = validImage;
+
+        doThrow(new CloudinaryDeleteOperationException("Placeholder"))
+            .when(profileService).updateMeAvatar(file);
+
+        String response = mockMvc
+            .perform(multipart(path)
+                .file(file))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            ErrorMessageConfig.CLOUDINARY_SDK_ERROR,
+            "Placeholder",
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(profileService, times(1)).updateMeAvatar(file);
+    }
+
+    @Test
+    void ProfileController_DeleteMeAvatar_Return204NoContent() throws Exception {
+        // api: DELETE /api/v1/profile/me/avatar ==> 204 : No Content
+        String path = ApiConfig.Profile.ME_AVATAR;
+
+        doNothing().when(profileService).deleteMeAvatar();
+
+        mockMvc
+            .perform(delete(path))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(profileService, times(1)).deleteMeAvatar();
+    }
+
+    @Test
+    void ProfileController_DeleteMeAvatar_Throw500CloudinaryDelete() throws Exception {
+        // api: DELETE /api/v1/profile/me/avatar ==> 500 : CloudinaryDeleteOperation
+        String path = ApiConfig.Profile.ME_AVATAR;
+
+        doThrow(new CloudinaryDeleteOperationException("Placeholder"))
+            .when(profileService).deleteMeAvatar();
+
+        String response = mockMvc
+            .perform(delete(path))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            ErrorMessageConfig.CLOUDINARY_SDK_ERROR,
+            "Placeholder",
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(profileService, times(1)).deleteMeAvatar();
+    }
+
+    @Test
+    void ProfileController_DeleteMeAvatar_Throw400ImageNotFound() throws Exception {
+        // api: DELETE /api/v1/profile/me/avatar ==> 400 : ImageNotFound
+        String path = ApiConfig.Profile.ME_AVATAR;
+
+        doThrow(new ImageNotFoundException()).when(profileService).deleteMeAvatar();
+
+        String response = mockMvc
+            .perform(delete(path))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.IMAGE_NOT_FOUND,
+            null,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(profileService, times(1)).deleteMeAvatar();
+    }
+
+    @Test
+    void ProfileController_UpdateMeBanner_Return204NoContent() throws Exception {
+        // api: POST /api/v1/profile/me/banner ==> 204 : No Content
+        String path = ApiConfig.Profile.ME_BANNER;
+
+        MockMultipartFile file = validImage;
+
+        doNothing().when(profileService).updateMeBanner(file);
+
+        mockMvc
+            .perform(multipart(path)
+                .file(file))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(profileService, times(1)).updateMeBanner(file);
+    }
+
+    @Test
+    void ProfileController_UpdateMeBanner_Throw400ImageFormat() throws Exception {
+        // api: POST /api/v1/profile/me/banner ==> 400 : ImageFormat
+        String path = ApiConfig.Profile.ME_BANNER;
+
+        MockMultipartFile file = invalidImageFormat;
+
+        doNothing().when(profileService).updateMeBanner(file);
+
+        String response = mockMvc
+            .perform(multipart(path)
+                .file(file))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.INVALID_REQUEST,
+            ValidationMessageConfig.IMAGE_FORMAT_UNSUPPORTED,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(profileService, never()).updateMeBanner(file);
+    }
+
+    @Test
+    void ProfileController_UpdateMeBanner_Throw400ImageSize() throws Exception {
+        // api: POST /api/v1/profile/me/banner ==> 400 : ImageSize
+        String path = ApiConfig.Profile.ME_BANNER;
+
+        MockMultipartFile file = invalidImageFileSize;
+
+        doNothing().when(profileService).updateMeBanner(file);
+
+        String response = mockMvc
+            .perform(multipart(path)
+                .file(file))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.INVALID_REQUEST,
+            ValidationMessageConfig.IMAGE_SIZE_TOO_LARGE,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(profileService, never()).updateMeBanner(file);
+    }
+
+    @Test
+    void ProfileController_UpdateMeBanner_Throw500CloudinaryUpload() throws Exception {
+        // api: POST /api/v1/profile/me/banner ==> 500 : CloudinaryUploadOperation
+        String path = ApiConfig.Profile.ME_BANNER;
+
+        MockMultipartFile file = validImage;
+
+        doThrow(new CloudinaryUploadOperationException("Placeholder"))
+            .when(profileService).updateMeBanner(file);
+
+        String response = mockMvc
+            .perform(multipart(path)
+                .file(file))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            ErrorMessageConfig.CLOUDINARY_SDK_ERROR,
+            "Placeholder",
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(profileService, times(1)).updateMeBanner(file);
+    }
+
+    @Test
+    void ProfileController_UpdateMeBanner_Throw500CloudinaryDelete() throws Exception {
+        // api: POST /api/v1/profile/me/banner ==> 500 : CloudinaryDeleteOperation
+        String path = ApiConfig.Profile.ME_BANNER;
+
+        MockMultipartFile file = validImage;
+
+        doThrow(new CloudinaryDeleteOperationException("Placeholder"))
+            .when(profileService).updateMeBanner(file);
+
+        String response = mockMvc
+            .perform(multipart(path)
+                .file(file))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            ErrorMessageConfig.CLOUDINARY_SDK_ERROR,
+            "Placeholder",
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(profileService, times(1)).updateMeBanner(file);
+    }
+
+    @Test
+    void ProfileController_DeleteMeBanner_Return204NoContent() throws Exception {
+        // api: DELETE /api/v1/profile/me/banner ==> 204 : No Content
+        String path = ApiConfig.Profile.ME_BANNER;
+
+        doNothing().when(profileService).deleteMeBanner();
+
+        mockMvc
+            .perform(delete(path))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+
+        verify(profileService, times(1)).deleteMeBanner();
+    }
+
+    @Test
+    void ProfileController_DeleteMeBanner_Throw404ImageNotFound() throws Exception {
+        // api: DELETE /api/v1/profile/me/banner ==> 404 : ImageNotFound
+        String path = ApiConfig.Profile.ME_BANNER;
+
+        doThrow(new ImageNotFoundException()).when(profileService).deleteMeBanner();
+
+        String response = mockMvc
+            .perform(delete(path))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.IMAGE_NOT_FOUND,
+            null,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(profileService, times(1)).deleteMeBanner();
+    }
+
+    @Test
+    void ProfileController_DeleteMeBanner_Throw500CloudinaryDelete() throws Exception {
+        // api: DELETE /api/v1/profile/me/banner ==> 500 : CloudinaryDeleteOperation
+        String path = ApiConfig.Profile.ME_BANNER;
+
+        doThrow(new CloudinaryDeleteOperationException("Placeholder"))
+            .when(profileService).deleteMeBanner();
+
+        String response = mockMvc
+            .perform(delete(path))
+            .andDo(print())
+            .andExpect(status().isInternalServerError())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            ErrorMessageConfig.CLOUDINARY_SDK_ERROR,
+            "Placeholder",
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(profileService, times(1)).deleteMeBanner();
     }
 
     @Test
