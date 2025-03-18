@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,8 +47,8 @@ public class ProfileController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(ApiConfig.Profile.ME_AVATAR)
-    public ResponseEntity<Void> updateMeAvatar(@RequestBody MultipartFile file) {
+    @PostMapping(ApiConfig.Profile.ME_AVATAR)
+    public ResponseEntity<Void> updateMeAvatar(@RequestPart("file") MultipartFile file) {
         ImageValidator.validate(file);
         profileService.updateMeAvatar(file);
         return ResponseEntity.noContent().build();
@@ -59,8 +60,8 @@ public class ProfileController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(ApiConfig.Profile.ME_BANNER)
-    public ResponseEntity<Void> updateMeBanner(@RequestBody MultipartFile file) {
+    @PostMapping(ApiConfig.Profile.ME_BANNER)
+    public ResponseEntity<Void> updateMeBanner(@RequestPart("file") MultipartFile file) {
         ImageValidator.validate(file);
         profileService.updateMeBanner(file);
         return ResponseEntity.noContent().build();
