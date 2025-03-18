@@ -1,5 +1,7 @@
 package com.example.echo_api.persistence.dto.request.profile;
 
+import com.example.echo_api.config.ValidationMessageConfig;
+
 import jakarta.validation.constraints.Size;
 
 /**
@@ -15,13 +17,13 @@ import jakarta.validation.constraints.Size;
 // @formatter:off
 public record UpdateProfileDTO(
 
-    @Size(max = 50, message = "Name must not exceed 50 characters.")
+    @Size(max = 50, message = ValidationMessageConfig.NAME_TOO_LONG)
     String name,
 
-    @Size(max = 160, message = "Bio must not exceed 160 characters.")
+    @Size(max = 160, message = ValidationMessageConfig.BIO_TOO_LONG)
     String bio,
 
-    @Size(max = 30, message = "Location must not exceed 30 characters.")
+    @Size(max = 30, message = ValidationMessageConfig.LOCATION_TOO_LONG)
     String location
     
 ) {}

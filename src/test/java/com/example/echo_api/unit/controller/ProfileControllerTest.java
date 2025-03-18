@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.config.ValidationMessageConfig;
 import com.example.echo_api.controller.profile.ProfileController;
 import com.example.echo_api.exception.custom.relationship.AlreadyBlockingException;
 import com.example.echo_api.exception.custom.relationship.AlreadyFollowingException;
@@ -167,7 +168,7 @@ class ProfileControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.INVALID_REQUEST,
-            "Name must not exceed 50 characters.",
+            ValidationMessageConfig.NAME_TOO_LONG,
             path);
 
         ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
@@ -203,7 +204,7 @@ class ProfileControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.INVALID_REQUEST,
-            "Bio must not exceed 160 characters.",
+            ValidationMessageConfig.BIO_TOO_LONG,
             path);
 
         ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
@@ -239,7 +240,7 @@ class ProfileControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.INVALID_REQUEST,
-            "Location must not exceed 30 characters.",
+            ValidationMessageConfig.LOCATION_TOO_LONG,
             path);
 
         ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
