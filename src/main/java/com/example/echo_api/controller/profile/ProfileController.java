@@ -41,7 +41,7 @@ public class ProfileController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping(ApiConfig.Profile.ME)
+    @PutMapping(ApiConfig.Profile.ME_INFO)
     public ResponseEntity<Void> updateMeProfile(@RequestBody @Valid UpdateProfileDTO request) {
         profileService.updateMeProfile(request);
         return ResponseEntity.noContent().build();

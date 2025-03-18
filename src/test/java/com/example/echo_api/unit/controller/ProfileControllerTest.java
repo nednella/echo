@@ -146,9 +146,9 @@ class ProfileControllerTest {
     }
 
     @Test
-    void ProfileController_UpdateMe_Return204NoContent() throws Exception {
-        // api: PUT /api/v1/profile/me ==> 204 : No Content
-        String path = ApiConfig.Profile.ME;
+    void ProfileController_UpdateMeProfile_Return204NoContent() throws Exception {
+        // api: PUT /api/v1/profile/me/info ==> 204 : No Content
+        String path = ApiConfig.Profile.ME_INFO;
 
         UpdateProfileDTO request = new UpdateProfileDTO(
             "name",
@@ -170,9 +170,9 @@ class ProfileControllerTest {
     }
 
     @Test
-    void ProfileController_UpdateMe_Throw400InvalidRequest_NameExceeds50Characters() throws Exception {
-        // api: PUT /api/v1/profile/me ==> 400 : Invalid Request
-        String path = ApiConfig.Profile.ME;
+    void ProfileController_UpdateMeProfile_Throw400InvalidRequest_NameExceeds50Characters() throws Exception {
+        // api: PUT /api/v1/profile/me/info ==> 400 : Invalid Request
+        String path = ApiConfig.Profile.ME_INFO;
 
         UpdateProfileDTO request = new UpdateProfileDTO(
             "ThisNameIsTooLongBy......................1Character",
@@ -206,9 +206,9 @@ class ProfileControllerTest {
     }
 
     @Test
-    void ProfileController_UpdateMe_Throw400InvalidRequest_BioExceeds160Characters() throws Exception {
-        // api: PUT /api/v1/profile/me ==> 400 : Invalid Request
-        String path = ApiConfig.Profile.ME;
+    void ProfileController_UpdateMeProfile_Throw400InvalidRequest_BioExceeds160Characters() throws Exception {
+        // api: PUT /api/v1/profile/me/info ==> 400 : Invalid Request
+        String path = ApiConfig.Profile.ME_INFO;
 
         UpdateProfileDTO request = new UpdateProfileDTO(
             "name",
@@ -242,9 +242,9 @@ class ProfileControllerTest {
     }
 
     @Test
-    void ProfileController_UpdateMe_Throw400InvalidRequest_LocationExceeds30Characters() throws Exception {
-        // api: PUT /api/v1/profile/me ==> 400 : Invalid Request
-        String path = ApiConfig.Profile.ME;
+    void ProfileController_UpdateMeProfile_Throw400InvalidRequest_LocationExceeds30Characters() throws Exception {
+        // api: PUT /api/v1/profile/me/info ==> 400 : Invalid Request
+        String path = ApiConfig.Profile.ME_INFO;
 
         UpdateProfileDTO request = new UpdateProfileDTO(
             "name",
@@ -276,8 +276,6 @@ class ProfileControllerTest {
         assertEquals(expected, actual);
         verify(profileService, never()).updateMeProfile(request);
     }
-
-    // update avatar
 
     @Test
     void ProfileController_UpdateMeAvatar_Return204NoContent() throws Exception {
@@ -415,8 +413,6 @@ class ProfileControllerTest {
         verify(profileService, times(1)).updateMeAvatar(file);
     }
 
-    // delete avatar
-
     @Test
     void ProfileController_DeleteMeAvatar_Return204NoContent() throws Exception {
         // api: DELETE /api/v1/profile/me/avatar ==> 204 : No Content
@@ -486,8 +482,6 @@ class ProfileControllerTest {
         assertEquals(expected, actual);
         verify(profileService, times(1)).deleteMeAvatar();
     }
-
-    // update banner
 
     @Test
     void ProfileController_UpdateMeBanner_Return204NoContent() throws Exception {
@@ -628,8 +622,6 @@ class ProfileControllerTest {
         assertEquals(expected, actual);
         verify(profileService, times(1)).updateMeBanner(file);
     }
-
-    // delete banner
 
     @Test
     void ProfileController_DeleteMeBanner_Return204NoContent() throws Exception {
