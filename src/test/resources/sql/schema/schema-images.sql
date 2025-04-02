@@ -1,6 +1,6 @@
 CREATE TABLE
     IF NOT EXISTS "image" (
-        image_id           UUID PRIMARY KEY,
+        id                 UUID PRIMARY KEY,
         image_type         VARCHAR(20) NOT NULL,
         public_id          VARCHAR(255) NOT NULL,
         asset_id           VARCHAR(255) NOT NULL,
