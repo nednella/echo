@@ -32,10 +32,10 @@ class ProfileMapperTest {
             response.avatarUrl());
         assertEquals(profile.getBanner() != null ? profile.getBanner().getTransformedUrl() : null,
             response.bannerUrl());
-        assertEquals(metrics.followingCount(), response.metrics().followingCount());
-        assertEquals(metrics.followerCount(), response.metrics().followerCount());
-        assertEquals(metrics.postCount(), response.metrics().postCount());
-        assertEquals(metrics.mediaCount(), response.metrics().mediaCount());
+        assertEquals(metrics.following(), response.metrics().following());
+        assertEquals(metrics.followers(), response.metrics().followers());
+        assertEquals(metrics.posts(), response.metrics().posts());
+        assertEquals(metrics.media(), response.metrics().media());
         assertEquals(relationship.following(), response.relationship().following());
         assertEquals(relationship.followedBy(), response.relationship().followedBy());
         assertEquals(relationship.blocking(), response.relationship().blocking());

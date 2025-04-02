@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *                     format).
  * @param metrics      The profile metrics.
  * @param relationship The profile relationship between the requesting and the
- *                     requested profiles.
+ *                     requested profiles. Null if those profiles are the same.
  */
 // @formatter:off
 public record ProfileDTO(
