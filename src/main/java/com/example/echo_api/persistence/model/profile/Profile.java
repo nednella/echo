@@ -29,12 +29,12 @@ import lombok.NoArgsConstructor;
 public class Profile {
 
     @Id
-    @Column(name = "profile_id", unique = true, nullable = false)
-    private UUID id; // PK, FK
+    @Column(unique = true, nullable = false)
+    private UUID id;
 
     @Username
     @Column(unique = true, nullable = false)
-    private String username; // FK
+    private String username;
 
     private String name;
 

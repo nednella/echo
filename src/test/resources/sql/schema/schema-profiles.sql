@@ -1,6 +1,6 @@
 CREATE TABLE
     IF NOT EXISTS "profile" (
-        profile_id    UUID PRIMARY KEY,
+        id            UUID PRIMARY KEY,
         username      VARCHAR(15) UNIQUE NOT NULL,
         name          VARCHAR(50),
         bio           VARCHAR(160),
@@ -9,7 +9,7 @@ CREATE TABLE
         banner_id     UUID,
         created_at    TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated_at    TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        CONSTRAINT fk_profile_id FOREIGN KEY (profile_id) REFERENCES "account"(id) ON DELETE CASCADE,
+        CONSTRAINT fk_id FOREIGN KEY (id) REFERENCES "account"(id) ON DELETE CASCADE,
         CONSTRAINT fk_username FOREIGN KEY (username) REFERENCES "account"(username) ON UPDATE CASCADE,
         CONSTRAINT fk_avatar_id FOREIGN KEY (avatar_id) REFERENCES "image"(image_id) ON DELETE SET NULL,
         CONSTRAINT fk_banner_id FOREIGN KEY (banner_id) REFERENCES "image"(image_id) ON DELETE SET NULL
