@@ -15,13 +15,14 @@ public class ProfileMapper {
 
     public static ProfileDTO toDTO(Profile profile, MetricsDTO metrics, RelationshipDTO relationship) {
         return new ProfileDTO(
+            profile.getId() != null ? profile.getId().toString() : null,
             profile.getUsername(),
             profile.getName(),
             profile.getBio(),
             profile.getLocation(),
             profile.getAvatar() != null ? profile.getAvatar().getTransformedUrl() : null,
             profile.getBanner() != null ? profile.getBanner().getTransformedUrl() : null,
-            profile.getCreatedAt(),
+            profile.getCreatedAt() != null ? profile.getCreatedAt().toString() : null,
             metrics,
             relationship);
     }

@@ -24,6 +24,7 @@ class ProfileMapperTest {
         ProfileDTO response = ProfileMapper.toDTO(profile, metrics, relationship);
 
         assertNotNull(response);
+        assertEquals(account.getId() != null ? account.getId().toString() : null, response.id());
         assertEquals(account.getUsername(), response.username());
         assertEquals(profile.getName(), response.name());
         assertEquals(profile.getBio(), response.bio());
