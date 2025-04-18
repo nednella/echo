@@ -12,50 +12,53 @@ import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDT
 public interface CustomProfileRepository {
 
     /**
-     * Find the necessary information to build a {@link ProfileDTO} by {@code id}.
-     * 
-     * @param id                  The id to search within the repository.
-     * @param authenticatedUserId The id of the authenticated user.
-     * @return An {@link Optional} containing a {@link ProfileDTO} if found, else
+     * Retrieves a {@link ProfileDTO} for the profile with the specified ID.
+     *
+     * @param id                  the id of the target profile to query.
+     * @param authenticatedUserId the id of the authenticated user, required for
+     *                            obtaining user relationships.
+     * @return an {@link Optional} containing the {@link ProfileDTO} if found, else
      *         empty.
      */
-    Optional<ProfileDTO> findProfileDtoForId(UUID id, UUID authenticatedUserId);
+    Optional<ProfileDTO> findProfileDtoById(UUID id, UUID authenticatedUserId);
 
     /**
-     * Find the necessary information to build a {@link ProfileDTO} by
-     * {@code username}.
-     * 
-     * @param username            The username to search within the repository.
-     * @param authenticatedUserId The id of the authenticated user.
-     * @return An {@link Optional} containing a {@link ProfileDTO} if found, else
+     * Retrieves a {@link ProfileDTO} for the profile with the specified username.
+     *
+     * @param id                  the username of the target profile to query.
+     * @param authenticatedUserId the id of the authenticated user, required for
+     *                            obtaining user relationships.
+     * @return an {@link Optional} containing the {@link ProfileDTO} if found, else
      *         empty.
      */
-    Optional<ProfileDTO> findProfileDtoForUsername(String username, UUID authenticatedUserId);
+    Optional<ProfileDTO> findProfileDtoByUsername(String username, UUID authenticatedUserId);
 
     /**
-     * Find the necessary information to build a {@link Page} of {@link ProfileDTO}
-     * for each user following the queried profile by {@code id}.
-     * 
-     * @param id                  The id of the target profile to search within the
-     *                            repository.
-     * @param authenticatedUserId The id of the authenticated user.
-     * @param p                   The pagination config for the query.
-     * @return A {@link Page} of {@link ProfileDTO} ordered by follow date (newest
-     *         first).
+     * Retrieves a paginated list of {@link SimplifiedProfileDTO} for users who
+     * follow the profile with the specified ID.
+     *
+     * @param id                  The id of the target profile whose followers are
+     *                            retrieved.
+     * @param authenticatedUserId The id of the authenticated user, required for
+     *                            obtaining user relationships.
+     * @param pageable            The pagination and sorting configuration.
+     * @return a {@link Page} of {@link SimplifiedProfileDTO} ordered by follow date
+     *         (newest first).
      */
-    Page<SimplifiedProfileDTO> findAllFollowersSimplifiedProfileDtoForId(UUID id, UUID authenticatedUserId, Pageable p);
+    Page<SimplifiedProfileDTO> findFollowerDtosById(UUID id, UUID authenticatedUserId, Pageable p);
 
     /**
-     * Find the necessary information to build a {@link Page} of {@link ProfileDTO}
-     * for each user followed by the queried profile by {@code id}.
-     * 
-     * @param id                  The id of the target profile to search within the
-     *                            repository.
-     * @param authenticatedUserId The id of the authenticated user.
-     * @param p                   The pagination config for the query.
-     * @return A {@link Page} of {@link ProfileDTO} ordered by follow date (newest
-     *         first).
+     * Retrieves a paginated list of {@link SimplifiedProfileDTO} for users who are
+     * followed by the profile with the specified ID.
+     *
+     * @param id                  The id of the target profile whose followed users
+     *                            are retrieved.
+     * @param authenticatedUserId The id of the authenticated user, required for
+     *                            obtaining user relationships.
+     * @param pageable            The pagination and sorting configuration.
+     * @return a {@link Page} of {@link SimplifiedProfileDTO} ordered by follow date
+     *         (newest first).
      */
-    Page<SimplifiedProfileDTO> findAllFollowingSimplifiedProfileDtoForId(UUID id, UUID authenticatedUserId, Pageable p);
+    Page<SimplifiedProfileDTO> findFollowingDtosById(UUID id, UUID authenticatedUserId, Pageable p);
 
 }
