@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
+import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
 
 public interface CustomProfileRepository {
 
@@ -42,7 +43,7 @@ public interface CustomProfileRepository {
      * @return A {@link Page} of {@link ProfileDTO} ordered by follow date (newest
      *         first).
      */
-    Page<ProfileDTO> findAllFollowersProfileDtoForId(UUID id, UUID authenticatedUserId, Pageable p);
+    Page<SimplifiedProfileDTO> findAllFollowersSimplifiedProfileDtoForId(UUID id, UUID authenticatedUserId, Pageable p);
 
     /**
      * Find the necessary information to build a {@link Page} of {@link ProfileDTO}
@@ -55,6 +56,6 @@ public interface CustomProfileRepository {
      * @return A {@link Page} of {@link ProfileDTO} ordered by follow date (newest
      *         first).
      */
-    Page<ProfileDTO> findAllFollowingProfileDtoForId(UUID id, UUID authenticatedUserId, Pageable p);
+    Page<SimplifiedProfileDTO> findAllFollowingSimplifiedProfileDtoForId(UUID id, UUID authenticatedUserId, Pageable p);
 
 }
