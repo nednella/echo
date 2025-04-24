@@ -1,5 +1,7 @@
 package com.example.echo_api.service.account;
 
+import java.util.UUID;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,16 @@ public class AccountServiceImpl implements AccountService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    public boolean existsById(UUID id) {
+        return accountRepository.existsById(id);
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return accountRepository.existsByUsername(username);
+    }
+
+    @Override
     public Account register(String username, String password) throws UsernameAlreadyExistsException {
         return registerWithRole(username, password, Role.USER);
     }
@@ -52,11 +64,6 @@ public class AccountServiceImpl implements AccountService {
         profileRepository.save(profile);
 
         return account;
-    }
-
-    @Override
-    public boolean isUsernameAvailable(String username) {
-        return !existsByUsername(username);
     }
 
     @Override
@@ -87,21 +94,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     /**
-     * Internal method for checking whether a {@link Account} exists with the
-     * supplied {@code username}.
-     * 
-     * @param username The username to check against.
-     * @return A boolean indicating a user's existence.
-     */
-    private boolean existsByUsername(String username) {
-        return accountRepository.existsByUsername(username);
-    }
-
-    /**
-     * Internal method for obtaining a {@link Account} associated to the
+     * Internal method for obtaining an {@link Account} associated to the
      * authenticated user.
      * 
-     * @return The found {@link Account}.
+     * @return The associated {@link Account} entity.
      */
     private Account getMe() {
         return sessionService.getAuthenticatedUser();
