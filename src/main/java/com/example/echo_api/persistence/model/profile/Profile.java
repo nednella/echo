@@ -64,9 +64,9 @@ public class Profile {
 
     // ---- constructors ----
 
-    public Profile(Account account) {
-        this.id = account.getId();
-        this.username = account.getUsername();
+    public Profile(UUID id, String username) {
+        this.id = id;
+        this.username = username;
     }
 
     // ---- setters ----

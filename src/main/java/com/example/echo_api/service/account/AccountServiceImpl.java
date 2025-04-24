@@ -48,7 +48,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = new Account(username, passwordEncoder.encode(password), role);
         accountRepository.save(account);
 
-        Profile profile = new Profile(account);
+        Profile profile = new Profile(account.getId(), account.getUsername());
         profileRepository.save(profile);
 
         return account;
