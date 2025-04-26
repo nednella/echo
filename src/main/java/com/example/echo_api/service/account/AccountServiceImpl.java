@@ -12,7 +12,6 @@ import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.repository.AccountRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
-import com.example.echo_api.service.profile.ProfileService;
 import com.example.echo_api.service.session.SessionService;
 
 import lombok.RequiredArgsConstructor;
