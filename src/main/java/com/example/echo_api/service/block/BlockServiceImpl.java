@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
-import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.exception.custom.relationship.AlreadyBlockingException;
 import com.example.echo_api.exception.custom.relationship.NotBlockingException;
 import com.example.echo_api.exception.custom.relationship.SelfActionException;
@@ -30,7 +29,7 @@ public class BlockServiceImpl implements BlockService {
     @Override
     public void block(Profile source, Profile target) throws SelfActionException, AlreadyBlockingException {
         if (isSelfAction(source, target)) {
-            throw new SelfActionException(ErrorMessageConfig.SELF_BLOCK);
+            throw new SelfActionException();
         }
         if (isBlocking(source, target)) {
             throw new AlreadyBlockingException();
@@ -42,7 +41,7 @@ public class BlockServiceImpl implements BlockService {
     @Override
     public void unblock(Profile source, Profile target) throws SelfActionException, NotBlockingException {
         if (isSelfAction(source, target)) {
-            throw new SelfActionException(ErrorMessageConfig.SELF_UNBLOCK);
+            throw new SelfActionException();
         }
         if (!isBlocking(source, target)) {
             throw new NotBlockingException();

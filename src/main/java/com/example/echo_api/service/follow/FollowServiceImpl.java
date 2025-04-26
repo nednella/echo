@@ -5,7 +5,6 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.exception.custom.relationship.AlreadyFollowingException;
 import com.example.echo_api.exception.custom.relationship.NotFollowingException;
 import com.example.echo_api.exception.custom.relationship.SelfActionException;
@@ -32,7 +31,7 @@ public class FollowServiceImpl implements FollowService {
     @Transactional
     public void follow(Profile source, Profile target) throws SelfActionException, AlreadyFollowingException {
         if (isSelfAction(source, target)) {
-            throw new SelfActionException(ErrorMessageConfig.SELF_FOLLOW);
+            throw new SelfActionException();
         }
         if (isFollowing(source, target)) {
             throw new AlreadyFollowingException();
@@ -45,7 +44,7 @@ public class FollowServiceImpl implements FollowService {
     @Transactional
     public void unfollow(Profile source, Profile target) throws SelfActionException, NotFollowingException {
         if (isSelfAction(source, target)) {
-            throw new SelfActionException(ErrorMessageConfig.SELF_UNFOLLOW);
+            throw new SelfActionException();
         }
         if (!isFollowing(source, target)) {
             throw new NotFollowingException();
