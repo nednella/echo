@@ -1,4 +1,4 @@
-package com.example.echo_api.service.relationship.follow;
+package com.example.echo_api.service.follow;
 
 import com.example.echo_api.exception.custom.relationship.AlreadyFollowingException;
 import com.example.echo_api.exception.custom.relationship.NotFollowingException;

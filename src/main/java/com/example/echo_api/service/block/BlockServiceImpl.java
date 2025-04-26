@@ -1,4 +1,4 @@
-package com.example.echo_api.service.relationship.block;
+package com.example.echo_api.service.block;
 
 import java.util.Objects;
 
