@@ -28,7 +28,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
 
     // @formatter:off
     @Override
-    public Optional<ProfileDTO> findProfileDtoById(UUID id, UUID authenticatedUserId) {
+    public Optional<ProfileDTO> findProfileDtoById(@NonNull UUID id, @NonNull UUID authenticatedUserId) {
         String sql = """
             WITH profile_data AS (
                 SELECT
@@ -97,7 +97,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
 
     // @formatter:off
     @Override
-    public Optional<ProfileDTO> findProfileDtoByUsername(String username, UUID authenticatedUserId) {
+    public Optional<ProfileDTO> findProfileDtoByUsername(@NonNull String username, @NonNull UUID authenticatedUserId) {
         String sql = """
             WITH profile_data AS (
                 SELECT
@@ -166,7 +166,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
 
     // @formatter:off
     @Override
-    public Page<SimplifiedProfileDTO> findFollowerDtosById(UUID id, UUID authenticatedUserId, Pageable p) {
+    public Page<SimplifiedProfileDTO> findFollowerDtosById(@NonNull UUID id, @NonNull UUID authenticatedUserId, @NonNull Pageable p) {
         String followersSql = """
             WITH paginated_followers AS (
                 SELECT
@@ -247,7 +247,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
 
     // @formatter:off
     @Override
-    public Page<SimplifiedProfileDTO> findFollowingDtosById(UUID id, UUID authenticatedUserId, Pageable p) {
+    public Page<SimplifiedProfileDTO> findFollowingDtosById(@NonNull UUID id, @NonNull UUID authenticatedUserId, @NonNull Pageable p) {
         String followingSql = """
             WITH paginated_following AS (
                 SELECT

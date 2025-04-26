@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
 import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
@@ -20,7 +21,7 @@ public interface CustomProfileRepository {
      * @return an {@link Optional} containing the {@link ProfileDTO} if found, else
      *         empty.
      */
-    Optional<ProfileDTO> findProfileDtoById(UUID id, UUID authenticatedUserId);
+    Optional<ProfileDTO> findProfileDtoById(@NonNull UUID id, @NonNull UUID authenticatedUserId);
 
     /**
      * Retrieves a {@link ProfileDTO} for the profile with the specified username.
@@ -31,7 +32,7 @@ public interface CustomProfileRepository {
      * @return an {@link Optional} containing the {@link ProfileDTO} if found, else
      *         empty.
      */
-    Optional<ProfileDTO> findProfileDtoByUsername(String username, UUID authenticatedUserId);
+    Optional<ProfileDTO> findProfileDtoByUsername(@NonNull String username, @NonNull UUID authenticatedUserId);
 
     /**
      * Retrieves a paginated list of {@link SimplifiedProfileDTO} for users who
@@ -45,7 +46,8 @@ public interface CustomProfileRepository {
      * @return a {@link Page} of {@link SimplifiedProfileDTO} ordered by follow date
      *         (newest first).
      */
-    Page<SimplifiedProfileDTO> findFollowerDtosById(UUID id, UUID authenticatedUserId, Pageable p);
+    Page<SimplifiedProfileDTO> findFollowerDtosById(@NonNull UUID id, @NonNull UUID authenticatedUserId,
+        @NonNull Pageable p);
 
     /**
      * Retrieves a paginated list of {@link SimplifiedProfileDTO} for users who are
@@ -59,6 +61,7 @@ public interface CustomProfileRepository {
      * @return a {@link Page} of {@link SimplifiedProfileDTO} ordered by follow date
      *         (newest first).
      */
-    Page<SimplifiedProfileDTO> findFollowingDtosById(UUID id, UUID authenticatedUserId, Pageable p);
+    Page<SimplifiedProfileDTO> findFollowingDtosById(@NonNull UUID id, @NonNull UUID authenticatedUserId,
+        @NonNull Pageable p);
 
 }
