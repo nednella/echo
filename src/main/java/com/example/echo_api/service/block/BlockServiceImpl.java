@@ -1,14 +1,12 @@
 package com.example.echo_api.service.block;
 
-import java.util.Objects;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import com.example.echo_api.exception.custom.relationship.AlreadyBlockingException;
 import com.example.echo_api.exception.custom.relationship.NotBlockingException;
-import com.example.echo_api.exception.custom.relationship.SelfActionException;
 import com.example.echo_api.persistence.model.block.Block;
-import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.BlockRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -27,10 +25,7 @@ public class BlockServiceImpl implements BlockService {
     private final BlockRepository blockRepository;
 
     @Override
-    public void block(Profile source, Profile target) throws SelfActionException, AlreadyBlockingException {
-        if (isSelfAction(source, target)) {
-            throw new SelfActionException();
-        }
+    public void block(UUID source, UUID target) throws AlreadyBlockingException {
         if (isBlocking(source, target)) {
             throw new AlreadyBlockingException();
         }
@@ -39,10 +34,7 @@ public class BlockServiceImpl implements BlockService {
     }
 
     @Override
-    public void unblock(Profile source, Profile target) throws SelfActionException, NotBlockingException {
-        if (isSelfAction(source, target)) {
-            throw new SelfActionException();
-        }
+    public void unblock(UUID source, UUID target) throws NotBlockingException {
         if (!isBlocking(source, target)) {
             throw new NotBlockingException();
         }
@@ -51,24 +43,21 @@ public class BlockServiceImpl implements BlockService {
     }
 
     @Override
-    public boolean isBlocking(Profile source, Profile target) {
-        return blockRepository.existsByBlockerIdAndBlockingId(source.getId(), target.getId());
-    }
-
-    @Override
-    public boolean isBlockedBy(Profile source, Profile target) {
-        return isBlocking(target, source);
+    public boolean existsAnyBlockBetween(UUID profileId1, UUID profileId2) {
+        return blockRepository.existsAnyBlockBetween(profileId1, profileId2);
     }
 
     /**
-     * Internal method for checking if {@link Profile} pairs match.
+     * Internal method to check if a one-way block exists from the blocker to the
+     * blocked profile.
      * 
-     * @param source The source {@link Profile}.
-     * @param target The target {@link Profile}.
-     * @return Boolean indicating whether the profiles are a match.
+     * @param source The id of the profile initiating the block.
+     * @param target The id of the profile being blocked.
+     * @return True if a unidirectional block exists from source to target, else
+     *         false.
      */
-    private boolean isSelfAction(Profile source, Profile target) {
-        return Objects.equals(source.getId(), target.getId());
+    private boolean isBlocking(UUID source, UUID target) {
+        return blockRepository.existsByBlockerIdAndBlockingId(source, target);
     }
 
 }
