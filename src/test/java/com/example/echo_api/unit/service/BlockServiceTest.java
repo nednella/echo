@@ -1,9 +1,9 @@
 package com.example.echo_api.unit.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import java.lang.reflect.Field;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -16,12 +16,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.example.echo_api.exception.custom.relationship.AlreadyBlockingException;
 import com.example.echo_api.exception.custom.relationship.NotBlockingException;
 import com.example.echo_api.exception.custom.relationship.SelfActionException;
-import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.block.Block;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.BlockRepository;
-import com.example.echo_api.service.relationship.block.BlockService;
-import com.example.echo_api.service.relationship.block.BlockServiceImpl;
+import com.example.echo_api.service.block.BlockService;
+import com.example.echo_api.service.block.BlockServiceImpl;
 
 /**
  * Unit test class for {@link BlockService}.
@@ -39,23 +38,14 @@ class BlockServiceTest {
     private static Profile target;
 
     @BeforeAll
-    static void setup() throws Exception {
-        Account sourceAcc = new Account("source", "test");
-        source = new Profile(sourceAcc);
-
-        Account targetAcc = new Account("target", "test");
-        target = new Profile(targetAcc);
-
-        // set ids with reflection
-        Field idField = Profile.class.getDeclaredField("id");
-        idField.setAccessible(true);
-        idField.set(source, UUID.randomUUID());
-        idField.set(target, UUID.randomUUID());
+    static void setup() {
+        source = new Profile(UUID.randomUUID(), "source");
+        target = new Profile(UUID.randomUUID(), "target");
     }
 
     /**
-     * Test ensures that {@link BlockServiceImpl#block(Profile, Profile)} does not
-     * throw any exceptions when called.
+     * Test ensures that {@link BlockServiceImpl#block(UUID, UUID)} does not throw
+     * any exceptions when called.
      */
     @Test
     void BlockService_Block_ReturnVoid() {
@@ -63,27 +53,27 @@ class BlockServiceTest {
         when(blockRepository.existsByBlockerIdAndBlockingId(source.getId(), target.getId())).thenReturn(false);
 
         // act & assert
-        assertDoesNotThrow(() -> blockService.block(source, target));
+        assertDoesNotThrow(() -> blockService.block(source.getId(), target.getId()));
         verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getId(), target.getId());
         verify(blockRepository, times(1)).save(any(Block.class));
     }
 
     /**
-     * Test ensures that {@link BlockServiceImpl#block(Profile, Profile)} throws
-     * {@link SelfActionException} when called with two identical profiles.
+     * Test ensures that {@link BlockServiceImpl#block(UUID, UUID)} throws
+     * {@link SelfActionException} when called with two identical profile ids.
      */
     @Test
     void BlockService_Block_ThrowSelfActionException() {
         // act & assert
-        assertThrows(SelfActionException.class, () -> blockService.block(source, source));
-        verify(blockRepository, times(0)).existsByBlockerIdAndBlockingId(source.getId(), target.getId());
+        assertThrows(SelfActionException.class, () -> blockService.block(source.getId(), source.getId()));
+        verify(blockRepository, times(0)).existsByBlockerIdAndBlockingId(source.getId(), source.getId());
         verify(blockRepository, times(0)).save(any(Block.class));
     }
 
     /**
-     * Test ensures that {@link BlockServiceImpl#block(Profile, Profile)} throws
-     * {@link AlreadyBlockingException} when called with a source profile that
-     * already blocks the target profile.
+     * Test ensures that {@link BlockServiceImpl#block(UUID, UUID)} throws
+     * {@link AlreadyBlockingException} when called with a source profile id that
+     * already blocks the target profile id.
      */
     @Test
     void BlockService_Block_ThrowAlreadyBlockingException() {
@@ -91,14 +81,14 @@ class BlockServiceTest {
         when(blockRepository.existsByBlockerIdAndBlockingId(source.getId(), target.getId())).thenReturn(true);
 
         // act & assert
-        assertThrows(AlreadyBlockingException.class, () -> blockService.block(source, target));
+        assertThrows(AlreadyBlockingException.class, () -> blockService.block(source.getId(), target.getId()));
         verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getId(), target.getId());
         verify(blockRepository, times(0)).save(any(Block.class));
     }
 
     /**
-     * Test ensures that {@link BlockServiceImpl#unblock(Profile, Profile)} does not
-     * throw any exceptions when called.
+     * Test ensures that {@link BlockServiceImpl#unblock(UUID, UUID)} does not throw
+     * any exceptions when called.
      */
     @Test
     void BlockService_Unblock_ReturnVoid() {
@@ -106,27 +96,27 @@ class BlockServiceTest {
         when(blockRepository.existsByBlockerIdAndBlockingId(source.getId(), target.getId())).thenReturn(true);
 
         // act & assert
-        assertDoesNotThrow(() -> blockService.unblock(source, target));
+        assertDoesNotThrow(() -> blockService.unblock(source.getId(), target.getId()));
         verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getId(), target.getId());
         verify(blockRepository, times(1)).delete(any(Block.class));
     }
 
     /**
-     * Test ensures that {@link BlockServiceImpl#unblock(Profile, Profile)} throws
-     * {@link SelfActionException} when called with two identical profiles.
+     * Test ensures that {@link BlockServiceImpl#unblock(UUID, UUID)} throws
+     * {@link SelfActionException} when called with two identical profile ids.
      */
     @Test
     void BlockService_Unblock_ThrowSelfActionException() {
         // act & assert
-        assertThrows(SelfActionException.class, () -> blockService.unblock(source, source));
-        verify(blockRepository, times(0)).existsByBlockerIdAndBlockingId(source.getId(), target.getId());
+        assertThrows(SelfActionException.class, () -> blockService.unblock(source.getId(), source.getId()));
+        verify(blockRepository, times(0)).existsByBlockerIdAndBlockingId(source.getId(), source.getId());
         verify(blockRepository, times(0)).delete(any(Block.class));
     }
 
     /**
-     * Test ensures that {@link BlockServiceImpl#unblock(Profile, Profile)} throws
-     * {@link NotBlockingException} when called with a source profile that does not
-     * block the target profile.
+     * Test ensures that {@link BlockServiceImpl#unblock(UUID, UUID)} throws
+     * {@link NotBlockingException} when called with a source profile id that does
+     * not block the target profile id.
      */
     @Test
     void BlockService_Unblock_ThrowNotBlockingException() {
@@ -134,78 +124,45 @@ class BlockServiceTest {
         when(blockRepository.existsByBlockerIdAndBlockingId(source.getId(), target.getId())).thenReturn(false);
 
         // act & assert
-        assertThrows(NotBlockingException.class, () -> blockService.unblock(source, target));
+        assertThrows(NotBlockingException.class, () -> blockService.unblock(source.getId(), target.getId()));
         verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getId(), target.getId());
         verify(blockRepository, times(0)).delete(any(Block.class));
     }
 
     /**
-     * Test ensures that {@link BlockServiceImpl#isBlocking(Profile, Profile)}
-     * returns true when the source profile is already blocking the target profile.
+     * Test ensures that {@link BlockServiceImpl#existsAnyBlockBetween(UUID, UUID)}
+     * returns true when called with two profile ids that share an established block
+     * relationship (can be unidrectional or bidirectional).
      */
     @Test
-    void BlockService_IsBlocking_ReturnTrue() {
+    void BlockService_ExistsAnyBlockBetween_ReturnTrue() {
         // arrange
-        when(blockRepository.existsByBlockerIdAndBlockingId(source.getId(), target.getId())).thenReturn(true);
+        when(blockRepository.existsAnyBlockBetween(source.getId(), target.getId())).thenReturn(true);
 
         // act
-        boolean isBlocking = blockService.isBlocking(source, target);
+        boolean exists = blockService.existsAnyBlockBetween(source.getId(), target.getId());
 
         // assert
-        assertTrue(isBlocking);
-        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getId(), target.getId());
+        assertTrue(exists);
+        verify(blockRepository, times(1)).existsAnyBlockBetween(source.getId(), target.getId());
     }
 
     /**
-     * Test ensures that {@link BlockServiceImpl#isBlocking(Profile, Profile)}
-     * returns false when the source profile is not blocking the target profile.
+     * Test ensures that {@link BlockServiceImpl#existsAnyBlockBetween(UUID, UUID)}
+     * returns true when called with two profile ids that do not share an
+     * established block relationship (unidrectional or bidirectional).
      */
     @Test
-    void BlockService_IsBlocking_ReturnFalse() {
+    void BlockService_ExistsAnyBlockBetween_ReturnFalse() {
         // arrange
-        when(blockRepository.existsByBlockerIdAndBlockingId(source.getId(), target.getId())).thenReturn(false);
+        when(blockRepository.existsAnyBlockBetween(source.getId(), target.getId())).thenReturn(false);
 
         // act
-        boolean isBlocking = blockService.isBlocking(source, target);
+        boolean exists = blockService.existsAnyBlockBetween(source.getId(), target.getId());
 
         // assert
-        assertFalse(isBlocking);
-        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(source.getId(), target.getId());
-    }
-
-    /**
-     * Test ensures that {@link BlockServiceImpl#isBlockedBy(Profile, Profile)}
-     * returns true when the source profile is already blocked by the target
-     * profile.
-     */
-    @Test
-    void BlockService_IsBlockedBy_ReturnTrue() {
-        // arrange
-        when(blockRepository.existsByBlockerIdAndBlockingId(target.getId(), source.getId())).thenReturn(true);
-
-        // act
-        boolean isBlockedBy = blockService.isBlockedBy(source, target);
-
-        // assert
-        assertTrue(isBlockedBy);
-        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(target.getId(), source.getId());
-    }
-
-    /**
-     * Test ensures that {@link BlockServiceImpl#isBlockedBy(Profile, Profile)}
-     * returns false when the source profile is not blocked by the target profile.
-     */
-    @Test
-    void BlockService_IsBlockedBy_ReturnFalse() {
-        // arrange
-        when(blockRepository.existsByBlockerIdAndBlockingId(target.getId(), source.getId())).thenReturn(false);
-
-        // act
-        boolean isBlockedBy = blockService.isBlockedBy(source, target);
-
-        // assert
-        assertFalse(isBlockedBy);
-        verify(blockRepository, times(1)).existsByBlockerIdAndBlockingId(target.getId(), source.getId());
+        assertFalse(exists);
+        verify(blockRepository, times(1)).existsAnyBlockBetween(source.getId(), target.getId());
     }
 
 }
