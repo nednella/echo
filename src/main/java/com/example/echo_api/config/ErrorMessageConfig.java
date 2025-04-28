@@ -34,10 +34,10 @@ public final class ErrorMessageConfig {
     /* 401 UNAUTHORISED */
     public static final String UNAUTHORISED = "Unauthorised request.";
     public static final String ACCOUNT_STATUS = "Account status is abnormal.";
-    public static final String BLOCKED = "Action prohibited - this user has blocked you.";
 
     /* 403 FORBIDDEN */
     public static final String FORBIDDEN = "Access denied.";
+    public static final String BLOCKED = "You are blocking/blocked from this action.";
 
     /* 404 RESOURCE NOT FOUND */
     public static final String NOT_FOUND = "Resource not found.";

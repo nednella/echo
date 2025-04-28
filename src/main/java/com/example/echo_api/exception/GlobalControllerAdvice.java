@@ -134,7 +134,7 @@ public class GlobalControllerAdvice extends AbstractControllerAdvice {
     }
 
     /* 401 */
-    @ExceptionHandler({ InsufficientAuthenticationException.class, BlockedException.class })
+    @ExceptionHandler({ InsufficientAuthenticationException.class })
     ResponseEntity<ErrorDTO> handleInsufficientAuthenticationException(HttpServletRequest request, Exception ex) {
         log.debug("Handling exception: {}", ex.getMessage());
 
@@ -142,11 +142,11 @@ public class GlobalControllerAdvice extends AbstractControllerAdvice {
             request,
             HttpStatus.UNAUTHORIZED,
             ErrorMessageConfig.UNAUTHORISED,
-            ex instanceof BlockedException ? ex.getMessage() : null);
+            null);
     }
 
     /* 403 */
-    @ExceptionHandler({ AccessDeniedException.class })
+    @ExceptionHandler({ AccessDeniedException.class, BlockedException.class })
     ResponseEntity<ErrorDTO> handleAccessDeniedException(HttpServletRequest request, Exception ex) {
         log.debug("Handling exception: {}", ex.getMessage());
 
@@ -154,7 +154,7 @@ public class GlobalControllerAdvice extends AbstractControllerAdvice {
             request,
             HttpStatus.FORBIDDEN,
             ErrorMessageConfig.FORBIDDEN,
-            null);
+            ex instanceof BlockedException ? ex.getMessage() : null);
     }
 
     /* 404 */
