@@ -3,7 +3,6 @@ package com.example.echo_api.unit.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.lang.reflect.Field;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -16,12 +15,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.example.echo_api.exception.custom.relationship.AlreadyFollowingException;
 import com.example.echo_api.exception.custom.relationship.NotFollowingException;
 import com.example.echo_api.exception.custom.relationship.SelfActionException;
-import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.follow.Follow;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.FollowRepository;
-import com.example.echo_api.service.relationship.follow.FollowService;
-import com.example.echo_api.service.relationship.follow.FollowServiceImpl;
+import com.example.echo_api.service.follow.FollowService;
+import com.example.echo_api.service.follow.FollowServiceImpl;
 
 /**
  * Unit test class for {@link FollowService}.
@@ -39,23 +37,14 @@ class FollowServiceTest {
     private static Profile target;
 
     @BeforeAll
-    static void setup() throws Exception {
-        Account sourceAcc = new Account("source", "test");
-        source = new Profile(sourceAcc);
-
-        Account targetAcc = new Account("target", "test");
-        target = new Profile(targetAcc);
-
-        // set ids with reflection
-        Field idField = Profile.class.getDeclaredField("id");
-        idField.setAccessible(true);
-        idField.set(source, UUID.randomUUID());
-        idField.set(target, UUID.randomUUID());
+    static void setup() {
+        source = new Profile(UUID.randomUUID(), "source");
+        target = new Profile(UUID.randomUUID(), "target");
     }
 
     /**
-     * Test ensures that {@link FollowServiceImpl#follow(Profile, Profile)} does not
-     * throw any exceptions when called.
+     * Test ensures that {@link FollowServiceImpl#follow(UUID, UUID)} does not throw
+     * any exceptions when called.
      */
     @Test
     void FollowService_Follow_ReturnVoid() {
@@ -63,27 +52,27 @@ class FollowServiceTest {
         when(followRepository.existsByFollowerIdAndFollowingId(source.getId(), target.getId())).thenReturn(false);
 
         // act & assert
-        assertDoesNotThrow(() -> followService.follow(source, target));
+        assertDoesNotThrow(() -> followService.follow(source.getId(), target.getId()));
         verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(source.getId(), target.getId());
         verify(followRepository, times(1)).save(any(Follow.class));
     }
 
     /**
-     * Test ensures that {@link FollowServiceImpl#follow(Profile, Profile)} throws
-     * {@link SelfActionException} when called with two identical profiles.
+     * Test ensures that {@link FollowServiceImpl#follow(UUID, UUID)} throws
+     * {@link SelfActionException} when called with two identical profile ids.
      */
     @Test
     void FollowService_Follow_ThrowSelfActionException() {
         // act & assert
-        assertThrows(SelfActionException.class, () -> followService.follow(source, source));
-        verify(followRepository, times(0)).existsByFollowerIdAndFollowingId(source.getId(), target.getId());
+        assertThrows(SelfActionException.class, () -> followService.follow(source.getId(), source.getId()));
+        verify(followRepository, times(0)).existsByFollowerIdAndFollowingId(source.getId(), source.getId());
         verify(followRepository, times(0)).save(any(Follow.class));
     }
 
     /**
-     * Test ensures that {@link FollowServiceImpl#follow(Profile, Profile)} throws
-     * {@link AlreadyFollowingException} when called with a source profile that
-     * already follows the target profile.
+     * Test ensures that {@link FollowServiceImpl#follow(UUID, UUID)} throws
+     * {@link AlreadyFollowingException} when called with a source profile id that
+     * already follows the target profile id.
      */
     @Test
     void FollowService_Follow_ThrowAlreadyFollowingException() {
@@ -91,14 +80,14 @@ class FollowServiceTest {
         when(followRepository.existsByFollowerIdAndFollowingId(source.getId(), target.getId())).thenReturn(true);
 
         // act & assert
-        assertThrows(AlreadyFollowingException.class, () -> followService.follow(source, target));
+        assertThrows(AlreadyFollowingException.class, () -> followService.follow(source.getId(), target.getId()));
         verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(source.getId(), target.getId());
         verify(followRepository, times(0)).save(any(Follow.class));
     }
 
     /**
-     * Test ensures that {@link FollowServiceImpl#unfollow(Profile, Profile)} does
-     * not throw any exceptions when called.
+     * Test ensures that {@link FollowServiceImpl#unfollow(UUID, UUID)} does not
+     * throw any exceptions when called.
      */
     @Test
     void FollowService_Unfollow_ReturnVoid() {
@@ -106,25 +95,25 @@ class FollowServiceTest {
         when(followRepository.existsByFollowerIdAndFollowingId(source.getId(), target.getId())).thenReturn(true);
 
         // act & assert
-        assertDoesNotThrow(() -> followService.unfollow(source, target));
+        assertDoesNotThrow(() -> followService.unfollow(source.getId(), target.getId()));
         verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(source.getId(), target.getId());
         verify(followRepository, times(1)).delete(any(Follow.class));
     }
 
     /**
-     * Test ensures that {@link FollowServiceImpl#unfollow(Profile, Profile)} throws
-     * {@link SelfActionException} when called with two identical profiles.
+     * Test ensures that {@link FollowServiceImpl#unfollow(UUID, UUID)} throws
+     * {@link SelfActionException} when called with two identical profile ids.
      */
     @Test
     void FollowService_Unfollow_ThrowSelfActionException() {
         // act & assert
-        assertThrows(SelfActionException.class, () -> followService.unfollow(source, source));
+        assertThrows(SelfActionException.class, () -> followService.unfollow(source.getId(), source.getId()));
         verify(followRepository, times(0)).existsByFollowerIdAndFollowingId(source.getId(), target.getId());
         verify(followRepository, times(0)).delete(any(Follow.class));
     }
 
     /**
-     * Test ensures that {@link FollowServiceImpl#follow(Profile, Profile)} throws
+     * Test ensures that {@link FollowServiceImpl#follow(UUID, UUID)} throws
      * {@link NotFollowingException} when called with a source profile that does not
      * follow the target profile.
      */
@@ -134,78 +123,24 @@ class FollowServiceTest {
         when(followRepository.existsByFollowerIdAndFollowingId(source.getId(), target.getId())).thenReturn(false);
 
         // act & assert
-        assertThrows(NotFollowingException.class, () -> followService.unfollow(source, target));
+        assertThrows(NotFollowingException.class, () -> followService.unfollow(source.getId(), target.getId()));
         verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(source.getId(), target.getId());
         verify(followRepository, times(0)).delete(any(Follow.class));
     }
 
     /**
-     * Test ensures that {@link FollowServiceImpl#isFollowing(Profile, Profile)}
-     * returns true when the source profile is already following the target profile.
+     * Test ensures that
+     * {@link FollowServiceImpl#mutualUnfollowIfExists(UUID, UUID)} does not throw
+     * any exceptions when called.
      */
     @Test
-    void FollowService_IsFollowing_ReturnTrue() {
+    void FollowService_MutualUnfollowIfExists_ReturnVoid() {
         // arrange
-        when(followRepository.existsByFollowerIdAndFollowingId(source.getId(), target.getId())).thenReturn(true);
+        doNothing().when(followRepository).deleteAnyFollowIfExists(source.getId(), target.getId());
 
-        // act
-        boolean isFollowing = followService.isFollowing(source, target);
-
-        // assert
-        assertTrue(isFollowing);
-        verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(source.getId(), target.getId());
-    }
-
-    /**
-     * Test ensures that {@link FollowServiceImpl#isFollowing(Profile, Profile)}
-     * returns false when the source profile is not following the target profile.
-     */
-    @Test
-    void FollowService_IsFollowing_ReturnFalse() {
-        // arrange
-        when(followRepository.existsByFollowerIdAndFollowingId(source.getId(), target.getId())).thenReturn(false);
-
-        // act
-        boolean isFollowing = followService.isFollowing(source, target);
-
-        // assert
-        assertFalse(isFollowing);
-        verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(source.getId(), target.getId());
-    }
-
-    /**
-     * Test ensures that {@link FollowServiceImpl#isFollowedBy(Profile, Profile)}
-     * returns true when the source profile is already followed by the target
-     * profile.
-     */
-    @Test
-    void FollowService_IsFollowedBy_ReturnTrue() {
-        // arrange
-        when(followRepository.existsByFollowerIdAndFollowingId(target.getId(), source.getId())).thenReturn(true);
-
-        // act
-        boolean isFollowedBy = followService.isFollowedBy(source, target);
-
-        // assert
-        assertTrue(isFollowedBy);
-        verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(target.getId(), source.getId());
-    }
-
-    /**
-     * Test ensures that {@link FollowServiceImpl#isFollowedBy(Profile, Profile)}
-     * returns true when the source profile is not followed by the target profile.
-     */
-    @Test
-    void FollowService_IsFollowedBy_ReturnFalse() {
-        // arrange
-        when(followRepository.existsByFollowerIdAndFollowingId(target.getId(), source.getId())).thenReturn(false);
-
-        // act
-        boolean isFollowedBy = followService.isFollowedBy(source, target);
-
-        // assert
-        assertFalse(isFollowedBy);
-        verify(followRepository, times(1)).existsByFollowerIdAndFollowingId(target.getId(), source.getId());
+        // act & assert
+        assertDoesNotThrow(() -> followRepository.deleteAnyFollowIfExists(source.getId(), target.getId()));
+        verify(followRepository, times(1)).deleteAnyFollowIfExists(source.getId(), target.getId());
     }
 
 }
