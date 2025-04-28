@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.example.echo_api.exception.custom.relationship.AlreadyFollowingException;
 import com.example.echo_api.exception.custom.relationship.NotFollowingException;
+import com.example.echo_api.exception.custom.relationship.SelfActionException;
 import com.example.echo_api.persistence.model.follow.Follow;
 import com.example.echo_api.persistence.model.profile.Profile;
 
@@ -15,10 +16,12 @@ public interface FollowService {
      * 
      * @param source The id of the initiating {@link Profile}.
      * @param target The id of the target {@link Profile}.
+     * @throws SelfActionException       If the {@code source} and {@code target}
+     *                                   profile ids are equal.
      * @throws AlreadyFollowingException If the {@code source} profile already
      *                                   follows the {@code target} profile.
      */
-    public void follow(UUID source, UUID target) throws AlreadyFollowingException;
+    public void follow(UUID source, UUID target) throws SelfActionException, AlreadyFollowingException;
 
     /**
      * Deletes a {@link Follow} relationship between {@code source} and
@@ -26,10 +29,12 @@ public interface FollowService {
      * 
      * @param source The id of the initiating {@link Profile}.
      * @param target The id of the target {@link Profile}.
+     * @throws SelfActionException   If the {@code source} and {@code target}
+     *                               profile ids are equal.
      * @throws NotFollowingException If the {@code source} profile doesn't already
      *                               follow the {@code target} profile.
      */
-    public void unfollow(UUID source, UUID target) throws NotFollowingException;
+    public void unfollow(UUID source, UUID target) throws SelfActionException, NotFollowingException;
 
     /**
      * Delete any follow relationship that exists between two profiles in either

@@ -1,5 +1,6 @@
 package com.example.echo_api.service.follow;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -7,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.echo_api.exception.custom.relationship.AlreadyFollowingException;
 import com.example.echo_api.exception.custom.relationship.NotFollowingException;
+import com.example.echo_api.exception.custom.relationship.SelfActionException;
 import com.example.echo_api.persistence.model.follow.Follow;
 import com.example.echo_api.persistence.repository.FollowRepository;
 
@@ -27,6 +29,8 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public void follow(UUID source, UUID target) throws AlreadyFollowingException {
+        validateNoSelfAction(source, target);
+
         if (isFollowing(source, target)) {
             throw new AlreadyFollowingException();
         }
@@ -36,6 +40,8 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public void unfollow(UUID source, UUID target) throws NotFollowingException {
+        validateNoSelfAction(source, target);
+
         if (!isFollowing(source, target)) {
             throw new NotFollowingException();
         }
@@ -47,6 +53,20 @@ public class FollowServiceImpl implements FollowService {
     @Transactional
     public void mutualUnfollowIfExists(UUID profileId1, UUID profileId2) {
         followRepository.deleteAnyFollowIfExists(profileId1, profileId2);
+    }
+
+    /**
+     * Internal method for validating that the requested action is not being
+     * performed on oneself, as such an action would throw a db exception.
+     * 
+     * @param source The source profile id.
+     * @param target The target profile id.
+     * @throws SelfActionException If arguments are equal.
+     */
+    private void validateNoSelfAction(UUID source, UUID target) throws SelfActionException {
+        if (Objects.equals(source, target)) {
+            throw new SelfActionException();
+        }
     }
 
     /**

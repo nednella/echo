@@ -1,11 +1,13 @@
 package com.example.echo_api.service.block;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import com.example.echo_api.exception.custom.relationship.AlreadyBlockingException;
 import com.example.echo_api.exception.custom.relationship.NotBlockingException;
+import com.example.echo_api.exception.custom.relationship.SelfActionException;
 import com.example.echo_api.persistence.model.block.Block;
 import com.example.echo_api.persistence.repository.BlockRepository;
 
@@ -26,6 +28,8 @@ public class BlockServiceImpl implements BlockService {
 
     @Override
     public void block(UUID source, UUID target) throws AlreadyBlockingException {
+        validateNoSelfAction(source, target);
+
         if (isBlocking(source, target)) {
             throw new AlreadyBlockingException();
         }
@@ -35,6 +39,8 @@ public class BlockServiceImpl implements BlockService {
 
     @Override
     public void unblock(UUID source, UUID target) throws NotBlockingException {
+        validateNoSelfAction(source, target);
+
         if (!isBlocking(source, target)) {
             throw new NotBlockingException();
         }
@@ -45,6 +51,20 @@ public class BlockServiceImpl implements BlockService {
     @Override
     public boolean existsAnyBlockBetween(UUID profileId1, UUID profileId2) {
         return blockRepository.existsAnyBlockBetween(profileId1, profileId2);
+    }
+
+    /**
+     * Internal method for validating that the requested action is not being
+     * performed on oneself, as such an action would throw a db exception.
+     * 
+     * @param source The source profile id.
+     * @param target The target profile id.
+     * @throws SelfActionException If arguments are equal.
+     */
+    private void validateNoSelfAction(UUID source, UUID target) throws SelfActionException {
+        if (Objects.equals(source, target)) {
+            throw new SelfActionException();
+        }
     }
 
     /**

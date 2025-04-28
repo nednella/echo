@@ -1,12 +1,10 @@
 package com.example.echo_api.service.profile.interaction;
 
-import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import com.example.echo_api.exception.custom.relationship.BlockedException;
-import com.example.echo_api.exception.custom.relationship.SelfActionException;
 import com.example.echo_api.exception.custom.username.UsernameNotFoundException;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.profile.Profile;
@@ -43,9 +41,8 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
     public void follow(String username) throws UsernameNotFoundException {
         Profile target = getProfileByUsername(username); // validate existence of username
         Account source = getAuthenticatedUser();
-        validateNoSelfAction(source.getId(), target.getId());
-        validateNoBlock(source.getId(), target.getId()); // validate the interaction is allowed
 
+        validateNoBlock(source.getId(), target.getId()); // validate the interaction is allowed
         followService.follow(source.getId(), target.getId());
     }
 
@@ -53,7 +50,6 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
     public void unfollow(String username) throws UsernameNotFoundException {
         Profile target = getProfileByUsername(username); // validate existence of username
         Account source = getAuthenticatedUser();
-        validateNoSelfAction(source.getId(), target.getId());
 
         followService.unfollow(source.getId(), target.getId());
     }
@@ -62,7 +58,6 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
     public void block(String username) throws UsernameNotFoundException {
         Profile target = getProfileByUsername(username); // validate existence of username
         Account source = getAuthenticatedUser();
-        validateNoSelfAction(source.getId(), target.getId());
 
         followService.mutualUnfollowIfExists(source.getId(), target.getId()); // remove follows before blocking
         blockService.block(source.getId(), target.getId());
@@ -72,23 +67,8 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
     public void unblock(String username) throws UsernameNotFoundException {
         Profile target = getProfileByUsername(username); // validate existence of username
         Account source = getAuthenticatedUser();
-        validateNoSelfAction(source.getId(), target.getId());
 
         blockService.unblock(source.getId(), target.getId());
-    }
-
-    /**
-     * Internal method for validating that the requested action is not being
-     * performed on oneself, as such an action would throw a db exception.
-     * 
-     * @param source The source profile id.
-     * @param target The target profile id.
-     * @throws SelfActionException If arguments are equal.
-     */
-    private void validateNoSelfAction(UUID source, UUID target) throws SelfActionException {
-        if (Objects.equals(source, target)) {
-            throw new SelfActionException();
-        }
     }
 
     /**
