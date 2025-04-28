@@ -5,9 +5,9 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.example.echo_api.exception.custom.account.IdNotFoundException;
 import com.example.echo_api.exception.custom.relationship.BlockedException;
 import com.example.echo_api.exception.custom.relationship.SelfActionException;
+import com.example.echo_api.exception.custom.username.UsernameNotFoundException;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
@@ -40,39 +40,39 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
     // @formatter:on
 
     @Override
-    public void follow(UUID id) throws IdNotFoundException {
-        Profile target = getProfileById(id); // validate existence of id
+    public void follow(String username) throws UsernameNotFoundException {
+        Profile target = getProfileByUsername(username); // validate existence of username
         Account source = getAuthenticatedUser();
-        validateNotSelfAction(source.getId(), target.getId());
+        validateNoSelfAction(source.getId(), target.getId());
         validateNoBlock(source.getId(), target.getId()); // validate the interaction is allowed
 
         followService.follow(source.getId(), target.getId());
     }
 
     @Override
-    public void unfollow(UUID id) throws IdNotFoundException {
-        Profile target = getProfileById(id); // validate existence of id
+    public void unfollow(String username) throws UsernameNotFoundException {
+        Profile target = getProfileByUsername(username); // validate existence of username
         Account source = getAuthenticatedUser();
-        validateNotSelfAction(source.getId(), target.getId());
+        validateNoSelfAction(source.getId(), target.getId());
 
         followService.unfollow(source.getId(), target.getId());
     }
 
     @Override
-    public void block(UUID id) throws IdNotFoundException {
-        Profile target = getProfileById(id); // validate existence of id
+    public void block(String username) throws UsernameNotFoundException {
+        Profile target = getProfileByUsername(username); // validate existence of username
         Account source = getAuthenticatedUser();
-        validateNotSelfAction(source.getId(), target.getId());
+        validateNoSelfAction(source.getId(), target.getId());
 
         followService.mutualUnfollowIfExists(source.getId(), target.getId()); // remove follows before blocking
         blockService.block(source.getId(), target.getId());
     }
 
     @Override
-    public void unblock(UUID id) throws IdNotFoundException {
-        Profile target = getProfileById(id); // validate existence of id
+    public void unblock(String username) throws UsernameNotFoundException {
+        Profile target = getProfileByUsername(username); // validate existence of username
         Account source = getAuthenticatedUser();
-        validateNotSelfAction(source.getId(), target.getId());
+        validateNoSelfAction(source.getId(), target.getId());
 
         blockService.unblock(source.getId(), target.getId());
     }
@@ -85,7 +85,7 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
      * @param target The target profile id.
      * @throws SelfActionException If arguments are equal.
      */
-    private void validateNotSelfAction(UUID source, UUID target) throws SelfActionException {
+    private void validateNoSelfAction(UUID source, UUID target) throws SelfActionException {
         if (Objects.equals(source, target)) {
             throw new SelfActionException();
         }

@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Pageable;
 
-import com.example.echo_api.exception.custom.account.IdNotFoundException;
 import com.example.echo_api.exception.custom.username.UsernameNotFoundException;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
@@ -24,9 +23,9 @@ public interface ProfileViewService {
      * 
      * @param id The id of the profile to query.
      * @return A {@link ProfileDTO} resembling the queried profile.
-     * @throws IdNotFoundException If no profile by that id exists.
+     * @throws UsernameNotFoundException If no profile by that id exists.
      */
-    public ProfileDTO getById(UUID id) throws IdNotFoundException;
+    public ProfileDTO getById(UUID id) throws UsernameNotFoundException;
 
     /**
      * Fetch a {@link ProfileDTO} by {@code username}.
@@ -39,26 +38,26 @@ public interface ProfileViewService {
 
     /**
      * Fetch a {@link PageDTO} of {@link SimplifiedProfileDTO} for the followers
-     * list of the supplied {@code id} and {@code page} parameters.
+     * list of the supplied {@code username} and {@code page} parameters.
      * 
-     * @param id   The id of the profile to query.
-     * @param page The {@link Pageable} containing the pagination parameters.
+     * @param username The username of the profile to query.
+     * @param page     The {@link Pageable} containing the pagination parameters.
      * @return A {@link PageDTO} of {@link SimplifiedProfileDTO} for matches,
      *         otherwise empty.
-     * @throws IdNotFoundException If no profile by that id exists.
+     * @throws UsernameNotFoundException If no profile by that username exists.
      */
-    public PageDTO<SimplifiedProfileDTO> getFollowers(UUID id, Pageable page) throws IdNotFoundException;
+    public PageDTO<SimplifiedProfileDTO> getFollowers(String username, Pageable page) throws UsernameNotFoundException;
 
     /**
      * Fetch a {@link PageDTO} of {@link SimplifiedProfileDTO} for the following
-     * list of the supplied {@code id} and {@code page} parameters.
+     * list of the supplied {@code username} and {@code page} parameters.
      * 
-     * @param id   The id of the profile to query.
-     * @param page The {@link Pageable} containing the pagination parameters.
+     * @param username The username of the profile to query.
+     * @param page     The {@link Pageable} containing the pagination parameters.
      * @return A {@link PageDTO} of {@link SimplifiedProfileDTO} for matches,
      *         otherwise empty.
-     * @throws IdNotFoundException If no profile by that id exists.
+     * @throws UsernameNotFoundException If no profile by that username exists.
      */
-    public PageDTO<SimplifiedProfileDTO> getFollowing(UUID id, Pageable page) throws IdNotFoundException;
+    public PageDTO<SimplifiedProfileDTO> getFollowing(String username, Pageable page) throws UsernameNotFoundException;
 
 }

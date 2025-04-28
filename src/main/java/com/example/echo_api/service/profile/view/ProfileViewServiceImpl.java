@@ -65,8 +65,8 @@ public class ProfileViewServiceImpl extends BaseProfileService implements Profil
     }
 
     @Override
-    public PageDTO<SimplifiedProfileDTO> getFollowers(UUID id, Pageable page) throws IdNotFoundException {
-        Profile target = getProfileById(id); // validate existence of id
+    public PageDTO<SimplifiedProfileDTO> getFollowers(String username, Pageable page) throws UsernameNotFoundException {
+        Profile target = getProfileByUsername(username); // validate existence of username
         Account me = getAuthenticatedUser();
 
         Page<SimplifiedProfileDTO> query = profileRepository.findFollowerDtosById(
@@ -80,8 +80,8 @@ public class ProfileViewServiceImpl extends BaseProfileService implements Profil
     }
 
     @Override
-    public PageDTO<SimplifiedProfileDTO> getFollowing(UUID id, Pageable page) throws IdNotFoundException {
-        Profile target = getProfileById(id); // validate existence of id
+    public PageDTO<SimplifiedProfileDTO> getFollowing(String username, Pageable page) throws UsernameNotFoundException {
+        Profile target = getProfileByUsername(username); // validate existence of username
         Account me = getAuthenticatedUser();
 
         Page<SimplifiedProfileDTO> query = profileRepository.findFollowingDtosById(
