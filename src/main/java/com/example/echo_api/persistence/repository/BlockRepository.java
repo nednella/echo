@@ -32,8 +32,8 @@ public interface BlockRepository extends ListCrudRepository<Block, BlockPK> {
     @Query("""
         SELECT CASE WHEN COUNT(b) > 0 THEN TRUE ELSE FALSE END
         FROM Block b
-        WHERE (b.blockerId = :profileId1 AND b.blockedId = :profileId2)
-           OR (b.blockerId = :profileId2 AND b.blockedId = :profileId1)
+        WHERE (b.blockerId = :profileId1 AND b.blockingId = :profileId2)
+           OR (b.blockerId = :profileId2 AND b.blockingId = :profileId1)
         """)
     boolean existsAnyBlockBetween(@Param("profileId1") UUID profileId1, @Param("profileId2") UUID profileId2);
 
