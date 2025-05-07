@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Pageable;
 
+import com.example.echo_api.exception.custom.account.IdNotFoundException;
 import com.example.echo_api.exception.custom.username.UsernameNotFoundException;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
@@ -23,9 +24,9 @@ public interface ProfileViewService {
      * 
      * @param id The id of the profile to query.
      * @return A {@link ProfileDTO} resembling the queried profile.
-     * @throws UsernameNotFoundException If no profile by that id exists.
+     * @throws IdNotFoundException If no profile by that id exists.
      */
-    public ProfileDTO getById(UUID id) throws UsernameNotFoundException;
+    public ProfileDTO getById(UUID id) throws IdNotFoundException;
 
     /**
      * Fetch a {@link ProfileDTO} by {@code username}.
