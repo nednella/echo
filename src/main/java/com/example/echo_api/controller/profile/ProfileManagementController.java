@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.echo_api.config.ApiConfig;
-import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
+import com.example.echo_api.persistence.dto.request.profile.UpdateInformationDTO;
 import com.example.echo_api.service.profile.management.ProfileManagementService;
 import com.example.echo_api.util.validator.ImageValidator;
 
@@ -26,7 +26,7 @@ public class ProfileManagementController {
     private final ProfileManagementService profileManagementService;
 
     @PutMapping(ApiConfig.Profile.ME_INFO)
-    public ResponseEntity<Void> updateInformation(@RequestBody @Valid UpdateProfileDTO request) {
+    public ResponseEntity<Void> updateInformation(@RequestBody @Valid UpdateInformationDTO request) {
         profileManagementService.updateInformation(request);
         return ResponseEntity.noContent().build();
     }

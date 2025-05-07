@@ -15,7 +15,7 @@ import jakarta.validation.constraints.Size;
  *                 characters.
  */
 // @formatter:off
-public record UpdateProfileDTO(
+public record UpdateInformationDTO(
 
     @Size(max = 50, message = ValidationMessageConfig.NAME_TOO_LONG)
     String name,

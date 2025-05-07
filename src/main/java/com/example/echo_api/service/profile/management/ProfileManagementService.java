@@ -4,7 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.echo_api.exception.custom.cloudinary.CloudinaryException;
 import com.example.echo_api.exception.custom.image.ImageException;
-import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
+import com.example.echo_api.persistence.dto.request.profile.UpdateInformationDTO;
 import com.example.echo_api.persistence.model.image.Image;
 
 public interface ProfileManagementService {
@@ -17,7 +17,7 @@ public interface ProfileManagementService {
      * 
      * @param request The request DTO containing the updated profile information.
      */
-    public void updateInformation(UpdateProfileDTO request);
+    public void updateInformation(UpdateInformationDTO request);
 
     /**
      * Updates the profile avatar image of the authenticated user.

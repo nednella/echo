@@ -5,7 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.echo_api.exception.custom.cloudinary.CloudinaryException;
 import com.example.echo_api.exception.custom.image.ImageException;
-import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
+import com.example.echo_api.persistence.dto.request.profile.UpdateInformationDTO;
 import com.example.echo_api.persistence.model.image.Image;
 import com.example.echo_api.persistence.model.image.ImageType;
 import com.example.echo_api.persistence.model.profile.Profile;
@@ -35,7 +35,7 @@ public class ProfileManagementServiceImpl extends BaseProfileService implements 
     // @formatter:on
 
     @Override
-    public void updateInformation(UpdateProfileDTO request) {
+    public void updateInformation(UpdateInformationDTO request) {
         Profile me = getAuthenticatedUserProfile();
         me.setName(request.name());
         me.setBio(request.bio());
