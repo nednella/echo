@@ -28,6 +28,9 @@ import com.example.echo_api.service.session.SessionService;
 @ExtendWith(MockitoExtension.class)
 class AccountServiceTest {
 
+    @InjectMocks
+    private AccountServiceImpl accountService;
+
     @Mock
     private SessionService sessionService;
 
@@ -40,13 +43,10 @@ class AccountServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
-    @InjectMocks
-    private AccountServiceImpl accountService;
-
     private static Account account;
 
     @BeforeAll
-    void setup() {
+    static void setup() {
         account = new Account("testUsername", "testPassword");
     }
 
