@@ -311,7 +311,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
             new SimplifiedProfileDtoRowMapper()
         );
 
-        String countSql = "SELECT COUNT(*) FROM follow f WHERE f.following_id = :id";
+        String countSql = "SELECT COUNT(*) FROM follow f WHERE f.follower_id = :id";
 
         MapSqlParameterSource countParams = new MapSqlParameterSource()
             .addValue("id", id);
