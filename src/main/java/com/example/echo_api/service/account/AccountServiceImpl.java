@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 /**
  * Service implementation for managing CRUD operations of a {@link Account}.
  * 
- * @see ProfileService
  * @see SessionService
  * @see AccountRepository
  * @see PasswordEncoder
