@@ -12,6 +12,7 @@ import com.example.echo_api.validation.account.annotations.Username;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
@@ -29,40 +30,43 @@ import lombok.NoArgsConstructor;
 public class Profile {
 
     @Id
-    @Column(name = "profile_id", unique = true, nullable = false)
-    private UUID id; // PK, FK
+    @Column(unique = true, nullable = false)
+    private UUID id;
 
     @Username
     @Column(unique = true, nullable = false)
-    private String username; // FK
+    private String username;
 
+    @Column(length = 50)
     private String name;
 
+    @Column(length = 160)
     private String bio;
 
+    @Column(length = 30)
     private String location;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "avatar_id")
     private Image avatar;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "banner_id")
     private Image banner;
 
     @CreationTimestamp
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
     // ---- constructors ----
 
-    public Profile(Account account) {
-        this.id = account.getId();
-        this.username = account.getUsername();
+    public Profile(UUID id, String username) {
+        this.id = id;
+        this.username = username;
     }
 
     // ---- setters ----

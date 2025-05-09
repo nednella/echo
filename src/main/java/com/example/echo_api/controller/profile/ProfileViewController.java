@@ -1,0 +1,61 @@
+package com.example.echo_api.controller.profile;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.echo_api.config.ApiConfig;
+import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
+import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
+import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
+import com.example.echo_api.service.profile.view.ProfileViewService;
+import com.example.echo_api.util.pagination.OffsetLimitRequest;
+import com.example.echo_api.validation.pagination.annotations.Limit;
+import com.example.echo_api.validation.pagination.annotations.Offset;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequiredArgsConstructor
+@Validated
+public class ProfileViewController {
+
+    private final ProfileViewService profileViewService;
+
+    @GetMapping(ApiConfig.Profile.ME)
+    public ResponseEntity<ProfileDTO> getMe() {
+        return ResponseEntity.ok(profileViewService.getSelf());
+    }
+
+    @GetMapping(ApiConfig.Profile.GET_BY_USERNAME)
+    public ResponseEntity<ProfileDTO> getByUsername(@PathVariable("username") String username) {
+        return ResponseEntity.ok(profileViewService.getByUsername(username));
+    }
+
+    // @formatter:off
+    @GetMapping(ApiConfig.Profile.GET_FOLLOWERS_BY_USERNAME)
+    public ResponseEntity<PageDTO<SimplifiedProfileDTO>> getFollowers(
+        @PathVariable("username") String username,
+        @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
+        @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
+    ) {
+        Pageable page = new OffsetLimitRequest(offset, limit);
+        return ResponseEntity.ok(profileViewService.getFollowers(username, page));
+    }
+
+    @GetMapping(ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME)
+    public ResponseEntity<PageDTO<SimplifiedProfileDTO>> getFollowing(
+        @PathVariable("username") String username,
+        @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
+        @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
+    ) {
+        Pageable page = new OffsetLimitRequest(offset, limit);
+        return ResponseEntity.ok(profileViewService.getFollowing(username, page));
+    }
+    // @formatter:on
+
+}

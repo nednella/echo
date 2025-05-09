@@ -27,7 +27,6 @@ public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "image_id")
     private UUID id;
 
     @Enumerated(EnumType.STRING)

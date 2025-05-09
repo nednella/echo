@@ -1,7 +1,5 @@
 package com.example.echo_api.persistence.dto.response.profile;
 
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Represents a standardised response format for a user profile.
  *
+ * @param id           The id of the account associated to the profile
  * @param username     The username of the account associated to the profile.
  * @param name         The profile name.
  * @param bio          The profile bio.
@@ -19,10 +18,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *                     format).
  * @param metrics      The profile metrics.
  * @param relationship The profile relationship between the requesting and the
- *                     requested profiles.
+ *                     requested profiles. Null if those profiles are the same.
  */
 // @formatter:off
 public record ProfileDTO(
+    String id,
     String username,
     String name,
     String bio,
@@ -32,31 +32,5 @@ public record ProfileDTO(
     @JsonProperty("created_at") String createdAt,
     MetricsDTO metrics,
     @JsonInclude(Include.NON_NULL) RelationshipDTO relationship
-) {
-
-    public ProfileDTO(
-        String username,
-        String name,
-        String bio,
-        String location,
-        String avatarUrl,
-        String bannerUrl,
-        LocalDateTime createdAt,
-        MetricsDTO metrics,
-        RelationshipDTO relationship
-    ) {
-        this(
-            username,
-            name,
-            bio,
-            location,
-            avatarUrl,
-            bannerUrl,
-            createdAt != null ? createdAt.toString() : null,
-            metrics,
-            relationship
-        );
-    }
-
-}
+) {}
 // @formatter:on

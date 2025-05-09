@@ -35,9 +35,9 @@ public class Follow {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    public Follow(Profile follower, Profile following) {
-        this.followerId = follower.getId();
-        this.followingId = following.getId();
+    public Follow(UUID source, UUID target) {
+        this.followerId = source;
+        this.followingId = target;
     }
 
 }

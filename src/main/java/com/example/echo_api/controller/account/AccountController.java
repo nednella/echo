@@ -26,8 +26,7 @@ public class AccountController {
 
     @GetMapping(ApiConfig.Account.USERNAME_AVAILABLE)
     public ResponseEntity<Boolean> isUsernameAvailable(@RequestParam("username") String username) {
-        boolean available = accountService.isUsernameAvailable(username);
-        return ResponseEntity.ok(available);
+        return ResponseEntity.ok(!accountService.existsByUsername(username));
     }
 
     @PutMapping(ApiConfig.Account.UPDATE_USERNAME)

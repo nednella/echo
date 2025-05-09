@@ -7,7 +7,7 @@ package com.example.echo_api.exception.custom.relationship;
 public abstract class RelationshipException extends RuntimeException {
 
     /**
-     * Constructs a {@code SocialContextException} with the specified message and no
+     * Constructs a {@code RelationshipException} with the specified message and no
      * root cause.
      * 
      * @param msg The detail message.

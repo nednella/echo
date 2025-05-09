@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,6 +28,9 @@ import com.example.echo_api.service.session.SessionService;
 @ExtendWith(MockitoExtension.class)
 class AccountServiceTest {
 
+    @InjectMocks
+    private AccountServiceImpl accountService;
+
     @Mock
     private SessionService sessionService;
 
@@ -40,17 +43,79 @@ class AccountServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
-    @InjectMocks
-    private AccountServiceImpl accountService;
+    private static Account account;
 
-    private Account account;
+    @BeforeAll
+    static void setup() {
+        account = new Account("testUsername", "testPassword");
+    }
 
     /**
-     * Sets up a {@link Account} object before each test.
+     * Test ensures that the {@link AccountServiceImpl#existsById(UUID)} method
+     * returns true when the id exists in the repository.
      */
-    @BeforeEach
-    public void initUser() {
-        account = new Account("testUsername", "testPassword");
+    @Test
+    void AccountService_ExistsById_ReturnTrue() {
+        // arrange
+        when(accountRepository.existsById(account.getId())).thenReturn(true);
+
+        // act
+        boolean exists = accountService.existsById(account.getId());
+
+        // assert
+        assertTrue(exists);
+        verify(accountRepository, times(1)).existsById(account.getId());
+    }
+
+    /**
+     * Test ensures that the {@link AccountServiceImpl#existsById(UUID)} method
+     * returns false when the id does not exist in the repository.
+     */
+    @Test
+    void AccountService_ExistsById_ReturnFalse() {
+        // arrange
+        when(accountRepository.existsById(account.getId())).thenReturn(false);
+
+        // act
+        boolean exists = accountService.existsById(account.getId());
+
+        // assert
+        assertFalse(exists);
+        verify(accountRepository, times(1)).existsById(account.getId());
+    }
+
+    /**
+     * Test ensures that the {@link AccountServiceImpl#existsByUsername(String)}
+     * method returns true when the username exists in the repository.
+     */
+    @Test
+    void AccountService_ExistsByUsername_ReturnTrue() {
+        // arrange
+        when(accountRepository.existsByUsername(account.getUsername())).thenReturn(true);
+
+        // act
+        boolean exists = accountService.existsByUsername(account.getUsername());
+
+        // assert
+        assertTrue(exists);
+        verify(accountRepository, times(1)).existsByUsername(account.getUsername());
+    }
+
+    /**
+     * Test ensures that the {@link AccountServiceImpl#existsByUsername(String)}
+     * method returns false when the username exists in the repository.
+     */
+    @Test
+    void AccountService_ExistsByUsername_ReturnFalse() {
+        // arrange
+        when(accountRepository.existsByUsername(account.getUsername())).thenReturn(false);
+
+        // act
+        boolean exists = accountService.existsByUsername(account.getUsername());
+
+        // assert
+        assertFalse(exists);
+        verify(accountRepository, times(1)).existsByUsername(account.getUsername());
     }
 
     /**
@@ -87,40 +152,6 @@ class AccountServiceTest {
         // act & assert
         assertThrows(UsernameAlreadyExistsException.class,
             () -> accountService.register(account.getUsername(), account.getPassword()));
-        verify(accountRepository, times(1)).existsByUsername(account.getUsername());
-    }
-
-    /**
-     * Test ensures that the {@link AccountServiceImpl#isUsernameAvailable(String)}
-     * method returns true when the username exists in the repository.
-     */
-    @Test
-    void AccountService_IsUsernameAvailable_ReturnTrue() {
-        // arrange
-        when(accountRepository.existsByUsername(account.getUsername())).thenReturn(true);
-
-        // act
-        boolean taken = accountService.isUsernameAvailable(account.getUsername());
-
-        // assert
-        assertFalse(taken);
-        verify(accountRepository, times(1)).existsByUsername(account.getUsername());
-    }
-
-    /**
-     * Test ensures that the {@link AccountServiceImpl#existsByUsername(String)}
-     * method returns false when the username does not exist in the repository.
-     */
-    @Test
-    void AccountService_IsUsernameAvailable_ReturnFalse() {
-        // arrange
-        when(accountRepository.existsByUsername(account.getUsername())).thenReturn(false);
-
-        // act
-        boolean taken = accountService.isUsernameAvailable(account.getUsername());
-
-        // assert
-        assertTrue(taken);
         verify(accountRepository, times(1)).existsByUsername(account.getUsername());
     }
 

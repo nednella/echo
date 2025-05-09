@@ -1,5 +1,7 @@
 package com.example.echo_api.service.account;
 
+import java.util.UUID;
+
 import com.example.echo_api.exception.custom.password.IncorrectCurrentPasswordException;
 import com.example.echo_api.exception.custom.username.UsernameAlreadyExistsException;
 import com.example.echo_api.persistence.model.account.Role;
@@ -7,6 +9,22 @@ import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.profile.Profile;
 
 public interface AccountService {
+
+    /**
+     * Check whether an {@link Account} exists by {@code id}.
+     * 
+     * @param id The id to check.
+     * @return True if an account exists, else false.
+     */
+    public boolean existsById(UUID id);
+
+    /**
+     * Check whether an {@link Account} exists by {@code username}.
+     * 
+     * @param username The username to check.
+     * @return True if an account exists, else false.
+     */
+    public boolean existsByUsername(String username);
 
     /**
      * Registers a new {@link Account} with the specified {@code username} and
@@ -38,15 +56,6 @@ public interface AccountService {
      * @throws UsernameAlreadyExistsException If the username is already taken.
      */
     public Account registerWithRole(String username, String password, Role role) throws UsernameAlreadyExistsException;
-
-    /**
-     * Returns a boolean indicating whether the supplied {@code username} is
-     * available.
-     * 
-     * @param username The username to check for availability.
-     * @return A boolean indicating the availability.
-     */
-    public boolean isUsernameAvailable(String username);
 
     /**
      * Updates the authenticated account username.

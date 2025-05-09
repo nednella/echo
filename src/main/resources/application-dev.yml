@@ -12,6 +12,7 @@ spring:
 
     sql:
         init:
+            schema-locations: classpath:sql/schema/schema-*.sql
             mode: always
 
     docker:

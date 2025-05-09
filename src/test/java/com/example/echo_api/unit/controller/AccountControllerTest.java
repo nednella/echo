@@ -50,7 +50,7 @@ class AccountControllerTest {
      * Sets up a {@link Account} object before each test.
      */
     @BeforeEach
-    public void setup() {
+    void setup() {
         testAccount = new Account(
             "testUsername",
             "testPassword");
@@ -61,8 +61,8 @@ class AccountControllerTest {
         // api: GET /api/v1/account/username-available?username={...} ==> 200 : True
         String path = ApiConfig.Account.USERNAME_AVAILABLE;
 
-        when(accountService.isUsernameAvailable(testAccount.getUsername()))
-            .thenReturn(true);
+        when(accountService.existsByUsername(testAccount.getUsername()))
+            .thenReturn(false);
 
         String response = mockMvc
             .perform(get(path)
@@ -81,8 +81,8 @@ class AccountControllerTest {
         // api: GET /api/v1/account/username-available?username={...} ==> 200 : False
         String path = ApiConfig.Account.USERNAME_AVAILABLE;
 
-        when(accountService.isUsernameAvailable(testAccount.getUsername()))
-            .thenReturn(false);
+        when(accountService.existsByUsername(testAccount.getUsername()))
+            .thenReturn(true);
 
         String response = mockMvc
             .perform(get(path)

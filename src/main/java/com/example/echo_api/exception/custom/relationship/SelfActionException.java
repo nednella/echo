@@ -1,5 +1,7 @@
 package com.example.echo_api.exception.custom.relationship;
 
+import com.example.echo_api.config.ErrorMessageConfig;
+
 /**
  * Thrown if a HTTP request is rejected because the authenticated user tries to
  * create/delete a relationship with their own profile.
@@ -7,12 +9,10 @@ package com.example.echo_api.exception.custom.relationship;
 public class SelfActionException extends RelationshipException {
 
     /**
-     * Constructs a {@code InvalidRelationshipException} with the specified message.
-     * 
-     * @param msg The error message.
+     * Constructs a {@code SelfActionException} with the specified message.
      */
-    public SelfActionException(String msg) {
-        super(msg);
+    public SelfActionException() {
+        super(ErrorMessageConfig.SELF_ACTION);
     }
 
 }

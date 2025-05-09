@@ -3,16 +3,14 @@ package com.example.echo_api.persistence.repository;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.repository.query.Param;
 
 import com.example.echo_api.persistence.model.profile.Profile;
+import com.example.echo_api.persistence.repository.custom.CustomProfileRepository;
 
-public interface ProfileRepository extends CrudRepository<Profile, UUID>, PagingAndSortingRepository<Profile, UUID> {
+public interface ProfileRepository
+    extends CrudRepository<Profile, UUID>, PagingAndSortingRepository<Profile, UUID>, CustomProfileRepository {
 
     /**
      * Find a {@link Profile} by {@code username}.
@@ -22,33 +20,5 @@ public interface ProfileRepository extends CrudRepository<Profile, UUID>, Paging
      *         otherwise empty.
      */
     Optional<Profile> findByUsername(String username);
-
-    /**
-     * Find all {@link Profile} for followers of the supplied {@code profileId} in
-     * descending order (newest first).
-     * 
-     * @param profileId The id of the profile to search against.
-     * @return A list containing the profiles of matches if any exist, otherwise
-     *         empty.
-     */
-    @Query("SELECT p FROM Profile p " +
-        "JOIN Follow f ON p.id = f.followerId " +
-        "WHERE f.followingId = :profileId " +
-        "ORDER BY f.createdAt DESC")
-    Page<Profile> findAllFollowersById(@Param("profileId") UUID profileId, Pageable p);
-
-    /**
-     * Find all {@link Profile} for those followed by the supplied {@code profileId}
-     * in descending order (newest first).
-     * 
-     * @param profileId The id of the profile to search against.
-     * @return A list containing the profiles of matches if any exist, otherwise
-     *         empty.
-     */
-    @Query("SELECT p FROM Profile p " +
-        "JOIN Follow f ON p.id = f.followingId " +
-        "WHERE f.followerId = :profileId " +
-        "ORDER BY f.createdAt DESC")
-    Page<Profile> findAllFollowingById(@Param("profileId") UUID profileId, Pageable p);
 
 }
