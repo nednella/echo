@@ -44,22 +44,21 @@ class BlockRepositoryIT extends RepositoryTest {
     void setup() {
         Account sourceAcc = new Account("source", "test");
         accountRepository.save(sourceAcc); // save account to generate a UUID
-        source = new Profile(sourceAcc);
+        source = new Profile(sourceAcc.getId(), sourceAcc.getUsername());
         profileRepository.save(source); // save profile to provide foreign key for block table
 
         Account targetAcc = new Account("target", "test");
         accountRepository.save(targetAcc); // save account to generate a UUID
-        target = new Profile(targetAcc);
+        target = new Profile(targetAcc.getId(), targetAcc.getUsername());
         profileRepository.save(target); // save profile to provide foreign key for block table
 
-        Block block = new Block(source, target);
+        Block block = new Block(source.getId(), target.getId());
         blockRepository.save(block);
     }
 
     /**
-     * Test the
-     * {@link BlockRepository#existsByBlockerIdAndBlockingId(java.util.UUID, java.util.UUID)}
-     * method to verify that the repositorty correctly identifies that a
+     * Test the {@link BlockRepository#existsByBlockerIdAndBlockingId(UUID, UUID)}
+     * method to verify that the repository correctly identifies that a
      * {@link Block} relationship exists between the supplied source and target
      * profile UUIDs.
      */
@@ -71,15 +70,42 @@ class BlockRepositoryIT extends RepositoryTest {
     }
 
     /**
-     * Test the
-     * {@link BlockRepository#existsByBlockerIdAndBlockingId(java.util.UUID, java.util.UUID)}
-     * method to verify that the repositorty correctly identifies that a
+     * Test the {@link BlockRepository#existsByBlockerIdAndBlockingId(UUID, UUID)}
+     * method to verify that the repository correctly identifies that a
      * {@link Block} relationship does not exist between the supplied source and
      * target profile UUIDs.
      */
     @Test
     void BlockRepository_ExistsByBlockerIdAndBlockingId_ReturnFalse() {
         boolean exists = blockRepository.existsByBlockerIdAndBlockingId(UUID.randomUUID(), UUID.randomUUID());
+
+        assertFalse(exists);
+    }
+
+    /**
+     * Test the {@link BlockRepository#existsAnyBlockBetween(UUID, UUID)} method to
+     * verify that the repository correctly identifies that a {@link Block}
+     * relationship exists (in any or both directions) between the supplied profile
+     * UUIDs.
+     */
+    @Test
+    void BlockRepository_ExistsAnyBlockBetween_ReturnTrue() {
+        boolean exists = blockRepository.existsAnyBlockBetween(source.getId(), target.getId());
+        boolean existsOtherWayAround = blockRepository.existsAnyBlockBetween(target.getId(), source.getId());
+
+        assertTrue(exists);
+        assertTrue(existsOtherWayAround);
+    }
+
+    /**
+     * Test the {@link BlockRepository#existsAnyBlockBetween(UUID, UUID)} method to
+     * verify that the repository correctly identifies that a {@link Block}
+     * relationship does not exist (in any direction) between the supplied profile
+     * UUIDs.
+     */
+    @Test
+    void BlockRepository_ExistsAnyBlockBetween_ReturnFalse() {
+        boolean exists = blockRepository.existsAnyBlockBetween(UUID.randomUUID(), UUID.randomUUID());
 
         assertFalse(exists);
     }
