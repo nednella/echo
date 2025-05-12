@@ -22,18 +22,20 @@ public abstract class NotFoundException extends ApplicationException {
      * Constructs a {@code NotFoundException} with a default custom message and
      * supplied error details.
      *
+     * @param message The general error message.
      * @param details The error details.
      */
-    protected NotFoundException(String details) {
-        super(HttpStatus.NOT_FOUND, ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND, details);
+    protected NotFoundException(String message, String details) {
+        super(HttpStatus.NOT_FOUND, message, details);
     }
 
     /**
      * Constructs a {@code NotFoundException} with a default custom message.
      *
+     * @param message The general error message.
      */
-    protected NotFoundException() {
-        super(HttpStatus.NOT_FOUND, ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND);
+    protected NotFoundException(String message) {
+        super(HttpStatus.NOT_FOUND, message);
     }
 
 }
