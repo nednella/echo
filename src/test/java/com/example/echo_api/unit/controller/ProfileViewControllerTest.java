@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.controller.profile.ProfileViewController;
-import com.example.echo_api.exception.custom.username.UsernameNotFoundException;
+import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.profile.MetricsDTO;
@@ -78,7 +78,7 @@ class ProfileViewControllerTest {
     }
 
     @Test
-    void ProfileViewController_GetMe_ReturnProfileDTO() throws Exception {
+    void ProfileViewController_GetMe_Return200ProfileDTO() throws Exception {
         // api: GET /api/v1/profile/me ==> 200 : ProfileResponse
         String path = ApiConfig.Profile.ME;
 
@@ -100,23 +100,23 @@ class ProfileViewControllerTest {
     }
 
     @Test
-    void ProfileViewController_GetMe_Throw400UsernameNotFound() throws Exception {
-        // api: GET /api/v1/profile/me ==> 400 : UsernameNotFound
+    void ProfileViewController_GetMe_Throw404ResourceNotFound() throws Exception {
+        // api: GET /api/v1/profile/me ==> 404 : Resource Not Found
         String path = ApiConfig.Profile.ME;
 
-        when(profileViewService.getSelf()).thenThrow(new UsernameNotFoundException());
+        when(profileViewService.getSelf()).thenThrow(new ResourceNotFoundException());
 
         String response = mockMvc
             .perform(get(path))
             .andDo(print())
-            .andExpect(status().isBadRequest())
+            .andExpect(status().isNotFound())
             .andReturn()
             .getResponse()
             .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.USERNAME_NOT_FOUND,
+            HttpStatus.NOT_FOUND,
+            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
             path);
 
@@ -127,7 +127,7 @@ class ProfileViewControllerTest {
     }
 
     @Test
-    void ProfileViewController_GetByUsername_ReturnProfileDTO() throws Exception {
+    void ProfileViewController_GetByUsername_Return200ProfileDTO() throws Exception {
         // api: GET /api/v1/profile/{username} ==> 200 : ProfileDTO
         String path = ApiConfig.Profile.GET_BY_USERNAME;
         String username = "test";
@@ -150,24 +150,24 @@ class ProfileViewControllerTest {
     }
 
     @Test
-    void ProfileViewController_GetByUsername_Throw400UsernameNotFound() throws Exception {
-        // api: GET /api/v1/profile/{username} ==> 400 : UsernameNotFound
+    void ProfileViewController_GetByUsername_Throw404ResourceNotFound() throws Exception {
+        // api: GET /api/v1/profile/{username} ==> 404 : Resource Not Found
         String path = ApiConfig.Profile.GET_BY_USERNAME;
         String username = "non-existent-user";
 
-        when(profileViewService.getByUsername(username)).thenThrow(new UsernameNotFoundException());
+        when(profileViewService.getByUsername(username)).thenThrow(new ResourceNotFoundException());
 
         String response = mockMvc
             .perform(get(path, username))
             .andDo(print())
-            .andExpect(status().isBadRequest())
+            .andExpect(status().isNotFound())
             .andReturn()
             .getResponse()
             .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.USERNAME_NOT_FOUND,
+            HttpStatus.NOT_FOUND,
+            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
             path);
 
@@ -178,7 +178,7 @@ class ProfileViewControllerTest {
     }
 
     @Test
-    void ProfileViewController_GetFollowers_ReturnPageOfProfileDTO() throws Exception {
+    void ProfileViewController_GetFollowers_Return200PageOfProfileDTO() throws Exception {
         // api: GET /api/v1/profile/{username}/followers ==> 200 : PageDTO<ProfileDTO>
         String path = ApiConfig.Profile.GET_FOLLOWERS_BY_USERNAME;
         String username = "existing-user";
@@ -214,7 +214,7 @@ class ProfileViewControllerTest {
     }
 
     @Test
-    void ProfileViewController_GetFollowers_ReturnPageOfEmpty() throws Exception {
+    void ProfileViewController_GetFollowers_Return200PageOfEmpty() throws Exception {
         // api: GET /api/v1/profile/{username}/followers ==> 200 : PageDTO<ProfileDTO>
         String path = ApiConfig.Profile.GET_FOLLOWERS_BY_USERNAME;
         String username = "existing-user";
@@ -248,29 +248,29 @@ class ProfileViewControllerTest {
     }
 
     @Test
-    void ProfileViewController_GetFollowers_Throw400UsernameNotFound() throws Exception {
-        // api: GET /api/v1/profile/{username}/followers ==> 400 : UsernameNotFound
+    void ProfileViewController_GetFollowers_Throw404ResourceNotFound() throws Exception {
+        // api: GET /api/v1/profile/{username}/followers ==> 404 : Resource Not Found
         String path = ApiConfig.Profile.GET_FOLLOWERS_BY_USERNAME;
         String username = "non-existent-user";
         int offset = 0;
         int limit = 1;
 
         when(profileViewService.getFollowers(eq(username), any(Pageable.class)))
-            .thenThrow(new UsernameNotFoundException());
+            .thenThrow(new ResourceNotFoundException());
 
         String response = mockMvc
             .perform(get(path, username)
                 .param("offset", String.valueOf(offset))
                 .param("limit", String.valueOf(limit)))
             .andDo(print())
-            .andExpect(status().isBadRequest())
+            .andExpect(status().isNotFound())
             .andReturn()
             .getResponse()
             .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.USERNAME_NOT_FOUND,
+            HttpStatus.NOT_FOUND,
+            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
             path);
 
@@ -281,7 +281,7 @@ class ProfileViewControllerTest {
     }
 
     @Test
-    void ProfileViewController_GetFollowing_ReturnPageOfProfileDTO() throws Exception {
+    void ProfileViewController_GetFollowing_Return200PageOfProfileDTO() throws Exception {
         // api: GET /api/v1/profile/{username}/following ==> 200 : PageDTO<ProfileDTO>
         String path = ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME;
         String username = "existing-user";
@@ -317,7 +317,7 @@ class ProfileViewControllerTest {
     }
 
     @Test
-    void ProfileViewController_GetFollowing_ReturnPageOfEmpty() throws Exception {
+    void ProfileViewController_GetFollowing_Return200PageOfEmpty() throws Exception {
         // api: GET /api/v1/profile/{username}/following ==> 200 : PageDTO<ProfileDTO>
         String path = ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME;
         String username = "existing-user";
@@ -351,29 +351,29 @@ class ProfileViewControllerTest {
     }
 
     @Test
-    void ProfileViewController_GetFollowing_Throw400UsernameNotFound() throws Exception {
-        // api: GET /api/v1/profile/{username}/following ==> 400 : UsernameNotFound
+    void ProfileViewController_GetFollowing_Throw404ResourceNotFound() throws Exception {
+        // api: GET /api/v1/profile/{username}/following ==> 404 : Resource Not Found
         String path = ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME;
         String username = "non-existent-user";
         int offset = 0;
         int limit = 1;
 
         when(profileViewService.getFollowing(eq(username), any(Pageable.class)))
-            .thenThrow(new UsernameNotFoundException());
+            .thenThrow(new ResourceNotFoundException());
 
         String response = mockMvc
             .perform(get(path, username)
                 .param("offset", String.valueOf(offset))
                 .param("limit", String.valueOf(limit)))
             .andDo(print())
-            .andExpect(status().isBadRequest())
+            .andExpect(status().isNotFound())
             .andReturn()
             .getResponse()
             .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.USERNAME_NOT_FOUND,
+            HttpStatus.NOT_FOUND,
+            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
             path);
 

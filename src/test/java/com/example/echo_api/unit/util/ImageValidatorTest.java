@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.echo_api.exception.custom.file.FileInvalidException;
-import com.example.echo_api.exception.custom.file.ImageFormatException;
-import com.example.echo_api.exception.custom.file.ImageSizeException;
+import com.example.echo_api.exception.custom.badrequest.InvalidFileException;
+import com.example.echo_api.exception.custom.badrequest.InvalidImageFormatException;
+import com.example.echo_api.exception.custom.badrequest.InvalidImageSizeException;
 import com.example.echo_api.util.validator.ImageValidator;
 
 /**
@@ -39,17 +39,17 @@ class ImageValidatorTest {
 
     @Test
     void ImageValidator_Validate_ThrowFileInvalid() {
-        assertThrows(FileInvalidException.class, () -> ImageValidator.validate(null));
-    }
-
-    @Test
-    void ImageValidator_Validate_ThrowImageSize() {
-        assertThrows(ImageSizeException.class, () -> ImageValidator.validate(invalidImageFileSize));
+        assertThrows(InvalidFileException.class, () -> ImageValidator.validate(null));
     }
 
     @Test
     void ImageValidator_Validate_ThrowImageFormat() {
-        assertThrows(ImageFormatException.class, () -> ImageValidator.validate(invalidImageFormat));
+        assertThrows(InvalidImageFormatException.class, () -> ImageValidator.validate(invalidImageFormat));
+    }
+
+    @Test
+    void ImageValidator_Validate_ThrowImageSize() {
+        assertThrows(InvalidImageSizeException.class, () -> ImageValidator.validate(invalidImageFileSize));
     }
 
     private static MultipartFile readFileFromResources(String fileName, String fileType) throws IOException {

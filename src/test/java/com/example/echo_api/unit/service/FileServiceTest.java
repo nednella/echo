@@ -14,9 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.example.echo_api.exception.custom.cloudinary.CloudinaryDeleteOperationException;
-import com.example.echo_api.exception.custom.cloudinary.CloudinaryUploadOperationException;
-import com.example.echo_api.exception.custom.image.ImageNotFoundException;
+import com.example.echo_api.exception.custom.internalserver.CloudinaryException;
+import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.mapper.ImageMapper;
 import com.example.echo_api.persistence.model.image.Image;
 import com.example.echo_api.persistence.model.image.ImageType;
@@ -64,16 +63,16 @@ class FileServiceTest {
     }
 
     @Test
-    void FileService_CreateImage_ThrowCloudinaryUploadOperationException() {
+    void FileService_CreateImage_ThrowCloudinaryException() {
         // arrange
         Map<String, Object> options = new HashMap<>();
         options.put("resource_type", "image");
         options.put("asset_folder", ImageType.AVATAR.getFolder());
 
-        when(cloudinaryService.uploadFile(null, options)).thenThrow(new CloudinaryUploadOperationException(null));
+        when(cloudinaryService.uploadFile(null, options)).thenThrow(new CloudinaryException(null));
 
         // act & assert
-        assertThrows(CloudinaryUploadOperationException.class, () -> fileService.createImage(null, ImageType.AVATAR));
+        assertThrows(CloudinaryException.class, () -> fileService.createImage(null, ImageType.AVATAR));
     }
 
     @Test
@@ -96,17 +95,17 @@ class FileServiceTest {
     }
 
     @Test
-    void FileService_DeleteImage_ThrowImageNotFound() {
+    void FileService_DeleteImage_ThrowResourceNotFound() {
         // assert
         UUID imageId = UUID.randomUUID();
-        when(imageRepository.findById(imageId)).thenThrow(new ImageNotFoundException());
+        when(imageRepository.findById(imageId)).thenThrow(new ResourceNotFoundException());
 
         // act & assert
-        assertThrows(ImageNotFoundException.class, () -> fileService.deleteImage(imageId));
+        assertThrows(ResourceNotFoundException.class, () -> fileService.deleteImage(imageId));
     }
 
     @Test
-    void FileService_DeleteImage_ThrowCloudinaryDeleteOperationException() {
+    void FileService_DeleteImage_ThrowCloudinaryException() {
         // assert
         UUID imageId = UUID.randomUUID();
         String assetId = UUID.randomUUID().toString();
@@ -117,10 +116,10 @@ class FileServiceTest {
         Image image = new Image(null, null, assetId, 0, 0, null, null);
 
         when(imageRepository.findById(imageId)).thenReturn(Optional.of(image));
-        doThrow(new CloudinaryDeleteOperationException(null)).when(cloudinaryService).deleteFile(null, options);
+        doThrow(new CloudinaryException(null)).when(cloudinaryService).deleteFile(null, options);
 
         // act & assert
-        assertThrows(CloudinaryDeleteOperationException.class, () -> fileService.deleteImage(imageId));
+        assertThrows(CloudinaryException.class, () -> fileService.deleteImage(imageId));
     }
 
 }
