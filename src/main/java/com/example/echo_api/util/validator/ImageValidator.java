@@ -7,12 +7,11 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.echo_api.exception.custom.file.ImageFormatException;
-import com.example.echo_api.exception.custom.file.ImageSizeException;
+import com.example.echo_api.exception.custom.badrequest.InvalidFileException;
+import com.example.echo_api.exception.custom.badrequest.InvalidImageFormatException;
+import com.example.echo_api.exception.custom.badrequest.InvalidImageSizeException;
 
 import lombok.NoArgsConstructor;
-
-import com.example.echo_api.exception.custom.file.FileInvalidException;
 
 /**
  * Validator class for {@link MultipartFile} pertaining to images, ensuring
@@ -34,16 +33,16 @@ public class ImageValidator {
         MultipartFile file = (MultipartFile) target;
 
         if (file == null || file.isEmpty()) {
-            throw new FileInvalidException();
-        }
-
-        if (file.getSize() > MAX_SIZE_BYTES) {
-            throw new ImageSizeException();
+            throw new InvalidFileException();
         }
 
         String fileType = file.getContentType();
         if (fileType == null || !ALLOWED_TYPES.contains(fileType.toLowerCase())) {
-            throw new ImageFormatException();
+            throw new InvalidImageFormatException();
+        }
+
+        if (file.getSize() > MAX_SIZE_BYTES) {
+            throw new InvalidImageSizeException();
         }
     }
 
