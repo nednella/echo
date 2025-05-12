@@ -19,6 +19,14 @@ import lombok.extern.slf4j.Slf4j;
 @ControllerAdvice(assignableTypes = AuthController.class)
 public class AuthControllerAdvice extends AbstractControllerAdvice {
 
+    /**
+     * Handles authentication exceptions related to Spring Security for cases when:
+     * 
+     * <ul>
+     * <li>A user could not be found via their username
+     * <li>An authentication attempt was rejected on the grounds of bad credentials
+     * </ul>
+     */
     @ExceptionHandler({ UsernameNotFoundException.class, BadCredentialsException.class })
     ResponseEntity<ErrorDTO> handleAuthenticationException(HttpServletRequest request, Exception ex) {
         log.debug("Handling exception: {}", ex.getMessage());
@@ -26,10 +34,18 @@ public class AuthControllerAdvice extends AbstractControllerAdvice {
         return createExceptionHandler(
             request,
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.USERNAME_OR_PASSWORD_IS_INCORRECT,
+            ErrorMessageConfig.BadRequest.USERNAME_OR_PASSWORD_INCORRECT,
             null);
     }
 
+    /**
+     * Handles authentication exceptions related to Spring Security for cases when:
+     * 
+     * <ul>
+     * <li>A user fails authentication due to a bad account status (locked,
+     * disabled, etc.)
+     * </ul>
+     */
     @ExceptionHandler({ AccountStatusException.class })
     ResponseEntity<ErrorDTO> handleAccountStatusException(HttpServletRequest request, Exception ex) {
         log.debug("Handling exception: {}", ex.getMessage());
@@ -37,7 +53,7 @@ public class AuthControllerAdvice extends AbstractControllerAdvice {
         return createExceptionHandler(
             request,
             HttpStatus.UNAUTHORIZED,
-            ErrorMessageConfig.ACCOUNT_STATUS,
+            ErrorMessageConfig.Unauthorised.ACCOUNT_STATUS,
             ex.getMessage());
     }
 

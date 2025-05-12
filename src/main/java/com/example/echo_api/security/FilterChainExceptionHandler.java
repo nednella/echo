@@ -4,11 +4,12 @@ import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.lang.NonNull;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+
+import com.example.echo_api.exception.custom.unauthorised.UnauthorisedRequestException;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -58,15 +59,15 @@ public class FilterChainExceptionHandler extends OncePerRequestFilter {
              * AuthorizationDeniedException when requesting protected endpoints on the
              * grounds of not having the required permissions (status code 403).
              * 
-             * The more suitable exception would be an InsufficientAuthenticationException
-             * due to the unauthorised request (status code 401).
+             * The more suitable exception would be a {@code UnauthorisedException} due to
+             * the unauthorised request (status code 401).
              * 
              * For more information, refer to:
              * https://docs.spring.io/spring-security/reference/servlet/authentication/anonymous.html
              * 
              */
             if (ex instanceof AuthorizationDeniedException) {
-                ex = new InsufficientAuthenticationException("unauthorised request");
+                ex = new UnauthorisedRequestException();
             }
 
             /** Delegate filter chain exceptions to the global controller advice handlers */
