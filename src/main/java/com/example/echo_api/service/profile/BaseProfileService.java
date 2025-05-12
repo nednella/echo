@@ -2,8 +2,7 @@ package com.example.echo_api.service.profile;
 
 import java.util.UUID;
 
-import com.example.echo_api.exception.custom.account.IdNotFoundException;
-import com.example.echo_api.exception.custom.username.UsernameNotFoundException;
+import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
@@ -48,11 +47,11 @@ public abstract class BaseProfileService {
      * 
      * @param id The id to query within the repository.
      * @return The found {@link Profile}.
-     * @throws IdNotFoundException If no profile by that id exists.
+     * @throws ResourceNotFoundException If no profile by that id exists.
      */
-    protected Profile getProfileById(UUID id) throws IdNotFoundException {
+    protected Profile getProfileById(UUID id) throws ResourceNotFoundException {
         return profileRepository.findById(id)
-            .orElseThrow(IdNotFoundException::new);
+            .orElseThrow(ResourceNotFoundException::new);
     }
 
     /**
@@ -61,11 +60,11 @@ public abstract class BaseProfileService {
      * 
      * @param username The username to query within the repository.
      * @return The found {@link Profile}.
-     * @throws UsernameNotFoundException If no profile by that username exists.
+     * @throws ResourceNotFoundException If no profile by that username exists.
      */
-    protected Profile getProfileByUsername(String username) throws UsernameNotFoundException {
+    protected Profile getProfileByUsername(String username) throws ResourceNotFoundException {
         return profileRepository.findByUsername(username)
-            .orElseThrow(UsernameNotFoundException::new);
+            .orElseThrow(ResourceNotFoundException::new);
     }
 
 }

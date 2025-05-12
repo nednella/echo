@@ -5,9 +5,9 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.example.echo_api.exception.custom.relationship.AlreadyBlockingException;
-import com.example.echo_api.exception.custom.relationship.NotBlockingException;
-import com.example.echo_api.exception.custom.relationship.SelfActionException;
+import com.example.echo_api.exception.custom.conflict.AlreadyBlockingException;
+import com.example.echo_api.exception.custom.conflict.NotBlockingException;
+import com.example.echo_api.exception.custom.conflict.SelfActionException;
 import com.example.echo_api.persistence.model.block.Block;
 import com.example.echo_api.persistence.repository.BlockRepository;
 

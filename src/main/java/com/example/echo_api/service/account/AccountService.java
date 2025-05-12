@@ -2,9 +2,9 @@ package com.example.echo_api.service.account;
 
 import java.util.UUID;
 
-import com.example.echo_api.exception.custom.password.IncorrectCurrentPasswordException;
-import com.example.echo_api.exception.custom.username.UsernameAlreadyExistsException;
 import com.example.echo_api.persistence.model.account.Role;
+import com.example.echo_api.exception.custom.badrequest.IncorrectCurrentPasswordException;
+import com.example.echo_api.exception.custom.badrequest.UsernameAlreadyExistsException;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.profile.Profile;
 

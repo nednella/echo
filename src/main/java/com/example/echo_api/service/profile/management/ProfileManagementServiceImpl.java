@@ -3,8 +3,8 @@ package com.example.echo_api.service.profile.management;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.echo_api.exception.custom.cloudinary.CloudinaryException;
-import com.example.echo_api.exception.custom.image.ImageException;
+import com.example.echo_api.exception.custom.internalserver.CloudinaryException;
+import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.dto.request.profile.UpdateInformationDTO;
 import com.example.echo_api.persistence.model.image.Image;
 import com.example.echo_api.persistence.model.image.ImageType;
@@ -44,7 +44,7 @@ public class ProfileManagementServiceImpl extends BaseProfileService implements 
     }
 
     @Override
-    public void updateAvatar(MultipartFile image) throws ImageException, CloudinaryException {
+    public void updateAvatar(MultipartFile image) throws ResourceNotFoundException, CloudinaryException {
         Profile me = getAuthenticatedUserProfile();
 
         if (me.getAvatar() != null) {
@@ -57,7 +57,7 @@ public class ProfileManagementServiceImpl extends BaseProfileService implements 
     }
 
     @Override
-    public void deleteAvatar() throws ImageException, CloudinaryException {
+    public void deleteAvatar() throws ResourceNotFoundException, CloudinaryException {
         Profile me = getAuthenticatedUserProfile();
 
         if (me.getAvatar() == null) {
@@ -70,7 +70,7 @@ public class ProfileManagementServiceImpl extends BaseProfileService implements 
     }
 
     @Override
-    public void updateBanner(MultipartFile image) throws ImageException, CloudinaryException {
+    public void updateBanner(MultipartFile image) throws ResourceNotFoundException, CloudinaryException {
         Profile me = getAuthenticatedUserProfile();
 
         if (me.getBanner() != null) {
@@ -83,7 +83,7 @@ public class ProfileManagementServiceImpl extends BaseProfileService implements 
     }
 
     @Override
-    public void deleteBanner() throws ImageException, CloudinaryException {
+    public void deleteBanner() throws ResourceNotFoundException, CloudinaryException {
         Profile me = getAuthenticatedUserProfile();
 
         if (me.getBanner() == null) {

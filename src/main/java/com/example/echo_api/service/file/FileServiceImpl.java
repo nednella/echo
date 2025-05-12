@@ -6,9 +6,8 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.echo_api.exception.custom.cloudinary.CloudinaryException;
-import com.example.echo_api.exception.custom.image.ImageException;
-import com.example.echo_api.exception.custom.image.ImageNotFoundException;
+import com.example.echo_api.exception.custom.internalserver.CloudinaryException;
+import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.mapper.ImageMapper;
 import com.example.echo_api.persistence.model.image.Image;
 import com.example.echo_api.persistence.model.image.ImageType;
@@ -44,7 +43,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void deleteImage(UUID imageId) throws ImageException, CloudinaryException {
+    public void deleteImage(UUID imageId) throws ResourceNotFoundException, CloudinaryException {
         Image image = findById(imageId);
 
         Map<String, Object> options = new HashMap<>();
@@ -60,11 +59,11 @@ public class FileServiceImpl implements FileService {
      * 
      * @param id The id to search within the repository.
      * @return The found {@link Image}.
-     * @throws ImageNotFoundException If no image by that id exists.
+     * @throws ResourceNotFoundException If no image by that id exists.
      */
-    private Image findById(UUID id) throws ImageNotFoundException {
+    private Image findById(UUID id) throws ResourceNotFoundException {
         return imageRepository.findById(id)
-            .orElseThrow(ImageNotFoundException::new);
+            .orElseThrow(ResourceNotFoundException::new);
     }
 
 }

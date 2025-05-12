@@ -2,9 +2,9 @@ package com.example.echo_api.service.follow;
 
 import java.util.UUID;
 
-import com.example.echo_api.exception.custom.relationship.AlreadyFollowingException;
-import com.example.echo_api.exception.custom.relationship.NotFollowingException;
-import com.example.echo_api.exception.custom.relationship.SelfActionException;
+import com.example.echo_api.exception.custom.conflict.AlreadyFollowingException;
+import com.example.echo_api.exception.custom.conflict.NotFollowingException;
+import com.example.echo_api.exception.custom.conflict.SelfActionException;
 import com.example.echo_api.persistence.model.follow.Follow;
 import com.example.echo_api.persistence.model.profile.Profile;
 

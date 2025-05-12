@@ -5,10 +5,10 @@ import java.util.UUID;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.echo_api.exception.custom.password.IncorrectCurrentPasswordException;
-import com.example.echo_api.exception.custom.username.UsernameAlreadyExistsException;
 import com.example.echo_api.persistence.model.account.Role;
 import com.example.echo_api.persistence.model.profile.Profile;
+import com.example.echo_api.exception.custom.badrequest.IncorrectCurrentPasswordException;
+import com.example.echo_api.exception.custom.badrequest.UsernameAlreadyExistsException;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.repository.AccountRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
