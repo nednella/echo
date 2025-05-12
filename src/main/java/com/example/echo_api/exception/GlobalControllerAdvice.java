@@ -109,4 +109,17 @@ public class GlobalControllerAdvice extends AbstractControllerAdvice {
             ex.getDetails());
     }
 
+    /**
+     * Handles any uncaught exceptions as a 500 Internal Server Error.
+     */
+    @ExceptionHandler({ Exception.class })
+    ResponseEntity<ErrorDTO> handleGenericException(HttpServletRequest request, Exception ex) {
+        log.debug("Handling exception: {}", ex.getMessage());
+
+        return createExceptionHandler(request,
+            HttpStatus.INTERNAL_SERVER_ERROR,
+            ErrorMessageConfig.InternalServerError.INTERNAL_SERVER_ERROR,
+            ex.getMessage());
+    }
+
 }
