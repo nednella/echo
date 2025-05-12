@@ -14,6 +14,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.controller.profile.ProfileInteractionController;
 import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.persistence.model.account.Account;
@@ -52,47 +53,47 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     }
 
     @Test
-    void ProfileController_Follow_Throw400UsernameNotFound() {
-        // api: POST /api/v1/profile/{username}/follow ==> 400 : UsernameNotFound
+    void ProfileController_Follow_Throw404ResourceNotFound() {
+        // api: POST /api/v1/profile/{username}/follow ==> 404 : ResourceNotFound
         String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
         String username = "non-existent-user";
 
         ResponseEntity<ErrorDTO> response = restTemplate.postForEntity(path, null, ErrorDTO.class, username);
 
         // assert response
-        assertEquals(BAD_REQUEST, response.getStatusCode());
+        assertEquals(NOT_FOUND, response.getStatusCode());
         assertNotNull(response.getBody());
 
         // assert error
         ErrorDTO error = response.getBody();
         assertNotNull(error);
-        assertEquals(BAD_REQUEST.value(), error.status());
-        assertEquals(ErrorMessageConfig.USERNAME_NOT_FOUND, error.message());
+        assertEquals(NOT_FOUND.value(), error.status());
+        assertEquals(ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND, error.message());
     }
 
     @Test
-    void ProfileController_Follow_ThrowSelfActionException() {
-        // api: POST /api/v1/profile/{username}/follow ==> 400 : SelfFollow
+    void ProfileController_Follow_Throw409SelfActionException() {
+        // api: POST /api/v1/profile/{username}/follow ==> 409 : SelfAction
         String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
         String username = existingAccount.getUsername();
 
         ResponseEntity<ErrorDTO> response = restTemplate.postForEntity(path, null, ErrorDTO.class, username);
 
         // assert response
-        assertEquals(BAD_REQUEST, response.getStatusCode());
+        assertEquals(CONFLICT, response.getStatusCode());
         assertNotNull(response.getBody());
 
         // assert error
         ErrorDTO error = response.getBody();
         assertNotNull(error);
-        assertEquals(BAD_REQUEST.value(), error.status());
-        assertEquals(ErrorMessageConfig.SELF_ACTION, error.message());
+        assertEquals(CONFLICT.value(), error.status());
+        assertEquals(ErrorMessageConfig.Conflict.SELF_ACTION, error.message());
     }
 
     @Test
     @Sql(scripts = "/sql/relationship-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void ProfileController_Follow_ThrowAlreadyFollowingException() {
-        // api: POST /api/v1/profile/{username}/follow ==> 400 : AlreadyFollowing
+    void ProfileController_Follow_Throw409AlreadyFollowingException() {
+        // api: POST /api/v1/profile/{username}/follow ==> 409 : AlreadyFollowing
         String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
         String username = targetUser.getUsername();
 
@@ -103,18 +104,18 @@ class ProfileInteractionControllerIT extends IntegrationTest {
         assertEquals(NO_CONTENT, response1.getStatusCode());
         assertNull(response1.getBody());
 
-        // attempt to follow the same user again to force a 400 AlreadyFollowing
+        // attempt to follow the same user again to force a 409 AlreadyFollowing
         ResponseEntity<ErrorDTO> response2 = restTemplate.postForEntity(path, null, ErrorDTO.class, username);
 
         // assert response
-        assertEquals(BAD_REQUEST, response2.getStatusCode());
+        assertEquals(CONFLICT, response2.getStatusCode());
         assertNotNull(response2.getBody());
 
         // assert error
         ErrorDTO error = response2.getBody();
         assertNotNull(error);
-        assertEquals(BAD_REQUEST.value(), error.status());
-        assertEquals(ErrorMessageConfig.ALREADY_FOLLOWING, error.message());
+        assertEquals(CONFLICT.value(), error.status());
+        assertEquals(ErrorMessageConfig.Conflict.ALREADY_FOLLOWING, error.message());
     }
 
     @Test
@@ -141,60 +142,60 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     }
 
     @Test
-    void ProfileController_Unfollow_Throw400UsernameNotFound() {
-        // api: DELETE /api/v1/profile/{username}/unfollow ==> 400 : UsernameNotFound
+    void ProfileController_Unfollow_Throw404ResourceNotFound() {
+        // api: DELETE /api/v1/profile/{username}/unfollow ==> 404 : ResourceNotFound
         String path = ApiConfig.Profile.UNFOLLOW_BY_USERNAME;
         String username = "non-existent-user";
 
         ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, username);
 
         // assert response
-        assertEquals(BAD_REQUEST, response.getStatusCode());
+        assertEquals(NOT_FOUND, response.getStatusCode());
         assertNotNull(response.getBody());
 
         // assert error
         ErrorDTO error = response.getBody();
         assertNotNull(error);
-        assertEquals(BAD_REQUEST.value(), error.status());
-        assertEquals(ErrorMessageConfig.USERNAME_NOT_FOUND, error.message());
+        assertEquals(NOT_FOUND.value(), error.status());
+        assertEquals(ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND, error.message());
     }
 
     @Test
-    void ProfileController_Unfollow_ThrowSelfActionException() {
-        // api: DELETE /api/v1/profile/{username}/unfollow ==> 400 : SelfUnfollow
+    void ProfileController_Unfollow_Throw409SelfActionException() {
+        // api: DELETE /api/v1/profile/{username}/unfollow ==> 409 : SelfAction
         String path = ApiConfig.Profile.UNFOLLOW_BY_USERNAME;
         String username = existingAccount.getUsername();
 
         ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, username);
 
         // assert response
-        assertEquals(BAD_REQUEST, response.getStatusCode());
+        assertEquals(CONFLICT, response.getStatusCode());
         assertNotNull(response.getBody());
 
         // assert error
         ErrorDTO error = response.getBody();
         assertNotNull(error);
-        assertEquals(BAD_REQUEST.value(), error.status());
-        assertEquals(ErrorMessageConfig.SELF_ACTION, error.message());
+        assertEquals(CONFLICT.value(), error.status());
+        assertEquals(ErrorMessageConfig.Conflict.SELF_ACTION, error.message());
     }
 
     @Test
-    void ProfileController_Unfollow_ThrowNotFollowingException() {
-        // api: DELETE /api/v1/profile/{username}/unfollow ==> 400 : NotFollowing
+    void ProfileController_Unfollow_Throw409NotFollowingException() {
+        // api: DELETE /api/v1/profile/{username}/unfollow ==> 409 : NotFollowing
         String path = ApiConfig.Profile.UNFOLLOW_BY_USERNAME;
         String username = targetUser.getUsername();
 
         ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, username);
 
         // assert response
-        assertEquals(BAD_REQUEST, response.getStatusCode());
+        assertEquals(CONFLICT, response.getStatusCode());
         assertNotNull(response.getBody());
 
         // assert error
         ErrorDTO error = response.getBody();
         assertNotNull(error);
-        assertEquals(BAD_REQUEST.value(), error.status());
-        assertEquals(ErrorMessageConfig.NOT_FOLLOWING, error.message());
+        assertEquals(CONFLICT.value(), error.status());
+        assertEquals(ErrorMessageConfig.Conflict.NOT_FOLLOWING, error.message());
     }
 
     @Test
@@ -212,47 +213,47 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     }
 
     @Test
-    void ProfileController_Block_Throw400UsernameNotFound() {
-        // api: POST /api/v1/profile/{username}/block ==> 400 : UsernameNotFound
+    void ProfileController_Block_Throw404ResourceNotFound() {
+        // api: POST /api/v1/profile/{username}/block ==> 404 : ResourceNotFound
         String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
         String username = "non-existent-user";
 
         ResponseEntity<ErrorDTO> response = restTemplate.postForEntity(path, null, ErrorDTO.class, username);
 
         // assert response
-        assertEquals(BAD_REQUEST, response.getStatusCode());
+        assertEquals(NOT_FOUND, response.getStatusCode());
         assertNotNull(response.getBody());
 
         // assert error
         ErrorDTO error = response.getBody();
         assertNotNull(error);
-        assertEquals(BAD_REQUEST.value(), error.status());
-        assertEquals(ErrorMessageConfig.USERNAME_NOT_FOUND, error.message());
+        assertEquals(NOT_FOUND.value(), error.status());
+        assertEquals(ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND, error.message());
     }
 
     @Test
-    void ProfileController_Block_ThrowSelfActionException() {
-        // api: POST /api/v1/profile/{username}/block ==> 400 : SelfBlock
+    void ProfileController_Block_Throw409SelfActionException() {
+        // api: POST /api/v1/profile/{username}/block ==> 400 : SelfAction
         String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
         String username = existingAccount.getUsername();
 
         ResponseEntity<ErrorDTO> response = restTemplate.postForEntity(path, null, ErrorDTO.class, username);
 
         // assert response
-        assertEquals(BAD_REQUEST, response.getStatusCode());
+        assertEquals(CONFLICT, response.getStatusCode());
         assertNotNull(response.getBody());
 
         // assert error
         ErrorDTO error = response.getBody();
         assertNotNull(error);
-        assertEquals(BAD_REQUEST.value(), error.status());
-        assertEquals(ErrorMessageConfig.SELF_ACTION, error.message());
+        assertEquals(CONFLICT.value(), error.status());
+        assertEquals(ErrorMessageConfig.Conflict.SELF_ACTION, error.message());
     }
 
     @Test
     @Sql(scripts = "/sql/relationship-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void ProfileController_Block_ThrowAlreadyBlockingException() {
-        // api: POST /api/v1/profile/{username}/block ==> 400 : AlreadyBlocking
+    void ProfileController_Block_Throw409AlreadyBlockingException() {
+        // api: POST /api/v1/profile/{username}/block ==> 409 : AlreadyBlocking
         String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
         String username = targetUser.getUsername();
 
@@ -263,18 +264,18 @@ class ProfileInteractionControllerIT extends IntegrationTest {
         assertEquals(NO_CONTENT, response1.getStatusCode());
         assertNull(response1.getBody());
 
-        // attempt to block the same user again to force a 400 AlreadyBlocking
+        // attempt to block the same user again to force a 409 AlreadyBlocking
         ResponseEntity<ErrorDTO> response2 = restTemplate.postForEntity(path, null, ErrorDTO.class, username);
 
         // assert response
-        assertEquals(BAD_REQUEST, response2.getStatusCode());
+        assertEquals(CONFLICT, response2.getStatusCode());
         assertNotNull(response2.getBody());
 
         // assert error
         ErrorDTO error = response2.getBody();
         assertNotNull(error);
-        assertEquals(BAD_REQUEST.value(), error.status());
-        assertEquals(ErrorMessageConfig.ALREADY_BLOCKING, error.message());
+        assertEquals(CONFLICT.value(), error.status());
+        assertEquals(ErrorMessageConfig.Conflict.ALREADY_BLOCKING, error.message());
 
     }
 
@@ -303,60 +304,60 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     }
 
     @Test
-    void ProfileController_Unblock_Throw400UsernameNotFound() {
-        // api: DELETE /api/v1/profile/{username}/unblock ==> 400 : UsernameNotFound
+    void ProfileController_Unblock_Throw404ResourceNotFound() {
+        // api: DELETE /api/v1/profile/{username}/unblock ==> 404 : ResourceNotFound
         String path = ApiConfig.Profile.UNBLOCK_BY_USERNAME;
         String username = "non-existent-user";
 
         ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, username);
 
         // assert response
-        assertEquals(BAD_REQUEST, response.getStatusCode());
+        assertEquals(NOT_FOUND, response.getStatusCode());
         assertNotNull(response.getBody());
 
         // assert error
         ErrorDTO error = response.getBody();
         assertNotNull(error);
-        assertEquals(BAD_REQUEST.value(), error.status());
-        assertEquals(ErrorMessageConfig.USERNAME_NOT_FOUND, error.message());
+        assertEquals(NOT_FOUND.value(), error.status());
+        assertEquals(ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND, error.message());
     }
 
     @Test
-    void ProfileController_Unblock_ThrowSelfActionException() {
-        // api: DELETE /api/v1/profile/{username}/unblock ==> 400 : SelfUnblock
+    void ProfileController_Unblock_Throw409SelfActionException() {
+        // api: DELETE /api/v1/profile/{username}/unblock ==> 409 : SelfAction
         String path = ApiConfig.Profile.UNBLOCK_BY_USERNAME;
         String username = existingAccount.getUsername();
 
         ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, username);
 
         // assert response
-        assertEquals(BAD_REQUEST, response.getStatusCode());
+        assertEquals(CONFLICT, response.getStatusCode());
         assertNotNull(response.getBody());
 
         // assert error
         ErrorDTO error = response.getBody();
         assertNotNull(error);
-        assertEquals(BAD_REQUEST.value(), error.status());
-        assertEquals(ErrorMessageConfig.SELF_ACTION, error.message());
+        assertEquals(CONFLICT.value(), error.status());
+        assertEquals(ErrorMessageConfig.Conflict.SELF_ACTION, error.message());
     }
 
     @Test
-    void ProfileController_Unblock_ThrowNotBlockingException() {
-        // api: DELETE /api/v1/profile/{username}/unblock ==> 400 : NotBlocking
+    void ProfileController_Unblock_Throw409NotBlockingException() {
+        // api: DELETE /api/v1/profile/{username}/unblock ==> 409 : NotBlocking
         String path = ApiConfig.Profile.UNBLOCK_BY_USERNAME;
         String username = targetUser.getUsername();
 
         ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, username);
 
         // assert response
-        assertEquals(BAD_REQUEST, response.getStatusCode());
+        assertEquals(CONFLICT, response.getStatusCode());
         assertNotNull(response.getBody());
 
         // assert error
         ErrorDTO error = response.getBody();
         assertNotNull(error);
-        assertEquals(BAD_REQUEST.value(), error.status());
-        assertEquals(ErrorMessageConfig.NOT_BLOCKING, error.message());
+        assertEquals(CONFLICT.value(), error.status());
+        assertEquals(ErrorMessageConfig.Conflict.NOT_BLOCKING, error.message());
     }
 
 }

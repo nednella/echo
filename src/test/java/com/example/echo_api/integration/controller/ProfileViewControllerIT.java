@@ -41,7 +41,7 @@ class ProfileViewControllerIT extends IntegrationTest {
     }
 
     @Test
-    void ProfileController_GetMe_ReturnProfileDTO() {
+    void ProfileController_GetMe_Return200ProfileDTO() {
         // api: GET /api/v1/profile/me ==> 200 : ProfileDTO
         String path = ApiConfig.Profile.ME;
 
@@ -58,7 +58,7 @@ class ProfileViewControllerIT extends IntegrationTest {
     }
 
     @Test
-    void ProfileController_GetByUsername_ReturnProfileDTO() {
+    void ProfileController_GetByUsername_Return200ProfileDTO() {
         // api: GET /api/v1/profile/{username} ==> 200 : ProfileDTO
         String path = ApiConfig.Profile.GET_BY_USERNAME;
         String username = existingAccount.getUsername();
@@ -76,27 +76,27 @@ class ProfileViewControllerIT extends IntegrationTest {
     }
 
     @Test
-    void ProfileController_GetByUsername_Throw400UsernameNotFound() {
-        // api: GET /api/v1/profile/{username} ==> 400 : UsernameNotFound
+    void ProfileController_GetByUsername_Throw404ResourceNotFound() {
+        // api: GET /api/v1/profile/{username} ==> 404 : Resource Not Found
         String path = ApiConfig.Profile.GET_BY_USERNAME;
         String username = "non-existent-user";
 
         ResponseEntity<ErrorDTO> response = restTemplate.getForEntity(path, ErrorDTO.class, username);
 
         // assert response
-        assertEquals(BAD_REQUEST, response.getStatusCode());
+        assertEquals(NOT_FOUND, response.getStatusCode());
         assertNotNull(response.getBody());
 
         // assert error
         ErrorDTO error = response.getBody();
         assertNotNull(error);
-        assertEquals(BAD_REQUEST.value(), error.status());
-        assertEquals(ErrorMessageConfig.USERNAME_NOT_FOUND, error.message());
+        assertEquals(NOT_FOUND.value(), error.status());
+        assertEquals(ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND, error.message());
     }
 
     @Test
     @Sql(scripts = "/sql/relationship-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void ProfileController_GetFollowers_ReturnPageOfProfileDTO() {
+    void ProfileController_GetFollowers_Return200PageOfProfileDTO() {
         // api: GET /api/v1/profile/{username}/followers ==> 200 : PageDTO<ProfileDTO>
         String followPath = ApiConfig.Profile.FOLLOW_BY_USERNAME;
         String getFollowersPath = ApiConfig.Profile.GET_FOLLOWERS_BY_USERNAME + "?offset=0&limit=1";
@@ -129,7 +129,7 @@ class ProfileViewControllerIT extends IntegrationTest {
     }
 
     @Test
-    void ProfileController_GetFollowers_ReturnPageOfEmpty() {
+    void ProfileController_GetFollowers_Return200PageOfEmpty() {
         // api: GET /api/v1/profile/{username}/followers ==> 200 : PageDTO<ProfileDTO>
         String path = ApiConfig.Profile.GET_FOLLOWERS_BY_USERNAME;
         String username = targetUser.getUsername();
@@ -151,27 +151,27 @@ class ProfileViewControllerIT extends IntegrationTest {
     }
 
     @Test
-    void ProfileController_GetFollowers_Throw400UsernameNotFound() {
-        // api: GET /api/v1/profile/{username}/followers ==> 400 : UsernameNotFound
+    void ProfileController_GetFollowers_Throw404ResourceNotFound() {
+        // api: GET /api/v1/profile/{username}/followers ==> 404 : Resource Not Found
         String path = ApiConfig.Profile.GET_FOLLOWERS_BY_USERNAME;
         String username = "non-existent-user";
 
         ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, GET, null, ErrorDTO.class, username);
 
         // assert response
-        assertEquals(BAD_REQUEST, response.getStatusCode());
+        assertEquals(NOT_FOUND, response.getStatusCode());
         assertNotNull(response.getBody());
 
         // assert error
         ErrorDTO error = response.getBody();
         assertNotNull(error);
-        assertEquals(BAD_REQUEST.value(), error.status());
-        assertEquals(ErrorMessageConfig.USERNAME_NOT_FOUND, error.message());
+        assertEquals(NOT_FOUND.value(), error.status());
+        assertEquals(ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND, error.message());
     }
 
     @Test
     @Sql(scripts = "/sql/relationship-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void ProfileController_GetFollowing_ReturnPageOfProfileDTO() {
+    void ProfileController_GetFollowing_Return200PageOfProfileDTO() {
         // api: GET /api/v1/profile/{username}/following ==> 400 : PageDTO<ProfileDTO>
         String followPath = ApiConfig.Profile.FOLLOW_BY_USERNAME;
         String getFollowingPath = ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME + "?offset=0&limit=1";
@@ -210,7 +210,7 @@ class ProfileViewControllerIT extends IntegrationTest {
     }
 
     @Test
-    void ProfileController_GetFollowing_ReturnPageOfEmpty() {
+    void ProfileController_GetFollowing_Return200PageOfEmpty() {
         // api: GET /api/v1/profile/{username}/following ==> 400 : PageDTO<ProfileDTO>
         String path = ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME;
         String username = targetUser.getUsername();
@@ -232,22 +232,22 @@ class ProfileViewControllerIT extends IntegrationTest {
     }
 
     @Test
-    void ProfileController_GetFollowing_Throw400UsernameNotFound() {
-        // api: GET /api/v1/profile/{username}/following ==> 400 : UsernameNotFound
+    void ProfileController_GetFollowing_Throw404ResourceNotFound() {
+        // api: GET /api/v1/profile/{username}/following ==> 404 : Resource Not Found
         String path = ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME;
         String username = "non-existent-user";
 
         ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, GET, null, ErrorDTO.class, username);
 
         // assert response
-        assertEquals(BAD_REQUEST, response.getStatusCode());
+        assertEquals(NOT_FOUND, response.getStatusCode());
         assertNotNull(response.getBody());
 
         // assert error
         ErrorDTO error = response.getBody();
         assertNotNull(error);
-        assertEquals(BAD_REQUEST.value(), error.status());
-        assertEquals(ErrorMessageConfig.USERNAME_NOT_FOUND, error.message());
+        assertEquals(NOT_FOUND.value(), error.status());
+        assertEquals(ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND, error.message());
     }
 
 }

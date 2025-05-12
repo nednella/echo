@@ -80,7 +80,7 @@ class AccountControllerIT extends IntegrationTest {
         ErrorDTO error = response.getBody();
         assertNotNull(error);
         assertEquals(BAD_REQUEST.value(), error.status());
-        assertEquals(ErrorMessageConfig.USERNAME_ARLEADY_EXISTS, error.message());
+        assertEquals(ErrorMessageConfig.BadRequest.USERNAME_ARLEADY_EXISTS, error.message());
     }
 
     @Test
@@ -103,7 +103,7 @@ class AccountControllerIT extends IntegrationTest {
         ErrorDTO error = response2.getBody();
         assertNotNull(error);
         assertEquals(BAD_REQUEST.value(), error.status());
-        assertEquals(ErrorMessageConfig.INCORRECT_CURRENT_PASSWORD, error.message());
+        assertEquals(ErrorMessageConfig.BadRequest.INCORRECT_CURRENT_PASSWORD, error.message());
     }
 
     @Test
@@ -123,7 +123,7 @@ class AccountControllerIT extends IntegrationTest {
         ErrorDTO error = response.getBody();
         assertNotNull(error);
         assertEquals(BAD_REQUEST.value(), error.status());
-        assertEquals(ErrorMessageConfig.INCORRECT_CURRENT_PASSWORD, error.message());
+        assertEquals(ErrorMessageConfig.BadRequest.INCORRECT_CURRENT_PASSWORD, error.message());
     }
 
 }
