@@ -15,16 +15,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.echo_api.exception.custom.conflict.AlreadyBlockingException;
 import com.example.echo_api.exception.custom.conflict.AlreadyFollowingException;
-import com.example.echo_api.exception.custom.conflict.NotBlockingException;
-import com.example.echo_api.exception.custom.conflict.NotFollowingException;
 import com.example.echo_api.exception.custom.conflict.SelfActionException;
 import com.example.echo_api.exception.custom.forbidden.BlockedException;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.model.account.Account;
+import com.example.echo_api.persistence.model.block.Block;
+import com.example.echo_api.persistence.model.follow.Follow;
 import com.example.echo_api.persistence.model.profile.Profile;
+import com.example.echo_api.persistence.repository.BlockRepository;
+import com.example.echo_api.persistence.repository.FollowRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
-import com.example.echo_api.service.block.BlockService;
-import com.example.echo_api.service.follow.FollowService;
 import com.example.echo_api.service.profile.interaction.ProfileInteractionService;
 import com.example.echo_api.service.profile.interaction.ProfileInteractionServiceImpl;
 import com.example.echo_api.service.session.SessionService;
@@ -45,17 +45,19 @@ class ProfileInteractionServiceTest {
     private ProfileRepository profileRepository;
 
     @Mock
-    private FollowService followService;
+    private FollowRepository followRepository;
 
     @Mock
-    private BlockService blockService;
+    private BlockRepository blockRepository;
 
     private static Account authenticatedUser;
+    private static Profile authenticatedUserProfile;
     private static Profile target;
 
     @BeforeAll
     static void setup() {
         authenticatedUser = new Account("user", "password");
+        authenticatedUserProfile = new Profile(null, "source");
         target = new Profile(UUID.randomUUID(), "target");
     }
 
@@ -66,14 +68,13 @@ class ProfileInteractionServiceTest {
     @Test
     void ProfileInteractionService_Follow_ReturnVoid() {
         // arrange
-        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(target));
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(blockService.existsAnyBlockBetween(authenticatedUser.getId(), target.getId())).thenReturn(false);
-        doNothing().when(followService).follow(authenticatedUser.getId(), target.getId());
+        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(target));
+        when(blockRepository.existsAnyBlockBetween(authenticatedUser.getId(), target.getId())).thenReturn(false);
 
         // act & assert
         assertDoesNotThrow(() -> profileInteractionService.follow(target.getUsername()));
-        verify(followService, times(1)).follow(authenticatedUser.getId(), target.getId());
+        verify(followRepository, times(1)).save(any(Follow.class));
     }
 
     /**
@@ -83,28 +84,12 @@ class ProfileInteractionServiceTest {
     @Test
     void ProfileInteractionService_Follow_ThrowResourceNotFound() {
         // arrange
+        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
         when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.empty());
 
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> profileInteractionService.follow(target.getUsername()));
-        verify(followService, times(0)).follow(authenticatedUser.getId(), target.getId());
-    }
-
-    /**
-     * Test ensures {@link ProfileInteractionServiceImpl#follow(String)} throws
-     * {@link BlockedException} when there is a unidrectional or bidirectional block
-     * relationship established between users in question.
-     */
-    @Test
-    void ProfileInteractionService_Follow_ThrowBlockedException() {
-        // arrange
-        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(target));
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(blockService.existsAnyBlockBetween(authenticatedUser.getId(), target.getId())).thenReturn(true);
-
-        // act & assert
-        assertThrows(BlockedException.class, () -> profileInteractionService.follow(target.getUsername()));
-        verify(followService, times(0)).follow(authenticatedUser.getId(), target.getId());
+        verify(followRepository, times(0)).save(any(Follow.class));
     }
 
     /**
@@ -115,14 +100,29 @@ class ProfileInteractionServiceTest {
     @Test
     void ProfileInteractionService_Follow_ThrowSelfActionException() {
         // arrange
-        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(target));
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(blockService.existsAnyBlockBetween(authenticatedUser.getId(), target.getId())).thenReturn(false);
-        doThrow(SelfActionException.class).when(followService).follow(authenticatedUser.getId(), target.getId());
+        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(authenticatedUserProfile));
 
         // act & assert
         assertThrows(SelfActionException.class, () -> profileInteractionService.follow(target.getUsername()));
-        verify(followService, times(1)).follow(authenticatedUser.getId(), target.getId());
+        verify(followRepository, times(0)).save(any(Follow.class));
+    }
+
+    /**
+     * Test ensures {@link ProfileInteractionServiceImpl#follow(String)} throws
+     * {@link BlockedException} when there is a unidrectional or bidirectional block
+     * relationship established between users in question.
+     */
+    @Test
+    void ProfileInteractionService_Follow_ThrowBlockedException() {
+        // arrange
+        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(target));
+        when(blockRepository.existsAnyBlockBetween(authenticatedUser.getId(), target.getId())).thenReturn(true);
+
+        // act & assert
+        assertThrows(BlockedException.class, () -> profileInteractionService.follow(target.getUsername()));
+        verify(followRepository, times(0)).save(any(Follow.class));
     }
 
     /**
@@ -135,12 +135,13 @@ class ProfileInteractionServiceTest {
         // arrange
         when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(target));
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(blockService.existsAnyBlockBetween(authenticatedUser.getId(), target.getId())).thenReturn(false);
-        doThrow(AlreadyFollowingException.class).when(followService).follow(authenticatedUser.getId(), target.getId());
+        when(blockRepository.existsAnyBlockBetween(authenticatedUser.getId(), target.getId())).thenReturn(false);
+        when(followRepository.existsByFollowerIdAndFollowedId(authenticatedUser.getId(), target.getId()))
+            .thenReturn(true);
 
         // act & assert
         assertThrows(AlreadyFollowingException.class, () -> profileInteractionService.follow(target.getUsername()));
-        verify(followService, times(1)).follow(authenticatedUser.getId(), target.getId());
+        verify(followRepository, times(0)).save(any(Follow.class));
     }
 
     /**
@@ -150,13 +151,12 @@ class ProfileInteractionServiceTest {
     @Test
     void ProfileInteractionService_Unfollow_ReturnVoid() {
         // arrange
-        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(target));
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        doNothing().when(followService).unfollow(authenticatedUser.getId(), target.getId());
+        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(target));
 
         // act & assert
         assertDoesNotThrow(() -> profileInteractionService.unfollow(target.getUsername()));
-        verify(followService, times(1)).unfollow(authenticatedUser.getId(), target.getId());
+        verify(followRepository, times(1)).deleteByFollowerIdAndFollowedId(authenticatedUser.getId(), target.getId());
     }
 
     /**
@@ -166,11 +166,12 @@ class ProfileInteractionServiceTest {
     @Test
     void ProfileInteractionService_Unfollow_ThrowResourceNotFound() {
         // arrange
+        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
         when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.empty());
 
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> profileInteractionService.unfollow(target.getUsername()));
-        verify(followService, times(0)).unfollow(authenticatedUser.getId(), target.getId());
+        verify(followRepository, times(0)).deleteByFollowerIdAndFollowedId(authenticatedUser.getId(), target.getId());
     }
 
     /**
@@ -181,30 +182,12 @@ class ProfileInteractionServiceTest {
     @Test
     void ProfileInteractionService_Unfollow_ThrowSelfActionException() {
         // arrange
-        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(target));
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        doThrow(SelfActionException.class).when(followService).unfollow(authenticatedUser.getId(), target.getId());
+        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(authenticatedUserProfile));
 
         // act & assert
         assertThrows(SelfActionException.class, () -> profileInteractionService.unfollow(target.getUsername()));
-        verify(followService, times(1)).unfollow(authenticatedUser.getId(), target.getId());
-    }
-
-    /**
-     * Test ensures {@link ProfileInteractionServiceImpl#unfollow(String)} throws
-     * {@link NotFollowingException} when the supplied username is not followed by
-     * the authenticated user.
-     */
-    @Test
-    void ProfileInteractionService_Unfollow_ThrowNotFollowingException() {
-        // arrange
-        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(target));
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        doThrow(NotFollowingException.class).when(followService).unfollow(authenticatedUser.getId(), target.getId());
-
-        // act & assert
-        assertThrows(NotFollowingException.class, () -> profileInteractionService.unfollow(target.getUsername()));
-        verify(followService, times(1)).unfollow(authenticatedUser.getId(), target.getId());
+        verify(followRepository, times(0)).deleteByFollowerIdAndFollowedId(authenticatedUser.getId(), target.getId());
     }
 
     /**
@@ -214,13 +197,14 @@ class ProfileInteractionServiceTest {
     @Test
     void ProfileInteractionService_Block_ReturnVoid() {
         // arrange
-        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(target));
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        doNothing().when(blockService).block(authenticatedUser.getId(), target.getId());
+        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(target));
+        when(blockRepository.existsByBlockerIdAndBlockedId(authenticatedUser.getId(), target.getId()))
+            .thenReturn(false);
 
         // act & assert
         assertDoesNotThrow(() -> profileInteractionService.block(target.getUsername()));
-        verify(blockService, times(1)).block(authenticatedUser.getId(), target.getId());
+        verify(blockRepository, times(1)).save(any(Block.class));
     }
 
     /**
@@ -230,11 +214,12 @@ class ProfileInteractionServiceTest {
     @Test
     void ProfileInteractionService_Block_ThrowResourceNotFound() {
         // arrange
+        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
         when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.empty());
 
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> profileInteractionService.block(target.getUsername()));
-        verify(blockService, times(0)).block(authenticatedUser.getId(), target.getId());
+        verify(blockRepository, times(0)).save(any(Block.class));
     }
 
     /**
@@ -245,13 +230,12 @@ class ProfileInteractionServiceTest {
     @Test
     void ProfileInteractionService_Block_ThrowSelfActionException() {
         // arrange
-        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(target));
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        doThrow(SelfActionException.class).when(blockService).block(authenticatedUser.getId(), target.getId());
+        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(authenticatedUserProfile));
 
         // act & assert
         assertThrows(SelfActionException.class, () -> profileInteractionService.block(target.getUsername()));
-        verify(blockService, times(1)).block(authenticatedUser.getId(), target.getId());
+        verify(blockRepository, times(0)).save(any(Block.class));
     }
 
     /**
@@ -262,13 +246,13 @@ class ProfileInteractionServiceTest {
     @Test
     void ProfileInteractionService_Block_ThrowAlreadyBlockingException() {
         // arrange
-        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(target));
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        doThrow(AlreadyBlockingException.class).when(blockService).block(authenticatedUser.getId(), target.getId());
+        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(target));
+        when(blockRepository.existsByBlockerIdAndBlockedId(authenticatedUser.getId(), target.getId())).thenReturn(true);
 
         // act & assert
         assertThrows(AlreadyBlockingException.class, () -> profileInteractionService.block(target.getUsername()));
-        verify(blockService, times(1)).block(authenticatedUser.getId(), target.getId());
+        verify(blockRepository, times(0)).save(any(Block.class));
     }
 
     /**
@@ -278,13 +262,12 @@ class ProfileInteractionServiceTest {
     @Test
     void ProfileInteractionService_Unblock_ReturnVoid() {
         // arrange
-        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(target));
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        doNothing().when(blockService).unblock(authenticatedUser.getId(), target.getId());
+        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(target));
 
         // act & assert
         assertDoesNotThrow(() -> profileInteractionService.unblock(target.getUsername()));
-        verify(blockService, times(1)).unblock(authenticatedUser.getId(), target.getId());
+        verify(blockRepository, times(1)).deleteByBlockerIdAndBlockedId(authenticatedUser.getId(), target.getId());
     }
 
     /**
@@ -294,11 +277,12 @@ class ProfileInteractionServiceTest {
     @Test
     void ProfileInteractionService_Unblock_ThrowResourceNotFound() {
         // arrange
+        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
         when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.empty());
 
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> profileInteractionService.unblock(target.getUsername()));
-        verify(blockService, times(0)).unblock(authenticatedUser.getId(), target.getId());
+        verify(blockRepository, times(0)).deleteByBlockerIdAndBlockedId(authenticatedUser.getId(), target.getId());
     }
 
     /**
@@ -309,30 +293,12 @@ class ProfileInteractionServiceTest {
     @Test
     void ProfileInteractionService_Unblock_ThrowSelfActionException() {
         // arrange
-        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(target));
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        doThrow(SelfActionException.class).when(blockService).unblock(authenticatedUser.getId(), target.getId());
+        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(authenticatedUserProfile));
 
         // act & assert
         assertThrows(SelfActionException.class, () -> profileInteractionService.unblock(target.getUsername()));
-        verify(blockService, times(1)).unblock(authenticatedUser.getId(), target.getId());
-    }
-
-    /**
-     * Test ensures {@link ProfileInteractionServiceImpl#unblock(String)} throws
-     * {@link NotBlockingException} when the supplied username is not blocked by the
-     * authenticated user.
-     */
-    @Test
-    void ProfileInteractionService_Unblock_ThrowNotBlockingException() {
-        // arrange
-        when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.of(target));
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        doThrow(NotBlockingException.class).when(blockService).unblock(authenticatedUser.getId(), target.getId());
-
-        // act & assert
-        assertThrows(NotBlockingException.class, () -> profileInteractionService.unblock(target.getUsername()));
-        verify(blockService, times(1)).unblock(authenticatedUser.getId(), target.getId());
+        verify(blockRepository, times(0)).deleteByBlockerIdAndBlockedId(authenticatedUser.getId(), target.getId());
     }
 
 }

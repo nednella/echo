@@ -121,20 +121,19 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     @Test
     @Sql(scripts = "/sql/relationship-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void ProfileController_Unfollow_Return204NoContent() {
-        // api: DELETE /api/v1/profile/{username}/unfollow ==> 204 : No Content
-        String followPath = ApiConfig.Profile.FOLLOW_BY_USERNAME;
-        String unfollowPath = ApiConfig.Profile.UNFOLLOW_BY_USERNAME;
+        // api: DELETE /api/v1/profile/{username}/follow ==> 204 : No Content
+        String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
         String username = targetUser.getUsername();
 
         // follow the user to create a follow relationship in the db
-        ResponseEntity<Void> followResponse = restTemplate.postForEntity(followPath, null, Void.class, username);
+        ResponseEntity<Void> followResponse = restTemplate.postForEntity(path, null, Void.class, username);
 
         // assert response
         assertEquals(NO_CONTENT, followResponse.getStatusCode());
         assertNull(followResponse.getBody());
 
         // unfollow the user
-        ResponseEntity<Void> unfollowResponse = restTemplate.exchange(unfollowPath, DELETE, null, Void.class, username);
+        ResponseEntity<Void> unfollowResponse = restTemplate.exchange(path, DELETE, null, Void.class, username);
 
         // assert response
         assertEquals(NO_CONTENT, unfollowResponse.getStatusCode());
@@ -143,8 +142,8 @@ class ProfileInteractionControllerIT extends IntegrationTest {
 
     @Test
     void ProfileController_Unfollow_Throw404ResourceNotFound() {
-        // api: DELETE /api/v1/profile/{username}/unfollow ==> 404 : ResourceNotFound
-        String path = ApiConfig.Profile.UNFOLLOW_BY_USERNAME;
+        // api: DELETE /api/v1/profile/{username}/follow ==> 404 : ResourceNotFound
+        String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
         String username = "non-existent-user";
 
         ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, username);
@@ -162,8 +161,8 @@ class ProfileInteractionControllerIT extends IntegrationTest {
 
     @Test
     void ProfileController_Unfollow_Throw409SelfActionException() {
-        // api: DELETE /api/v1/profile/{username}/unfollow ==> 409 : SelfAction
-        String path = ApiConfig.Profile.UNFOLLOW_BY_USERNAME;
+        // api: DELETE /api/v1/profile/{username}/follow ==> 409 : SelfAction
+        String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
         String username = existingAccount.getUsername();
 
         ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, username);
@@ -177,25 +176,6 @@ class ProfileInteractionControllerIT extends IntegrationTest {
         assertNotNull(error);
         assertEquals(CONFLICT.value(), error.status());
         assertEquals(ErrorMessageConfig.Conflict.SELF_ACTION, error.message());
-    }
-
-    @Test
-    void ProfileController_Unfollow_Throw409NotFollowingException() {
-        // api: DELETE /api/v1/profile/{username}/unfollow ==> 409 : NotFollowing
-        String path = ApiConfig.Profile.UNFOLLOW_BY_USERNAME;
-        String username = targetUser.getUsername();
-
-        ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, username);
-
-        // assert response
-        assertEquals(CONFLICT, response.getStatusCode());
-        assertNotNull(response.getBody());
-
-        // assert error
-        ErrorDTO error = response.getBody();
-        assertNotNull(error);
-        assertEquals(CONFLICT.value(), error.status());
-        assertEquals(ErrorMessageConfig.Conflict.NOT_FOLLOWING, error.message());
     }
 
     @Test
@@ -282,20 +262,19 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     @Test
     @Sql(scripts = "/sql/relationship-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void ProfileController_Unblock_Return204NoContent() {
-        // api: DELETE /api/v1/profile/{username}/unblock ==> 204 : No Content
-        String blockPath = ApiConfig.Profile.BLOCK_BY_USERNAME;
-        String unblockPath = ApiConfig.Profile.UNBLOCK_BY_USERNAME;
+        // api: DELETE /api/v1/profile/{username}/block ==> 204 : No Content
+        String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
         String username = targetUser.getUsername();
 
         // block the user to create a block relationship in the db
-        ResponseEntity<Void> followResponse = restTemplate.postForEntity(blockPath, null, Void.class, username);
+        ResponseEntity<Void> followResponse = restTemplate.postForEntity(path, null, Void.class, username);
 
         // assert response
         assertEquals(NO_CONTENT, followResponse.getStatusCode());
         assertNull(followResponse.getBody());
 
         // unblock the user
-        ResponseEntity<Void> unfollowResponse = restTemplate.exchange(unblockPath, DELETE, null, Void.class, username);
+        ResponseEntity<Void> unfollowResponse = restTemplate.exchange(path, DELETE, null, Void.class, username);
 
         // assert response
         assertEquals(NO_CONTENT, unfollowResponse.getStatusCode());
@@ -305,8 +284,8 @@ class ProfileInteractionControllerIT extends IntegrationTest {
 
     @Test
     void ProfileController_Unblock_Throw404ResourceNotFound() {
-        // api: DELETE /api/v1/profile/{username}/unblock ==> 404 : ResourceNotFound
-        String path = ApiConfig.Profile.UNBLOCK_BY_USERNAME;
+        // api: DELETE /api/v1/profile/{username}/block ==> 404 : ResourceNotFound
+        String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
         String username = "non-existent-user";
 
         ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, username);
@@ -324,8 +303,8 @@ class ProfileInteractionControllerIT extends IntegrationTest {
 
     @Test
     void ProfileController_Unblock_Throw409SelfActionException() {
-        // api: DELETE /api/v1/profile/{username}/unblock ==> 409 : SelfAction
-        String path = ApiConfig.Profile.UNBLOCK_BY_USERNAME;
+        // api: DELETE /api/v1/profile/{username}/block ==> 409 : SelfAction
+        String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
         String username = existingAccount.getUsername();
 
         ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, username);
@@ -339,25 +318,6 @@ class ProfileInteractionControllerIT extends IntegrationTest {
         assertNotNull(error);
         assertEquals(CONFLICT.value(), error.status());
         assertEquals(ErrorMessageConfig.Conflict.SELF_ACTION, error.message());
-    }
-
-    @Test
-    void ProfileController_Unblock_Throw409NotBlockingException() {
-        // api: DELETE /api/v1/profile/{username}/unblock ==> 409 : NotBlocking
-        String path = ApiConfig.Profile.UNBLOCK_BY_USERNAME;
-        String username = targetUser.getUsername();
-
-        ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, username);
-
-        // assert response
-        assertEquals(CONFLICT, response.getStatusCode());
-        assertNotNull(response.getBody());
-
-        // assert error
-        ErrorDTO error = response.getBody();
-        assertNotNull(error);
-        assertEquals(CONFLICT.value(), error.status());
-        assertEquals(ErrorMessageConfig.Conflict.NOT_BLOCKING, error.message());
     }
 
 }

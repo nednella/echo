@@ -60,53 +60,57 @@ class FollowRepositoryIT extends RepositoryTest {
     }
 
     /**
-     * Test the
-     * {@link FollowRepository#existsByFollowerIdAndFollowingId(UUID, UUID)} method
-     * to verify that the repository correctly identifies that a {@link Follow}
-     * relationship exists between the supplied source and target profile UUIDs.
+     * Test the {@link FollowRepository#existsByFollowerIdAndFollowedId(UUID, UUID)}
+     * method to verify that the repository correctly identifies that a
+     * {@link Follow} relationship exists between the supplied source and target
+     * profile UUIDs.
      */
     @Test
-    void FollowRepository_ExistsByFollowerIdAndFollowingId_ReturnTrue() {
-        boolean exists = followRepository
-            .existsByFollowerIdAndFollowingId(source.getId(), target.getId());
-        boolean existsOtherWayAround = followRepository
-            .existsByFollowerIdAndFollowingId(target.getId(), source.getId());
+    void FollowRepository_ExistsByFollowerIdAndFollowedId_ReturnTrue() {
+        boolean exists = followRepository.existsByFollowerIdAndFollowedId(source.getId(), target.getId());
+        boolean existsOtherWayAround = followRepository.existsByFollowerIdAndFollowedId(target.getId(), source.getId());
 
         assertTrue(exists);
         assertTrue(existsOtherWayAround);
     }
 
     /**
-     * Test the
-     * {@link FollowRepository#existsByFollowerIdAndFollowingId(UUID, UUID)} method
-     * to verify that the repository correctly identifies that a {@link Follow}
-     * relationship does not exist between the supplied source and target profile
-     * UUIDs.
+     * Test the {@link FollowRepository#existsByFollowerIdAndFollowedId(UUID, UUID)}
+     * method to verify that the repository correctly identifies that a
+     * {@link Follow} relationship does not exist between the supplied source and
+     * target profile UUIDs.
      */
     @Test
-    void FollowRepository_ExistsByFollowerIdAndFollowingId_ReturnFalse() {
-        boolean exists = followRepository.existsByFollowerIdAndFollowingId(UUID.randomUUID(), UUID.randomUUID());
+    void FollowRepository_ExistsByFollowerIdAndFollowedId_ReturnFalse() {
+        boolean exists = followRepository.existsByFollowerIdAndFollowedId(UUID.randomUUID(), UUID.randomUUID());
 
         assertFalse(exists);
     }
 
     /**
+     * Test the {@link FollowRepository#deleteByFollowerIdAndFollowedId(UUID, UUID)}
+     * method to verify that the repository correctly deletes 1 {@link Follow}
+     * relationship established between the supplied profile UUIDs.
+     */
+    @Test
+    @Transactional
+    void FollowRepository_DeleteByFollowingIdAndFolloedId_Return1() {
+        int deletedCount = followRepository.deleteByFollowerIdAndFollowedId(source.getId(), target.getId());
+
+        assertEquals(1, deletedCount);
+    }
+
+    /**
      * Test the {@link FollowRepository#deleteAnyFollowIfExists(UUID, UUID)} method
-     * to verify that the repository correctly deletes any {@link Follow}
+     * to verify that the repository correctly deletes 2 {@link Follow}
      * relationships established between the supplied profile UUIDs.
      */
     @Test
     @Transactional
-    void FollowRepository_DeleteAnyFollowIfExists() {
-        followRepository.deleteAnyFollowIfExists(source.getId(), target.getId());
+    void FollowRepository_DeleteAnyFollowIfExists_Return2() {
+        int deletedCount = followRepository.deleteAnyFollowIfExists(source.getId(), target.getId());
 
-        boolean exists = followRepository
-            .existsByFollowerIdAndFollowingId(source.getId(), target.getId());
-        boolean existsOtherWayAround = followRepository
-            .existsByFollowerIdAndFollowingId(target.getId(), source.getId());
-
-        assertFalse(exists);
-        assertFalse(existsOtherWayAround);
+        assertEquals(2, deletedCount);
     }
 
 }

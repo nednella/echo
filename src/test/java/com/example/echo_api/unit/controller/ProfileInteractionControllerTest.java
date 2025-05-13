@@ -21,8 +21,6 @@ import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.controller.profile.ProfileInteractionController;
 import com.example.echo_api.exception.custom.conflict.AlreadyBlockingException;
 import com.example.echo_api.exception.custom.conflict.AlreadyFollowingException;
-import com.example.echo_api.exception.custom.conflict.NotBlockingException;
-import com.example.echo_api.exception.custom.conflict.NotFollowingException;
 import com.example.echo_api.exception.custom.conflict.SelfActionException;
 import com.example.echo_api.exception.custom.forbidden.BlockedException;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
@@ -177,8 +175,8 @@ class ProfileInteractionControllerTest {
 
     @Test
     void ProfileInteractionController_Unfollow_Return204NoContent() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/unfollow ==> 204 : No Content
-        String path = ApiConfig.Profile.UNFOLLOW_BY_USERNAME;
+        // api: DELETE /api/v1/profile/{username}/follow ==> 204 : No Content
+        String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
 
         String username = "username";
         doNothing().when(profileInteractionService).unfollow("username");
@@ -193,8 +191,8 @@ class ProfileInteractionControllerTest {
 
     @Test
     void ProfileInteractionController_Unfollow_Throw404ResouceNotFound() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/unfollow ==> 404 : Resource Not Found
-        String path = ApiConfig.Profile.UNFOLLOW_BY_USERNAME;
+        // api: DELETE /api/v1/profile/{username}/follow ==> 404 : Resource Not Found
+        String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
 
         String username = "username";
         doThrow(new ResourceNotFoundException()).when(profileInteractionService).unfollow("username");
@@ -221,8 +219,8 @@ class ProfileInteractionControllerTest {
 
     @Test
     void ProfileInteractionController_Unfollow_Throw409SelfActionException() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/unfollow ==> 409 : Self Action
-        String path = ApiConfig.Profile.UNFOLLOW_BY_USERNAME;
+        // api: DELETE /api/v1/profile/{username}/follow ==> 409 : Self Action
+        String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
 
         String username = "username";
         doThrow(new SelfActionException()).when(profileInteractionService)
@@ -239,34 +237,6 @@ class ProfileInteractionControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.CONFLICT,
             ErrorMessageConfig.Conflict.SELF_ACTION,
-            null,
-            path);
-
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
-
-        assertEquals(expected, actual);
-        verify(profileInteractionService, times(1)).unfollow(username);
-    }
-
-    @Test
-    void ProfileInteractionController_Unfollow_Throw409NotFollowingException() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/unfollow ==> 409 : NotFollowing
-        String path = ApiConfig.Profile.UNFOLLOW_BY_USERNAME;
-
-        String username = "username";
-        doThrow(new NotFollowingException()).when(profileInteractionService).unfollow("username");
-
-        String response = mockMvc
-            .perform(delete(path, username))
-            .andDo(print())
-            .andExpect(status().isConflict())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
-        ErrorDTO expected = new ErrorDTO(
-            HttpStatus.CONFLICT,
-            ErrorMessageConfig.Conflict.NOT_FOLLOWING,
             null,
             path);
 
@@ -379,8 +349,8 @@ class ProfileInteractionControllerTest {
 
     @Test
     void ProfileInteractionController_Unblock_Return204NoContent() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/unblock ==> 204 : No Content
-        String path = ApiConfig.Profile.UNBLOCK_BY_USERNAME;
+        // api: DELETE /api/v1/profile/{username}/block ==> 204 : No Content
+        String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
 
         String username = "username";
         doNothing().when(profileInteractionService).unblock("username");
@@ -395,8 +365,8 @@ class ProfileInteractionControllerTest {
 
     @Test
     void ProfileInteractionController_Unblock_Throw404ResouceNotFound() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/unblock ==> 404 : ResourceNotFound
-        String path = ApiConfig.Profile.UNBLOCK_BY_USERNAME;
+        // api: DELETE /api/v1/profile/{username}/block ==> 404 : ResourceNotFound
+        String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
 
         String username = "username";
         doThrow(new ResourceNotFoundException()).when(profileInteractionService).unblock("username");
@@ -423,8 +393,8 @@ class ProfileInteractionControllerTest {
 
     @Test
     void ProfileInteractionController_Unblock_Throw409SelfActionException() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/unblock ==> 409 : SelfAction
-        String path = ApiConfig.Profile.UNBLOCK_BY_USERNAME;
+        // api: DELETE /api/v1/profile/{username}/block ==> 409 : SelfAction
+        String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
 
         String username = "username";
         doThrow(new SelfActionException()).when(profileInteractionService)
@@ -441,34 +411,6 @@ class ProfileInteractionControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.CONFLICT,
             ErrorMessageConfig.Conflict.SELF_ACTION,
-            null,
-            path);
-
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
-
-        assertEquals(expected, actual);
-        verify(profileInteractionService, times(1)).unblock(username);
-    }
-
-    @Test
-    void ProfileInteractionController_Unblock_Throw409NotBlockingException() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/unblock ==> 409 : NotBlocking
-        String path = ApiConfig.Profile.UNBLOCK_BY_USERNAME;
-
-        String username = "username";
-        doThrow(new NotBlockingException()).when(profileInteractionService).unblock("username");
-
-        String response = mockMvc
-            .perform(delete(path, username))
-            .andDo(print())
-            .andExpect(status().isConflict())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
-        ErrorDTO expected = new ErrorDTO(
-            HttpStatus.CONFLICT,
-            ErrorMessageConfig.Conflict.NOT_BLOCKING,
             null,
             path);
 
