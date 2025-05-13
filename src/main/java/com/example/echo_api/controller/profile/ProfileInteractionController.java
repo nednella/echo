@@ -25,7 +25,7 @@ public class ProfileInteractionController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(ApiConfig.Profile.UNFOLLOW_BY_USERNAME)
+    @DeleteMapping(ApiConfig.Profile.FOLLOW_BY_USERNAME)
     public ResponseEntity<Void> unfollowByUsername(@PathVariable("username") String username) {
         profileInteractionService.unfollow(username);
         return ResponseEntity.noContent().build();
@@ -37,7 +37,7 @@ public class ProfileInteractionController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(ApiConfig.Profile.UNBLOCK_BY_USERNAME)
+    @DeleteMapping(ApiConfig.Profile.BLOCK_BY_USERNAME)
     public ResponseEntity<Void> unblockByUsername(@PathVariable("username") String username) {
         profileInteractionService.unblock(username);
         return ResponseEntity.noContent().build();
