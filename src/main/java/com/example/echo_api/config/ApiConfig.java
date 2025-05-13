@@ -42,4 +42,11 @@ public final class ApiConfig {
         public static final String BLOCK_BY_USERNAME = ROOT + "/{username}/block";
     }
 
+    @NoArgsConstructor(access = PRIVATE)
+    public static final class Post {
+        private static final String ROOT = BASE_URL + "/post";
+        public static final String CREATE = ROOT;
+        public static final String DELETE = ROOT + "/{id}";
+    }
+
 }
