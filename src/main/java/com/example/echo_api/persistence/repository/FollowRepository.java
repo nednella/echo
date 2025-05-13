@@ -24,6 +24,14 @@ public interface FollowRepository extends ListCrudRepository<Follow, FollowPK> {
     boolean existsByFollowerIdAndFollowedId(UUID followerId, UUID followedId);
 
     /**
+     * Delete the follow if one exists from the follower to followed profile id.
+     * 
+     * @param followerId The id of the profile initiating the block.
+     * @param followedId The id of the profile being followed.
+     */
+    void deleteByfollowerIdAndfollowedId(UUID followerId, UUID followedId);
+
+    /**
      * Delete any follows that exist between the supplied profile ids in either
      * direction (unidirectional or bidirectional).
      * 
