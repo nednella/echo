@@ -28,8 +28,8 @@ public class Follow {
     private UUID followerId;
 
     @Id
-    @Column(name = "following_id")
-    private UUID followingId;
+    @Column(name = "followed_id")
+    private UUID followedId;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -37,7 +37,7 @@ public class Follow {
 
     public Follow(UUID source, UUID target) {
         this.followerId = source;
-        this.followingId = target;
+        this.followedId = target;
     }
 
 }

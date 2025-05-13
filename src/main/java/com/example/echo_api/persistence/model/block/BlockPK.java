@@ -13,6 +13,6 @@ public class BlockPK {
 
     private UUID blockerId;
 
-    private UUID blockingId;
+    private UUID blockedId;
 
 }

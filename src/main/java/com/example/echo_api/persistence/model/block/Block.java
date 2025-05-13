@@ -28,8 +28,8 @@ public class Block {
     private UUID blockerId;
 
     @Id
-    @Column(name = "blocking_id")
-    private UUID blockingId;
+    @Column(name = "blocked_id")
+    private UUID blockedId;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -37,7 +37,7 @@ public class Block {
 
     public Block(UUID source, UUID target) {
         this.blockerId = source;
-        this.blockingId = target;
+        this.blockedId = target;
     }
 
 }

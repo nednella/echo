@@ -13,6 +13,6 @@ public class FollowPK {
 
     private UUID followerId;
 
-    private UUID followingId;
+    private UUID followedId;
 
 }
