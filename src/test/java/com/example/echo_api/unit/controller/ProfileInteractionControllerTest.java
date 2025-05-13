@@ -175,8 +175,8 @@ class ProfileInteractionControllerTest {
 
     @Test
     void ProfileInteractionController_Unfollow_Return204NoContent() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/unfollow ==> 204 : No Content
-        String path = ApiConfig.Profile.UNFOLLOW_BY_USERNAME;
+        // api: DELETE /api/v1/profile/{username}/follow ==> 204 : No Content
+        String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
 
         String username = "username";
         doNothing().when(profileInteractionService).unfollow("username");
@@ -191,8 +191,8 @@ class ProfileInteractionControllerTest {
 
     @Test
     void ProfileInteractionController_Unfollow_Throw404ResouceNotFound() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/unfollow ==> 404 : Resource Not Found
-        String path = ApiConfig.Profile.UNFOLLOW_BY_USERNAME;
+        // api: DELETE /api/v1/profile/{username}/follow ==> 404 : Resource Not Found
+        String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
 
         String username = "username";
         doThrow(new ResourceNotFoundException()).when(profileInteractionService).unfollow("username");
@@ -219,8 +219,8 @@ class ProfileInteractionControllerTest {
 
     @Test
     void ProfileInteractionController_Unfollow_Throw409SelfActionException() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/unfollow ==> 409 : Self Action
-        String path = ApiConfig.Profile.UNFOLLOW_BY_USERNAME;
+        // api: DELETE /api/v1/profile/{username}/follow ==> 409 : Self Action
+        String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
 
         String username = "username";
         doThrow(new SelfActionException()).when(profileInteractionService)
@@ -349,8 +349,8 @@ class ProfileInteractionControllerTest {
 
     @Test
     void ProfileInteractionController_Unblock_Return204NoContent() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/unblock ==> 204 : No Content
-        String path = ApiConfig.Profile.UNBLOCK_BY_USERNAME;
+        // api: DELETE /api/v1/profile/{username}/block ==> 204 : No Content
+        String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
 
         String username = "username";
         doNothing().when(profileInteractionService).unblock("username");
@@ -365,8 +365,8 @@ class ProfileInteractionControllerTest {
 
     @Test
     void ProfileInteractionController_Unblock_Throw404ResouceNotFound() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/unblock ==> 404 : ResourceNotFound
-        String path = ApiConfig.Profile.UNBLOCK_BY_USERNAME;
+        // api: DELETE /api/v1/profile/{username}/block ==> 404 : ResourceNotFound
+        String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
 
         String username = "username";
         doThrow(new ResourceNotFoundException()).when(profileInteractionService).unblock("username");
@@ -393,8 +393,8 @@ class ProfileInteractionControllerTest {
 
     @Test
     void ProfileInteractionController_Unblock_Throw409SelfActionException() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/unblock ==> 409 : SelfAction
-        String path = ApiConfig.Profile.UNBLOCK_BY_USERNAME;
+        // api: DELETE /api/v1/profile/{username}/block ==> 409 : SelfAction
+        String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
 
         String username = "username";
         doThrow(new SelfActionException()).when(profileInteractionService)

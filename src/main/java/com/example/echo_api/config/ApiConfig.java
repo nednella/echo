@@ -39,9 +39,7 @@ public final class ApiConfig {
         public static final String GET_FOLLOWERS_BY_USERNAME = ROOT + "/{username}/followers";
         public static final String GET_FOLLOWING_BY_USERNAME = ROOT + "/{username}/following";
         public static final String FOLLOW_BY_USERNAME = ROOT + "/{username}/follow";
-        public static final String UNFOLLOW_BY_USERNAME = ROOT + "/{username}/unfollow";
         public static final String BLOCK_BY_USERNAME = ROOT + "/{username}/block";
-        public static final String UNBLOCK_BY_USERNAME = ROOT + "/{username}/unblock";
     }
 
 }
