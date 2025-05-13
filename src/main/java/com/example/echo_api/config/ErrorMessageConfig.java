@@ -49,8 +49,6 @@ public final class ErrorMessageConfig {
     public static class Conflict {
         public static final String ALREADY_FOLLOWING = "You are already following this profile.";
         public static final String ALREADY_BLOCKING = "You are already blocking this profile.";
-        public static final String NOT_FOLLOWING = "You are not following this profile.";
-        public static final String NOT_BLOCKING = "You are not blocking this profile.";
         public static final String ALREADY_LIKED = "You have already liked this post.";
         public static final String SELF_ACTION = "You cannot perform this action on yourself.";
     }
