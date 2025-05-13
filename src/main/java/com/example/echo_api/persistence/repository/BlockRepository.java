@@ -38,4 +38,12 @@ public interface BlockRepository extends ListCrudRepository<Block, BlockPK> {
         """)
     boolean existsAnyBlockBetween(@Param("profileId1") UUID profileId1, @Param("profileId2") UUID profileId2);
 
+    /**
+     * Delete the block if one exists from the blocker to blocked profile id.
+     * 
+     * @param blockerId The id of the profile initiating the block.
+     * @param blockedId The id of the profile being blocked.
+     */
+    void deleteByBlockerIdAndBlockedId(UUID blockerId, UUID blockedId);
+
 }
