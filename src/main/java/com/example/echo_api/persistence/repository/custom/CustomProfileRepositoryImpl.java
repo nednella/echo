@@ -41,7 +41,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                     avatar.transformed_url AS avatar_url,
                     banner.transformed_url AS banner_url,
                     p.created_at,
-                    (SELECT COUNT(*) FROM follow WHERE following_id = p.id) AS followers,
+                    (SELECT COUNT(*) FROM follow WHERE followed_id = p.id) AS followers,
                     (SELECT COUNT(*) FROM follow WHERE follower_id = p.id) AS following,
                     0 AS posts,
                     0 AS media
@@ -56,28 +56,28 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                     ELSE EXISTS(
                         SELECT 1 FROM follow
                             WHERE follower_id = :authenticated_user_id
-                            AND following_id = pd.id
+                            AND followed_id = pd.id
                     )
                 END AS rel_following,
                 CASE WHEN pd.is_self THEN NULL
                     ELSE EXISTS(
                         SELECT 1 FROM follow
                             WHERE follower_id = pd.id
-                            AND following_id = :authenticated_user_id
+                            AND followed_id = :authenticated_user_id
                     )
                 END AS rel_followed_by,
                 CASE WHEN pd.is_self THEN NULL
                     ELSE EXISTS(
                         SELECT 1 FROM block
                             WHERE blocker_id = :authenticated_user_id
-                            AND blocking_id = pd.id
+                            AND blocked_id = pd.id
                     )
                 END AS rel_blocking,
                 CASE WHEN pd.is_self THEN NULL
                     ELSE EXISTS(
                         SELECT 1 FROM block
                             WHERE blocker_id = pd.id
-                            AND blocking_id = :authenticated_user_id
+                            AND blocked_id = :authenticated_user_id
                     ) 
                 END AS rel_blocked_by
             FROM profile_data pd
@@ -110,7 +110,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                     avatar.transformed_url AS avatar_url,
                     banner.transformed_url AS banner_url,
                     p.created_at,
-                    (SELECT COUNT(*) FROM follow WHERE following_id = p.id) AS followers,
+                    (SELECT COUNT(*) FROM follow WHERE followed_id = p.id) AS followers,
                     (SELECT COUNT(*) FROM follow WHERE follower_id = p.id) AS following,
                     0 AS posts,
                     0 AS media
@@ -125,28 +125,28 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                     ELSE EXISTS(
                         SELECT 1 FROM follow
                             WHERE follower_id = :authenticated_user_id
-                            AND following_id = pd.id
+                            AND followed_id = pd.id
                     )
                 END AS rel_following,
                 CASE WHEN pd.is_self THEN NULL
                     ELSE EXISTS(
                         SELECT 1 FROM follow
                             WHERE follower_id = pd.id
-                            AND following_id = :authenticated_user_id
+                            AND followed_id = :authenticated_user_id
                     )
                 END AS rel_followed_by,
                 CASE WHEN pd.is_self THEN NULL
                     ELSE EXISTS(
                         SELECT 1 FROM block
                             WHERE blocker_id = :authenticated_user_id
-                            AND blocking_id = pd.id
+                            AND blocked_id = pd.id
                     )
                 END AS rel_blocking,
                 CASE WHEN pd.is_self THEN NULL
                     ELSE EXISTS(
                         SELECT 1 FROM block
                             WHERE blocker_id = pd.id
-                            AND blocking_id = :authenticated_user_id
+                            AND blocked_id = :authenticated_user_id
                     ) 
                 END AS rel_blocked_by
             FROM profile_data pd
@@ -179,7 +179,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                 FROM follow f
                 LEFT JOIN profile p ON p.id = f.follower_id
                 LEFT JOIN image avatar ON p.avatar_id = avatar.id
-                WHERE f.following_id = :id
+                WHERE f.followed_id = :id
                 ORDER BY f.created_at DESC
                 LIMIT :limit
                 OFFSET :offset
@@ -190,28 +190,28 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                     ELSE EXISTS(
                         SELECT 1 FROM follow
                             WHERE follower_id = :authenticated_user_id
-                            AND following_id = pf.id
+                            AND followed_id = pf.id
                     )
                 END AS rel_following,
                 CASE WHEN pf.is_self THEN NULL
                     ELSE EXISTS(
                         SELECT 1 FROM follow
                             WHERE follower_id = pf.id
-                            AND following_id = :authenticated_user_id
+                            AND followed_id = :authenticated_user_id
                     )
                 END AS rel_followed_by,
                 CASE WHEN pf.is_self THEN NULL
                     ELSE EXISTS(
                         SELECT 1 FROM block
                             WHERE blocker_id = :authenticated_user_id
-                            AND blocking_id = pf.id
+                            AND blocked_id = pf.id
                     )
                 END AS rel_blocking,
                 CASE WHEN pf.is_self THEN NULL
                     ELSE EXISTS(
                         SELECT 1 FROM block
                             WHERE blocker_id = pf.id
-                            AND blocking_id = :authenticated_user_id
+                            AND blocked_id = :authenticated_user_id
                     ) 
                 END AS rel_blocked_by
             FROM paginated_followers pf
@@ -230,7 +230,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
             new SimplifiedProfileDtoRowMapper()
         );
 
-        String countSql = "SELECT COUNT(*) FROM follow f WHERE f.following_id = :id";
+        String countSql = "SELECT COUNT(*) FROM follow f WHERE f.followed_id = :id";
 
         MapSqlParameterSource countParams = new MapSqlParameterSource()
             .addValue("id", id);
@@ -251,14 +251,14 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
         String followingSql = """
             WITH paginated_following AS (
                 SELECT
-                    (f.following_id = :authenticated_user_id) AS is_self,
-                    f.following_id AS id,
+                    (f.followed_id = :authenticated_user_id) AS is_self,
+                    f.followed_id AS id,
                     p.username,
                     p.name,
                     f.created_at,
                     avatar.transformed_url AS avatar_url
                 FROM follow f
-                LEFT JOIN profile p ON p.id = f.following_id
+                LEFT JOIN profile p ON p.id = f.followed_id
                 LEFT JOIN image avatar ON p.avatar_id = avatar.id
                 WHERE f.follower_id = :id
                 ORDER BY f.created_at DESC
@@ -271,28 +271,28 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                     ELSE EXISTS(
                         SELECT 1 FROM follow
                             WHERE follower_id = :authenticated_user_id
-                            AND following_id = pf.id
+                            AND followed_id = pf.id
                     )
                 END AS rel_following,
                 CASE WHEN pf.is_self THEN NULL
                     ELSE EXISTS(
                         SELECT 1 FROM follow
                             WHERE follower_id = pf.id
-                            AND following_id = :authenticated_user_id
+                            AND followed_id = :authenticated_user_id
                     )
                 END AS rel_followed_by,
                 CASE WHEN pf.is_self THEN NULL
                     ELSE EXISTS(
                         SELECT 1 FROM block
                             WHERE blocker_id = :authenticated_user_id
-                            AND blocking_id = pf.id
+                            AND blocked_id = pf.id
                     )
                 END AS rel_blocking,
                 CASE WHEN pf.is_self THEN NULL
                     ELSE EXISTS(
                         SELECT 1 FROM block
                             WHERE blocker_id = pf.id
-                            AND blocking_id = :authenticated_user_id
+                            AND blocked_id = :authenticated_user_id
                     ) 
                 END AS rel_blocked_by
             FROM paginated_following pf
