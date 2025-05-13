@@ -29,7 +29,7 @@ public interface FollowRepository extends ListCrudRepository<Follow, FollowPK> {
      * @param followerId The id of the profile initiating the block.
      * @param followedId The id of the profile being followed.
      */
-    void deleteByfollowerIdAndfollowedId(UUID followerId, UUID followedId);
+    void deleteByfollowerIdAndFollowedId(UUID followerId, UUID followedId);
 
     /**
      * Delete any follows that exist between the supplied profile ids in either
