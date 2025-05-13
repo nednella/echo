@@ -11,12 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.service.post.interaction.PostInteractionService;
+import com.example.echo_api.validation.sequence.ValidationOrder;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@Validated
+@Validated(ValidationOrder.class)
 public class PostInteractionController {
 
     private final PostInteractionService postInteractionService;
