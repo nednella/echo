@@ -19,8 +19,8 @@ public interface BlockRepository extends ListCrudRepository<Block, BlockPK> {
      * 
      * @param blockerId The id of the profile initiating the block.
      * @param blockedId The id of the profile being blocked.
-     * @return True if a unidirectional block exists from blocker to blocked, else
-     *         false.
+     * @return {@code true} if a unidirectional block exists from blocker to
+     *         blocked, else {@code false}.
      */
     boolean existsByBlockerIdAndBlockedId(UUID blockerId, UUID blockedId);
 
@@ -30,7 +30,8 @@ public interface BlockRepository extends ListCrudRepository<Block, BlockPK> {
      * 
      * @param profileId1 The id of the first profile.
      * @param profileId2 The id of the second profile.
-     * @return True if any block exists between the two profiles.
+     * @return {@code true} if any block exists between the two profiles, else
+     *         {@code false}.
      */
     @Query("""
         SELECT CASE WHEN COUNT(b) > 0 THEN TRUE ELSE FALSE END
@@ -47,6 +48,7 @@ public interface BlockRepository extends ListCrudRepository<Block, BlockPK> {
      * 
      * @param blockerId The id of the profile initiating the block.
      * @param blockedId The id of the profile being blocked.
+     * @return The number of block records deleted (0 or 1).
      */
     int deleteByBlockerIdAndBlockedId(UUID blockerId, UUID blockedId);
 
