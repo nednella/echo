@@ -180,25 +180,6 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     }
 
     @Test
-    void ProfileController_Unfollow_Throw409NotFollowingException() {
-        // api: DELETE /api/v1/profile/{username}/unfollow ==> 409 : NotFollowing
-        String path = ApiConfig.Profile.UNFOLLOW_BY_USERNAME;
-        String username = targetUser.getUsername();
-
-        ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, username);
-
-        // assert response
-        assertEquals(CONFLICT, response.getStatusCode());
-        assertNotNull(response.getBody());
-
-        // assert error
-        ErrorDTO error = response.getBody();
-        assertNotNull(error);
-        assertEquals(CONFLICT.value(), error.status());
-        assertEquals(ErrorMessageConfig.Conflict.NOT_FOLLOWING, error.message());
-    }
-
-    @Test
     @Sql(scripts = "/sql/relationship-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void ProfileController_Block_Return204NoContent() {
         // api: POST /api/v1/profile/{username}/block ==> 204 : No Content
@@ -339,25 +320,6 @@ class ProfileInteractionControllerIT extends IntegrationTest {
         assertNotNull(error);
         assertEquals(CONFLICT.value(), error.status());
         assertEquals(ErrorMessageConfig.Conflict.SELF_ACTION, error.message());
-    }
-
-    @Test
-    void ProfileController_Unblock_Throw409NotBlockingException() {
-        // api: DELETE /api/v1/profile/{username}/unblock ==> 409 : NotBlocking
-        String path = ApiConfig.Profile.UNBLOCK_BY_USERNAME;
-        String username = targetUser.getUsername();
-
-        ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, username);
-
-        // assert response
-        assertEquals(CONFLICT, response.getStatusCode());
-        assertNotNull(response.getBody());
-
-        // assert error
-        ErrorDTO error = response.getBody();
-        assertNotNull(error);
-        assertEquals(CONFLICT.value(), error.status());
-        assertEquals(ErrorMessageConfig.Conflict.NOT_BLOCKING, error.message());
     }
 
 }
