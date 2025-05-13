@@ -40,47 +40,59 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                     p.location,
                     avatar.transformed_url AS avatar_url,
                     banner.transformed_url AS banner_url,
-                    p.created_at,
-                    (SELECT COUNT(*) FROM follow WHERE followed_id = p.id) AS followers,
-                    (SELECT COUNT(*) FROM follow WHERE follower_id = p.id) AS following,
-                    0 AS posts,
-                    0 AS media
+                    p.created_at
                 FROM profile p
                 LEFT JOIN image avatar ON p.avatar_id = avatar.id
                 LEFT JOIN image banner ON p.banner_id = banner.id
                 WHERE p.id = :id
+            ),
+            metrics AS (
+                SELECT
+                    (SELECT COUNT(*) FROM follow WHERE followed_id = pd.id) AS followers,
+                    (SELECT COUNT(*) FROM follow WHERE follower_id = pd.id) AS following,
+                    0 AS posts,
+                    0 AS media
+                FROM profile_data pd
+            ),
+            relationships AS (
+                SELECT
+                    CASE WHEN pd.is_self THEN NULL
+                        ELSE EXISTS(
+                            SELECT 1 FROM follow
+                            WHERE follower_id = :authenticated_user_id
+                            AND followed_id = pd.id
+                        )
+                    END AS rel_following,
+                    CASE WHEN pd.is_self THEN NULL
+                        ELSE EXISTS(
+                            SELECT 1 FROM follow
+                            WHERE follower_id = pd.id
+                            AND followed_id = :authenticated_user_id
+                        )
+                    END AS rel_followed_by,
+                    CASE WHEN pd.is_self THEN NULL
+                        ELSE EXISTS(
+                            SELECT 1 FROM block
+                            WHERE blocker_id = :authenticated_user_id
+                            AND blocked_id = pd.id
+                        )
+                    END AS rel_blocking,
+                    CASE WHEN pd.is_self THEN NULL
+                        ELSE EXISTS(
+                            SELECT 1 FROM block
+                            WHERE blocker_id = pd.id
+                            AND blocked_id = :authenticated_user_id
+                        )
+                    END AS rel_blocked_by
+                FROM profile_data pd
             )
             SELECT
                 pd.*,
-                CASE WHEN pd.is_self THEN NULL
-                    ELSE EXISTS(
-                        SELECT 1 FROM follow
-                            WHERE follower_id = :authenticated_user_id
-                            AND followed_id = pd.id
-                    )
-                END AS rel_following,
-                CASE WHEN pd.is_self THEN NULL
-                    ELSE EXISTS(
-                        SELECT 1 FROM follow
-                            WHERE follower_id = pd.id
-                            AND followed_id = :authenticated_user_id
-                    )
-                END AS rel_followed_by,
-                CASE WHEN pd.is_self THEN NULL
-                    ELSE EXISTS(
-                        SELECT 1 FROM block
-                            WHERE blocker_id = :authenticated_user_id
-                            AND blocked_id = pd.id
-                    )
-                END AS rel_blocking,
-                CASE WHEN pd.is_self THEN NULL
-                    ELSE EXISTS(
-                        SELECT 1 FROM block
-                            WHERE blocker_id = pd.id
-                            AND blocked_id = :authenticated_user_id
-                    ) 
-                END AS rel_blocked_by
+                m.*,
+                r.*
             FROM profile_data pd
+            CROSS JOIN metrics m
+            CROSS JOIN relationships r
         """;
 
         MapSqlParameterSource params = new MapSqlParameterSource()
@@ -109,47 +121,59 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                     p.location,
                     avatar.transformed_url AS avatar_url,
                     banner.transformed_url AS banner_url,
-                    p.created_at,
-                    (SELECT COUNT(*) FROM follow WHERE followed_id = p.id) AS followers,
-                    (SELECT COUNT(*) FROM follow WHERE follower_id = p.id) AS following,
-                    0 AS posts,
-                    0 AS media
+                    p.created_at
                 FROM profile p
                 LEFT JOIN image avatar ON p.avatar_id = avatar.id
                 LEFT JOIN image banner ON p.banner_id = banner.id
                 WHERE p.username = :username
+            ),
+            metrics AS (
+                SELECT
+                    (SELECT COUNT(*) FROM follow WHERE followed_id = pd.id) AS followers,
+                    (SELECT COUNT(*) FROM follow WHERE follower_id = pd.id) AS following,
+                    0 AS posts,
+                    0 AS media
+                FROM profile_data pd
+            ),
+            relationships AS (
+                SELECT
+                    CASE WHEN pd.is_self THEN NULL
+                        ELSE EXISTS(
+                            SELECT 1 FROM follow
+                            WHERE follower_id = :authenticated_user_id
+                            AND followed_id = pd.id
+                        )
+                    END AS rel_following,
+                    CASE WHEN pd.is_self THEN NULL
+                        ELSE EXISTS(
+                            SELECT 1 FROM follow
+                            WHERE follower_id = pd.id
+                            AND followed_id = :authenticated_user_id
+                        )
+                    END AS rel_followed_by,
+                    CASE WHEN pd.is_self THEN NULL
+                        ELSE EXISTS(
+                            SELECT 1 FROM block
+                            WHERE blocker_id = :authenticated_user_id
+                            AND blocked_id = pd.id
+                        )
+                    END AS rel_blocking,
+                    CASE WHEN pd.is_self THEN NULL
+                        ELSE EXISTS(
+                            SELECT 1 FROM block
+                            WHERE blocker_id = pd.id
+                            AND blocked_id = :authenticated_user_id
+                        )
+                    END AS rel_blocked_by
+                FROM profile_data pd
             )
             SELECT
                 pd.*,
-                CASE WHEN pd.is_self THEN NULL
-                    ELSE EXISTS(
-                        SELECT 1 FROM follow
-                            WHERE follower_id = :authenticated_user_id
-                            AND followed_id = pd.id
-                    )
-                END AS rel_following,
-                CASE WHEN pd.is_self THEN NULL
-                    ELSE EXISTS(
-                        SELECT 1 FROM follow
-                            WHERE follower_id = pd.id
-                            AND followed_id = :authenticated_user_id
-                    )
-                END AS rel_followed_by,
-                CASE WHEN pd.is_self THEN NULL
-                    ELSE EXISTS(
-                        SELECT 1 FROM block
-                            WHERE blocker_id = :authenticated_user_id
-                            AND blocked_id = pd.id
-                    )
-                END AS rel_blocking,
-                CASE WHEN pd.is_self THEN NULL
-                    ELSE EXISTS(
-                        SELECT 1 FROM block
-                            WHERE blocker_id = pd.id
-                            AND blocked_id = :authenticated_user_id
-                    ) 
-                END AS rel_blocked_by
+                m.*,
+                r.*
             FROM profile_data pd
+            CROSS JOIN metrics m
+            CROSS JOIN relationships r
         """;
 
         MapSqlParameterSource params = new MapSqlParameterSource()
@@ -183,38 +207,45 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                 ORDER BY f.created_at DESC
                 LIMIT :limit
                 OFFSET :offset
+            ),
+            follower_relationships AS (
+                SELECT
+                    pf.id,
+                    CASE WHEN pf.is_self THEN NULL
+                        ELSE EXISTS(
+                            SELECT 1 FROM follow
+                            WHERE follower_id = :authenticated_user_id
+                            AND followed_id = pf.id
+                        )
+                    END AS rel_following,
+                    CASE WHEN pf.is_self THEN NULL
+                        ELSE EXISTS(
+                            SELECT 1 FROM follow
+                            WHERE follower_id = pf.id
+                            AND followed_id = :authenticated_user_id
+                        )
+                    END AS rel_followed_by,
+                    CASE WHEN pf.is_self THEN NULL
+                        ELSE EXISTS(
+                            SELECT 1 FROM block
+                            WHERE blocker_id = :authenticated_user_id
+                            AND blocked_id = pf.id
+                        )
+                    END AS rel_blocking,
+                    CASE WHEN pf.is_self THEN NULL
+                        ELSE EXISTS(
+                            SELECT 1 FROM block
+                            WHERE blocker_id = pf.id
+                            AND blocked_id = :authenticated_user_id
+                        )
+                    END AS rel_blocked_by
+                FROM paginated_followers pf
             )
             SELECT
                 pf.*,
-                CASE WHEN pf.is_self THEN NULL
-                    ELSE EXISTS(
-                        SELECT 1 FROM follow
-                            WHERE follower_id = :authenticated_user_id
-                            AND followed_id = pf.id
-                    )
-                END AS rel_following,
-                CASE WHEN pf.is_self THEN NULL
-                    ELSE EXISTS(
-                        SELECT 1 FROM follow
-                            WHERE follower_id = pf.id
-                            AND followed_id = :authenticated_user_id
-                    )
-                END AS rel_followed_by,
-                CASE WHEN pf.is_self THEN NULL
-                    ELSE EXISTS(
-                        SELECT 1 FROM block
-                            WHERE blocker_id = :authenticated_user_id
-                            AND blocked_id = pf.id
-                    )
-                END AS rel_blocking,
-                CASE WHEN pf.is_self THEN NULL
-                    ELSE EXISTS(
-                        SELECT 1 FROM block
-                            WHERE blocker_id = pf.id
-                            AND blocked_id = :authenticated_user_id
-                    ) 
-                END AS rel_blocked_by
+                fr.*
             FROM paginated_followers pf
+            JOIN follower_relationships fr ON pf.id = fr.id
         """;
 
         MapSqlParameterSource followersParams = new MapSqlParameterSource()
@@ -264,40 +295,47 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                 ORDER BY f.created_at DESC
                 LIMIT :limit
                 OFFSET :offset
+            ),
+            following_relationships AS (
+                SELECT
+                    pf.id,
+                    CASE WHEN pf.is_self THEN NULL
+                        ELSE EXISTS(
+                            SELECT 1 FROM follow
+                            WHERE follower_id = :authenticated_user_id
+                            AND followed_id = pf.id
+                        )
+                    END AS rel_following,
+                    CASE WHEN pf.is_self THEN NULL
+                        ELSE EXISTS(
+                            SELECT 1 FROM follow
+                            WHERE follower_id = pf.id
+                            AND followed_id = :authenticated_user_id
+                        )
+                    END AS rel_followed_by,
+                    CASE WHEN pf.is_self THEN NULL
+                        ELSE EXISTS(
+                            SELECT 1 FROM block
+                            WHERE blocker_id = :authenticated_user_id
+                            AND blocked_id = pf.id
+                        )
+                    END AS rel_blocking,
+                    CASE WHEN pf.is_self THEN NULL
+                        ELSE EXISTS(
+                            SELECT 1 FROM block
+                            WHERE blocker_id = pf.id
+                            AND blocked_id = :authenticated_user_id
+                        )
+                    END AS rel_blocked_by
+                FROM paginated_following pf
             )
             SELECT
                 pf.*,
-                CASE WHEN pf.is_self THEN NULL
-                    ELSE EXISTS(
-                        SELECT 1 FROM follow
-                            WHERE follower_id = :authenticated_user_id
-                            AND followed_id = pf.id
-                    )
-                END AS rel_following,
-                CASE WHEN pf.is_self THEN NULL
-                    ELSE EXISTS(
-                        SELECT 1 FROM follow
-                            WHERE follower_id = pf.id
-                            AND followed_id = :authenticated_user_id
-                    )
-                END AS rel_followed_by,
-                CASE WHEN pf.is_self THEN NULL
-                    ELSE EXISTS(
-                        SELECT 1 FROM block
-                            WHERE blocker_id = :authenticated_user_id
-                            AND blocked_id = pf.id
-                    )
-                END AS rel_blocking,
-                CASE WHEN pf.is_self THEN NULL
-                    ELSE EXISTS(
-                        SELECT 1 FROM block
-                            WHERE blocker_id = pf.id
-                            AND blocked_id = :authenticated_user_id
-                    ) 
-                END AS rel_blocked_by
+                fr.*
             FROM paginated_following pf
+            JOIN following_relationships fr ON pf.id = fr.id
         """;
-
+        
         MapSqlParameterSource followingParams = new MapSqlParameterSource()
             .addValue("id", id)
             .addValue("authenticated_user_id", authenticatedUserId)
