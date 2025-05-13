@@ -1,6 +1,7 @@
 package com.example.echo_api.integration.repository;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.UUID;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.echo_api.integration.util.RepositoryTest;
 import com.example.echo_api.persistence.model.account.Account;
@@ -57,27 +59,27 @@ class BlockRepositoryIT extends RepositoryTest {
     }
 
     /**
-     * Test the {@link BlockRepository#existsByBlockerIdAndBlockingId(UUID, UUID)}
+     * Test the {@link BlockRepository#existsByBlockerIdAndBlockedId(UUID, UUID)}
      * method to verify that the repository correctly identifies that a
      * {@link Block} relationship exists between the supplied source and target
      * profile UUIDs.
      */
     @Test
-    void BlockRepository_ExistsByBlockerIdAndBlockingId_ReturnTrue() {
-        boolean exists = blockRepository.existsByBlockerIdAndBlockingId(source.getId(), target.getId());
+    void BlockRepository_ExistsByBlockerIdAndBlockedId_ReturnTrue() {
+        boolean exists = blockRepository.existsByBlockerIdAndBlockedId(source.getId(), target.getId());
 
         assertTrue(exists);
     }
 
     /**
-     * Test the {@link BlockRepository#existsByBlockerIdAndBlockingId(UUID, UUID)}
+     * Test the {@link BlockRepository#existsByBlockerIdAndBlockedId(UUID, UUID)}
      * method to verify that the repository correctly identifies that a
      * {@link Block} relationship does not exist between the supplied source and
      * target profile UUIDs.
      */
     @Test
-    void BlockRepository_ExistsByBlockerIdAndBlockingId_ReturnFalse() {
-        boolean exists = blockRepository.existsByBlockerIdAndBlockingId(UUID.randomUUID(), UUID.randomUUID());
+    void BlockRepository_ExistsByBlockerIdAndBlockedId_ReturnFalse() {
+        boolean exists = blockRepository.existsByBlockerIdAndBlockedId(UUID.randomUUID(), UUID.randomUUID());
 
         assertFalse(exists);
     }
@@ -108,6 +110,19 @@ class BlockRepositoryIT extends RepositoryTest {
         boolean exists = blockRepository.existsAnyBlockBetween(UUID.randomUUID(), UUID.randomUUID());
 
         assertFalse(exists);
+    }
+
+    /**
+     * Test the {@link BlockRepository#deleteByBlockerIdAndBlockedId(UUID, UUID)}
+     * method to verify that the repository correctly deletes 1 {@link Block}
+     * relationship established between the supplied profile UUIDs.
+     */
+    @Test
+    @Transactional
+    void BlockRepository_DeleteByBlockerIdAndBlockedId_Return1() {
+        int deletedCount = blockRepository.deleteByBlockerIdAndBlockedId(source.getId(), target.getId());
+
+        assertEquals(1, deletedCount);
     }
 
 }
