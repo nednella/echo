@@ -47,6 +47,7 @@ public final class ApiConfig {
         private static final String ROOT = BASE_URL + "/post";
         public static final String CREATE = ROOT;
         public static final String DELETE = ROOT + "/{id}";
+        public static final String LIKE = ROOT + "/{id}/like";
     }
 
 }
