@@ -25,15 +25,19 @@ public interface FollowRepository extends ListCrudRepository<Follow, FollowPK> {
 
     /**
      * Delete the follow if one exists from the follower to followed profile id.
+     * <p>
+     * This action is idempotent.
      * 
      * @param followerId The id of the profile initiating the block.
      * @param followedId The id of the profile being followed.
      */
-    void deleteByfollowerIdAndFollowedId(UUID followerId, UUID followedId);
+    int deleteByFollowerIdAndFollowedId(UUID followerId, UUID followedId);
 
     /**
      * Delete any follows that exist between the supplied profile ids in either
      * direction (unidirectional or bidirectional).
+     * <p>
+     * This action is idempotent.
      * 
      * @param profileId1 The id of the first user.
      * @param profileId2 The id of the second user.
@@ -44,6 +48,6 @@ public interface FollowRepository extends ListCrudRepository<Follow, FollowPK> {
         WHERE (f.followerId = :profileId1 AND f.followedId = :profileId2)
            OR (f.followerId = :profileId2 AND f.followedId = :profileId1)
         """)
-    void deleteAnyFollowIfExists(@Param("profileId1") UUID profileId1, @Param("profileId2") UUID profileId2);
+    int deleteAnyFollowIfExists(@Param("profileId1") UUID profileId1, @Param("profileId2") UUID profileId2);
 
 }

@@ -62,7 +62,7 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
         UUID target = getProfileByUsername(username).getId();
 
         validateSelfAction(source, target);
-        followRepository.deleteByfollowerIdAndfollowedId(source, target);
+        followRepository.deleteByFollowerIdAndFollowedId(source, target);
     }
 
     @Override

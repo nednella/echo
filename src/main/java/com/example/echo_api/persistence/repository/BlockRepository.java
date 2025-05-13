@@ -40,10 +40,12 @@ public interface BlockRepository extends ListCrudRepository<Block, BlockPK> {
 
     /**
      * Delete the block if one exists from the blocker to blocked profile id.
+     * <p>
+     * This action is idempotent.
      * 
      * @param blockerId The id of the profile initiating the block.
      * @param blockedId The id of the profile being blocked.
      */
-    void deleteByBlockerIdAndBlockedId(UUID blockerId, UUID blockedId);
+    int deleteByBlockerIdAndBlockedId(UUID blockerId, UUID blockedId);
 
 }
