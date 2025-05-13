@@ -9,8 +9,7 @@ import com.example.echo_api.config.ValidationMessageConfig;
 public class InvalidFileException extends BadRequestException {
 
     /**
-     * Constructs a {@link FileInvalidException} with a default custom message and
-     * details.
+     * Constructs a {@link FileInvalidException} with a default message and details.
      */
     public InvalidFileException() {
         super(ErrorMessageConfig.BadRequest.INVALID_REQUEST, ValidationMessageConfig.INVALID_FILE);

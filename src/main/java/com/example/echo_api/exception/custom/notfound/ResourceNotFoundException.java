@@ -9,7 +9,7 @@ import com.example.echo_api.config.ErrorMessageConfig;
 public class ResourceNotFoundException extends NotFoundException {
 
     /**
-     * Constructs a {@link ResourceNotFoundException} with a default custom message.
+     * Constructs a {@link ResourceNotFoundException} with a default message.
      */
     public ResourceNotFoundException() {
         super(ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND);
