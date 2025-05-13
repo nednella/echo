@@ -5,10 +5,12 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.example.echo_api.persistence.model.block.Block;
 import com.example.echo_api.persistence.model.block.BlockPK;
 
+@Repository
 public interface BlockRepository extends ListCrudRepository<Block, BlockPK> {
 
     /**

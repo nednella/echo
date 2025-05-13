@@ -6,10 +6,12 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.example.echo_api.persistence.model.follow.Follow;
 import com.example.echo_api.persistence.model.follow.FollowPK;
 
+@Repository
 public interface FollowRepository extends ListCrudRepository<Follow, FollowPK> {
 
     /**
