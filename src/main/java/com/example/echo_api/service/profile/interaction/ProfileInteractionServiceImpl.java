@@ -4,8 +4,8 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.example.echo_api.exception.custom.relationship.BlockedException;
-import com.example.echo_api.exception.custom.username.UsernameNotFoundException;
+import com.example.echo_api.exception.custom.forbidden.BlockedException;
+import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
@@ -38,7 +38,7 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
     // @formatter:on
 
     @Override
-    public void follow(String username) throws UsernameNotFoundException {
+    public void follow(String username) throws ResourceNotFoundException {
         Profile target = getProfileByUsername(username); // validate existence of username
         Account source = getAuthenticatedUser();
 
@@ -47,7 +47,7 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
     }
 
     @Override
-    public void unfollow(String username) throws UsernameNotFoundException {
+    public void unfollow(String username) throws ResourceNotFoundException {
         Profile target = getProfileByUsername(username); // validate existence of username
         Account source = getAuthenticatedUser();
 
@@ -55,7 +55,7 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
     }
 
     @Override
-    public void block(String username) throws UsernameNotFoundException {
+    public void block(String username) throws ResourceNotFoundException {
         Profile target = getProfileByUsername(username); // validate existence of username
         Account source = getAuthenticatedUser();
 
@@ -64,7 +64,7 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
     }
 
     @Override
-    public void unblock(String username) throws UsernameNotFoundException {
+    public void unblock(String username) throws ResourceNotFoundException {
         Profile target = getProfileByUsername(username); // validate existence of username
         Account source = getAuthenticatedUser();
 

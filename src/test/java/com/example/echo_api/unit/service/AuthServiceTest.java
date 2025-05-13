@@ -13,7 +13,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 
-import com.example.echo_api.exception.custom.username.UsernameAlreadyExistsException;
+import com.example.echo_api.exception.custom.badrequest.UsernameAlreadyExistsException;
 import com.example.echo_api.persistence.dto.request.auth.LoginDTO;
 import com.example.echo_api.persistence.dto.request.auth.SignupDTO;
 import com.example.echo_api.persistence.model.account.Account;

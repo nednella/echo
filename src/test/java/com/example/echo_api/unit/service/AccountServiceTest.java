@@ -12,8 +12,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.example.echo_api.exception.custom.password.IncorrectCurrentPasswordException;
-import com.example.echo_api.exception.custom.username.UsernameAlreadyExistsException;
+import com.example.echo_api.exception.custom.badrequest.IncorrectCurrentPasswordException;
+import com.example.echo_api.exception.custom.badrequest.UsernameAlreadyExistsException;
 import com.example.echo_api.persistence.dto.request.account.UpdatePasswordDTO;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.repository.AccountRepository;

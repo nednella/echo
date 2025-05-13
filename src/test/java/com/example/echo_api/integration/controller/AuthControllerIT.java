@@ -88,7 +88,7 @@ class AuthControllerIT extends IntegrationTest {
         ErrorDTO error = response.getBody();
         assertNotNull(error);
         assertEquals(BAD_REQUEST.value(), error.status());
-        assertEquals(ErrorMessageConfig.USERNAME_ARLEADY_EXISTS, error.message());
+        assertEquals(ErrorMessageConfig.BadRequest.USERNAME_ARLEADY_EXISTS, error.message());
     }
 
 }

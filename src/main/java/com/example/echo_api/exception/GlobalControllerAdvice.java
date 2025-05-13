@@ -2,22 +2,18 @@ package com.example.echo_api.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.example.echo_api.config.ErrorMessageConfig;
-import com.example.echo_api.exception.custom.account.AccountException;
-import com.example.echo_api.exception.custom.cloudinary.CloudinaryException;
-import com.example.echo_api.exception.custom.file.FileException;
-import com.example.echo_api.exception.custom.image.ImageException;
-import com.example.echo_api.exception.custom.password.PasswordException;
-import com.example.echo_api.exception.custom.relationship.BlockedException;
-import com.example.echo_api.exception.custom.relationship.RelationshipException;
-import com.example.echo_api.exception.custom.username.UsernameException;
+import com.example.echo_api.exception.custom.ApplicationException;
+import com.example.echo_api.exception.custom.badrequest.BadRequestException;
+import com.example.echo_api.exception.custom.conflict.ConflictException;
+import com.example.echo_api.exception.custom.forbidden.ForbiddenException;
+import com.example.echo_api.exception.custom.internalserver.InternalServerException;
+import com.example.echo_api.exception.custom.notfound.NotFoundException;
+import com.example.echo_api.exception.custom.unauthorised.UnauthorisedException;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,7 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalControllerAdvice extends AbstractControllerAdvice {
 
     /**
-     * Jakarta Validation Exception - ConstraintViolation
+     * Handles Jakarta {@link ConstraintViolationException} for validation errors.
      * 
      * <p>
      * With fail-fast enabled, only a singular validation failure will be passed to
@@ -65,12 +61,13 @@ public class GlobalControllerAdvice extends AbstractControllerAdvice {
         return createExceptionHandler(
             request,
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.INVALID_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             details);
     }
 
     /**
-     * Jakarta Validation Exception - MethodArgumentNotValid
+     * Handles Jakarta {@link MethodArgumentNotValidException} for validation
+     * errors.
      * 
      * <p>
      * With fail-fast enabled, only a singular validation failure will be passed to
@@ -88,95 +85,40 @@ public class GlobalControllerAdvice extends AbstractControllerAdvice {
         return createExceptionHandler(
             request,
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.INVALID_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             msg);
     }
 
-    /* File Validation Exception */
-    @ExceptionHandler(FileException.class)
-    ResponseEntity<ErrorDTO> handleInvalidFileException(HttpServletRequest request, Exception ex) {
-        log.debug("Handling exception: {}", ex.getMessage());
-
-        return createExceptionHandler(
-            request,
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.INVALID_REQUEST,
-            ex.getMessage());
-    }
-
-    /* Cloudinary Exception */
-    @ExceptionHandler({ CloudinaryException.class })
-    ResponseEntity<ErrorDTO> handleCloudinaryException(HttpServletRequest request, Exception ex) {
-        log.debug("Handling exception: {}", ex.getMessage());
-
-        return createExceptionHandler(request,
-            HttpStatus.INTERNAL_SERVER_ERROR,
-            ErrorMessageConfig.CLOUDINARY_SDK_ERROR,
-            ex.getMessage());
-    }
-
-    /* Custom Bad Request Exception */
+    /**
+     * Handles custom {@link ApplicationException} subclasses for HTTP errors.
+     */
     @ExceptionHandler({
-            AccountException.class,
-            UsernameException.class,
-            PasswordException.class,
-            RelationshipException.class,
-            ImageException.class
+            BadRequestException.class,
+            UnauthorisedException.class,
+            ForbiddenException.class,
+            NotFoundException.class,
+            ConflictException.class,
+            InternalServerException.class
     })
-    ResponseEntity<ErrorDTO> handleCustomBadRequestException(HttpServletRequest request, Exception ex) {
+    ResponseEntity<ErrorDTO> handleApplicationException(HttpServletRequest request, ApplicationException ex) {
         log.debug("Handling exception: {}", ex.getMessage());
-
         return createExceptionHandler(
             request,
-            HttpStatus.BAD_REQUEST,
+            ex.getHttpStatus(),
             ex.getMessage(),
-            null);
+            ex.getDetails());
     }
 
-    /* 401 */
-    @ExceptionHandler({ InsufficientAuthenticationException.class })
-    ResponseEntity<ErrorDTO> handleInsufficientAuthenticationException(HttpServletRequest request, Exception ex) {
-        log.debug("Handling exception: {}", ex.getMessage());
-
-        return createExceptionHandler(
-            request,
-            HttpStatus.UNAUTHORIZED,
-            ErrorMessageConfig.UNAUTHORISED,
-            null);
-    }
-
-    /* 403 */
-    @ExceptionHandler({ AccessDeniedException.class, BlockedException.class })
-    ResponseEntity<ErrorDTO> handleAccessDeniedException(HttpServletRequest request, Exception ex) {
-        log.debug("Handling exception: {}", ex.getMessage());
-
-        return createExceptionHandler(
-            request,
-            HttpStatus.FORBIDDEN,
-            ErrorMessageConfig.FORBIDDEN,
-            ex instanceof BlockedException ? ex.getMessage() : null);
-    }
-
-    /* 404 */
-    @ExceptionHandler({ NoResourceFoundException.class })
-    ResponseEntity<ErrorDTO> handleNotFoundException(HttpServletRequest request, Exception ex) {
-        log.debug("Handling exception: {}", ex.getMessage());
-
-        return createExceptionHandler(
-            request,
-            HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NOT_FOUND,
-            null);
-    }
-
-    /* 500 */
+    /**
+     * Handles any uncaught exceptions as a 500 Internal Server Error.
+     */
     @ExceptionHandler({ Exception.class })
     ResponseEntity<ErrorDTO> handleGenericException(HttpServletRequest request, Exception ex) {
         log.debug("Handling exception: {}", ex.getMessage());
 
         return createExceptionHandler(request,
             HttpStatus.INTERNAL_SERVER_ERROR,
-            ErrorMessageConfig.INTERNAL_SERVER_ERROR,
+            ErrorMessageConfig.InternalServerError.INTERNAL_SERVER_ERROR,
             ex.getMessage());
     }
 

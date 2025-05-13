@@ -2,7 +2,7 @@ package com.example.echo_api.service.auth;
 
 import org.springframework.security.core.AuthenticationException;
 
-import com.example.echo_api.exception.custom.username.UsernameAlreadyExistsException;
+import com.example.echo_api.exception.custom.badrequest.UsernameAlreadyExistsException;
 import com.example.echo_api.persistence.dto.request.auth.LoginDTO;
 import com.example.echo_api.persistence.dto.request.auth.SignupDTO;
 

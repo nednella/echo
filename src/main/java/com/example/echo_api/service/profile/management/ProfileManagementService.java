@@ -2,8 +2,8 @@ package com.example.echo_api.service.profile.management;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.echo_api.exception.custom.cloudinary.CloudinaryException;
-import com.example.echo_api.exception.custom.image.ImageException;
+import com.example.echo_api.exception.custom.internalserver.CloudinaryException;
+import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.dto.request.profile.UpdateInformationDTO;
 import com.example.echo_api.persistence.model.image.Image;
 
@@ -23,44 +23,44 @@ public interface ProfileManagementService {
      * Updates the profile avatar image of the authenticated user.
      * 
      * @param image The {@link MultipartFile} resembling the uploaded image.
-     * @throws ImageException      If there is an existing avatar and its
-     *                             {@link Image} entity could not be found when
-     *                             deleting.
-     * @throws CloudinaryException If there was an error when interacting with the
-     *                             Cloudinary SDK.
+     * @throws ResourceNotFoundException If there is an existing avatar and its
+     *                                   {@link Image} entity could not be found
+     *                                   when deleting.
+     * @throws CloudinaryException       If there was an error when interacting with
+     *                                   the Cloudinary SDK.
      */
-    public void updateAvatar(MultipartFile image) throws ImageException, CloudinaryException;
+    public void updateAvatar(MultipartFile image) throws ResourceNotFoundException, CloudinaryException;
 
     /**
      * Removes the profile avatar image of the authenticated user.
      * 
-     * @throws ImageException      If the existing avatar's {@link Image} entity
-     *                             could not be found when deleting.
-     * @throws CloudinaryException If there was an error when interacting with the
-     *                             Cloudinary SDK.
+     * @throws ResourceNotFoundException If the existing avatar's {@link Image}
+     *                                   entity could not be found when deleting.
+     * @throws CloudinaryException       If there was an error when interacting with
+     *                                   the Cloudinary SDK.
      */
-    public void deleteAvatar() throws ImageException, CloudinaryException;
+    public void deleteAvatar() throws ResourceNotFoundException, CloudinaryException;
 
     /**
      * Updates the profile banner image of the authenticated user.
      * 
      * @param image The {@link MultipartFile} resembling the uploaded image.
-     * @throws ImageException      If there is an existing banner and its
-     *                             {@link Image} entity could not be found when
-     *                             deleting.
-     * @throws CloudinaryException If there was an error when interacting with the
-     *                             Cloudinary SDK.
+     * @throws ResourceNotFoundException If there is an existing banner and its
+     *                                   {@link Image} entity could not be found
+     *                                   when deleting.
+     * @throws CloudinaryException       If there was an error when interacting with
+     *                                   the Cloudinary SDK.
      */
-    public void updateBanner(MultipartFile image) throws ImageException, CloudinaryException;
+    public void updateBanner(MultipartFile image) throws ResourceNotFoundException, CloudinaryException;
 
     /**
      * Removes the profile avatar image of the authenticated user.
      * 
-     * @throws ImageException      If the existing banner's {@link Image} entity
-     *                             could not be found when deleting.
-     * @throws CloudinaryException If there was an error when interacting with the
-     *                             Cloudinary SDK.
+     * @throws ResourceNotFoundException If the existing banner's {@link Image}
+     *                                   entity could not be found when deleting.
+     * @throws CloudinaryException       If there was an error when interacting with
+     *                                   the Cloudinary SDK.
      */
-    public void deleteBanner() throws ImageException, CloudinaryException;
+    public void deleteBanner() throws ResourceNotFoundException, CloudinaryException;
 
 }

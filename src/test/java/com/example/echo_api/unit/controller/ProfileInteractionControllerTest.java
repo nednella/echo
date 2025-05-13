@@ -19,13 +19,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.controller.profile.ProfileInteractionController;
-import com.example.echo_api.exception.custom.relationship.AlreadyBlockingException;
-import com.example.echo_api.exception.custom.relationship.AlreadyFollowingException;
-import com.example.echo_api.exception.custom.relationship.BlockedException;
-import com.example.echo_api.exception.custom.relationship.NotBlockingException;
-import com.example.echo_api.exception.custom.relationship.NotFollowingException;
-import com.example.echo_api.exception.custom.relationship.SelfActionException;
-import com.example.echo_api.exception.custom.username.UsernameNotFoundException;
+import com.example.echo_api.exception.custom.conflict.AlreadyBlockingException;
+import com.example.echo_api.exception.custom.conflict.AlreadyFollowingException;
+import com.example.echo_api.exception.custom.conflict.NotBlockingException;
+import com.example.echo_api.exception.custom.conflict.NotFollowingException;
+import com.example.echo_api.exception.custom.conflict.SelfActionException;
+import com.example.echo_api.exception.custom.forbidden.BlockedException;
+import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.service.profile.interaction.ProfileInteractionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,24 +63,24 @@ class ProfileInteractionControllerTest {
     }
 
     @Test
-    void ProfileInteractionController_Follow_Throw400UsernameNotFound() throws Exception {
-        // api: POST /api/v1/profile/{username}/follow ==> 400 : UsernameNotFound
+    void ProfileInteractionController_Follow_Throw404ResouceNotFound() throws Exception {
+        // api: POST /api/v1/profile/{username}/follow ==> 404 : Resource Not Found
         String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
 
         String username = "username";
-        doThrow(new UsernameNotFoundException()).when(profileInteractionService).follow("username");
+        doThrow(new ResourceNotFoundException()).when(profileInteractionService).follow("username");
 
         String response = mockMvc
             .perform(post(path, username))
             .andDo(print())
-            .andExpect(status().isBadRequest())
+            .andExpect(status().isNotFound())
             .andReturn()
             .getResponse()
             .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.USERNAME_NOT_FOUND,
+            HttpStatus.NOT_FOUND,
+            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
             path);
 
@@ -91,8 +91,8 @@ class ProfileInteractionControllerTest {
     }
 
     @Test
-    void ProfileInteractionController_Follow_ThrowSelfActionException() throws Exception {
-        // api: POST /api/v1/profile/{username}/follow ==> 400 : SelfFollow
+    void ProfileInteractionController_Follow_Throw409SelfActionException() throws Exception {
+        // api: POST /api/v1/profile/{username}/follow ==> 409 : Self Action
         String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
 
         String username = "username";
@@ -102,14 +102,14 @@ class ProfileInteractionControllerTest {
         String response = mockMvc
             .perform(post(path, username))
             .andDo(print())
-            .andExpect(status().isBadRequest())
+            .andExpect(status().isConflict())
             .andReturn()
             .getResponse()
             .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.SELF_ACTION,
+            HttpStatus.CONFLICT,
+            ErrorMessageConfig.Conflict.SELF_ACTION,
             null,
             path);
 
@@ -120,8 +120,8 @@ class ProfileInteractionControllerTest {
     }
 
     @Test
-    void ProfileInteractionController_Follow_ThrowAlreadyFollowingException() throws Exception {
-        // api: POST /api/v1/profile/{username}/follow ==> 400 : AlreadyFollowing
+    void ProfileInteractionController_Follow_Throw409AlreadyFollowingException() throws Exception {
+        // api: POST /api/v1/profile/{username}/follow ==> 409 : AlreadyFollowing
         String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
 
         String username = "username";
@@ -130,14 +130,14 @@ class ProfileInteractionControllerTest {
         String response = mockMvc
             .perform(post(path, username))
             .andDo(print())
-            .andExpect(status().isBadRequest())
+            .andExpect(status().isConflict())
             .andReturn()
             .getResponse()
             .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.ALREADY_FOLLOWING,
+            HttpStatus.CONFLICT,
+            ErrorMessageConfig.Conflict.ALREADY_FOLLOWING,
             null,
             path);
 
@@ -148,8 +148,8 @@ class ProfileInteractionControllerTest {
     }
 
     @Test
-    void ProfileInteractionController_Follow_ThrowBlockedException() throws Exception {
-        // api: POST /api/v1/profile/{username}/follow ==> 401 : Blocked
+    void ProfileInteractionController_Follow_Throw403BlockedException() throws Exception {
+        // api: POST /api/v1/profile/{username}/follow ==> 403 : Blocked
         String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
 
         String username = "username";
@@ -165,8 +165,8 @@ class ProfileInteractionControllerTest {
 
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.FORBIDDEN,
-            ErrorMessageConfig.FORBIDDEN,
-            ErrorMessageConfig.BLOCKED,
+            ErrorMessageConfig.Forbidden.BLOCKED,
+            null,
             path);
 
         ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
@@ -192,24 +192,24 @@ class ProfileInteractionControllerTest {
     }
 
     @Test
-    void ProfileInteractionController_Unfollow_Throw400UsernameNotFound() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/unfollow ==> 400 : UsernameNotFound
+    void ProfileInteractionController_Unfollow_Throw404ResouceNotFound() throws Exception {
+        // api: DELETE /api/v1/profile/{username}/unfollow ==> 404 : Resource Not Found
         String path = ApiConfig.Profile.UNFOLLOW_BY_USERNAME;
 
         String username = "username";
-        doThrow(new UsernameNotFoundException()).when(profileInteractionService).unfollow("username");
+        doThrow(new ResourceNotFoundException()).when(profileInteractionService).unfollow("username");
 
         String response = mockMvc
             .perform(delete(path, username))
             .andDo(print())
-            .andExpect(status().isBadRequest())
+            .andExpect(status().isNotFound())
             .andReturn()
             .getResponse()
             .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.USERNAME_NOT_FOUND,
+            HttpStatus.NOT_FOUND,
+            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
             path);
 
@@ -220,8 +220,8 @@ class ProfileInteractionControllerTest {
     }
 
     @Test
-    void ProfileInteractionController_Unfollow_ThrowSelfActionException() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/unfollow ==> 400 : SelfUnfollow
+    void ProfileInteractionController_Unfollow_Throw409SelfActionException() throws Exception {
+        // api: DELETE /api/v1/profile/{username}/unfollow ==> 409 : Self Action
         String path = ApiConfig.Profile.UNFOLLOW_BY_USERNAME;
 
         String username = "username";
@@ -231,14 +231,14 @@ class ProfileInteractionControllerTest {
         String response = mockMvc
             .perform(delete(path, username))
             .andDo(print())
-            .andExpect(status().isBadRequest())
+            .andExpect(status().isConflict())
             .andReturn()
             .getResponse()
             .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.SELF_ACTION,
+            HttpStatus.CONFLICT,
+            ErrorMessageConfig.Conflict.SELF_ACTION,
             null,
             path);
 
@@ -249,8 +249,8 @@ class ProfileInteractionControllerTest {
     }
 
     @Test
-    void ProfileInteractionController_Unfollow_ThrowNotFollowingException() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/unfollow ==> 400 : NotFollowing
+    void ProfileInteractionController_Unfollow_Throw409NotFollowingException() throws Exception {
+        // api: DELETE /api/v1/profile/{username}/unfollow ==> 409 : NotFollowing
         String path = ApiConfig.Profile.UNFOLLOW_BY_USERNAME;
 
         String username = "username";
@@ -259,14 +259,14 @@ class ProfileInteractionControllerTest {
         String response = mockMvc
             .perform(delete(path, username))
             .andDo(print())
-            .andExpect(status().isBadRequest())
+            .andExpect(status().isConflict())
             .andReturn()
             .getResponse()
             .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.NOT_FOLLOWING,
+            HttpStatus.CONFLICT,
+            ErrorMessageConfig.Conflict.NOT_FOLLOWING,
             null,
             path);
 
@@ -293,24 +293,24 @@ class ProfileInteractionControllerTest {
     }
 
     @Test
-    void ProfileInteractionController_Block_Throw400UsernameNotFound() throws Exception {
-        // api: POST /api/v1/profile/{username}/block ==> 400 : UsernameNotFound
+    void ProfileInteractionController_Block_Throw404ResouceNotFound() throws Exception {
+        // api: POST /api/v1/profile/{username}/block ==> 404 : Resource Not Found
         String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
 
         String username = "username";
-        doThrow(new UsernameNotFoundException()).when(profileInteractionService).block("username");
+        doThrow(new ResourceNotFoundException()).when(profileInteractionService).block("username");
 
         String response = mockMvc
             .perform(post(path, username))
             .andDo(print())
-            .andExpect(status().isBadRequest())
+            .andExpect(status().isNotFound())
             .andReturn()
             .getResponse()
             .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.USERNAME_NOT_FOUND,
+            HttpStatus.NOT_FOUND,
+            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
             path);
 
@@ -321,8 +321,8 @@ class ProfileInteractionControllerTest {
     }
 
     @Test
-    void ProfileInteractionController_Block_ThrowSelfActionException() throws Exception {
-        // api: POST /api/v1/profile/{username}/block ==> 400 : SelfBlock
+    void ProfileInteractionController_Block_Throw409SelfActionException() throws Exception {
+        // api: POST /api/v1/profile/{username}/block ==> 409 : Self Action
         String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
 
         String username = "username";
@@ -332,14 +332,14 @@ class ProfileInteractionControllerTest {
         String response = mockMvc
             .perform(post(path, username))
             .andDo(print())
-            .andExpect(status().isBadRequest())
+            .andExpect(status().isConflict())
             .andReturn()
             .getResponse()
             .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.SELF_ACTION,
+            HttpStatus.CONFLICT,
+            ErrorMessageConfig.Conflict.SELF_ACTION,
             null,
             path);
 
@@ -350,8 +350,8 @@ class ProfileInteractionControllerTest {
     }
 
     @Test
-    void ProfileInteractionController_Block_ThrowAlreadyBlockingException() throws Exception {
-        // api: POST /api/v1/profile/{username}/block ==> 400 : AlreadyBlocking
+    void ProfileInteractionController_Block_Throw409AlreadyBlockingException() throws Exception {
+        // api: POST /api/v1/profile/{username}/block ==> 409 : AlreadyBlocking
         String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
 
         String username = "username";
@@ -360,14 +360,14 @@ class ProfileInteractionControllerTest {
         String response = mockMvc
             .perform(post(path, username))
             .andDo(print())
-            .andExpect(status().isBadRequest())
+            .andExpect(status().isConflict())
             .andReturn()
             .getResponse()
             .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.ALREADY_BLOCKING,
+            HttpStatus.CONFLICT,
+            ErrorMessageConfig.Conflict.ALREADY_BLOCKING,
             null,
             path);
 
@@ -394,24 +394,24 @@ class ProfileInteractionControllerTest {
     }
 
     @Test
-    void ProfileInteractionController_Unblock_Throw400UsernameNotFound() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/unblock ==> 400 : UsernameNotFound
+    void ProfileInteractionController_Unblock_Throw404ResouceNotFound() throws Exception {
+        // api: DELETE /api/v1/profile/{username}/unblock ==> 404 : ResourceNotFound
         String path = ApiConfig.Profile.UNBLOCK_BY_USERNAME;
 
         String username = "username";
-        doThrow(new UsernameNotFoundException()).when(profileInteractionService).unblock("username");
+        doThrow(new ResourceNotFoundException()).when(profileInteractionService).unblock("username");
 
         String response = mockMvc
             .perform(delete(path, username))
             .andDo(print())
-            .andExpect(status().isBadRequest())
+            .andExpect(status().isNotFound())
             .andReturn()
             .getResponse()
             .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.USERNAME_NOT_FOUND,
+            HttpStatus.NOT_FOUND,
+            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
             path);
 
@@ -422,8 +422,8 @@ class ProfileInteractionControllerTest {
     }
 
     @Test
-    void ProfileInteractionController_Unblock_ThrowSelfActionException() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/unblock ==> 400 : SelfUnblock
+    void ProfileInteractionController_Unblock_Throw409SelfActionException() throws Exception {
+        // api: DELETE /api/v1/profile/{username}/unblock ==> 409 : SelfAction
         String path = ApiConfig.Profile.UNBLOCK_BY_USERNAME;
 
         String username = "username";
@@ -433,14 +433,14 @@ class ProfileInteractionControllerTest {
         String response = mockMvc
             .perform(delete(path, username))
             .andDo(print())
-            .andExpect(status().isBadRequest())
+            .andExpect(status().isConflict())
             .andReturn()
             .getResponse()
             .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.SELF_ACTION,
+            HttpStatus.CONFLICT,
+            ErrorMessageConfig.Conflict.SELF_ACTION,
             null,
             path);
 
@@ -451,8 +451,8 @@ class ProfileInteractionControllerTest {
     }
 
     @Test
-    void ProfileInteractionController_Unblock_ThrowNotBlockingException() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/unblock ==> 400 : NotBlocking
+    void ProfileInteractionController_Unblock_Throw409NotBlockingException() throws Exception {
+        // api: DELETE /api/v1/profile/{username}/unblock ==> 409 : NotBlocking
         String path = ApiConfig.Profile.UNBLOCK_BY_USERNAME;
 
         String username = "username";
@@ -461,14 +461,14 @@ class ProfileInteractionControllerTest {
         String response = mockMvc
             .perform(delete(path, username))
             .andDo(print())
-            .andExpect(status().isBadRequest())
+            .andExpect(status().isConflict())
             .andReturn()
             .getResponse()
             .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.NOT_BLOCKING,
+            HttpStatus.CONFLICT,
+            ErrorMessageConfig.Conflict.NOT_BLOCKING,
             null,
             path);
 

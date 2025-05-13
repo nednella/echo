@@ -17,8 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import com.example.echo_api.exception.custom.account.IdNotFoundException;
-import com.example.echo_api.exception.custom.username.UsernameNotFoundException;
+import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.profile.MetricsDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
@@ -96,14 +95,14 @@ class ProfileViewServiceTest {
     }
 
     @Test
-    void ProfileViewService_GetSelf_ThrowIdNotFound() {
+    void ProfileViewService_GetSelf_ThrowResourceNotFound() {
         // arrange
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
         when(profileRepository.findProfileDtoById(authenticatedUser.getId(), authenticatedUser.getId()))
             .thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(IdNotFoundException.class, () -> profileViewService.getSelf());
+        assertThrows(ResourceNotFoundException.class, () -> profileViewService.getSelf());
         verify(sessionService, times(1)).getAuthenticatedUser();
         verify(profileRepository, times(1)).findProfileDtoById(authenticatedUser.getId(), authenticatedUser.getId());
     }
@@ -128,7 +127,7 @@ class ProfileViewServiceTest {
     }
 
     @Test
-    void ProfileViewService_GetById_ThrowIdNotFound() {
+    void ProfileViewService_GetById_ThrowResourceNotFound() {
         // arrange
         UUID targetId = UUID.randomUUID();
 
@@ -137,7 +136,7 @@ class ProfileViewServiceTest {
             .thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(IdNotFoundException.class, () -> profileViewService.getById(targetId));
+        assertThrows(ResourceNotFoundException.class, () -> profileViewService.getById(targetId));
         verify(sessionService, times(1)).getAuthenticatedUser();
         verify(profileRepository, times(1)).findProfileDtoById(targetId, authenticatedUser.getId());
 
@@ -163,7 +162,7 @@ class ProfileViewServiceTest {
     }
 
     @Test
-    void ProfileViewService_GetByUsername_ThrowUsernameNotFound() {
+    void ProfileViewService_GetByUsername_ThrowResourceNotFound() {
         // arrange
         String targetUsername = "test";
 
@@ -172,7 +171,7 @@ class ProfileViewServiceTest {
             .thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(UsernameNotFoundException.class, () -> profileViewService.getByUsername(targetUsername));
+        assertThrows(ResourceNotFoundException.class, () -> profileViewService.getByUsername(targetUsername));
         verify(sessionService, times(1)).getAuthenticatedUser();
         verify(profileRepository, times(1)).findProfileDtoByUsername(targetUsername, authenticatedUser.getId());
 
@@ -208,7 +207,7 @@ class ProfileViewServiceTest {
     }
 
     @Test
-    void ProfileViewService_GetFollowers_ThrowUsernameNotFound() {
+    void ProfileViewService_GetFollowers_ThrowResourceNotFound() {
         // arrange
         String targetUsername = "non-existing-user";
 
@@ -219,7 +218,7 @@ class ProfileViewServiceTest {
         when(profileRepository.findByUsername(targetUsername)).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(UsernameNotFoundException.class, () -> profileViewService.getFollowers(targetUsername, page));
+        assertThrows(ResourceNotFoundException.class, () -> profileViewService.getFollowers(targetUsername, page));
     }
 
     @Test
@@ -252,7 +251,7 @@ class ProfileViewServiceTest {
     }
 
     @Test
-    void ProfileViewService_GetFollowing_ThrowUsernameNotFound() {
+    void ProfileViewService_GetFollowing_ThrowResourceNotFound() {
         // arrange
         String targetUsername = "non-existing-user";
 
@@ -263,7 +262,7 @@ class ProfileViewServiceTest {
         when(profileRepository.findByUsername(targetUsername)).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(UsernameNotFoundException.class, () -> profileViewService.getFollowing(targetUsername, page));
+        assertThrows(ResourceNotFoundException.class, () -> profileViewService.getFollowing(targetUsername, page));
     }
 
 }

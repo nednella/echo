@@ -13,18 +13,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.example.echo_api.exception.custom.relationship.AlreadyBlockingException;
-import com.example.echo_api.exception.custom.relationship.AlreadyFollowingException;
-import com.example.echo_api.exception.custom.relationship.BlockedException;
-import com.example.echo_api.exception.custom.relationship.NotBlockingException;
-import com.example.echo_api.exception.custom.relationship.NotFollowingException;
-import com.example.echo_api.exception.custom.relationship.SelfActionException;
-import com.example.echo_api.exception.custom.username.UsernameNotFoundException;
+import com.example.echo_api.exception.custom.conflict.AlreadyBlockingException;
+import com.example.echo_api.exception.custom.conflict.AlreadyFollowingException;
+import com.example.echo_api.exception.custom.conflict.NotBlockingException;
+import com.example.echo_api.exception.custom.conflict.NotFollowingException;
+import com.example.echo_api.exception.custom.conflict.SelfActionException;
+import com.example.echo_api.exception.custom.forbidden.BlockedException;
+import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.service.block.BlockService;
 import com.example.echo_api.service.follow.FollowService;
+import com.example.echo_api.service.profile.interaction.ProfileInteractionService;
 import com.example.echo_api.service.profile.interaction.ProfileInteractionServiceImpl;
 import com.example.echo_api.service.session.SessionService;
 
@@ -77,15 +78,15 @@ class ProfileInteractionServiceTest {
 
     /**
      * Test ensures {@link ProfileInteractionServiceImpl#follow(String)} throws
-     * {@link UsernameNotFoundException} when called with an invalid username.
+     * {@link ResourceNotFoundException} when called with an invalid username.
      */
     @Test
-    void ProfileInteractionService_Follow_ThrowUsernameNotFound() {
+    void ProfileInteractionService_Follow_ThrowResourceNotFound() {
         // arrange
         when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(UsernameNotFoundException.class, () -> profileInteractionService.follow(target.getUsername()));
+        assertThrows(ResourceNotFoundException.class, () -> profileInteractionService.follow(target.getUsername()));
         verify(followService, times(0)).follow(authenticatedUser.getId(), target.getId());
     }
 
@@ -160,15 +161,15 @@ class ProfileInteractionServiceTest {
 
     /**
      * Test ensures {@link ProfileInteractionServiceImpl#unfollow(String)} throws
-     * {@link UsernameNotFoundException} when called with an invalid username.
+     * {@link ResourceNotFoundException} when called with an invalid username.
      */
     @Test
-    void ProfileInteractionService_Unfollow_ThrowUsernameNotFound() {
+    void ProfileInteractionService_Unfollow_ThrowResourceNotFound() {
         // arrange
         when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(UsernameNotFoundException.class, () -> profileInteractionService.unfollow(target.getUsername()));
+        assertThrows(ResourceNotFoundException.class, () -> profileInteractionService.unfollow(target.getUsername()));
         verify(followService, times(0)).unfollow(authenticatedUser.getId(), target.getId());
     }
 
@@ -224,15 +225,15 @@ class ProfileInteractionServiceTest {
 
     /**
      * Test ensures {@link ProfileInteractionServiceImpl#block(String)} throws
-     * {@link UsernameNotFoundException} when called with an invalid username.
+     * {@link ResourceNotFoundException} when called with an invalid username.
      */
     @Test
-    void ProfileInteractionService_Block_ThrowUsernameNotFound() {
+    void ProfileInteractionService_Block_ThrowResourceNotFound() {
         // arrange
         when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(UsernameNotFoundException.class, () -> profileInteractionService.block(target.getUsername()));
+        assertThrows(ResourceNotFoundException.class, () -> profileInteractionService.block(target.getUsername()));
         verify(blockService, times(0)).block(authenticatedUser.getId(), target.getId());
     }
 
@@ -288,15 +289,15 @@ class ProfileInteractionServiceTest {
 
     /**
      * Test ensures {@link ProfileInteractionServiceImpl#unblock(String)} throws
-     * {@link UsernameNotFoundException} when called with an invalid username.
+     * {@link ResourceNotFoundException} when called with an invalid username.
      */
     @Test
-    void ProfileInteractionService_Unblock_ThrowUsernameNotFound() {
+    void ProfileInteractionService_Unblock_ThrowResourceNotFound() {
         // arrange
         when(profileRepository.findByUsername(target.getUsername())).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(UsernameNotFoundException.class, () -> profileInteractionService.unblock(target.getUsername()));
+        assertThrows(ResourceNotFoundException.class, () -> profileInteractionService.unblock(target.getUsername()));
         verify(blockService, times(0)).unblock(authenticatedUser.getId(), target.getId());
     }
 

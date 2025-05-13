@@ -22,8 +22,8 @@ import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.config.ValidationMessageConfig;
 import com.example.echo_api.controller.auth.AuthController;
-import com.example.echo_api.exception.custom.username.UsernameAlreadyExistsException;
-import com.example.echo_api.exception.custom.username.UsernameNotFoundException;
+import com.example.echo_api.exception.custom.badrequest.UsernameAlreadyExistsException;
+import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.dto.request.auth.LoginDTO;
 import com.example.echo_api.persistence.dto.request.auth.SignupDTO;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
@@ -92,7 +92,7 @@ class AuthControllerTest {
 
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.INVALID_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             "Username is required.",
             path);
 
@@ -124,7 +124,7 @@ class AuthControllerTest {
 
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.INVALID_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             "Password is required.",
             path);
 
@@ -134,8 +134,8 @@ class AuthControllerTest {
     }
 
     @Test
-    void AuthController_Login_Throw400UsernameNotFound() throws Exception {
-        // api: POST /api/v1/auth/login ==> 400 : UsernameNotFound
+    void AuthController_Login_Throw404ResourceNotFound() throws Exception {
+        // api: POST /api/v1/auth/login ==> 404 : ResourceNotFound
         String path = ApiConfig.Auth.LOGIN;
 
         LoginDTO request = new LoginDTO(
@@ -144,7 +144,7 @@ class AuthControllerTest {
 
         String body = objectMapper.writeValueAsString(request);
 
-        doThrow(new UsernameNotFoundException())
+        doThrow(new ResourceNotFoundException())
             .when(authService)
             .login(request);
 
@@ -153,14 +153,14 @@ class AuthControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
             .andDo(print())
-            .andExpect(status().isBadRequest())
+            .andExpect(status().isNotFound())
             .andReturn()
             .getResponse()
             .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.USERNAME_NOT_FOUND,
+            HttpStatus.NOT_FOUND,
+            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
             path);
 
@@ -196,7 +196,7 @@ class AuthControllerTest {
 
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.USERNAME_OR_PASSWORD_IS_INCORRECT,
+            ErrorMessageConfig.BadRequest.USERNAME_OR_PASSWORD_INCORRECT,
             null,
             path);
 
@@ -232,7 +232,7 @@ class AuthControllerTest {
 
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.UNAUTHORIZED,
-            ErrorMessageConfig.ACCOUNT_STATUS,
+            ErrorMessageConfig.Unauthorised.ACCOUNT_STATUS,
             "Account is disabled.",
             path);
 
@@ -268,7 +268,7 @@ class AuthControllerTest {
 
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.UNAUTHORIZED,
-            ErrorMessageConfig.ACCOUNT_STATUS,
+            ErrorMessageConfig.Unauthorised.ACCOUNT_STATUS,
             "Account is locked.",
             path);
 
@@ -323,7 +323,7 @@ class AuthControllerTest {
 
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.INVALID_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_USERNAME,
             path);
 
@@ -355,7 +355,7 @@ class AuthControllerTest {
 
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.INVALID_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_PASSWORD,
             path);
 
@@ -391,7 +391,7 @@ class AuthControllerTest {
 
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.USERNAME_ARLEADY_EXISTS,
+            ErrorMessageConfig.BadRequest.USERNAME_ARLEADY_EXISTS,
             null,
             path);
 

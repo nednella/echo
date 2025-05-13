@@ -6,8 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
-import com.example.echo_api.exception.custom.cloudinary.CloudinaryDeleteOperationException;
-import com.example.echo_api.exception.custom.cloudinary.CloudinaryUploadOperationException;
+import com.example.echo_api.exception.custom.internalserver.CloudinaryException;
 import com.example.echo_api.util.cloudinary.CloudinaryUploadSuccess;
 
 public interface CloudinaryService {
@@ -21,14 +20,12 @@ public interface CloudinaryService {
      *                null.
      * @return A {@link CloudinaryUploadSuccess} object containing information about
      *         the uploaded file.
-     * @throws CloudinaryUploadOperationException If the upload operation fails due
-     *                                            to a Cloudinary-related error
-     *                                            (e.g., invalid credentials,
-     *                                            network error, rate limited).
+     * @throws CloudinaryException If the upload operation fails due to a
+     *                             Cloudinary-related error (e.g., invalid
+     *                             credentials, network error, rate limited).
      */
     @SuppressWarnings("rawtypes")
-    public CloudinaryUploadSuccess uploadFile(MultipartFile file, Map options)
-        throws CloudinaryUploadOperationException;
+    public CloudinaryUploadSuccess uploadFile(MultipartFile file, Map options) throws CloudinaryException;
 
     /**
      * Destroys a file from Cloudinary using the {@link Cloudinary} SDK with the
@@ -37,13 +34,12 @@ public interface CloudinaryService {
      * @param publicId The public ID of the file to destroy. Must not be null.
      * @param options  A map of options to use during the destroy operation. Can be
      *                 null.
-     * @throws CloudinaryDeleteOperationException If the delete operation fails due
-     *                                            to a Cloudinary-related error
-     *                                            (e.g., resource not found, invalid
-     *                                            credentials, network error).
+     * @throws CloudinaryException If the delete operation fails due to a
+     *                             Cloudinary-related error (e.g., resource not
+     *                             found, invalid credentials, network error).
      */
     @SuppressWarnings("rawtypes")
-    public void deleteFile(String publicId, Map options) throws CloudinaryDeleteOperationException;
+    public void deleteFile(String publicId, Map options) throws CloudinaryException;
 
     /**
      * Generates a transformed image URL for the specified Cloudinary asset using

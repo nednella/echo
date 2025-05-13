@@ -20,8 +20,8 @@ import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.config.ValidationMessageConfig;
 import com.example.echo_api.controller.account.AccountController;
-import com.example.echo_api.exception.custom.password.IncorrectCurrentPasswordException;
-import com.example.echo_api.exception.custom.username.UsernameAlreadyExistsException;
+import com.example.echo_api.exception.custom.badrequest.IncorrectCurrentPasswordException;
+import com.example.echo_api.exception.custom.badrequest.UsernameAlreadyExistsException;
 import com.example.echo_api.persistence.dto.request.account.UpdatePasswordDTO;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.persistence.model.account.Account;
@@ -128,7 +128,7 @@ class AccountControllerTest {
 
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.USERNAME_ARLEADY_EXISTS,
+            ErrorMessageConfig.BadRequest.USERNAME_ARLEADY_EXISTS,
             null,
             path);
 
@@ -183,7 +183,7 @@ class AccountControllerTest {
 
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.INVALID_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_PASSWORD,
             path);
 
@@ -217,7 +217,7 @@ class AccountControllerTest {
 
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.INVALID_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.CONFIRMATION_PASSWORD_MISMATCH,
             path);
 
@@ -250,7 +250,7 @@ class AccountControllerTest {
 
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.INVALID_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.NEW_PASSWORD_NOT_UNIQUE,
             path);
 
@@ -287,7 +287,7 @@ class AccountControllerTest {
 
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.INCORRECT_CURRENT_PASSWORD,
+            ErrorMessageConfig.BadRequest.INCORRECT_CURRENT_PASSWORD,
             null,
             path);
 
