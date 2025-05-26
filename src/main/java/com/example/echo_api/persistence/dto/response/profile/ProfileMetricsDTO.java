@@ -9,7 +9,7 @@ package com.example.echo_api.persistence.dto.response.profile;
  * @param media     The number of media items this profile has uploaded.
  */
 // @formatter:off
-public record MetricsDTO(
+public record ProfileMetricsDTO(
     int followers,
     int following,
     int posts,

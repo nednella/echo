@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *                   requested profile.
  */
 // @formatter:off
-public record RelationshipDTO(
+public record ProfileRelationshipDTO(
     boolean following,
     @JsonProperty("followed_by") boolean followedBy,
     boolean blocking,
