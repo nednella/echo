@@ -20,8 +20,8 @@ import com.example.echo_api.service.session.SessionService;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
- * Service implementation for managing read-only operations for {@link Profile}
- * data presentation.
+ * Service implementation for managing read-only {@link Profile} data
+ * presentation operations.
  */
 @Service
 public class ProfileViewServiceImpl extends BaseProfileService implements ProfileViewService {
