@@ -31,7 +31,7 @@ public class PostManagementController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(ApiConfig.Post.DELETE)
+    @DeleteMapping(ApiConfig.Post.GET_BY_ID)
     public ResponseEntity<Void> delete(@PathVariable("id") UUID id) {
         postManagementService.delete(id);
         return ResponseEntity.noContent().build();
