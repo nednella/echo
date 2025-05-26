@@ -28,8 +28,8 @@ public record PostWithRepliesDTO(
     SimplifiedProfileDTO author,
     String text,
     @JsonProperty("created_at") String createdAt,
-    MetricsDTO metrics,
-    RelationshipDTO relationship,
+    PostMetricsDTO metrics,
+    PostRelationshipDTO relationship,
     PageDTO<PostWithRepliesDTO> replies
 ) {}
 // @formatter:on

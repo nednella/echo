@@ -6,7 +6,7 @@ package com.example.echo_api.persistence.dto.response.post;
  * @param liked Indicates if the requesting profile likes the requested post.
  */
 // @formatter:off
-public record RelationshipDTO(
+public record PostRelationshipDTO(
     boolean liked
 ) {}
 // @formatter:on

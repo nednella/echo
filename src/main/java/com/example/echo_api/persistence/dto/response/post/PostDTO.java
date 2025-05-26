@@ -26,7 +26,7 @@ public record PostDTO(
     SimplifiedProfileDTO author,
     String text,
     @JsonProperty("created_at") String createdAt,
-    MetricsDTO metrics,
-    RelationshipDTO relationship
+    PostMetricsDTO metrics,
+    PostRelationshipDTO relationship
 ) {}
 // @formatter:on

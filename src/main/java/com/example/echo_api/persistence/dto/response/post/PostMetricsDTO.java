@@ -8,7 +8,7 @@ package com.example.echo_api.persistence.dto.response.post;
  * @param shares  The number of shares this post has.
  */
 // @formatter:off
-public record MetricsDTO(
+public record PostMetricsDTO(
     int likes,
     int replies,
     int shares
