@@ -39,7 +39,7 @@ public class PostManagementServiceImpl extends BasePostService implements PostMa
     @Override
     public void delete(UUID id) {
         UUID userId = getAuthenticatedUser().getId();
-        Post post = getPostById(id);
+        Post post = getPostEntityById(id);
 
         validatePostOwnership(userId, post.getAuthorId());
         postRepository.delete(post);

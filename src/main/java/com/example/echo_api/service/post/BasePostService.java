@@ -39,7 +39,7 @@ public class BasePostService {
      * @return The {@link Post} entity.
      * @throws ResourceNotFoundException If no post by that id exists.
      */
-    protected Post getPostById(UUID id) {
+    protected Post getPostEntityById(UUID id) {
         return postRepository.findById(id)
             .orElseThrow(ResourceNotFoundException::new);
     }
