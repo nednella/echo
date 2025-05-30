@@ -38,10 +38,10 @@ public class PostManagementServiceImpl extends BasePostService implements PostMa
 
     @Override
     public void delete(UUID id) {
-        UUID userId = getAuthenticatedUser().getId();
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
         Post post = getPostEntityById(id);
 
-        validatePostOwnership(userId, post.getAuthorId());
+        validatePostOwnership(authenticatedUserId, post.getAuthorId());
         postRepository.delete(post);
     }
 
@@ -49,13 +49,13 @@ public class PostManagementServiceImpl extends BasePostService implements PostMa
      * Validate that the authenticated user is allowed to perform the requested
      * action on the given post.
      * 
-     * @param userId   The authenticated user id.
-     * @param authorId The author id of the post in question.
+     * @param authenticatedUserId The authenticated user id.
+     * @param authorId            The author id of the post in question.
      * @throws ResourceOwnershipException If the requesting user and the resource
      *                                    owner do not match.
      */
-    private void validatePostOwnership(UUID userId, UUID authorId) throws ResourceOwnershipException {
-        if (!Objects.equals(userId, authorId)) {
+    private void validatePostOwnership(UUID authenticatedUserId, UUID authorId) throws ResourceOwnershipException {
+        if (!Objects.equals(authenticatedUserId, authorId)) {
             throw new ResourceOwnershipException();
         }
     }

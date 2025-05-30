@@ -35,22 +35,22 @@ public class PostInteractionServiceImpl extends BasePostService implements PostI
     @Override
     @Transactional
     public void like(UUID id) {
-        UUID userId = getAuthenticatedUser().getId();
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
         Post post = getPostEntityById(id);
 
         if (likeRepository.existsByPostIdAndAuthorId(post.getId(), id)) {
             throw new AlreadyLikedException();
         }
 
-        Like like = new Like(post.getId(), userId);
+        Like like = new Like(post.getId(), authenticatedUserId);
         likeRepository.save(like);
     }
 
     @Override
     @Transactional
     public void unlike(UUID id) {
-        UUID userId = getAuthenticatedUser().getId();
-        likeRepository.deleteByPostIdAndAuthorId(id, userId);
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
+        likeRepository.deleteByPostIdAndAuthorId(id, authenticatedUserId);
     }
 
 }
