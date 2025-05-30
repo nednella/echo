@@ -4,25 +4,26 @@ import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDT
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Represents a standardised response format for a top-level user post as part
- * of a feed.
+ * Represents a standardised response format for a single post.
  * 
- * @param id           The post id.
- * @param parentId     The post id that this post is in reply to. Null if not a
- *                     reply.
- * @param author       The post author.
- * @param text         The post content.
- * @param createdAt    The timestamp when the post was created (ISO-8601
- *                     format).
- * @param metrics      The post metrics.
- * @param relationship The post relationship between the requesting profile and
- *                     the requested post.
- * 
+ * @param id             The unique post id.
+ * @param parentId       The id of the post that this post replies to, or null
+ *                       if a root post.
+ * @param conversationId The id of the root post of the conversation, equal to
+ *                       itself for root posts.
+ * @param author         The author of the post.
+ * @param text           The text content of the post, limited to 140
+ *                       characters.
+ * @param createdAt      The creation timestamp in ISO-8601 format.
+ * @param metrics        The engagement metrics (likes, replies, shares).
+ * @param relationship   The relationship between the requesting user and the
+ *                       post (liked).
  */
 // @formatter:off
 public record PostDTO(
     String id,
     @JsonProperty("parent_id") String parentId,
+    @JsonProperty("conversation_id") String conversationId,
     SimplifiedProfileDTO author,
     String text,
     @JsonProperty("created_at") String createdAt,
