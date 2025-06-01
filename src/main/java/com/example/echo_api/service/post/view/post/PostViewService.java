@@ -17,7 +17,7 @@ public interface PostViewService {
      * @return A {@link PostDTO} resembling the queried post.
      * @throws ResourceNotFoundException If no post by that id exists.
      */
-    public PostDTO getPostById(UUID id) throws ResourceNotFoundException;
+    public PostDTO getPostById(UUID id);
 
     /**
      * Fetch a {@link PageDTO} of {@link PostDTO} for the posts that are in reply to
@@ -28,6 +28,6 @@ public interface PostViewService {
      * @return A {@link PageDTO} of {@link PostDTO} for matches, otherwise empty.
      * @throws ResourceNotFoundException If no post by that id exists.
      */
-    public PageDTO<PostDTO> getPostRepliesById(UUID id, Pageable page) throws ResourceNotFoundException;
+    public PageDTO<PostDTO> getPostRepliesById(UUID id, Pageable page);
 
 }

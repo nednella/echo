@@ -2,6 +2,9 @@ package com.example.echo_api.service.post.management;
 
 import java.util.UUID;
 
+import com.example.echo_api.exception.custom.badrequest.InvalidParentIdException;
+import com.example.echo_api.exception.custom.forbidden.ResourceOwnershipException;
+import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.dto.request.post.CreatePostDTO;
 
 public interface PostManagementService {
@@ -11,6 +14,8 @@ public interface PostManagementService {
      *
      * @param request The request object containing the relevant information to
      *                create the {@link Post}.
+     * @throws InvalidParentIdException If a parent id is supplied and no post by
+     *                                  that id exists.
      */
     public void create(CreatePostDTO request);
 
@@ -18,7 +23,7 @@ public interface PostManagementService {
      * Delete a {@link Post} via {@code id} for the authenticated user.
      *
      * @param id The id of the post to delete.
-     * @throws PostNotFoundException      If no post by that id exists.
+     * @throws ResourceNotFoundException  If no post by that id exists.
      * @throws ResourceOwnershipException If the authenticated user does not own the
      *                                    resource in question.
      */
