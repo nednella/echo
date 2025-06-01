@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.example.echo_api.exception.custom.badrequest.InvalidParentIdException;
 import com.example.echo_api.exception.custom.forbidden.ResourceOwnershipException;
 import com.example.echo_api.persistence.dto.request.post.CreatePostDTO;
 import com.example.echo_api.persistence.model.post.Post;
@@ -33,6 +34,7 @@ public class PostManagementServiceImpl extends BasePostService implements PostMa
         UUID authorId = getAuthenticatedUser().getId();
         String text = request.text();
 
+        validatePostExistsByParentId(parentId);
         postRepository.save(new Post(parentId, authorId, text));
     }
 
@@ -43,6 +45,21 @@ public class PostManagementServiceImpl extends BasePostService implements PostMa
 
         validatePostOwnership(authenticatedUserId, post.getAuthorId());
         postRepository.delete(post);
+    }
+
+    /**
+     * Validate that a {@link Post} exists by the supplied {@code id}.
+     * 
+     * @param parentId The id of the post the validate.
+     * @throws InvalidParentIdException If no post by that id exists.
+     */
+    private void validatePostExistsByParentId(UUID parentId) throws InvalidParentIdException {
+        if (parentId == null)
+            return;
+
+        if (!postRepository.existsById(parentId)) {
+            throw new InvalidParentIdException();
+        }
     }
 
     /**
