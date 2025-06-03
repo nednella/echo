@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.echo_api.exception.custom.badrequest.InvalidParentIdException;
 import com.example.echo_api.exception.custom.forbidden.ResourceOwnershipException;
-import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.dto.request.post.CreatePostDTO;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.post.Post;
@@ -84,19 +83,6 @@ class PostManagementServiceTest {
 
         // act & assert
         assertDoesNotThrow(() -> postManagementService.delete(id));
-        verify(postRepository, times(1)).findById(id);
-    }
-
-    @Test
-    void PostManagementService_Delete_ThrowResourceNotFoundException() {
-        // arrange
-        UUID id = UUID.randomUUID();
-
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(postRepository.findById(id)).thenReturn(Optional.empty());
-
-        // act & assert
-        assertThrows(ResourceNotFoundException.class, () -> postManagementService.delete(id));
         verify(postRepository, times(1)).findById(id);
     }
 

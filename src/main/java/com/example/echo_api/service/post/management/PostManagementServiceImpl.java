@@ -1,6 +1,7 @@
 package com.example.echo_api.service.post.management;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -41,8 +42,12 @@ public class PostManagementServiceImpl extends BasePostService implements PostMa
     @Override
     public void delete(UUID id) {
         UUID authenticatedUserId = getAuthenticatedUser().getId();
-        Post post = getPostEntityById(id);
+        Optional<Post> optPost = postRepository.findById(id);
 
+        if (optPost.isEmpty())
+            return; // treat not found as idempotent operation
+
+        Post post = optPost.get();
         validatePostOwnership(authenticatedUserId, post.getAuthorId());
         postRepository.delete(post);
     }

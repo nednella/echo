@@ -23,7 +23,6 @@ import com.example.echo_api.config.ValidationMessageConfig;
 import com.example.echo_api.controller.post.PostManagementController;
 import com.example.echo_api.exception.custom.badrequest.InvalidParentIdException;
 import com.example.echo_api.exception.custom.forbidden.ResourceOwnershipException;
-import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.dto.request.post.CreatePostDTO;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.service.post.management.PostManagementService;
@@ -110,34 +109,6 @@ class PostManagementControllerTest {
             .andDo(print())
             .andExpect(status().isNoContent());
 
-        verify(postManagementService, times(1)).delete(id);
-    }
-
-    @Test
-    void PostManagementController_Delete_Throw404ResourceNotFound() throws Exception {
-        // api: DELETE /api/v1/post/{id} ==> : 404 : ResourceNotFound
-        String path = ApiConfig.Post.GET_BY_ID;
-        UUID id = UUID.randomUUID();
-
-        doThrow(new ResourceNotFoundException()).when(postManagementService).delete(id);
-
-        String response = mockMvc
-            .perform(delete(path, id))
-            .andDo(print())
-            .andExpect(status().isNotFound())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
-        ErrorDTO expected = new ErrorDTO(
-            HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
-            path);
-
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
-
-        assertEquals(expected, actual);
         verify(postManagementService, times(1)).delete(id);
     }
 
