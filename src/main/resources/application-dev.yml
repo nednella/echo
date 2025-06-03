@@ -13,9 +13,9 @@ spring:
     sql:
         init:
             schema-locations:
-                - classpath:sql/schema/schema-*.sql
-                - classpath:sql/function/function-*.sql
-                - classpath:sql/trigger/trigger-*.sql
+                - classpath:sql/schema/*.sql
+                - classpath:sql/function/*.sql
+                - classpath:sql/trigger/*.sql
             mode: always
 
     docker:
