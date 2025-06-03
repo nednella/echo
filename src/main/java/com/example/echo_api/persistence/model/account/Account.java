@@ -58,7 +58,7 @@ public class Account implements Serializable {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // ---- constructors ----
+    // ---- production constructors ----
 
     public Account(String username, String password) {
         this.username = username;
@@ -69,6 +69,14 @@ public class Account implements Serializable {
         this.username = username;
         this.password = password;
         this.role = role;
+    }
+
+    // ---- test constructors ----
+
+    public Account(UUID id, String username, String password) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
     }
 
     // ---- setters ----
