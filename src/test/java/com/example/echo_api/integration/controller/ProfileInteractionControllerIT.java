@@ -75,7 +75,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     void ProfileController_Follow_Throw409SelfActionException() {
         // api: POST /api/v1/profile/{username}/follow ==> 409 : SelfAction
         String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
-        String username = existingAccount.getUsername();
+        String username = authenticatedUser.getUsername();
 
         ResponseEntity<ErrorDTO> response = restTemplate.postForEntity(path, null, ErrorDTO.class, username);
 
@@ -163,7 +163,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     void ProfileController_Unfollow_Throw409SelfActionException() {
         // api: DELETE /api/v1/profile/{username}/follow ==> 409 : SelfAction
         String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
-        String username = existingAccount.getUsername();
+        String username = authenticatedUser.getUsername();
 
         ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, username);
 
@@ -215,7 +215,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     void ProfileController_Block_Throw409SelfActionException() {
         // api: POST /api/v1/profile/{username}/block ==> 400 : SelfAction
         String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
-        String username = existingAccount.getUsername();
+        String username = authenticatedUser.getUsername();
 
         ResponseEntity<ErrorDTO> response = restTemplate.postForEntity(path, null, ErrorDTO.class, username);
 
@@ -305,7 +305,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     void ProfileController_Unblock_Throw409SelfActionException() {
         // api: DELETE /api/v1/profile/{username}/block ==> 409 : SelfAction
         String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
-        String username = existingAccount.getUsername();
+        String username = authenticatedUser.getUsername();
 
         ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, username);
 

@@ -39,7 +39,7 @@ class AccountControllerIT extends IntegrationTest {
     @Test
     void AccountController_UsernameAvailable_Return200False() {
         // api: GET /api/v1/account/username-available?username={...} ==> 200 : False
-        String path = ApiConfig.Account.USERNAME_AVAILABLE + "?username=" + existingAccount.getUsername();
+        String path = ApiConfig.Account.USERNAME_AVAILABLE + "?username=" + authenticatedUser.getUsername();
 
         ResponseEntity<String> response = restTemplate.getForEntity(path, String.class);
 
@@ -68,7 +68,7 @@ class AccountControllerIT extends IntegrationTest {
     @Test
     void AccountController_UpdateUsername_Return400UsernameAlreadyExists() {
         // api: PUT /api/v1/account/username ==> 400 : UsernameAlreadyExists
-        String path = ApiConfig.Account.UPDATE_USERNAME + "?username=" + existingAccount.getUsername();
+        String path = ApiConfig.Account.UPDATE_USERNAME + "?username=" + authenticatedUser.getUsername();
 
         ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, PUT, null, ErrorDTO.class);
 
@@ -88,7 +88,7 @@ class AccountControllerIT extends IntegrationTest {
     void AccountController_UpdatePassword_Return204() {
         // api: PUT /api/v1/account/password ==> 204 : No Content
         String path = ApiConfig.Account.UPDATE_PASSWORD;
-        UpdatePasswordDTO update = new UpdatePasswordDTO(existingAccount.getPassword(), "new-pw1", "new-pw1");
+        UpdatePasswordDTO update = new UpdatePasswordDTO(authenticatedUser.getPassword(), "new-pw1", "new-pw1");
 
         // PUT 1
         HttpEntity<UpdatePasswordDTO> request = TestUtils.createJsonRequestEntity(update);

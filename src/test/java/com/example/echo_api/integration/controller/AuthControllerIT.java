@@ -41,7 +41,7 @@ class AuthControllerIT extends IntegrationTest {
         String endpoint = ApiConfig.Auth.LOGIN;
 
         // POST a login for the pre-existing test account
-        LoginDTO login = new LoginDTO(existingAccount.getUsername(), existingAccount.getPassword());
+        LoginDTO login = new LoginDTO(authenticatedUser.getUsername(), authenticatedUser.getPassword());
 
         HttpEntity<LoginDTO> request = TestUtils.createJsonRequestEntity(login);
         ResponseEntity<Void> response = restTemplate.postForEntity(endpoint, request, Void.class);
@@ -75,7 +75,7 @@ class AuthControllerIT extends IntegrationTest {
         String endpoint = ApiConfig.Auth.SIGNUP;
 
         // POST a signup for the pre-existing test account
-        SignupDTO signup = new SignupDTO(existingAccount.getUsername(), existingAccount.getPassword());
+        SignupDTO signup = new SignupDTO(authenticatedUser.getUsername(), authenticatedUser.getPassword());
 
         HttpEntity<SignupDTO> request = TestUtils.createJsonRequestEntity(signup);
         ResponseEntity<ErrorDTO> response = restTemplate.postForEntity(endpoint, request, ErrorDTO.class);
