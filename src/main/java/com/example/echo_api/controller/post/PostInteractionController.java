@@ -23,13 +23,13 @@ public class PostInteractionController {
     private final PostInteractionService postInteractionService;
 
     @PostMapping(ApiConfig.Post.LIKE)
-    public ResponseEntity<Void> create(@PathVariable("id") UUID id) {
+    public ResponseEntity<Void> like(@PathVariable("id") UUID id) {
         postInteractionService.like(id);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping(ApiConfig.Post.LIKE)
-    public ResponseEntity<Void> delete(@PathVariable("id") UUID id) {
+    public ResponseEntity<Void> unlike(@PathVariable("id") UUID id) {
         postInteractionService.unlike(id);
         return ResponseEntity.noContent().build();
     }
