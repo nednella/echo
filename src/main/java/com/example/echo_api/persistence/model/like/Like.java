@@ -13,8 +13,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Entity class representing a {@link Like} relationship between a
- * {@link Profile} and {@link Post} in the application.
+ * Entity class representing a like relationship between a {@link Profile} and
+ * {@link Post} in the application.
  */
 @Entity
 @Table(name = "post_like")
@@ -24,15 +24,15 @@ import lombok.NoArgsConstructor;
 public class Like {
 
     @Id
-    @Column(name = "post_id")
+    @Column(name = "post_id", nullable = false)
     private UUID postId;
 
     @Id
-    @Column(name = "author_id")
+    @Column(name = "author_id", nullable = false)
     private UUID authorId;
 
     @CreationTimestamp
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     public Like(UUID postId, UUID authorId) {
