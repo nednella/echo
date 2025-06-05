@@ -38,7 +38,7 @@ public class PostInteractionServiceImpl extends BasePostService implements PostI
         UUID authenticatedUserId = getAuthenticatedUser().getId();
         Post post = getPostEntityById(id);
 
-        if (likeRepository.existsByPostIdAndAuthorId(post.getId(), id)) {
+        if (likeRepository.existsByPostIdAndAuthorId(post.getId(), authenticatedUserId)) {
             throw new AlreadyLikedException();
         }
 
