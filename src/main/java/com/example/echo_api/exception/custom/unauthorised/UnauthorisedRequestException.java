@@ -9,8 +9,7 @@ import com.example.echo_api.config.ErrorMessageConfig;
 public class UnauthorisedRequestException extends UnauthorisedException {
 
     /**
-     * Constructs a {@link UnauthorisedRequestException} with a default custom
-     * message.
+     * Constructs a {@link UnauthorisedRequestException} with a default message.
      */
     public UnauthorisedRequestException() {
         super(ErrorMessageConfig.Unauthorised.UNAUTHORISED_REQUEST);

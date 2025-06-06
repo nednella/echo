@@ -39,7 +39,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     }
 
     @Test
-    @Sql(scripts = "/sql/relationship-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/sql/profile-interaction-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void ProfileController_Follow_Return204NoContent() {
         // api: POST /api/v1/profile/{username}/follow ==> 204 : No Content
         String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
@@ -75,7 +75,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     void ProfileController_Follow_Throw409SelfActionException() {
         // api: POST /api/v1/profile/{username}/follow ==> 409 : SelfAction
         String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
-        String username = existingAccount.getUsername();
+        String username = authenticatedUser.getUsername();
 
         ResponseEntity<ErrorDTO> response = restTemplate.postForEntity(path, null, ErrorDTO.class, username);
 
@@ -91,7 +91,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     }
 
     @Test
-    @Sql(scripts = "/sql/relationship-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/sql/profile-interaction-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void ProfileController_Follow_Throw409AlreadyFollowingException() {
         // api: POST /api/v1/profile/{username}/follow ==> 409 : AlreadyFollowing
         String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
@@ -119,7 +119,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     }
 
     @Test
-    @Sql(scripts = "/sql/relationship-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/sql/profile-interaction-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void ProfileController_Unfollow_Return204NoContent() {
         // api: DELETE /api/v1/profile/{username}/follow ==> 204 : No Content
         String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
@@ -163,7 +163,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     void ProfileController_Unfollow_Throw409SelfActionException() {
         // api: DELETE /api/v1/profile/{username}/follow ==> 409 : SelfAction
         String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
-        String username = existingAccount.getUsername();
+        String username = authenticatedUser.getUsername();
 
         ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, username);
 
@@ -179,7 +179,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     }
 
     @Test
-    @Sql(scripts = "/sql/relationship-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/sql/profile-interaction-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void ProfileController_Block_Return204NoContent() {
         // api: POST /api/v1/profile/{username}/block ==> 204 : No Content
         String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
@@ -215,7 +215,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     void ProfileController_Block_Throw409SelfActionException() {
         // api: POST /api/v1/profile/{username}/block ==> 400 : SelfAction
         String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
-        String username = existingAccount.getUsername();
+        String username = authenticatedUser.getUsername();
 
         ResponseEntity<ErrorDTO> response = restTemplate.postForEntity(path, null, ErrorDTO.class, username);
 
@@ -231,7 +231,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     }
 
     @Test
-    @Sql(scripts = "/sql/relationship-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/sql/profile-interaction-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void ProfileController_Block_Throw409AlreadyBlockingException() {
         // api: POST /api/v1/profile/{username}/block ==> 409 : AlreadyBlocking
         String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
@@ -260,7 +260,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     }
 
     @Test
-    @Sql(scripts = "/sql/relationship-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/sql/profile-interaction-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void ProfileController_Unblock_Return204NoContent() {
         // api: DELETE /api/v1/profile/{username}/block ==> 204 : No Content
         String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
@@ -305,7 +305,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     void ProfileController_Unblock_Throw409SelfActionException() {
         // api: DELETE /api/v1/profile/{username}/block ==> 409 : SelfAction
         String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
-        String username = existingAccount.getUsername();
+        String username = authenticatedUser.getUsername();
 
         ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, username);
 

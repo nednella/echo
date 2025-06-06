@@ -21,6 +21,6 @@ public record SimplifiedProfileDTO(
     String username,
     String name,
     @JsonProperty("avatar_url") String avatarUrl,
-    @JsonInclude(Include.NON_NULL) RelationshipDTO relationship
+    @JsonInclude(Include.NON_NULL) ProfileRelationshipDTO relationship
 ) {}
 // @formatter:on

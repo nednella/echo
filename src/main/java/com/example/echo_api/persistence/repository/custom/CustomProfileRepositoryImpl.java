@@ -14,9 +14,9 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.lang.NonNull;
 
-import com.example.echo_api.persistence.dto.response.profile.MetricsDTO;
+import com.example.echo_api.persistence.dto.response.profile.ProfileMetricsDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
-import com.example.echo_api.persistence.dto.response.profile.RelationshipDTO;
+import com.example.echo_api.persistence.dto.response.profile.ProfileRelationshipDTO;
 import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
 
 import lombok.RequiredArgsConstructor;
@@ -383,14 +383,14 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                 rs.getString("avatar_url"),
                 rs.getString("banner_url"),
                 rs.getTimestamp("created_at").toInstant().toString(),
-                new MetricsDTO(
+                new ProfileMetricsDTO(
                     rs.getInt("followers"),
                     rs.getInt("following"),
                     rs.getInt("posts"),
                     rs.getInt("media")),
                 isSelf
                     ? null
-                    : new RelationshipDTO(
+                    : new ProfileRelationshipDTO(
                         rs.getBoolean("rel_following"),
                         rs.getBoolean("rel_followed_by"),
                         rs.getBoolean("rel_blocking"),
@@ -416,7 +416,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                 rs.getString("avatar_url"),
                 isSelf
                     ? null
-                    : new RelationshipDTO(
+                    : new ProfileRelationshipDTO(
                         rs.getBoolean("rel_following"),
                         rs.getBoolean("rel_followed_by"),
                         rs.getBoolean("rel_blocking"),

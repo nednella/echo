@@ -10,8 +10,7 @@ import com.example.echo_api.config.ValidationMessageConfig;
 public class InvalidImageFormatException extends BadRequestException {
 
     /**
-     * Constructs a {@link ImageFormatException} with a default custom message and
-     * details.
+     * Constructs a {@link ImageFormatException} with a default message and details.
      */
     public InvalidImageFormatException() {
         super(ErrorMessageConfig.BadRequest.INVALID_REQUEST, ValidationMessageConfig.IMAGE_FORMAT_UNSUPPORTED);

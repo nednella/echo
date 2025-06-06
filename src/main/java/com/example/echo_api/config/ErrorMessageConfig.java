@@ -36,6 +36,7 @@ public final class ErrorMessageConfig {
     public static class Forbidden {
         public static final String ACCESS_DENIED = "You are missing permissions required to perform this action.";
         public static final String BLOCKED = "This action is blocked due to a user restriction.";
+        public static final String RESOURCE_OWNERSHIP_REQUIRED = "Resource ownership is required for performing this action.";
     }
 
     /* 404 */

@@ -35,4 +35,3 @@ CREATE INDEX
 CREATE INDEX 
     IF NOT EXISTS idx_block_blocked_id
         ON "block"(blocked_id);
-

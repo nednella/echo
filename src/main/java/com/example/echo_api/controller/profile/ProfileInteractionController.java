@@ -9,12 +9,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.service.profile.interaction.ProfileInteractionService;
+import com.example.echo_api.validation.sequence.ValidationOrder;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@Validated
+@Validated(ValidationOrder.class)
 public class ProfileInteractionController {
 
     private final ProfileInteractionService profileInteractionService;

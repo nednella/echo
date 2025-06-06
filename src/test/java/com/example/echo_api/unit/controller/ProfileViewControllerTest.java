@@ -29,7 +29,7 @@ import com.example.echo_api.controller.profile.ProfileViewController;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
-import com.example.echo_api.persistence.dto.response.profile.MetricsDTO;
+import com.example.echo_api.persistence.dto.response.profile.ProfileMetricsDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
 import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
 import com.example.echo_api.persistence.mapper.PageMapper;
@@ -64,7 +64,7 @@ class ProfileViewControllerTest {
             null,
             null,
             null,
-            new MetricsDTO(0, 0, 0, 0),
+            new ProfileMetricsDTO(0, 0, 0, 0),
             null);
     }
 

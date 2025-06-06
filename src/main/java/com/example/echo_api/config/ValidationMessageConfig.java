@@ -31,5 +31,9 @@ public final class ValidationMessageConfig {
     public static final String BIO_TOO_LONG = "Bio must not exceed 160 characters.";
     public static final String LOCATION_TOO_LONG = "Location must not exceed 30 characters.";
 
+    /* POST */
+    public static final String TEXT_TOO_LONG = "Text must not exceed 140 characters.";
+    public static final String INVALID_PARENT_ID = "Invalid parent post ID.";
+
 }
 // @formatter:on

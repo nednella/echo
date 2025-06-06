@@ -54,14 +54,14 @@ class ProfileViewControllerIT extends IntegrationTest {
         // assert body
         ProfileDTO body = response.getBody();
         assertNotNull(body);
-        assertEquals(existingAccount.getUsername(), body.username());
+        assertEquals(authenticatedUser.getUsername(), body.username());
     }
 
     @Test
     void ProfileController_GetByUsername_Return200ProfileDTO() {
         // api: GET /api/v1/profile/{username} ==> 200 : ProfileDTO
         String path = ApiConfig.Profile.GET_BY_USERNAME;
-        String username = existingAccount.getUsername();
+        String username = authenticatedUser.getUsername();
 
         ResponseEntity<ProfileDTO> response = restTemplate.getForEntity(path, ProfileDTO.class, username);
 
@@ -95,7 +95,7 @@ class ProfileViewControllerIT extends IntegrationTest {
     }
 
     @Test
-    @Sql(scripts = "/sql/relationship-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/sql/profile-interaction-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void ProfileController_GetFollowers_Return200PageOfProfileDTO() {
         // api: GET /api/v1/profile/{username}/followers ==> 200 : PageDTO<ProfileDTO>
         String followPath = ApiConfig.Profile.FOLLOW_BY_USERNAME;
@@ -125,7 +125,7 @@ class ProfileViewControllerIT extends IntegrationTest {
         assertNull(data.next());
         assertEquals(1, data.total());
         assertEquals(1, data.items().size());
-        assertEquals(existingAccount.getUsername(), data.items().get(0).username());
+        assertEquals(authenticatedUser.getUsername(), data.items().get(0).username());
     }
 
     @Test
@@ -170,13 +170,13 @@ class ProfileViewControllerIT extends IntegrationTest {
     }
 
     @Test
-    @Sql(scripts = "/sql/relationship-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/sql/profile-interaction-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void ProfileController_GetFollowing_Return200PageOfProfileDTO() {
         // api: GET /api/v1/profile/{username}/following ==> 400 : PageDTO<ProfileDTO>
         String followPath = ApiConfig.Profile.FOLLOW_BY_USERNAME;
         String getFollowingPath = ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME + "?offset=0&limit=1";
         String followUsername = targetUser.getUsername();
-        String getFollowingUsername = existingAccount.getUsername();
+        String getFollowingUsername = authenticatedUser.getUsername();
 
         // follow target user to create a follow relationship in the db
         ResponseEntity<ErrorDTO> response1 = restTemplate.postForEntity(followPath, null, ErrorDTO.class,

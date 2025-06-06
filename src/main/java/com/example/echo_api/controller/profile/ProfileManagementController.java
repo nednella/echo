@@ -14,13 +14,14 @@ import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.persistence.dto.request.profile.UpdateInformationDTO;
 import com.example.echo_api.service.profile.management.ProfileManagementService;
 import com.example.echo_api.util.validator.ImageValidator;
+import com.example.echo_api.validation.sequence.ValidationOrder;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@Validated
+@Validated(ValidationOrder.class)
 public class ProfileManagementController {
 
     private final ProfileManagementService profileManagementService;

@@ -18,8 +18,10 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.example.echo_api.config.ApiConfig;
+import com.example.echo_api.persistence.dto.request.auth.LoginDTO;
 import com.example.echo_api.persistence.dto.request.auth.SignupDTO;
 import com.example.echo_api.persistence.model.account.Account;
+import com.example.echo_api.persistence.repository.AccountRepository;
 import com.redis.testcontainers.RedisContainer;
 
 @ActiveProfiles(value = "test")
@@ -27,6 +29,10 @@ import com.redis.testcontainers.RedisContainer;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class IntegrationTest {
+
+    private static final String AUTH_USER_USERNAME = "test1";
+    private static final String OTHER_USER_USERNAME = "test2";
+    protected static final String TEST_ENV_PASSWORD = "password1";
 
     @Container
     @ServiceConnection
@@ -42,7 +48,11 @@ public abstract class IntegrationTest {
     @Autowired
     protected SessionCookieInterceptor sessionCookieInterceptor;
 
-    protected Account existingAccount;
+    @Autowired
+    private AccountRepository accountRepository;
+
+    protected Account authenticatedUser;
+    protected Account otherUser;
 
     /**
      * Initialise the integration test environment:
@@ -61,11 +71,16 @@ public abstract class IntegrationTest {
             .getInterceptors()
             .add(sessionCookieInterceptor);
 
-        // Configure test account
-        existingAccount = new Account("test", "password1");
+        // create test environment accounts
+        createUser(AUTH_USER_USERNAME, TEST_ENV_PASSWORD);
+        createUser(OTHER_USER_USERNAME, TEST_ENV_PASSWORD);
 
-        // Register and authenticate test account
-        obtainAuthenticatedSession(existingAccount);
+        // authenticate a test account
+        authenticateUser(AUTH_USER_USERNAME, TEST_ENV_PASSWORD);
+
+        // fetch test account entities
+        authenticatedUser = fetchUser(AUTH_USER_USERNAME);
+        otherUser = fetchUser(OTHER_USER_USERNAME);
     }
 
     /**
@@ -89,23 +104,63 @@ public abstract class IntegrationTest {
     }
 
     /**
-     * Registers and authenticates the supplied {@link Account} by sending a POST
-     * request to the signup endpoint. The account is inserted into the database and
-     * an authenticated session is retrieved from the server, and stored in
+     * Registers an account under the supplied {@code username} and {@code password}
+     * by sending a POST request to the signup endpoint.
+     * 
+     * <p>
+     * Authentication from the signup request is ignored by disabling
      * {@link SessionCookieInterceptor}.
      * 
-     * @param account The account to be authenticated.
+     * @param username The username of the account to register.
+     * @param password The password of the account to register.
      */
-    private void obtainAuthenticatedSession(Account account) {
+    private void createUser(String username, String password) {
         // api: POST /api/v1/auth/signup ==> 204 : No Content
         String path = ApiConfig.Auth.SIGNUP;
-        SignupDTO signup = new SignupDTO(account.getUsername(), account.getPassword());
+        SignupDTO body = new SignupDTO(username, password);
+        HttpEntity<SignupDTO> request = TestUtils.createJsonRequestEntity(body);
 
-        HttpEntity<SignupDTO> request = TestUtils.createJsonRequestEntity(signup);
+        sessionCookieInterceptor.disable();
+        ResponseEntity<Void> response = restTemplate.postForEntity(path, request, Void.class);
+        sessionCookieInterceptor.enable();
+
+        assertEquals(NO_CONTENT, response.getStatusCode());
+    }
+
+    /**
+     * Authenticates an account with the supplied {@code username} and
+     * {@code password} by sending a POST request to the login endpoint.
+     * 
+     * <p>
+     * Authentication is stored using {@link SessionCookieInterceptor} and
+     * subsequently attached to any HTTP request headers as part of the testing
+     * environment.
+     * 
+     * @param username The username of the account to authenticate.
+     * @param password The password of the account to authenticate.
+     */
+    private void authenticateUser(String username, String password) {
+        // api: POST /api/v1/auth/login ==> 204 : No Content
+        String path = ApiConfig.Auth.LOGIN;
+        LoginDTO body = new LoginDTO(username, password);
+        HttpEntity<LoginDTO> request = TestUtils.createJsonRequestEntity(body);
+
         ResponseEntity<Void> response = restTemplate.postForEntity(path, request, Void.class);
 
         assertEquals(NO_CONTENT, response.getStatusCode());
         TestUtils.assertSetCookieStartsWith(response, "ECHO_SESSION");
+    }
+
+    /**
+     * Retrieves the {@link Account} associated to the supplied {@code username} to
+     * enable allow within test environment methods.
+     * 
+     * @param username The username of the account to fetch.
+     * @return The corresponding {@link Account} entity.
+     */
+    private Account fetchUser(String username) {
+        return accountRepository.findByUsername(username)
+            .orElseThrow(() -> new IllegalStateException("User: " + username + " could not be found."));
     }
 
 }

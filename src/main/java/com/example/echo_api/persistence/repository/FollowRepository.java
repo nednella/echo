@@ -32,6 +32,7 @@ public interface FollowRepository extends ListCrudRepository<Follow, FollowPK> {
      * 
      * @param followerId The id of the profile initiating the block.
      * @param followedId The id of the profile being followed.
+     * @return The number of follow records deleted (0 or 1).
      */
     int deleteByFollowerIdAndFollowedId(UUID followerId, UUID followedId);
 
@@ -43,6 +44,7 @@ public interface FollowRepository extends ListCrudRepository<Follow, FollowPK> {
      * 
      * @param profileId1 The id of the first user.
      * @param profileId2 The id of the second user.
+     * @return The number of follow records deleted (0 or 1 or 2).
      */
     @Modifying
     @Query("""

@@ -9,7 +9,7 @@ import com.example.echo_api.config.ErrorMessageConfig;
 public class SelfActionException extends ConflictException {
 
     /**
-     * Constructs a {@code SelfActionException} with the a default message.
+     * Constructs a {@code SelfActionException} with a default message.
      */
     public SelfActionException() {
         super(ErrorMessageConfig.Conflict.SELF_ACTION);

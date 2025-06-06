@@ -9,7 +9,7 @@ import com.example.echo_api.config.ErrorMessageConfig;
 public class BlockedException extends ForbiddenException {
 
     /**
-     * Constructs a {@code BlockedException} with the specified message.
+     * Constructs a {@code BlockedException} with a default message.
      */
     public BlockedException() {
         super(ErrorMessageConfig.Forbidden.BLOCKED);

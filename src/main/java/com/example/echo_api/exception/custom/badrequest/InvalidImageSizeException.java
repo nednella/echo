@@ -10,8 +10,8 @@ import com.example.echo_api.config.ValidationMessageConfig;
 public class InvalidImageSizeException extends BadRequestException {
 
     /**
-     * Constructs a {@link InvalidImageSizeException} with a default custom message
-     * and details.
+     * Constructs a {@link InvalidImageSizeException} with a default message and
+     * details.
      */
     public InvalidImageSizeException() {
         super(ErrorMessageConfig.BadRequest.INVALID_REQUEST, ValidationMessageConfig.IMAGE_SIZE_TOO_LARGE);

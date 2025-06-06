@@ -10,7 +10,8 @@ import com.example.echo_api.config.ErrorMessageConfig;
 public class CloudinaryException extends InternalServerException {
 
     /**
-     * Constructs a {@link CloudinaryException} with the specified {@code details}.
+     * Constructs a {@link CloudinaryException} with a default message and the
+     * specified {@code details}.
      * 
      * @param details The specific error details.
      */
