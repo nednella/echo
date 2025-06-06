@@ -11,7 +11,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.DirtiesContext;
 
 import com.example.echo_api.integration.util.RepositoryTest;
@@ -21,6 +21,7 @@ import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.follow.Follow;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
+import com.example.echo_api.util.pagination.OffsetLimitRequest;
 import com.example.echo_api.persistence.repository.AccountRepository;
 import com.example.echo_api.persistence.repository.FollowRepository;
 
@@ -174,14 +175,18 @@ class ProfileRepositoryIT extends RepositoryTest {
     }
 
     /**
-     * 
+     * Test {@link ProfileRepository#findFollowerDtosById(UUID, UUID, Pageable)} to
+     * verify that searching for a user's followers by their {@code id} returns a
+     * {@link Page} of {@link ProfileDTO}.
      */
     @Test
     void ProfileRepository_FindFollowerDtosById_ReturnPageOfProfileDto() {
+        Pageable page = new OffsetLimitRequest(0, 10);
+
         Page<SimplifiedProfileDTO> followersPage = profileRepository.findFollowerDtosById(
             target.getId(),
             source.getId(),
-            PageRequest.of(0, 10));
+            page);
 
         assertNotNull(followersPage);
         assertTrue(followersPage.hasContent());
@@ -189,14 +194,18 @@ class ProfileRepositoryIT extends RepositoryTest {
     }
 
     /**
-     * 
+     * Test {@link ProfileRepository#findFollowerDtosById(UUID, UUID, Pageable)} to
+     * verify that searching for a user's followers by their {@code id}, that has no
+     * followers, returns an empty {@link Page}.
      */
     @Test
     void ProfileRepository_FindFollowerDtosById_ReturnPageOfEmpty() {
+        Pageable page = new OffsetLimitRequest(0, 10);
+
         Page<SimplifiedProfileDTO> followersPage = profileRepository.findFollowerDtosById(
             source.getId(),
             source.getId(),
-            PageRequest.of(0, 10));
+            page);
 
         assertNotNull(followersPage);
         assertTrue(followersPage.isEmpty());
@@ -204,14 +213,18 @@ class ProfileRepositoryIT extends RepositoryTest {
     }
 
     /**
-     * 
+     * Test {@link ProfileRepository#findFollowingDtosById(UUID, UUID, Pageable)} to
+     * verify that searching for a user's following by their {@code id} returns a
+     * {@link Page} of {@link ProfileDTO}.
      */
     @Test
     void ProfileRepository_FindFollowingDtosById_ReturnPageOfProfileDto() {
+        Pageable page = new OffsetLimitRequest(0, 10);
+
         Page<SimplifiedProfileDTO> followingPage = profileRepository.findFollowingDtosById(
             source.getId(),
             source.getId(),
-            PageRequest.of(0, 10));
+            page);
 
         assertNotNull(followingPage);
         assertTrue(followingPage.hasContent());
@@ -219,14 +232,18 @@ class ProfileRepositoryIT extends RepositoryTest {
     }
 
     /**
-     * 
+     * Test {@link ProfileRepository#findFollowingDtosById(UUID, UUID, Pageable)} to
+     * verify that searching for a user's following by their {@code id}, that is not
+     * following any users, returns an empty {@link Page}.
      */
     @Test
     void ProfileRepository_FindFollowingDtosById_ReturnPageOfEmpty() {
+        Pageable page = new OffsetLimitRequest(0, 10);
+
         Page<SimplifiedProfileDTO> followingPage = profileRepository.findFollowingDtosById(
             target.getId(),
             source.getId(),
-            PageRequest.of(0, 10));
+            page);
 
         assertNotNull(followingPage);
         assertTrue(followingPage.isEmpty());

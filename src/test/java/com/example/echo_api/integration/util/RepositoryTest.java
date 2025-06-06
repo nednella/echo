@@ -11,8 +11,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.example.echo_api.persistence.model.account.Account;
-
 @ActiveProfiles(value = "test")
 @Transactional
 @Testcontainers
@@ -22,8 +20,6 @@ public abstract class RepositoryTest {
     @Container
     @ServiceConnection
     protected static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest");
-
-    protected Account testAccount;
 
     /**
      * Test ensures that the {@code postgres} container is initialised and running

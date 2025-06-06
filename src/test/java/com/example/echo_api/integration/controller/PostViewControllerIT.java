@@ -90,8 +90,7 @@ class PostViewControllerIT extends IntegrationTest {
         String path = ApiConfig.Post.GET_REPLIES_BY_ID;
         UUID id = post.getId();
 
-        ParameterizedTypeReference<PageDTO<PostDTO>> typeRef = new ParameterizedTypeReference<PageDTO<PostDTO>>() {
-        };
+        ParameterizedTypeReference<PageDTO<PostDTO>> typeRef = new ParameterizedTypeReference<PageDTO<PostDTO>>() {};
         ResponseEntity<PageDTO<PostDTO>> response = restTemplate.exchange(path, GET, null, typeRef, id);
 
         // assert response

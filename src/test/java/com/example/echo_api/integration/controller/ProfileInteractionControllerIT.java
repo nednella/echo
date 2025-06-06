@@ -4,10 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.HttpMethod.*;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
@@ -17,8 +15,6 @@ import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.controller.profile.ProfileInteractionController;
 import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
-import com.example.echo_api.persistence.model.account.Account;
-import com.example.echo_api.service.account.AccountService;
 
 /**
  * Integration test class for {@link ProfileInteractionController}.
@@ -27,23 +23,12 @@ import com.example.echo_api.service.account.AccountService;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ProfileInteractionControllerIT extends IntegrationTest {
 
-    @Autowired
-    private AccountService accountService;
-
-    private Account targetUser;
-
-    @BeforeAll
-    void setup() {
-        targetUser = new Account("target_user", "password1");
-        accountService.register(targetUser.getUsername(), targetUser.getPassword());
-    }
-
     @Test
     @Sql(scripts = "/sql/profile-interaction-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void ProfileController_Follow_Return204NoContent() {
         // api: POST /api/v1/profile/{username}/follow ==> 204 : No Content
         String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
-        String username = targetUser.getUsername();
+        String username = otherUser.getUsername();
 
         ResponseEntity<Void> response = restTemplate.postForEntity(path, null, Void.class, username);
 
@@ -95,7 +80,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     void ProfileController_Follow_Throw409AlreadyFollowingException() {
         // api: POST /api/v1/profile/{username}/follow ==> 409 : AlreadyFollowing
         String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
-        String username = targetUser.getUsername();
+        String username = otherUser.getUsername();
 
         // follow the user to create a follow relationship in the db
         ResponseEntity<Void> response1 = restTemplate.postForEntity(path, null, Void.class, username);
@@ -123,7 +108,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     void ProfileController_Unfollow_Return204NoContent() {
         // api: DELETE /api/v1/profile/{username}/follow ==> 204 : No Content
         String path = ApiConfig.Profile.FOLLOW_BY_USERNAME;
-        String username = targetUser.getUsername();
+        String username = otherUser.getUsername();
 
         // follow the user to create a follow relationship in the db
         ResponseEntity<Void> followResponse = restTemplate.postForEntity(path, null, Void.class, username);
@@ -183,7 +168,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     void ProfileController_Block_Return204NoContent() {
         // api: POST /api/v1/profile/{username}/block ==> 204 : No Content
         String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
-        String username = targetUser.getUsername();
+        String username = otherUser.getUsername();
 
         ResponseEntity<Void> response = restTemplate.postForEntity(path, null, Void.class, username);
 
@@ -235,7 +220,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     void ProfileController_Block_Throw409AlreadyBlockingException() {
         // api: POST /api/v1/profile/{username}/block ==> 409 : AlreadyBlocking
         String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
-        String username = targetUser.getUsername();
+        String username = otherUser.getUsername();
 
         // block the user to create a block relationship in the db
         ResponseEntity<Void> response1 = restTemplate.postForEntity(path, null, Void.class, username);
@@ -264,7 +249,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     void ProfileController_Unblock_Return204NoContent() {
         // api: DELETE /api/v1/profile/{username}/block ==> 204 : No Content
         String path = ApiConfig.Profile.BLOCK_BY_USERNAME;
-        String username = targetUser.getUsername();
+        String username = otherUser.getUsername();
 
         // block the user to create a block relationship in the db
         ResponseEntity<Void> followResponse = restTemplate.postForEntity(path, null, Void.class, username);
