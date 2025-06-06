@@ -95,7 +95,7 @@ class ProfileViewControllerIT extends IntegrationTest {
     }
 
     @Test
-    @Sql(scripts = "/sql/relationship-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/sql/profile-interaction-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void ProfileController_GetFollowers_Return200PageOfProfileDTO() {
         // api: GET /api/v1/profile/{username}/followers ==> 200 : PageDTO<ProfileDTO>
         String followPath = ApiConfig.Profile.FOLLOW_BY_USERNAME;
@@ -170,7 +170,7 @@ class ProfileViewControllerIT extends IntegrationTest {
     }
 
     @Test
-    @Sql(scripts = "/sql/relationship-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/sql/profile-interaction-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void ProfileController_GetFollowing_Return200PageOfProfileDTO() {
         // api: GET /api/v1/profile/{username}/following ==> 400 : PageDTO<ProfileDTO>
         String followPath = ApiConfig.Profile.FOLLOW_BY_USERNAME;
