@@ -26,13 +26,15 @@ class AccountRepositoryIT extends RepositoryTest {
     @Autowired
     private AccountRepository accountRepository;
 
+    private Account account;
+
     /**
      * Save a {@link Account} object to the {@link AccountRepository}..
      */
     @BeforeAll
     void setup() {
-        testAccount = new Account("test", "password1");
-        accountRepository.save(testAccount);
+        account = new Account("test", "password1");
+        account = accountRepository.save(account);
     }
 
     /**
@@ -41,11 +43,11 @@ class AccountRepositoryIT extends RepositoryTest {
      */
     @Test
     void AccountRepository_FindByUsername_ReturnUser() {
-        Optional<Account> account = accountRepository.findByUsername(testAccount.getUsername());
+        Optional<Account> optAccount = accountRepository.findByUsername(account.getUsername());
 
-        assertNotNull(account);
-        assertTrue(account.isPresent());
-        assertEquals(testAccount, account.get());
+        assertNotNull(optAccount);
+        assertTrue(optAccount.isPresent());
+        assertEquals(account, optAccount.get());
     }
 
     /**
@@ -54,10 +56,10 @@ class AccountRepositoryIT extends RepositoryTest {
      */
     @Test
     void AccountRepository_FindByUsername_ReturnEmpty() {
-        Optional<Account> account = accountRepository.findByUsername("nonExistentUser");
+        Optional<Account> optAccount = accountRepository.findByUsername("nonExistentUser");
 
-        assertNotNull(account);
-        assertTrue(account.isEmpty());
+        assertNotNull(optAccount);
+        assertTrue(optAccount.isEmpty());
     }
 
     /**
@@ -67,7 +69,7 @@ class AccountRepositoryIT extends RepositoryTest {
      */
     @Test
     void AccountRepository_ExistsByUsername_ReturnTrue() {
-        boolean exists = accountRepository.existsByUsername(testAccount.getUsername());
+        boolean exists = accountRepository.existsByUsername(account.getUsername());
 
         assertTrue(exists);
     }
