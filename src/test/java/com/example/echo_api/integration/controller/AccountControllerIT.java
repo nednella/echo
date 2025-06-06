@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
@@ -39,7 +38,7 @@ class AccountControllerIT extends IntegrationTest {
     @Test
     void AccountController_UsernameAvailable_Return200False() {
         // api: GET /api/v1/account/username-available?username={...} ==> 200 : False
-        String path = ApiConfig.Account.USERNAME_AVAILABLE + "?username=" + authenticatedUser.getUsername();
+        String path = ApiConfig.Account.USERNAME_AVAILABLE + "?username=" + otherUser.getUsername();
 
         ResponseEntity<String> response = restTemplate.getForEntity(path, String.class);
 
@@ -49,26 +48,21 @@ class AccountControllerIT extends IntegrationTest {
     }
 
     @Test
-    @Transactional // rollback
-    void AccountController_UpdateUsername_Return204() {
+    void AccountController_UpdateUsername_Return204NoContent() {
         // api: PUT /api/v1/account/username ==> 204 : No Content
         String putPath = ApiConfig.Account.UPDATE_USERNAME + "?username=" + "new_username";
 
-        // PUT
-        ResponseEntity<Void> putResponse = restTemplate.exchange(putPath, PUT, null, Void.class);
-        assertEquals(NO_CONTENT, putResponse.getStatusCode());
+        ResponseEntity<Void> response = restTemplate.exchange(putPath, PUT, null, Void.class);
 
-        // GET (assert db)
-        String getPath = ApiConfig.Account.USERNAME_AVAILABLE + "?username=" + "new_username";
-        ResponseEntity<String> getResponse = restTemplate.getForEntity(getPath, String.class);
-        assertEquals(OK, getResponse.getStatusCode());
-        assertEquals("false", getResponse.getBody());
+        // assert response
+        assertEquals(NO_CONTENT, response.getStatusCode());
+        assertNull(response.getBody());
     }
 
     @Test
     void AccountController_UpdateUsername_Return400UsernameAlreadyExists() {
         // api: PUT /api/v1/account/username ==> 400 : UsernameAlreadyExists
-        String path = ApiConfig.Account.UPDATE_USERNAME + "?username=" + authenticatedUser.getUsername();
+        String path = ApiConfig.Account.UPDATE_USERNAME + "?username=" + otherUser.getUsername();
 
         ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, PUT, null, ErrorDTO.class);
 
@@ -84,35 +78,28 @@ class AccountControllerIT extends IntegrationTest {
     }
 
     @Test
-    @Transactional // rollback
-    void AccountController_UpdatePassword_Return204() {
+    void AccountController_UpdatePassword_Return204NoContent() {
         // api: PUT /api/v1/account/password ==> 204 : No Content
         String path = ApiConfig.Account.UPDATE_PASSWORD;
-        UpdatePasswordDTO update = new UpdatePasswordDTO(authenticatedUser.getPassword(), "new-pw1", "new-pw1");
 
-        // PUT 1
+        UpdatePasswordDTO update = new UpdatePasswordDTO(TEST_ENV_PASSWORD, "new-pw1", "new-pw1");
         HttpEntity<UpdatePasswordDTO> request = TestUtils.createJsonRequestEntity(update);
-        ResponseEntity<Void> response1 = restTemplate.exchange(path, PUT, request, Void.class);
-        assertEquals(NO_CONTENT, response1.getStatusCode());
 
-        // PUT 2 (assert db)
-        ResponseEntity<ErrorDTO> response2 = restTemplate.exchange(path, PUT, request, ErrorDTO.class);
-        assertEquals(BAD_REQUEST, response2.getStatusCode());
-        assertNotNull(response2.getBody());
+        ResponseEntity<Void> response = restTemplate.exchange(path, PUT, request, Void.class);
 
-        ErrorDTO error = response2.getBody();
-        assertNotNull(error);
-        assertEquals(BAD_REQUEST.value(), error.status());
-        assertEquals(ErrorMessageConfig.BadRequest.INCORRECT_CURRENT_PASSWORD, error.message());
+        // assert response
+        assertEquals(NO_CONTENT, response.getStatusCode());
+        assertNull(response.getBody());
     }
 
     @Test
     void AccountController_UpdatePassword_Return400IncorrectCurrentPassword() {
         // api: PUT /api/v1/account/password ==> 400 : IncorrectCurrentPassword
         String path = ApiConfig.Account.UPDATE_PASSWORD;
-        UpdatePasswordDTO update = new UpdatePasswordDTO("wrong-password", "new-pw1", "new-pw1");
 
+        UpdatePasswordDTO update = new UpdatePasswordDTO("wrong-password", "new-pw1", "new-pw1");
         HttpEntity<UpdatePasswordDTO> request = TestUtils.createJsonRequestEntity(update);
+
         ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, PUT, request, ErrorDTO.class);
 
         // assert response

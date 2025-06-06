@@ -41,7 +41,7 @@ class AuthControllerIT extends IntegrationTest {
         String endpoint = ApiConfig.Auth.LOGIN;
 
         // POST a login for the pre-existing test account
-        LoginDTO login = new LoginDTO(authenticatedUser.getUsername(), authenticatedUser.getPassword());
+        LoginDTO login = new LoginDTO(authenticatedUser.getUsername(), TEST_ENV_PASSWORD);
 
         HttpEntity<LoginDTO> request = TestUtils.createJsonRequestEntity(login);
         ResponseEntity<Void> response = restTemplate.postForEntity(endpoint, request, Void.class);

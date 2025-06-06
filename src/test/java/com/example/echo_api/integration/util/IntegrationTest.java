@@ -32,7 +32,7 @@ public abstract class IntegrationTest {
 
     private static final String AUTH_USER_USERNAME = "test1";
     private static final String OTHER_USER_USERNAME = "test2";
-    private static final String TEST_ENV_PASSWORD = "password1";
+    protected static final String TEST_ENV_PASSWORD = "password1";
 
     @Container
     @ServiceConnection
@@ -124,7 +124,6 @@ public abstract class IntegrationTest {
         ResponseEntity<Void> response = restTemplate.postForEntity(path, request, Void.class);
         sessionCookieInterceptor.enable();
 
-        System.out.println("creating user: " + username);
         assertEquals(NO_CONTENT, response.getStatusCode());
     }
 
