@@ -33,6 +33,9 @@ public class Post {
     @Column(name = "author_id", nullable = false)
     private UUID authorId;
 
+    @Column(name = "conversation_id", nullable = false)
+    private UUID conversationId;
+
     @Column(length = 140, nullable = false)
     private String text;
 
