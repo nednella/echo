@@ -80,17 +80,14 @@ class PostInteractionControllerIT extends IntegrationTest {
         // api: POST /api/v1/post/{id}/like ==> : 409 : AlreadyLiked
         String path = ApiConfig.Post.LIKE;
         UUID id = post.getId();
-        System.out.println(id);
 
-        ResponseEntity<Void> response1 = restTemplate.postForEntity(path, null,
-            Void.class, id);
+        ResponseEntity<Void> response1 = restTemplate.postForEntity(path, null, Void.class, id);
 
         // assert 1st response
         assertEquals(NO_CONTENT, response1.getStatusCode());
         assertNull(response1.getBody());
 
-        ResponseEntity<ErrorDTO> response2 = restTemplate.postForEntity(path, null,
-            ErrorDTO.class, id);
+        ResponseEntity<ErrorDTO> response2 = restTemplate.postForEntity(path, null, ErrorDTO.class, id);
 
         // assert 2nd response
         assertEquals(CONFLICT, response2.getStatusCode());
