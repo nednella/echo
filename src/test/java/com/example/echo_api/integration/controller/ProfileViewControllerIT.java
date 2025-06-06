@@ -4,10 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.HttpMethod.*;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
@@ -19,8 +17,6 @@ import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
-import com.example.echo_api.persistence.model.account.Account;
-import com.example.echo_api.service.account.AccountService;
 
 /**
  * Integration test class for {@link ProfileViewController}.
@@ -28,17 +24,6 @@ import com.example.echo_api.service.account.AccountService;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ProfileViewControllerIT extends IntegrationTest {
-
-    @Autowired
-    private AccountService accountService;
-
-    private Account targetUser;
-
-    @BeforeAll
-    void setup() {
-        targetUser = new Account("target_user", "password1");
-        accountService.register(targetUser.getUsername(), targetUser.getPassword());
-    }
 
     @Test
     void ProfileController_GetMe_Return200ProfileDTO() {
@@ -100,7 +85,7 @@ class ProfileViewControllerIT extends IntegrationTest {
         // api: GET /api/v1/profile/{username}/followers ==> 200 : PageDTO<ProfileDTO>
         String followPath = ApiConfig.Profile.FOLLOW_BY_USERNAME;
         String getFollowersPath = ApiConfig.Profile.GET_FOLLOWERS_BY_USERNAME + "?offset=0&limit=1";
-        String username = targetUser.getUsername();
+        String username = otherUser.getUsername();
 
         // follow target user to create a follow relationship in the db
         ResponseEntity<Void> response1 = restTemplate.postForEntity(followPath, null, Void.class, username);
@@ -132,7 +117,7 @@ class ProfileViewControllerIT extends IntegrationTest {
     void ProfileController_GetFollowers_Return200PageOfEmpty() {
         // api: GET /api/v1/profile/{username}/followers ==> 200 : PageDTO<ProfileDTO>
         String path = ApiConfig.Profile.GET_FOLLOWERS_BY_USERNAME;
-        String username = targetUser.getUsername();
+        String username = otherUser.getUsername();
 
         ParameterizedTypeReference<PageDTO<ProfileDTO>> typeRef = new ParameterizedTypeReference<PageDTO<ProfileDTO>>() {
         };
@@ -175,7 +160,7 @@ class ProfileViewControllerIT extends IntegrationTest {
         // api: GET /api/v1/profile/{username}/following ==> 400 : PageDTO<ProfileDTO>
         String followPath = ApiConfig.Profile.FOLLOW_BY_USERNAME;
         String getFollowingPath = ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME + "?offset=0&limit=1";
-        String followUsername = targetUser.getUsername();
+        String followUsername = otherUser.getUsername();
         String getFollowingUsername = authenticatedUser.getUsername();
 
         // follow target user to create a follow relationship in the db
@@ -213,7 +198,7 @@ class ProfileViewControllerIT extends IntegrationTest {
     void ProfileController_GetFollowing_Return200PageOfEmpty() {
         // api: GET /api/v1/profile/{username}/following ==> 400 : PageDTO<ProfileDTO>
         String path = ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME;
-        String username = targetUser.getUsername();
+        String username = otherUser.getUsername();
 
         ParameterizedTypeReference<PageDTO<ProfileDTO>> typeRef = new ParameterizedTypeReference<PageDTO<ProfileDTO>>() {
         };
