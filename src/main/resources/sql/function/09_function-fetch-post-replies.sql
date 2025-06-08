@@ -83,7 +83,7 @@ AS
         author_data AS (
             SELECT
                 sr.id AS post_id,
-                (sp.id = p_authenticated_user_id) AS author_is_self,
+                sp.is_self AS author_is_self,
                 sp.id AS author_id,
                 sp.username AS author_username,
                 sp.name AS author_name,

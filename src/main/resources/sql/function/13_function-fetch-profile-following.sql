@@ -13,6 +13,7 @@ CREATE OR REPLACE FUNCTION fetch_profile_following(
     p_limit INTEGER
 )
 RETURNS TABLE (
+    is_self            BOOLEAN,
     id                 UUID,
     username           VARCHAR(15),
     name               VARCHAR(50),
@@ -27,6 +28,7 @@ AS
     BEGIN
         RETURN QUERY
         SELECT
+            sp.is_self,
             sp.id,
             sp.username,
             sp.name,

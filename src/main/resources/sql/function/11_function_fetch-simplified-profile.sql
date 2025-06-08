@@ -11,6 +11,7 @@ CREATE OR REPLACE FUNCTION fetch_simplified_profile(
     p_authenticated_user_id UUID
 )
 RETURNS TABLE (
+    is_self            BOOLEAN,
     id                 UUID,
     username           VARCHAR(15),
     name               VARCHAR(50),
@@ -68,6 +69,7 @@ AS
             FROM profile_data pd
         )
         SELECT
+            pd.is_self,
             pd.id,
             pd.username,
             pd.name,
