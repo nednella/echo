@@ -38,18 +38,18 @@ public abstract class BaseProfileService {
      * @return The found {@link Profile}.
      */
     protected Profile getAuthenticatedUserProfile() {
-        return getProfileById(getAuthenticatedUser().getId());
+        return getProfileEntityById(getAuthenticatedUser().getId());
     }
 
     /**
      * Protected method for obtaining a {@link Profile} via {@code id} from
      * {@link ProfileRepository}.
      * 
-     * @param id The id to query within the repository.
-     * @return The found {@link Profile}.
+     * @param id The id of the profile.
+     * @return The {@link Profile} entity.
      * @throws ResourceNotFoundException If no profile by that id exists.
      */
-    protected Profile getProfileById(UUID id) throws ResourceNotFoundException {
+    protected Profile getProfileEntityById(UUID id) throws ResourceNotFoundException {
         return profileRepository.findById(id)
             .orElseThrow(ResourceNotFoundException::new);
     }
@@ -58,11 +58,11 @@ public abstract class BaseProfileService {
      * Protected method for obtaining a {@link Profile} via {@code username} from
      * {@link ProfileRepository}.
      * 
-     * @param username The username to query within the repository.
-     * @return The found {@link Profile}.
+     * @param username The username of the profile.
+     * @return The {@link Profile} entity.
      * @throws ResourceNotFoundException If no profile by that username exists.
      */
-    protected Profile getProfileByUsername(String username) throws ResourceNotFoundException {
+    protected Profile getProfileEntityByUsername(String username) throws ResourceNotFoundException {
         return profileRepository.findByUsername(username)
             .orElseThrow(ResourceNotFoundException::new);
     }
