@@ -5,7 +5,10 @@
  * 
 */
 
-CREATE OR REPLACE FUNCTION fetch_post(post_id UUID, authenticated_user_id UUID)
+CREATE OR REPLACE FUNCTION fetch_post(
+    p_post_id UUID,
+    p_authenticated_user_id UUID
+)
 RETURNS TABLE (
     id                        UUID,
     parent_id                 UUID,
@@ -33,7 +36,7 @@ AS
         WITH post_data AS (
             SELECT *
             FROM post p
-            WHERE p.id = post_id
+            WHERE p.id = p_post_id
         ),
         post_metrics AS (
             SELECT
@@ -47,52 +50,23 @@ AS
                 EXISTS(
                     SELECT 1 FROM post_like pl
                     WHERE pl.post_id = pd.id
-                    AND pl.author_id = authenticated_user_id
+                    AND pl.author_id = p_authenticated_user_id
                 ) AS post_rel_liked
             FROM post_data pd
         ),
         author_data AS (
             SELECT 
-                (p.id = authenticated_user_id) AS author_is_self,
-                p.id AS author_id,
-                p.username  AS author_username,
-                p.name  AS author_name,
-                avatar.transformed_url AS author_avatar_url
+                sp.is_self AS author_is_self,
+                sp.id AS author_id,
+                sp.username AS author_username,
+                sp.name AS author_name,
+                sp.avatar_url AS author_avatar_url,
+                sp.rel_following AS author_rel_following,
+                sp.rel_followed_by AS author_rel_followed_by,
+                sp.rel_blocking AS author_rel_blocking,
+                sp.rel_blocked_by AS author_rel_blocked_by
             FROM post_data pd
-            LEFT JOIN profile p ON pd.author_id = p.id
-            LEFT JOIN image avatar ON p.avatar_id = avatar.id
-        ),
-        author_relationship AS (
-            SELECT
-                CASE WHEN ad.author_is_self THEN NULL
-                    ELSE EXISTS (
-                        SELECT 1 FROM follow 
-                        WHERE follower_id = authenticated_user_id
-                        AND followed_id = ad.author_id
-                    )
-                END AS author_rel_following,
-                CASE WHEN ad.author_is_self THEN NULL
-                    ELSE EXISTS (
-                        SELECT 1 FROM follow 
-                        WHERE follower_id = ad.author_id
-                        AND followed_id = authenticated_user_id
-                    )
-                END AS author_rel_followed_by,
-                CASE WHEN ad.author_is_self THEN NULL
-                    ELSE EXISTS (
-                        SELECT 1 FROM block 
-                        WHERE blocker_id = authenticated_user_id
-                        AND blocked_id = ad.author_id
-                    )
-                END AS author_rel_blocking,
-                CASE WHEN ad.author_is_self THEN NULL
-                    ELSE EXISTS (
-                        SELECT 1 FROM block 
-                        WHERE blocker_id = ad.author_id
-                        AND blocked_id = authenticated_user_id
-                    )
-                END AS author_rel_blocked_by
-            FROM author_data ad
+            CROSS JOIN LATERAL fetch_simplified_profile(pd.author_id, p_authenticated_user_id) sp
         )
         SELECT
             pd.id,
@@ -109,15 +83,16 @@ AS
             ad.author_username,
             ad.author_name,
             ad.author_avatar_url,
-            ar.author_rel_following,
-            ar.author_rel_followed_by,
-            ar.author_rel_blocking,
-            ar.author_rel_blocked_by
+            ad.author_rel_following,
+            ad.author_rel_followed_by,
+            ad.author_rel_blocking,
+            ad.author_rel_blocked_by
         FROM post_data pd
         CROSS JOIN post_metrics pm
         CROSS JOIN post_relationship pr
-        CROSS JOIN author_data ad
-        CROSS JOIN author_relationship ar;
+        CROSS JOIN author_data ad;
     END;
 '
 LANGUAGE plpgsql;
+
+-- refactor this to use fetch_simplified_profile?
