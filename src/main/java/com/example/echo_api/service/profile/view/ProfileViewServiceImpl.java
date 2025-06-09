@@ -11,7 +11,6 @@ import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
 import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
 import com.example.echo_api.persistence.mapper.PageMapper;
-import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.service.profile.BaseProfileService;
@@ -41,38 +40,34 @@ public class ProfileViewServiceImpl extends BaseProfileService implements Profil
 
     @Override
     public ProfileDTO getSelf() {
-        Account me = getAuthenticatedUser();
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
 
-        return profileRepository.findProfileDtoById(me.getId(), me.getId())
+        return profileRepository.findProfileDtoById(authenticatedUserId, authenticatedUserId)
             .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
     public ProfileDTO getById(UUID id) throws ResourceNotFoundException {
-        Account me = getAuthenticatedUser();
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
 
-        return profileRepository.findProfileDtoById(id, me.getId())
+        return profileRepository.findProfileDtoById(id, authenticatedUserId)
             .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
     public ProfileDTO getByUsername(String username) throws ResourceNotFoundException {
-        Account me = getAuthenticatedUser();
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
 
-        return profileRepository.findProfileDtoByUsername(username, me.getId())
+        return profileRepository.findProfileDtoByUsername(username, authenticatedUserId)
             .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
     public PageDTO<SimplifiedProfileDTO> getFollowers(String username, Pageable page) throws ResourceNotFoundException {
-        Profile target = getProfileEntityByUsername(username); // validate existence of username
-        Account me = getAuthenticatedUser();
+        UUID id = getProfileEntityByUsername(username).getId(); // validate existence of username & convert to id
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
 
-        Page<SimplifiedProfileDTO> query = profileRepository.findFollowerDtosById(
-            target.getId(),
-            me.getId(),
-            page);
-
+        Page<SimplifiedProfileDTO> query = profileRepository.findFollowerDtosById(id, authenticatedUserId, page);
         String uri = getCurrentRequestUri();
 
         return PageMapper.toDTO(query, uri);
@@ -80,14 +75,10 @@ public class ProfileViewServiceImpl extends BaseProfileService implements Profil
 
     @Override
     public PageDTO<SimplifiedProfileDTO> getFollowing(String username, Pageable page) throws ResourceNotFoundException {
-        Profile target = getProfileEntityByUsername(username); // validate existence of username
-        Account me = getAuthenticatedUser();
+        UUID id = getProfileEntityByUsername(username).getId(); // validate existence of username & convert to id
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
 
-        Page<SimplifiedProfileDTO> query = profileRepository.findFollowingDtosById(
-            target.getId(),
-            me.getId(),
-            page);
-
+        Page<SimplifiedProfileDTO> query = profileRepository.findFollowingDtosById(id, authenticatedUserId, page);
         String uri = getCurrentRequestUri();
 
         return PageMapper.toDTO(query, uri);
