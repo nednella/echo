@@ -46,8 +46,8 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
 
     @Override
     public PageDTO<PostDTO> getPostRepliesById(UUID id, Pageable page) throws ResourceNotFoundException {
+        Post post = getPostEntityById(id); // validate existence of id
         UUID authenticatedUserId = getAuthenticatedUser().getId();
-        Post post = getPostEntityById(id);
 
         Page<PostDTO> query = postRepository.findReplyDtosById(post.getId(), authenticatedUserId, page);
         String uri = getCurrentRequestUri();
