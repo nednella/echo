@@ -10,7 +10,7 @@ import com.example.echo_api.persistence.model.image.Image;
 public interface ProfileManagementService {
 
     /**
-     * Updates the profile information of the authenticated user.
+     * Update the profile information of the authenticated user.
      * 
      * <p>
      * Valid fields are {@code name}, {@code bio}, {@code location}.
@@ -20,7 +20,7 @@ public interface ProfileManagementService {
     public void updateInformation(UpdateInformationDTO request);
 
     /**
-     * Updates the profile avatar image of the authenticated user.
+     * Update the profile avatar image of the authenticated user.
      * 
      * @param image The {@link MultipartFile} resembling the uploaded image.
      * @throws ResourceNotFoundException If there is an existing avatar and its
@@ -32,7 +32,7 @@ public interface ProfileManagementService {
     public void updateAvatar(MultipartFile image) throws ResourceNotFoundException, CloudinaryException;
 
     /**
-     * Removes the profile avatar image of the authenticated user.
+     * Remove the profile avatar image of the authenticated user.
      * 
      * @throws ResourceNotFoundException If the existing avatar's {@link Image}
      *                                   entity could not be found when deleting.
@@ -42,7 +42,7 @@ public interface ProfileManagementService {
     public void deleteAvatar() throws ResourceNotFoundException, CloudinaryException;
 
     /**
-     * Updates the profile banner image of the authenticated user.
+     * Update the profile banner image of the authenticated user.
      * 
      * @param image The {@link MultipartFile} resembling the uploaded image.
      * @throws ResourceNotFoundException If there is an existing banner and its
@@ -54,7 +54,7 @@ public interface ProfileManagementService {
     public void updateBanner(MultipartFile image) throws ResourceNotFoundException, CloudinaryException;
 
     /**
-     * Removes the profile avatar image of the authenticated user.
+     * Remove the profile avatar image of the authenticated user.
      * 
      * @throws ResourceNotFoundException If the existing banner's {@link Image}
      *                                   entity could not be found when deleting.

@@ -7,7 +7,7 @@ public interface ProfileInteractionService {
     /**
      * Follows a profile by {@code username}.
      * 
-     * @param username The target profile username.
+     * @param username The username of the profile.
      * @throws ResourceNotFoundException If no profile by that username exists.
      * @throws SelfActionException       If attempting to follow self.
      * @throws BlockedException          if a block exists between the authenticated
@@ -19,7 +19,7 @@ public interface ProfileInteractionService {
     /**
      * Unfollows a profile by {@code username}.
      * 
-     * @param username The target profile username.
+     * @param username The username of the profile.
      * @throws ResourceNotFoundException If no profile by that username exists.
      * @throws SelfActionException       If attempting to unfollow self.
      */
@@ -28,7 +28,7 @@ public interface ProfileInteractionService {
     /**
      * Blocks a profile by {@code username}.
      * 
-     * @param username The target profile username.
+     * @param username The username of the profile.
      * @throws ResourceNotFoundException If no profile by that username exists.
      * @throws SelfActionException       If attempting to block self.
      * @throws AlreadyBlockingException  If already following the target profile.
@@ -38,7 +38,7 @@ public interface ProfileInteractionService {
     /**
      * Unblocks a profile by {@code username}.
      * 
-     * @param username The target profile username.
+     * @param username The username of the profile.
      * @throws ResourceNotFoundException If no profile by that username exists.
      * @throws SelfActionException       If attempting to unblock self.
      */
