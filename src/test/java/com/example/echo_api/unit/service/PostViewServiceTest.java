@@ -142,7 +142,6 @@ class PostViewServiceTest {
         int limit = 20;
         Pageable page = new OffsetLimitRequest(offset, limit);
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
         when(postRepository.findById(id)).thenReturn(Optional.empty());
 
         // act & assert
