@@ -5,6 +5,7 @@ import java.util.UUID;
 import com.example.echo_api.config.ValidationMessageConfig;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 /**
@@ -19,6 +20,7 @@ public record CreatePostDTO(
     @JsonProperty("parent_id")
     UUID parentId,
 
+    @NotBlank(message = "Text cannot be null or blank.")
     @Size(max = 140, message = ValidationMessageConfig.TEXT_TOO_LONG)
     String text
 
