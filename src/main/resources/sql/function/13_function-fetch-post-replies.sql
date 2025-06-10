@@ -115,7 +115,7 @@ AS
             ad.author_rel_followed_by,
             ad.author_rel_blocking,
             ad.author_rel_blocked_by,
-            fetch_post_entities(pd.id) AS post_entities
+            fetch_post_entities(sr.id) AS post_entities
         FROM sorted_replies sr
         LEFT JOIN post_metrics pm ON sr.id = pm.post_id
         LEFT JOIN post_relationship pr ON sr.id = pr.post_id
