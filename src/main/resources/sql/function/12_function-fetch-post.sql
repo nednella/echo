@@ -94,5 +94,3 @@ AS
     END;
 '
 LANGUAGE plpgsql;
-
--- refactor this to use fetch_simplified_profile?
