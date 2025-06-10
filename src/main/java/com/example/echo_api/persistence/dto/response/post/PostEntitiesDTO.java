@@ -8,7 +8,7 @@ import java.util.List;
 // @formatter:off
 public record PostEntitiesDTO(
     // List<?> media, // TODO: implement post images
-    List<PostEntityDTO> mentions,
-    List<PostEntityDTO> hashtags
+    List<PostEntityDTO> hashtags,
+    List<PostEntityDTO> mentions
 ) {}
 // @formatter:on
