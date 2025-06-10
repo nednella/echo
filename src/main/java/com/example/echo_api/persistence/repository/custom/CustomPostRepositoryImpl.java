@@ -15,10 +15,12 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.lang.NonNull;
 
 import com.example.echo_api.persistence.dto.response.post.PostDTO;
+import com.example.echo_api.persistence.dto.response.post.PostEntitiesDTO;
 import com.example.echo_api.persistence.dto.response.post.PostMetricsDTO;
 import com.example.echo_api.persistence.dto.response.post.PostRelationshipDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileRelationshipDTO;
 import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -78,6 +80,12 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
 
     private static class PostDtoRowMapper implements RowMapper<PostDTO> {
 
+        private final ObjectMapper objectMapper;
+
+        public PostDtoRowMapper() {
+            this.objectMapper = new ObjectMapper();
+        }
+
         @Override
         public PostDTO mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
             boolean isSelf = rs.getBoolean("author_is_self");
@@ -95,6 +103,13 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
                         rs.getBoolean("author_rel_blocking"),
                         rs.getBoolean("author_rel_blocked_by")));
 
+            PostEntitiesDTO entities = null;
+            try {
+                entities = objectMapper.readValue(rs.getString("post_entities"), PostEntitiesDTO.class);
+            } catch (Exception e) {
+                throw new SQLException("Failed to parse post_entities JSON", e);
+            }
+
             return new PostDTO(
                 rs.getString("id"),
                 rs.getString("parent_id"),
@@ -107,7 +122,8 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
                     rs.getInt("post_reply_count"),
                     rs.getInt("post_share_count")),
                 new PostRelationshipDTO(
-                    rs.getBoolean("post_rel_liked")));
+                    rs.getBoolean("post_rel_liked")),
+                entities);
         }
 
     }
