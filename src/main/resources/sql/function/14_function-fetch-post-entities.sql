@@ -22,7 +22,7 @@ AS
     BEGIN
         RETURN QUERY
         SELECT jsonb_build_object(
-            ''hashtags'', (
+            ''hashtags'', COALESCE((
                 SELECT jsonb_agg(jsonb_build_object(
                         ''start'', ph.start_index,
                         ''end'', ph.end_index,
@@ -30,8 +30,8 @@ AS
                     )) AS hashtags
                 FROM post_hashtag ph
                 WHERE ph.post_id = p_post_id
-            ),
-            ''mentions'', (
+            ), ''[]''::jsonb),
+            ''mentions'', COALESCE((
                 SELECT jsonb_agg(jsonb_build_object(
                         ''start'', pm.start_index,
                         ''end'', pm.end_index,
@@ -39,7 +39,7 @@ AS
                     )) AS mentions
                 FROM post_mention pm
                 WHERE pm.post_id = p_post_id
-            )
+            ), ''[]''::jsonb)
         );
     END;
 '
