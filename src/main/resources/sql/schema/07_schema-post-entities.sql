@@ -10,7 +10,11 @@ CREATE TABLE
     );
 
 CREATE INDEX
-    IF NOT EXISTS idx_post_hashtag_post_id_text
+    IF NOT EXISTS idx_post_hashtag_post_id_text -- retrieve hashtags by post
+        ON "post_hashtag"(post_id);
+
+CREATE INDEX
+    IF NOT EXISTS idx_post_hashtag_post_id_text -- retrieve posts where hashtag = ...
         ON "post_hashtag"(post_id, LOWER(text));
 
 CREATE TABLE
@@ -25,5 +29,9 @@ CREATE TABLE
     );
 
 CREATE INDEX 
-    IF NOT EXISTS idx_post_mention_post_id_text
+    IF NOT EXISTS idx_post_mention_post_id_text -- retrieve mentions by post
+        ON "post_mention"(post_id);
+
+CREATE INDEX 
+    IF NOT EXISTS idx_post_mention_post_id_text -- retrieve posts where mention = ...
         ON "post_mention"(post_id, LOWER(text));
