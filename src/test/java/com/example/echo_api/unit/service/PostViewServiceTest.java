@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.post.PostDTO;
+import com.example.echo_api.persistence.dto.response.post.PostEntitiesDTO;
 import com.example.echo_api.persistence.dto.response.post.PostMetricsDTO;
 import com.example.echo_api.persistence.dto.response.post.PostRelationshipDTO;
 import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
@@ -73,7 +74,8 @@ class PostViewServiceTest {
             text,
             null,
             new PostMetricsDTO(0, 0, 0),
-            new PostRelationshipDTO(false));
+            new PostRelationshipDTO(false),
+            new PostEntitiesDTO(List.of(), List.of()));
     }
 
     @Test
