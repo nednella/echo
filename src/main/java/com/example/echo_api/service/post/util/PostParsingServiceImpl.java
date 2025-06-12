@@ -34,6 +34,10 @@ public class PostParsingServiceImpl implements PostParsingService {
     }
 
     private List<PostEntity> parseHashtags(UUID postId, String text) {
+        if (text == null) {
+            throw new IllegalArgumentException("Parser input cannot be null.");
+        }
+
         List<PostEntity> hashtags = new ArrayList<>();
 
         Matcher matcher = HASHTAG_PATTERN.matcher(text);

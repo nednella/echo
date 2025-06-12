@@ -18,6 +18,7 @@ public interface PostParsingService {
      * @return A {@link Map} of {@link List} containing {@link PostEntity}
      *         representing any matches in the string. If no matches for a given
      *         type, then it's corresponding list will be empty.
+     * @throws IllegalArgumentException if {@code text} is null.
      */
     public Map<String, List<PostEntity>> parse(UUID postId, String text);
 
