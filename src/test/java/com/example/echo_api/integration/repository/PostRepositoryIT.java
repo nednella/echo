@@ -2,6 +2,7 @@ package com.example.echo_api.integration.repository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,8 +19,12 @@ import com.example.echo_api.integration.util.RepositoryTest;
 import com.example.echo_api.persistence.dto.response.post.PostDTO;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.post.Post;
+import com.example.echo_api.persistence.model.post.entity.PostHashtag;
+import com.example.echo_api.persistence.model.post.entity.PostMention;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.AccountRepository;
+import com.example.echo_api.persistence.repository.PostHashtagRepository;
+import com.example.echo_api.persistence.repository.PostMentionRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.util.pagination.OffsetLimitRequest;
@@ -41,10 +46,17 @@ class PostRepositoryIT extends RepositoryTest {
     @Autowired
     private PostRepository postRepository;
 
+    @Autowired
+    private PostHashtagRepository postHashtagRepository;
+
+    @Autowired
+    private PostMentionRepository postMentionRepository;
+
     private Profile self;
     private Profile notSelf;
     private Post selfPostWithReply;
     private Post replyPost;
+    private Post postWithEntities;
 
     @BeforeAll
     void setup() {
@@ -65,6 +77,15 @@ class PostRepositoryIT extends RepositoryTest {
         // save a post reply to db
         replyPost = new Post(selfPostWithReply.getId(), notSelf.getId(), "A reply test post.");
         replyPost = postRepository.save(replyPost);
+
+        // save a post with text entities to db
+        postWithEntities = new Post(self.getId(), "Hello @john_doe and @admin! Nice #SpringBoot application #dev");
+        postWithEntities = postRepository.save(postWithEntities);
+        postHashtagRepository.save(
+            new PostHashtag(postWithEntities.getId(), 33, 44, "#SpringBoot"));
+        postMentionRepository.saveAll(List.of(
+            new PostMention(postWithEntities.getId(), 6, 15, "@john_doe"),
+            new PostMention(postWithEntities.getId(), 20, 26, "@admin")));
     }
 
     /**
@@ -79,7 +100,11 @@ class PostRepositoryIT extends RepositoryTest {
 
         assertNotNull(optPost);
         assertTrue(optPost.isPresent());
-        assertNotNull(optPost.get().author().relationship());
+
+        PostDTO post = optPost.get();
+        assertNotNull(post.metrics());
+        assertNotNull(post.relationship());
+        assertNotNull(post.author().relationship());
     }
 
     /**
@@ -95,7 +120,11 @@ class PostRepositoryIT extends RepositoryTest {
 
         assertNotNull(optPost);
         assertTrue(optPost.isPresent());
-        assertNull(optPost.get().author().relationship());
+
+        PostDTO post = optPost.get();
+        assertNotNull(post.metrics());
+        assertNotNull(post.relationship());
+        assertNull(post.author().relationship()); // author is self thus null
     }
 
     /**
@@ -110,6 +139,34 @@ class PostRepositoryIT extends RepositoryTest {
 
         assertNotNull(optPost);
         assertTrue(optPost.isEmpty());
+    }
+
+    @Test
+    void PostRepository_FindPostDtoById_ReturnsNoEntities() {
+        Optional<PostDTO> optPost = postRepository.findPostDtoById(
+            selfPostWithReply.getId(),
+            self.getId());
+
+        assertNotNull(optPost);
+        assertTrue(optPost.isPresent());
+
+        PostDTO post = optPost.get();
+        assertTrue(post.entities().hashtags().isEmpty()); // no related hashtags
+        assertTrue(post.entities().mentions().isEmpty()); // no related mentions
+    }
+
+    @Test
+    void PostRepository_FindPostDtoById_ReturnsMultipleEntities() {
+        Optional<PostDTO> optPost = postRepository.findPostDtoById(
+            postWithEntities.getId(),
+            self.getId());
+
+        assertNotNull(optPost);
+        assertTrue(optPost.isPresent());
+
+        PostDTO post = optPost.get();
+        assertEquals(1, post.entities().hashtags().size()); // 1 related hashtag
+        assertEquals(2, post.entities().mentions().size()); // 2 related mentions
     }
 
     /**

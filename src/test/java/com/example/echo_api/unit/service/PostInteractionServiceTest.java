@@ -17,7 +17,7 @@ import com.example.echo_api.exception.custom.conflict.AlreadyLikedException;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.post.Post;
-import com.example.echo_api.persistence.repository.LikeRepository;
+import com.example.echo_api.persistence.repository.PostLikeRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
 import com.example.echo_api.service.post.interaction.PostInteractionService;
 import com.example.echo_api.service.post.interaction.PostInteractionServiceImpl;
@@ -39,7 +39,7 @@ class PostInteractionServiceTest {
     private PostRepository postRepository;
 
     @Mock
-    private LikeRepository likeRepository;
+    private PostLikeRepository likeRepository;
 
     private static Account authenticatedUser;
     private static Post post;

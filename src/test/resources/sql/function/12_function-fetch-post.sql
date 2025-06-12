@@ -27,7 +27,8 @@ RETURNS TABLE (
     author_rel_following      BOOLEAN,
     author_rel_followed_by    BOOLEAN,
     author_rel_blocking       BOOLEAN,
-    author_rel_blocked_by     BOOLEAN
+    author_rel_blocked_by     BOOLEAN,
+    post_entities             JSONB
 )
 AS
 '
@@ -86,7 +87,8 @@ AS
             ad.author_rel_following,
             ad.author_rel_followed_by,
             ad.author_rel_blocking,
-            ad.author_rel_blocked_by
+            ad.author_rel_blocked_by,
+            fetch_post_entities(pd.id) AS post_entities
         FROM post_data pd
         CROSS JOIN post_metrics pm
         CROSS JOIN post_relationship pr
@@ -94,5 +96,3 @@ AS
     END;
 '
 LANGUAGE plpgsql;
-
--- refactor this to use fetch_simplified_profile?

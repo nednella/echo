@@ -18,6 +18,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param metrics        The engagement metrics (likes, replies, shares).
  * @param relationship   The relationship between the requesting user and the
  *                       post (liked).
+ * @param entities       The entities related to the post text (e.g., urls, user
+ *                       mentions, hashtags).
  */
 // @formatter:off
 public record PostDTO(
@@ -28,6 +30,7 @@ public record PostDTO(
     String text,
     @JsonProperty("created_at") String createdAt,
     PostMetricsDTO metrics,
-    PostRelationshipDTO relationship
+    PostRelationshipDTO relationship,
+    PostEntitiesDTO entities
 ) {}
 // @formatter:on

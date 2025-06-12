@@ -43,6 +43,8 @@ public class Post {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    // ---- production constructors ----
+
     public Post(UUID parentId, UUID authorId, String text) {
         this.parentId = parentId;
         this.authorId = authorId;
@@ -51,6 +53,15 @@ public class Post {
 
     public Post(UUID authorId, String text) {
         this(null, authorId, text);
+    }
+
+    // ---- test constructors ----
+
+    public Post(UUID id, UUID parentId, UUID authorId, String text) {
+        this.id = id;
+        this.parentId = parentId;
+        this.authorId = authorId;
+        this.text = text;
     }
 
 }

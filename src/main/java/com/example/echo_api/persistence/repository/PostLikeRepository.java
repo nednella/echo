@@ -5,11 +5,11 @@ import java.util.UUID;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.example.echo_api.persistence.model.like.Like;
-import com.example.echo_api.persistence.model.like.LikePK;
+import com.example.echo_api.persistence.model.post.like.PostLike;
+import com.example.echo_api.persistence.model.post.like.PostLikePK;
 
 @Repository
-public interface LikeRepository extends ListCrudRepository<Like, LikePK> {
+public interface PostLikeRepository extends ListCrudRepository<PostLike, PostLikePK> {
 
     /**
      * Check if a post like exists between a post id and a profile id.

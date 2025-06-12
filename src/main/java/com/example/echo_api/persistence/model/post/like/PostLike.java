@@ -1,4 +1,4 @@
-package com.example.echo_api.persistence.model.like;
+package com.example.echo_api.persistence.model.post.like;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -20,8 +20,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "post_like")
 @Getter
 @NoArgsConstructor
-@IdClass(LikePK.class)
-public class Like {
+@IdClass(PostLikePK.class)
+public class PostLike {
 
     @Id
     @Column(name = "post_id", nullable = false)
@@ -35,7 +35,7 @@ public class Like {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    public Like(UUID postId, UUID authorId) {
+    public PostLike(UUID postId, UUID authorId) {
         this.postId = postId;
         this.authorId = authorId;
     }

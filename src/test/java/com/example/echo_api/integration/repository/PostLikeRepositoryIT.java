@@ -14,21 +14,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.echo_api.integration.util.RepositoryTest;
 import com.example.echo_api.persistence.model.account.Account;
-import com.example.echo_api.persistence.model.like.Like;
 import com.example.echo_api.persistence.model.post.Post;
+import com.example.echo_api.persistence.model.post.like.PostLike;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.AccountRepository;
-import com.example.echo_api.persistence.repository.LikeRepository;
+import com.example.echo_api.persistence.repository.PostLikeRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
 
 /**
- * Integration test class for {@link LikeRepository}.
+ * Integration test class for {@link PostLikeRepository}.
  */
 @DataJpaTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-class LikeRepositoryIT extends RepositoryTest {
+class PostLikeRepositoryIT extends RepositoryTest {
 
     @Autowired
     private AccountRepository accountRepository;
@@ -40,7 +40,7 @@ class LikeRepositoryIT extends RepositoryTest {
     private PostRepository postRepository;
 
     @Autowired
-    private LikeRepository likeRepository;
+    private PostLikeRepository likeRepository;
 
     private Profile user;
     private Post postWithLike;
@@ -61,12 +61,12 @@ class LikeRepositoryIT extends RepositoryTest {
         postNoLikes = postRepository.save(postNoLikes);
 
         // save a post like to db
-        likeRepository.save(new Like(postWithLike.getId(), user.getId()));
+        likeRepository.save(new PostLike(postWithLike.getId(), user.getId()));
     }
 
     /**
-     * Test {@link LikeRepository#existsByPostIdAndAuthorId(UUID, UUID)} to verify
-     * that it returns {@code true} in cases where a like exists between the
+     * Test {@link PostLikeRepository#existsByPostIdAndAuthorId(UUID, UUID)} to
+     * verify that it returns {@code true} in cases where a like exists between the
      * supplied {@code postId} and {@code authorId}.
      */
     @Test
@@ -77,9 +77,9 @@ class LikeRepositoryIT extends RepositoryTest {
     }
 
     /**
-     * Test {@link LikeRepository#existsByPostIdAndAuthorId(UUID, UUID)} to verify
-     * that it returns {@code false} in cases where no like exists between the
-     * supplied {@code postId} and {@code authorId}.
+     * Test {@link PostLikeRepository#existsByPostIdAndAuthorId(UUID, UUID)} to
+     * verify that it returns {@code false} in cases where no like exists between
+     * the supplied {@code postId} and {@code authorId}.
      */
     @Test
     void LikeRepository_ExistsByPostIdAndAuthorId_ReturnFalse() {
@@ -89,9 +89,9 @@ class LikeRepositoryIT extends RepositoryTest {
     }
 
     /**
-     * Test {@link LikeRepository#deleteByPostIdAndAuthorId(UUID, UUID)} to verify
-     * that it returns {@code 1} in cases where a like exists between the supplied
-     * {@code postId} and {@code authorId}.
+     * Test {@link PostLikeRepository#deleteByPostIdAndAuthorId(UUID, UUID)} to
+     * verify that it returns {@code 1} in cases where a like exists between the
+     * supplied {@code postId} and {@code authorId}.
      */
     @Test
     @Transactional
@@ -102,9 +102,9 @@ class LikeRepositoryIT extends RepositoryTest {
     }
 
     /**
-     * Test {@link LikeRepository#deleteByPostIdAndAuthorId(UUID, UUID)} to verify
-     * that it returns {@code 0} in cases where no like exists between the supplied
-     * {@code postId} and {@code authorId}.
+     * Test {@link PostLikeRepository#deleteByPostIdAndAuthorId(UUID, UUID)} to
+     * verify that it returns {@code 0} in cases where no like exists between the
+     * supplied {@code postId} and {@code authorId}.
      */
     @Test
     void LikeRepository_DeleteByPostIdAndAuthorId_Return0() {

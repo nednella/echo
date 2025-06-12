@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.echo_api.exception.custom.conflict.AlreadyLikedException;
-import com.example.echo_api.persistence.model.like.Like;
 import com.example.echo_api.persistence.model.post.Post;
-import com.example.echo_api.persistence.repository.LikeRepository;
+import com.example.echo_api.persistence.model.post.like.PostLike;
+import com.example.echo_api.persistence.repository.PostLikeRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
 import com.example.echo_api.service.post.BasePostService;
 import com.example.echo_api.service.session.SessionService;
@@ -20,13 +20,13 @@ import com.example.echo_api.service.session.SessionService;
 @Service
 public class PostInteractionServiceImpl extends BasePostService implements PostInteractionService {
 
-    private final LikeRepository likeRepository;
+    private final PostLikeRepository likeRepository;
 
     // @formatter:off
     protected PostInteractionServiceImpl(
         SessionService sessionService,
         PostRepository postRepository,
-        LikeRepository likeRepository) {
+        PostLikeRepository likeRepository) {
         super(sessionService, postRepository);
         this.likeRepository = likeRepository;
     }
@@ -42,7 +42,7 @@ public class PostInteractionServiceImpl extends BasePostService implements PostI
             throw new AlreadyLikedException();
         }
 
-        Like like = new Like(post.getId(), authenticatedUserId);
+        PostLike like = new PostLike(post.getId(), authenticatedUserId);
         likeRepository.save(like);
     }
 
