@@ -1,6 +1,7 @@
 package com.example.echo_api.persistence.model.post.entity;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -41,6 +42,32 @@ public abstract class PostEntity {
         this.start = start;
         this.end = end;
         this.text = text;
+    }
+
+    @Override
+    public String toString() {
+        return this.text + " (" + this.start + ":" + this.end + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null)
+            return false;
+        if (this.getClass() != o.getClass())
+            return false;
+
+        PostEntity that = (PostEntity) o;
+        return this.start == that.start &&
+            this.end == that.end &&
+            this.postId.equals(that.postId) &&
+            this.text.equals(that.text);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(postId, start, end, text);
     }
 
 }
