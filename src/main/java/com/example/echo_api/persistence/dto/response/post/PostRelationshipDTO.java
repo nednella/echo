@@ -7,6 +7,7 @@ package com.example.echo_api.persistence.dto.response.post;
  */
 // @formatter:off
 public record PostRelationshipDTO(
-    boolean liked
+    boolean liked,
+    boolean reposted
 ) {}
 // @formatter:on
