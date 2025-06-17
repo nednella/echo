@@ -3,7 +3,7 @@ CREATE TABLE
         id                  UUID PRIMARY KEY,
         conversation_id     UUID NOT NULL,
         author_id           UUID NOT NULL,
-        text                VARCHAR(140) NOT NULL,
+        text                VARCHAR(140),
         created_at          TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
         parent_id           UUID, -- existence indicates post is a reply
         repost_id           UUID, -- existence indicates post is a repost
