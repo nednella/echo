@@ -33,4 +33,17 @@ public class PostInteractionController {
         postInteractionService.unlike(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping(ApiConfig.Post.SHARE)
+    public ResponseEntity<Void> share(@PathVariable("id") UUID id) {
+        postInteractionService.share(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping(ApiConfig.Post.SHARE)
+    public ResponseEntity<Void> unshare(@PathVariable("id") UUID id) {
+        postInteractionService.unshare(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

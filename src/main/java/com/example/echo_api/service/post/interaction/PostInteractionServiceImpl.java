@@ -53,4 +53,29 @@ public class PostInteractionServiceImpl extends BasePostService implements PostI
         likeRepository.deleteByPostIdAndAuthorId(id, authenticatedUserId);
     }
 
+    @Override
+    @Transactional
+    public void share(UUID id) {
+        // implementation should support
+        // 1. sharing (reposted by {displayName})
+        // 2. quote sharing (a repost that is a post in of itself)
+
+        // only want to support OPTION 1 for now ---
+        // easier UI task, option to add quoting is there but probably wont do it
+
+        // need a post object that supports reposted posts
+        // almost like a RepostDTO (PostDTO quotePost, PostDTO quotedPost)
+
+        // reposts should appear as a post by the reposter e.g. by author_id, except it
+        // has a repost_of_id that links to the original post
+
+        throw new UnsupportedOperationException("Unimplemented method 'share'");
+    }
+
+    @Override
+    @Transactional
+    public void unshare(UUID id) {
+        throw new UnsupportedOperationException("Unimplemented method 'unshare'");
+    }
+
 }

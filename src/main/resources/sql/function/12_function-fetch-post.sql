@@ -12,6 +12,7 @@ CREATE OR REPLACE FUNCTION fetch_post(
 RETURNS TABLE (
     id                        UUID,
     parent_id                 UUID,
+    repost_id                 UUID,
     conversation_id           UUID,
     text                      VARCHAR(140),
     created_at                TIMESTAMPTZ,
@@ -28,7 +29,9 @@ RETURNS TABLE (
     author_rel_followed_by    BOOLEAN,
     author_rel_blocking       BOOLEAN,
     author_rel_blocked_by     BOOLEAN,
-    post_entities             JSONB
+    post_entities             JSONB,
+    is_quoted_repost          BOOLEAN,
+    original_post             JSONB
 )
 AS
 '
@@ -68,6 +71,11 @@ AS
                 sp.rel_blocked_by AS author_rel_blocked_by
             FROM post_data pd
             CROSS JOIN LATERAL fetch_simplified_profile(pd.author_id, p_authenticated_user_id) sp
+        ),
+        original_post AS (
+            SELECT
+            FROM post_data pd
+            CROSS JOIN LATERAL fetch_
         )
         SELECT
             pd.id,
