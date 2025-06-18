@@ -4,8 +4,10 @@ import java.util.UUID;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor
 @Table(name = "post_mention")
 public class PostMention extends PostEntity {
 
