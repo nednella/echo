@@ -37,7 +37,8 @@ public class RegexConfig {
      * <li>Followed by a word boundary character
      * </ul>
      */
-    public static final String USERNAME_MENTION = "(?<=^|\\s)@\\w{3,15}(?![@])\\b";
+    // public static final String USERNAME_MENTION =
+    // "(?<=^|\\s)@\\w{3,15}(?![@])\\b";
 
     /**
      * Hashtag regex pattern
@@ -50,6 +51,7 @@ public class RegexConfig {
      * <li>Followed by a word boundary character
      * </ul>
      */
-    public static final String HASHTAG = "(?<=^|\\s)#\\w+(?![#])\\b";
+    // public static final String HASHTAG =
+    // "(?<=^|\\s)#\\w+(?![#])\\b";
 
 }
