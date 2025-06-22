@@ -7,21 +7,30 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Entity
+@Table(name = "post_entity")
 @Getter
 @NoArgsConstructor
-@MappedSuperclass
 @IdClass(PostEntityPK.class)
-public abstract class PostEntity {
+public class PostEntity {
 
     @Id
     @Column(name = "post_id", nullable = false)
     private UUID postId;
+
+    @Id
+    @Column(name = "entity_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PostEntityType type;
 
     @Id
     @Column(name = "start_index", nullable = false)
@@ -37,8 +46,9 @@ public abstract class PostEntity {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    protected PostEntity(UUID postId, int start, int end, String text) {
+    public PostEntity(UUID postId, PostEntityType type, int start, int end, String text) {
         this.postId = postId;
+        this.type = type;
         this.start = start;
         this.end = end;
         this.text = text;
@@ -46,7 +56,7 @@ public abstract class PostEntity {
 
     @Override
     public String toString() {
-        return this.text + " (" + this.start + ":" + this.end + ")";
+        return text + " (" + type + ") [" + start + "," + end + "]";
     }
 
     @Override
@@ -55,19 +65,21 @@ public abstract class PostEntity {
             return true;
         if (o == null)
             return false;
-        if (this.getClass() != o.getClass())
+        if (!(o instanceof PostEntity))
             return false;
 
         PostEntity that = (PostEntity) o;
-        return this.start == that.start &&
+
+        return this.postId.equals(that.postId) &&
+            this.type.equals(that.type) &&
+            this.start == that.start &&
             this.end == that.end &&
-            this.postId.equals(that.postId) &&
             this.text.equals(that.text);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(postId, start, end, text);
+        return Objects.hash(postId, type, start, end, text);
     }
 
 }
