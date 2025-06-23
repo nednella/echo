@@ -2,7 +2,6 @@ package com.example.echo_api.integration.repository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,14 +18,12 @@ import com.example.echo_api.integration.util.RepositoryTest;
 import com.example.echo_api.persistence.dto.response.post.PostDTO;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.post.Post;
-import com.example.echo_api.persistence.model.post.entity.PostHashtag;
-import com.example.echo_api.persistence.model.post.entity.PostMention;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.AccountRepository;
-import com.example.echo_api.persistence.repository.PostHashtagRepository;
-import com.example.echo_api.persistence.repository.PostMentionRepository;
+import com.example.echo_api.persistence.repository.PostEntityRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
+import com.example.echo_api.util.extractor.PostEntityExtractor;
 import com.example.echo_api.util.pagination.OffsetLimitRequest;
 
 /**
@@ -47,10 +44,7 @@ class PostRepositoryIT extends RepositoryTest {
     private PostRepository postRepository;
 
     @Autowired
-    private PostHashtagRepository postHashtagRepository;
-
-    @Autowired
-    private PostMentionRepository postMentionRepository;
+    private PostEntityRepository postEntityRepository;
 
     private Profile self;
     private Profile notSelf;
@@ -79,13 +73,9 @@ class PostRepositoryIT extends RepositoryTest {
         replyPost = postRepository.save(replyPost);
 
         // save a post with text entities to db
-        postWithEntities = new Post(self.getId(), "Hello @john_doe and @admin! Nice #SpringBoot application #dev");
+        postWithEntities = new Post(self.getId(), "Hey @john_doe and @admin! Nice #SpringBoot app, github.com/repo");
         postWithEntities = postRepository.save(postWithEntities);
-        postHashtagRepository.save(
-            new PostHashtag(postWithEntities.getId(), 33, 44, "#SpringBoot"));
-        postMentionRepository.saveAll(List.of(
-            new PostMention(postWithEntities.getId(), 6, 15, "@john_doe"),
-            new PostMention(postWithEntities.getId(), 20, 26, "@admin")));
+        postEntityRepository.saveAll(PostEntityExtractor.extract(postWithEntities.getId(), postWithEntities.getText()));
     }
 
     /**
@@ -167,6 +157,7 @@ class PostRepositoryIT extends RepositoryTest {
         PostDTO post = optPost.get();
         assertEquals(1, post.entities().hashtags().size()); // 1 related hashtag
         assertEquals(2, post.entities().mentions().size()); // 2 related mentions
+        assertEquals(1, post.entities().urls().size()); // 1 related url
     }
 
     /**
