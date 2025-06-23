@@ -25,7 +25,7 @@ public class PostEntityExtractor {
 
     private static final Extractor extractor = new Extractor();
 
-    public static List<PostEntity> extractEntities(UUID postId, String text) {
+    public static List<PostEntity> extract(UUID postId, String text) {
         if (postId == null || text == null) {
             throw new IllegalArgumentException("Extractor arguments cannot be null.");
         }

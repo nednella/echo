@@ -48,7 +48,7 @@ public class PostManagementServiceImpl extends BasePostService implements PostMa
         validatePostExistsByParentId(parentId);
         Post post = postRepository.save(new Post(parentId, authorId, text));
 
-        List<PostEntity> entities = PostEntityExtractor.extractEntities(post.getId(), text);
+        List<PostEntity> entities = PostEntityExtractor.extract(post.getId(), text);
         postEntityRepository.saveAll(entities);
     }
 
