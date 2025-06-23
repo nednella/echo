@@ -34,6 +34,7 @@ public class PostEntityExtractor {
 
         return twEntities
             .stream()
+            .filter(e -> e.getType() != Extractor.Entity.Type.CASHTAG) // exclude cashtag entities
             .map(e -> toPostEntity(postId, e))
             .toList();
     }
