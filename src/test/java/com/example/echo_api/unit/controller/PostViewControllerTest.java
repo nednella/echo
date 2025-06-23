@@ -71,7 +71,7 @@ class PostViewControllerTest {
             Instant.now().toString(),
             new PostMetricsDTO(0, 0, 0),
             new PostRelationshipDTO(false),
-            new PostEntitiesDTO(List.of(), List.of()));
+            new PostEntitiesDTO(List.of(), List.of(), List.of()));
     }
 
     @Test

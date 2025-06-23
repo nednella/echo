@@ -24,21 +24,33 @@ AS
         SELECT jsonb_build_object(
             ''hashtags'', COALESCE((
                 SELECT jsonb_agg(jsonb_build_object(
-                        ''start'', ph.start_index,
-                        ''end'', ph.end_index,
-                        ''text'', ph.text
-                    )) AS hashtags
-                FROM post_hashtag ph
-                WHERE ph.post_id = p_post_id
+                    ''start'', pe.start_index,
+                    ''end'', pe.end_index,
+                    ''text'', pe.text
+                )) AS hashtags
+                FROM post_entity pe
+                WHERE pe.post_id = p_post_id
+                AND pe.entity_type = ''HASHTAG''
             ), ''[]''::jsonb),
             ''mentions'', COALESCE((
                 SELECT jsonb_agg(jsonb_build_object(
-                        ''start'', pm.start_index,
-                        ''end'', pm.end_index,
-                        ''text'', pm.text
-                    )) AS mentions
-                FROM post_mention pm
-                WHERE pm.post_id = p_post_id
+                    ''start'', pe.start_index,
+                    ''end'', pe.end_index,
+                    ''text'', pe.text
+                )) AS mentions
+                FROM post_entity pe
+                WHERE pe.post_id = p_post_id
+                AND pe.entity_type = ''MENTION''
+            ), ''[]''::jsonb),
+            ''urls'', COALESCE((
+                SELECT jsonb_agg(jsonb_build_object(
+                    ''start'', pe.start_index,
+                    ''end'', pe.end_index,
+                    ''text'', pe.text
+                )) AS urls
+                FROM post_entity pe
+                WHERE pe.post_id = p_post_id
+                AND pe.entity_type = ''URL''
             ), ''[]''::jsonb)
         );
     END;

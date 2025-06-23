@@ -1,7 +1,6 @@
 package com.example.echo_api.service.post.management;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -14,12 +13,11 @@ import com.example.echo_api.exception.custom.forbidden.ResourceOwnershipExceptio
 import com.example.echo_api.persistence.dto.request.post.CreatePostDTO;
 import com.example.echo_api.persistence.model.post.Post;
 import com.example.echo_api.persistence.model.post.entity.PostEntity;
-import com.example.echo_api.persistence.repository.PostHashtagRepository;
-import com.example.echo_api.persistence.repository.PostMentionRepository;
+import com.example.echo_api.persistence.repository.PostEntityRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
 import com.example.echo_api.service.post.BasePostService;
-import com.example.echo_api.service.post.util.PostParsingService;
 import com.example.echo_api.service.session.SessionService;
+import com.example.echo_api.util.extractor.PostEntityExtractor;
 
 /**
  * Service implementation for managing mutation operations for {@link Post}
@@ -28,21 +26,15 @@ import com.example.echo_api.service.session.SessionService;
 @Service
 public class PostManagementServiceImpl extends BasePostService implements PostManagementService {
 
-    private final PostParsingService postParsingService;
-    private final PostHashtagRepository postHashtagRepository;
-    private final PostMentionRepository postMentionRepository;
+    private final PostEntityRepository postEntityRepository;
 
     // @formatter:off
     protected PostManagementServiceImpl(
         SessionService sessionService,
         PostRepository postRepository,
-        PostParsingService postParsingService,
-        PostHashtagRepository postHashtagRepository,
-        PostMentionRepository postMentionRepository) {
+        PostEntityRepository postEntityRepository) {
         super(sessionService, postRepository);
-        this.postParsingService = postParsingService;
-        this.postHashtagRepository = postHashtagRepository;
-        this.postMentionRepository = postMentionRepository;
+        this.postEntityRepository = postEntityRepository;
     }
     // @formatter:on
 
@@ -56,8 +48,8 @@ public class PostManagementServiceImpl extends BasePostService implements PostMa
         validatePostExistsByParentId(parentId);
         Post post = postRepository.save(new Post(parentId, authorId, text));
 
-        Map<String, List<PostEntity>> entities = postParsingService.parse(post.getId(), post.getText());
-        savePostEntities(entities);
+        List<PostEntity> entities = PostEntityExtractor.extract(post.getId(), text);
+        postEntityRepository.saveAll(entities);
     }
 
     @Override
@@ -102,19 +94,6 @@ public class PostManagementServiceImpl extends BasePostService implements PostMa
         if (!Objects.equals(authenticatedUserId, authorId)) {
             throw new ResourceOwnershipException();
         }
-    }
-
-    /**
-     * Batch save any entities returned by
-     * {@link PostParsingService#parse(UUID, String)} for a given newly created
-     * post.
-     * 
-     * @param entities The {@link Map} of {@link List} containing {@link PostEntity}
-     *                 related to the newly created post.
-     */
-    private void savePostEntities(Map<String, List<PostEntity>> entities) {
-        postHashtagRepository.saveAll(entities.get("hashtags"));
-        postMentionRepository.saveAll(entities.get("mentions"));
     }
 
 }
