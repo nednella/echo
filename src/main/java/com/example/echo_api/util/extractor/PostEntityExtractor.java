@@ -26,11 +26,15 @@ public class PostEntityExtractor {
     private static final Extractor extractor = new Extractor();
 
     public static List<PostEntity> extractEntities(UUID postId, String text) {
+        if (postId == null || text == null) {
+            throw new IllegalArgumentException("Extractor arguments cannot be null.");
+        }
+
         List<Extractor.Entity> twEntities = extractor.extractEntitiesWithIndices(text);
 
         return twEntities
             .stream()
-            .map(entity -> toPostEntity(postId, entity))
+            .map(e -> toPostEntity(postId, e))
             .toList();
     }
 
