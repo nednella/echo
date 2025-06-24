@@ -1,5 +1,6 @@
 package com.example.echo_api.validation.pagination.validators;
 
+import com.example.echo_api.config.ConstraintsConfig;
 import com.example.echo_api.validation.pagination.annotations.Limit;
 
 import jakarta.validation.ConstraintValidator;
@@ -23,7 +24,8 @@ public class LimitValidator implements ConstraintValidator<Limit, Integer> {
 
     @Override
     public boolean isValid(Integer limit, ConstraintValidatorContext context) {
-        return limit >= 1 && limit <= 50;
+        return limit >= ConstraintsConfig.Pagination.MIN_LIMIT
+            && limit <= ConstraintsConfig.Pagination.MAX_LIMIT;
     }
 
 }

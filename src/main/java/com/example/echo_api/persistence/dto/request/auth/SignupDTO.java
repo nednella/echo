@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotNull;
  * @param username The username of the account to register. Required field. Must
  *                 match the format specified by {@link Username}.
  * @param password The password of the account to register. Required field. Must
- *                 match the format specified by {@link Password}. be null.
+ *                 match the format specified by {@link Password}.
  */
 // @formatter:off
 public record SignupDTO(

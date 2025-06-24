@@ -1,5 +1,6 @@
 package com.example.echo_api.validation.pagination.validators;
 
+import com.example.echo_api.config.ConstraintsConfig;
 import com.example.echo_api.validation.pagination.annotations.Offset;
 
 import jakarta.validation.ConstraintValidator;
@@ -23,7 +24,7 @@ public class OffsetValidator implements ConstraintValidator<Offset, Integer> {
 
     @Override
     public boolean isValid(Integer offset, ConstraintValidatorContext context) {
-        return offset >= 0;
+        return offset >= ConstraintsConfig.Pagination.MIN_OFFSET;
     }
 
 }
