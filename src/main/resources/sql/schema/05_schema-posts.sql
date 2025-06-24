@@ -4,7 +4,7 @@ CREATE TABLE
         parent_id          UUID,
         conversation_id    UUID NOT NULL,
         author_id          UUID NOT NULL,
-        text               VARCHAR(140) NOT NULL,
+        text               VARCHAR(280) NOT NULL,
         created_at         TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
         CONSTRAINT fk_parent_id FOREIGN KEY (parent_id) REFERENCES "post"(id),
         CONSTRAINT fk_conversation_id FOREIGN KEY (conversation_id) REFERENCES "post"(id),

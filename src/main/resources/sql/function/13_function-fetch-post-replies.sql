@@ -18,7 +18,7 @@ RETURNS TABLE (
     id                        UUID,
     parent_id                 UUID,
     conversation_id           UUID,
-    text                      VARCHAR(140),
+    text                      VARCHAR(280),
     created_at                TIMESTAMPTZ,
     post_like_count           BIGINT,
     post_reply_count          BIGINT,
