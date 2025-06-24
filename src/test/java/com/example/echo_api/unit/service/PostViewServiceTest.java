@@ -73,7 +73,7 @@ class PostViewServiceTest {
                 null),
             text,
             null,
-            new PostMetricsDTO(0, 0, 0),
+            new PostMetricsDTO(0, 0),
             new PostRelationshipDTO(false),
             new PostEntitiesDTO(List.of(), List.of(), List.of()));
     }

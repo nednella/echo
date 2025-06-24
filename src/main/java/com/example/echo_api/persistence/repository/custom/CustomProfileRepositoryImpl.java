@@ -146,8 +146,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                 new ProfileMetricsDTO(
                     rs.getInt("followers_count"),
                     rs.getInt("following_count"),
-                    rs.getInt("post_count"),
-                    rs.getInt("media_count")),
+                    rs.getInt("post_count")),
                 isSelf
                     ? null
                     : new ProfileRelationshipDTO(

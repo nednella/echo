@@ -10,7 +10,7 @@ package com.example.echo_api.persistence.dto.response.post;
 // @formatter:off
 public record PostMetricsDTO(
     int likes,
-    int replies,
-    int shares
+    int replies
+    // int shares // TODO: implement post shares
 ) {}
 // @formatter:on

@@ -12,7 +12,7 @@ package com.example.echo_api.persistence.dto.response.profile;
 public record ProfileMetricsDTO(
     int followers,
     int following,
-    int posts,
-    int media
+    int posts
+    // int media // TODO: implement post media
 ) {}
 // @formatter:on

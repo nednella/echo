@@ -72,7 +72,7 @@ class ProfileViewServiceTest {
             null,
             null,
             null,
-            new ProfileMetricsDTO(0, 0, 0, 0),
+            new ProfileMetricsDTO(0, 0, 0),
             null);
     }
 
