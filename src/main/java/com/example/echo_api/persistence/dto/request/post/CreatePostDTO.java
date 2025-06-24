@@ -21,7 +21,7 @@ public record CreatePostDTO(
     @JsonProperty("parent_id")
     UUID parentId,
 
-    @NotBlank(message = "Text cannot be null or blank.")
+    @NotBlank(message = ValidationMessageConfig.TEXT_NULL_OR_BLANK)
     @Size(max = ConstraintsConfig.Post.TEXT_MAX_LENGTH, message = ValidationMessageConfig.TEXT_TOO_LONG)
     String text
 

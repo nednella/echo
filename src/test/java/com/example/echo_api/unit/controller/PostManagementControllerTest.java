@@ -65,6 +65,72 @@ class PostManagementControllerTest {
     }
 
     @Test
+    void PostManagementController_Create_Throw400InvalidRequest_TextCannotBeNull() throws Exception {
+        // api: POST /api/v1/post ==> : 400 : InvalidRequest
+        String path = ApiConfig.Post.CREATE;
+
+        CreatePostDTO post = new CreatePostDTO(
+            UUID.randomUUID(),
+            null);
+
+        String body = objectMapper.writeValueAsString(post);
+
+        String response = mockMvc
+            .perform(post(path)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.TEXT_NULL_OR_BLANK,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(postManagementService, never()).create(post);
+    }
+
+    @Test
+    void PostManagementController_Create_Throw400InvalidRequest_TextCannotBeBlank() throws Exception {
+        // api: POST /api/v1/post ==> : 400 : InvalidRequest
+        String path = ApiConfig.Post.CREATE;
+
+        CreatePostDTO post = new CreatePostDTO(
+            UUID.randomUUID(),
+            " ");
+
+        String body = objectMapper.writeValueAsString(post);
+
+        String response = mockMvc
+            .perform(post(path)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.TEXT_NULL_OR_BLANK,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(postManagementService, never()).create(post);
+    }
+
+    @Test
     void PostManagementController_Create_Throw400InvalidRequest_TextExceeds280Characters() throws Exception {
         // api: POST /api/v1/post ==> : 400 : InvalidRequest
         String path = ApiConfig.Post.CREATE;

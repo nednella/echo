@@ -33,6 +33,7 @@ public final class ValidationMessageConfig {
 
     /* POST */
     public static final String TEXT_TOO_LONG = "Text must not exceed 280 characters.";
+    public static final String TEXT_NULL_OR_BLANK = "Text cannot be null or blank.";
     public static final String INVALID_PARENT_ID = "Invalid parent post ID.";
 
 }
