@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -47,6 +48,9 @@ class PostManagementServiceTest {
 
     @Mock
     private PostEntityRepository postEntityRepository;
+
+    @Captor
+    private ArgumentCaptor<List<PostEntity>> postEntityCaptor;
 
     private static Account authenticatedUser;
 
@@ -99,16 +103,13 @@ class PostManagementServiceTest {
         when(postRepository.existsById(request.parentId())).thenReturn(true);
         when(postRepository.save(any(Post.class))).thenReturn(post);
 
-        // captor
-        ArgumentCaptor<List<PostEntity>> captor = ArgumentCaptor.forClass(List.class);
-
         // act & assert
         assertDoesNotThrow(() -> postManagementService.create(request));
         verify(postRepository, times(1)).existsById(request.parentId());
-        verify(postEntityRepository, times(1)).saveAll(captor.capture());
+        verify(postEntityRepository, times(1)).saveAll(postEntityCaptor.capture());
 
         // validate captured postEntityRepository.saveAll argument
-        List<PostEntity> captured = captor.getValue();
+        List<PostEntity> captured = postEntityCaptor.getValue();
         assertEquals(2, captured.size());
         assertEquals(entities, captured);
     }
