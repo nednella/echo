@@ -69,7 +69,7 @@ class PostViewControllerTest {
             new SimplifiedProfileDTO(UUID.randomUUID().toString(), "username", "name", null, null),
             "Example post.",
             Instant.now().toString(),
-            new PostMetricsDTO(0, 0, 0),
+            new PostMetricsDTO(0, 0),
             new PostRelationshipDTO(false),
             new PostEntitiesDTO(List.of(), List.of(), List.of()));
     }

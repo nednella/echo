@@ -119,8 +119,7 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
                 rs.getString("created_at"),
                 new PostMetricsDTO(
                     rs.getInt("post_like_count"),
-                    rs.getInt("post_reply_count"),
-                    rs.getInt("post_share_count")),
+                    rs.getInt("post_reply_count")),
                 new PostRelationshipDTO(
                     rs.getBoolean("post_rel_liked")),
                 entities);

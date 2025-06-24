@@ -111,6 +111,31 @@ class AccountControllerTest {
     }
 
     @Test
+    void AccountController_UpdateUsername_Throw400InvalidRequest_InvalidUsername() throws Exception {
+        // api: PUT /api/v1/account/username ==> 400 : Invalid Request
+        String path = ApiConfig.Account.UPDATE_USERNAME;
+
+        String response = mockMvc
+            .perform(put(path)
+                .param("username", "u$ername")) // invalid username
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_USERNAME,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
     void AccountController_UpdateUsername_Throw400UsernameAlreadyExists() throws Exception {
         // api: PUT /api/v1/account/username ==> 400 : UsernameAlreadyExists
         String path = ApiConfig.Account.UPDATE_USERNAME;
@@ -161,12 +186,12 @@ class AccountControllerTest {
 
     @Test
     void AccountController_UpdatePassword_Throw400InvalidRequest_InvalidPassword() throws Exception {
-        // api: PUT /api/v1/account/password ==> 400 : Invalid Request (new password)
+        // api: PUT /api/v1/account/password ==> 400 : Invalid Request
         String path = ApiConfig.Account.UPDATE_PASSWORD;
 
         UpdatePasswordDTO request = new UpdatePasswordDTO(
             "old-password",
-            "new-password",
+            "new-password", // invalid password
             "new-password");
 
         String body = objectMapper.writeValueAsString(request);
