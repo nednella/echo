@@ -32,9 +32,9 @@ public final class ApiConfig {
     public static final class Profile {
         private static final String ROOT = BASE_URL + "/profile";
         public static final String ME = ROOT + "/me";
-        public static final String ME_INFO = ROOT + "/me/info";
-        public static final String ME_AVATAR = ROOT + "/me/avatar";
-        public static final String ME_BANNER = ROOT + "/me/banner";
+        public static final String ME_INFO = ROOT + "/me/info"; // TODO: consolidate into single PUT to /me
+        public static final String ME_AVATAR = ROOT + "/me/avatar"; // TODO: consolidate into single PUT to /me
+        public static final String ME_BANNER = ROOT + "/me/banner"; // TODO: consolidate into single PUT to /me
         public static final String GET_BY_USERNAME = ROOT + "/{username}";
         public static final String GET_FOLLOWERS_BY_USERNAME = ROOT + "/{username}/followers";
         public static final String GET_FOLLOWING_BY_USERNAME = ROOT + "/{username}/following";
@@ -49,6 +49,17 @@ public final class ApiConfig {
         public static final String LIKE = ROOT + "/{id}/like";
         public static final String GET_BY_ID = ROOT + "/{id}";
         public static final String GET_REPLIES_BY_ID = ROOT + "/{id}/replies";
+    }
+
+    @NoArgsConstructor(access = PRIVATE)
+    public static final class Feed {
+        private static final String ROOT = BASE_URL + "/feed";
+        private static final String HOMEPAGE = ROOT + "/homepage";
+        private static final String DISCOVER = ROOT + "/discover";
+        private static final String PROFILE_BY_USERNAME = ROOT + "/profile/{username}";
+        private static final String PROFILE_REPLIES_BY_ID = ROOT + "/profile/{id}/replies";
+        private static final String PROFILE_LIKES_BY_ID = ROOT + "/profile/{id}/likes";
+        private static final String PROFILE_MENTIONS_BY_ID = ROOT + "/profile/{id}/mentions";
     }
 
 }
