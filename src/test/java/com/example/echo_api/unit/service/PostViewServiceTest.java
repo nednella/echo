@@ -28,8 +28,8 @@ import com.example.echo_api.persistence.mapper.PageMapper;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.post.Post;
 import com.example.echo_api.persistence.repository.PostRepository;
-import com.example.echo_api.service.post.view.post.PostViewService;
-import com.example.echo_api.service.post.view.post.PostViewServiceImpl;
+import com.example.echo_api.service.post.view.PostViewService;
+import com.example.echo_api.service.post.view.PostViewServiceImpl;
 import com.example.echo_api.service.session.SessionService;
 import com.example.echo_api.util.pagination.OffsetLimitRequest;
 

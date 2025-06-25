@@ -1,4 +1,4 @@
-package com.example.echo_api.service.post.view.post;
+package com.example.echo_api.service.post.view;
 
 import java.util.UUID;
 
