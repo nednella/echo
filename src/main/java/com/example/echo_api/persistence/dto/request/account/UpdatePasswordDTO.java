@@ -3,8 +3,8 @@ package com.example.echo_api.persistence.dto.request.account;
 import com.example.echo_api.validation.account.annotations.ConfirmationPasswordMatch;
 import com.example.echo_api.validation.account.annotations.NewPasswordUnique;
 import com.example.echo_api.validation.account.annotations.Password;
-import com.example.echo_api.validation.sequence.AdvancedCheck;
-import com.example.echo_api.validation.sequence.BasicCheck;
+import com.example.echo_api.validation.sequence.Advanced;
+import com.example.echo_api.validation.sequence.Basic;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotNull;
@@ -20,20 +20,20 @@ import jakarta.validation.constraints.NotNull;
  *                             Required field. Must match {@code newPassword}.
  */
 // @formatter:off
-@NewPasswordUnique(groups = AdvancedCheck.class)
-@ConfirmationPasswordMatch(groups = AdvancedCheck.class)
+@NewPasswordUnique(groups = Advanced.class)
+@ConfirmationPasswordMatch(groups = Advanced.class)
 public record UpdatePasswordDTO(
 
-    @NotNull(message = "Current password is required.", groups = BasicCheck.class)
+    @NotNull(message = "Current password is required.", groups = Basic.class)
     @JsonProperty("current_password")
     String currentPassword,
 
-    @NotNull(message = "New password is required.", groups = BasicCheck.class)
-    @Password(groups = AdvancedCheck.class)
+    @NotNull(message = "New password is required.", groups = Basic.class)
+    @Password(groups = Advanced.class)
     @JsonProperty("new_password")
     String newPassword,
 
-    @NotNull(message = "Confirmation password is required.", groups = BasicCheck.class)
+    @NotNull(message = "Confirmation password is required.", groups = Basic.class)
     @JsonProperty("confirmation_password")
     String confirmationPassword
 
