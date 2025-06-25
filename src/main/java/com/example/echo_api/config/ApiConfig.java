@@ -54,12 +54,12 @@ public final class ApiConfig {
     @NoArgsConstructor(access = PRIVATE)
     public static final class Feed {
         private static final String ROOT = BASE_URL + "/feed";
-        private static final String HOMEPAGE = ROOT + "/homepage";
-        private static final String DISCOVER = ROOT + "/discover";
-        private static final String PROFILE_BY_USERNAME = ROOT + "/profile/{username}";
-        private static final String PROFILE_REPLIES_BY_ID = ROOT + "/profile/{id}/replies";
-        private static final String PROFILE_LIKES_BY_ID = ROOT + "/profile/{id}/likes";
-        private static final String PROFILE_MENTIONS_BY_ID = ROOT + "/profile/{id}/mentions";
+        public static final String HOMEPAGE = ROOT + "/homepage";
+        public static final String DISCOVER = ROOT + "/discover";
+        public static final String PROFILE_BY_USERNAME = ROOT + "/profile/{username}";
+        public static final String PROFILE_REPLIES_BY_ID = ROOT + "/profile/{id}/replies";
+        public static final String PROFILE_LIKES_BY_ID = ROOT + "/profile/{id}/likes";
+        public static final String PROFILE_MENTIONS_BY_ID = ROOT + "/profile/{id}/mentions";
     }
 
 }
