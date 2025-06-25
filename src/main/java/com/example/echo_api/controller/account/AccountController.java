@@ -8,7 +8,7 @@ import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.persistence.dto.request.account.UpdatePasswordDTO;
 import com.example.echo_api.persistence.dto.request.account.UpdateUsernameDTO;
 import com.example.echo_api.service.account.AccountService;
-import com.example.echo_api.validation.sequence.ValidationOrder;
+import com.example.echo_api.validation.sequence.ValidationSequence;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
+@Validated(ValidationSequence.class)
 @RestController
 @RequiredArgsConstructor
-@Validated(ValidationOrder.class)
 public class AccountController {
 
     private final AccountService accountService;

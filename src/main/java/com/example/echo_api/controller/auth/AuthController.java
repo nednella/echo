@@ -10,14 +10,14 @@ import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.persistence.dto.request.auth.LoginDTO;
 import com.example.echo_api.persistence.dto.request.auth.SignupDTO;
 import com.example.echo_api.service.auth.AuthService;
-import com.example.echo_api.validation.sequence.ValidationOrder;
+import com.example.echo_api.validation.sequence.ValidationSequence;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+@Validated(ValidationSequence.class)
 @RestController
 @RequiredArgsConstructor
-@Validated(ValidationOrder.class)
 public class AuthController {
 
     private final AuthService authService;

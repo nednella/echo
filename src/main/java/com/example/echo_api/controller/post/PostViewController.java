@@ -14,16 +14,15 @@ import com.example.echo_api.service.post.view.post.PostViewService;
 import com.example.echo_api.util.pagination.OffsetLimitRequest;
 import com.example.echo_api.validation.pagination.annotations.Limit;
 import com.example.echo_api.validation.pagination.annotations.Offset;
-import com.example.echo_api.validation.sequence.ValidationOrder;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
-@Validated(ValidationOrder.class)
 public class PostViewController {
 
     private final PostViewService postViewService;
