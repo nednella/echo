@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Test;
 import com.example.echo_api.config.ValidationMessageConfig;
 import com.example.echo_api.validation.account.annotations.Password;
 import com.example.echo_api.validation.account.annotations.Username;
-import com.example.echo_api.validation.sequence.AdvancedCheck;
-import com.example.echo_api.validation.sequence.BasicCheck;
-import com.example.echo_api.validation.sequence.ValidationOrder;
+import com.example.echo_api.validation.sequence.Advanced;
+import com.example.echo_api.validation.sequence.Basic;
+import com.example.echo_api.validation.sequence.ValidationSequence;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -26,12 +26,12 @@ class ValidationSequenceTest {
     // dummy class for validation
     static class TestUser {
 
-        @NotNull(message = "Username is required.", groups = BasicCheck.class)
-        @Username(groups = AdvancedCheck.class)
+        @NotNull(message = "Username is required.", groups = Basic.class)
+        @Username(groups = Advanced.class)
         private String username;
 
-        @NotNull(message = "Password is required.", groups = BasicCheck.class)
-        @Password(groups = AdvancedCheck.class)
+        @NotNull(message = "Password is required.", groups = Basic.class)
+        @Password(groups = Advanced.class)
         private String password;
 
         public TestUser(String username, String password) {
@@ -55,7 +55,7 @@ class ValidationSequenceTest {
             null,
             "invalid-password");
 
-        Set<ConstraintViolation<TestUser>> violations = validator.validate(invalidUser, ValidationOrder.class);
+        Set<ConstraintViolation<TestUser>> violations = validator.validate(invalidUser, ValidationSequence.class);
         assertEquals(1, violations.size()); // fails on null username
 
         ConstraintViolation<TestUser> violation = violations.iterator().next();
@@ -69,7 +69,7 @@ class ValidationSequenceTest {
             "valid_username",
             "invalid-password");
 
-        Set<ConstraintViolation<TestUser>> violations = validator.validate(invalidUser, ValidationOrder.class);
+        Set<ConstraintViolation<TestUser>> violations = validator.validate(invalidUser, ValidationSequence.class);
         assertEquals(1, violations.size()); // fails on invalid password
 
         ConstraintViolation<TestUser> violation = violations.iterator().next();

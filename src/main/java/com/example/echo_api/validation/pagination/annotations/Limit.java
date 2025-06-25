@@ -33,8 +33,8 @@ import jakarta.validation.Payload;
  * {@code
  * GetMapping("/items")
  * public ResponseEntity<PageDTO<ItemDTO>> getItems(
- *     RequestParam @Limit int limit,
- *     RequestParam int offset
+ *     RequestParam int offset,
+ *     RequestParam @Limit int limit
  * ) {
  *     // Method implementation
  * }

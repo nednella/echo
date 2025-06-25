@@ -27,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.config.ValidationMessageConfig;
 import com.example.echo_api.controller.post.PostViewController;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
@@ -187,6 +188,69 @@ class PostViewControllerTest {
 
         assertEquals(expected, actual);
         verify(postViewService, times(1)).getPostRepliesById(eq(id), any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetPostRepliesById_Throw400InvalidRequest_InvalidOffset() throws Exception {
+        // api: GET /api/v1/post/{id}/replies ==> : 400 : InvalidRequest
+        String path = ApiConfig.Post.GET_REPLIES_BY_ID;
+        UUID id = UUID.randomUUID();
+        int offset = -1;
+        int limit = 20;
+
+        String response = mockMvc
+            .perform(get(path, id)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_OFFSET,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(postViewService, never()).getPostRepliesById(eq(id), any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetPostRepliesById_Throw400InvalidRequest_InvalidLimit() throws Exception {
+        // api: GET /api/v1/post/{id}/replies ==> : 400 : InvalidRequest
+        String path = ApiConfig.Post.GET_REPLIES_BY_ID;
+        UUID id = UUID.randomUUID();
+        int offset = 0;
+        int limit = 51;
+
+        when(postViewService.getPostRepliesById(eq(id), any(Pageable.class)))
+            .thenThrow(new ResourceNotFoundException());
+
+        String response = mockMvc
+            .perform(get(path, id)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_LIMIT,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(postViewService, never()).getPostRepliesById(eq(id), any(Pageable.class));
     }
 
     @Test

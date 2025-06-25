@@ -16,13 +16,12 @@ import com.example.echo_api.service.profile.view.ProfileViewService;
 import com.example.echo_api.util.pagination.OffsetLimitRequest;
 import com.example.echo_api.validation.pagination.annotations.Limit;
 import com.example.echo_api.validation.pagination.annotations.Offset;
-import com.example.echo_api.validation.sequence.ValidationOrder;
 
 import lombok.RequiredArgsConstructor;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
-@Validated(ValidationOrder.class)
 public class ProfileViewController {
 
     private final ProfileViewService profileViewService;

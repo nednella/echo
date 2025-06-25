@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.config.ValidationMessageConfig;
 import com.example.echo_api.controller.profile.ProfileViewController;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
@@ -95,6 +96,7 @@ class ProfileViewControllerTest {
             .getContentAsString();
 
         ProfileDTO actual = objectMapper.readValue(response, ProfileDTO.class);
+
         assertEquals(expected, actual);
         verify(profileViewService, times(1)).getSelf();
     }
@@ -145,6 +147,7 @@ class ProfileViewControllerTest {
             .getContentAsString();
 
         ProfileDTO actual = objectMapper.readValue(response, ProfileDTO.class);
+
         assertEquals(expected, actual);
         verify(profileViewService, times(1)).getByUsername(username);
     }
@@ -207,10 +210,10 @@ class ProfileViewControllerTest {
             new TypeReference<PageDTO<SimplifiedProfileDTO>>() {
             });
 
-        verify(profileViewService, times(1)).getFollowers(eq(username), any(Pageable.class));
         assertEquals(expected, actual);
         assertEquals(1, actual.total());
         assertEquals(1, actual.items().size());
+        verify(profileViewService, times(1)).getFollowers(eq(username), any(Pageable.class));
     }
 
     @Test
@@ -241,10 +244,70 @@ class ProfileViewControllerTest {
         PageDTO<ProfileDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<ProfileDTO>>() {
         });
 
-        verify(profileViewService, times(1)).getFollowers(eq(username), any(Pageable.class));
         assertEquals(expected, actual);
         assertEquals(0, actual.total());
         assertEquals(0, actual.items().size());
+        verify(profileViewService, times(1)).getFollowers(eq(username), any(Pageable.class));
+    }
+
+    @Test
+    void ProfileViewController_GetFollowers_Throw400InvalidRequest_InvalidOffset() throws Exception {
+        // api: GET /api/v1/profile/{username}/followers ==> 400 : InvalidRequest
+        String path = ApiConfig.Profile.GET_FOLLOWERS_BY_USERNAME;
+        String username = "existing-user";
+        int offset = -1;
+        int limit = 1;
+
+        String response = mockMvc
+            .perform(get(path, username)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_OFFSET,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(profileViewService, never()).getFollowers(eq(username), any(Pageable.class));
+    }
+
+    @Test
+    void ProfileViewController_GetFollowers_Throw400InvalidRequest_InvalidLimit() throws Exception {
+        // api: GET /api/v1/profile/{username}/followers ==> 400 : InvalidRequest
+        String path = ApiConfig.Profile.GET_FOLLOWERS_BY_USERNAME;
+        String username = "existing-user";
+        int offset = 0;
+        int limit = 0;
+
+        String response = mockMvc
+            .perform(get(path, username)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_LIMIT,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(profileViewService, never()).getFollowers(eq(username), any(Pageable.class));
     }
 
     @Test
@@ -276,8 +339,8 @@ class ProfileViewControllerTest {
 
         ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
 
-        verify(profileViewService, times(1)).getFollowers(eq(username), any(Pageable.class));
         assertEquals(expected, actual);
+        verify(profileViewService, times(1)).getFollowers(eq(username), any(Pageable.class));
     }
 
     @Test
@@ -310,10 +373,10 @@ class ProfileViewControllerTest {
             new TypeReference<PageDTO<SimplifiedProfileDTO>>() {
             });
 
-        verify(profileViewService, times(1)).getFollowing(eq(username), any(Pageable.class));
         assertEquals(expected, actual);
         assertEquals(1, actual.total());
         assertEquals(1, actual.items().size());
+        verify(profileViewService, times(1)).getFollowing(eq(username), any(Pageable.class));
     }
 
     @Test
@@ -344,10 +407,70 @@ class ProfileViewControllerTest {
         PageDTO<ProfileDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<ProfileDTO>>() {
         });
 
-        verify(profileViewService, times(1)).getFollowing(eq(username), any(Pageable.class));
         assertEquals(expected, actual);
         assertEquals(0, actual.total());
         assertEquals(0, actual.items().size());
+        verify(profileViewService, times(1)).getFollowing(eq(username), any(Pageable.class));
+    }
+
+    @Test
+    void ProfileViewController_GetFollowing_Throw400InvalidRequest_InvalidOffset() throws Exception {
+        // api: GET /api/v1/profile/{username}/following ==> 400 : InvalidRequest
+        String path = ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME;
+        String username = "existing-user";
+        int offset = -1;
+        int limit = 1;
+
+        String response = mockMvc
+            .perform(get(path, username)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_OFFSET,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(profileViewService, never()).getFollowing(eq(username), any(Pageable.class));
+    }
+
+    @Test
+    void ProfileViewController_GetFollowing_Throw400InvalidRequest_InvalidLimit() throws Exception {
+        // api: GET /api/v1/profile/{username}/following ==> 400 : InvalidRequest
+        String path = ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME;
+        String username = "existing-user";
+        int offset = 0;
+        int limit = 0;
+
+        String response = mockMvc
+            .perform(get(path, username)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_LIMIT,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(profileViewService, never()).getFollowing(eq(username), any(Pageable.class));
     }
 
     @Test
@@ -379,8 +502,8 @@ class ProfileViewControllerTest {
 
         ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
 
-        verify(profileViewService, times(1)).getFollowing(eq(username), any(Pageable.class));
         assertEquals(expected, actual);
+        verify(profileViewService, times(1)).getFollowing(eq(username), any(Pageable.class));
     }
 
 }
