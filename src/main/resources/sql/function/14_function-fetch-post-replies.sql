@@ -1,7 +1,6 @@
 
 /*
- * Function fetches replies to a post by its ID along with the relevant data required
- * for building complete PostDTO objects that the frontend can display to end users.
+ * Function fetches replies to a given post by its ID.
 
  * Posts are ranked by a unique sorting pattern: those with replies from the original
  * author, then by a combination of post engagement metrics, then by creation timestamp.
@@ -24,6 +23,7 @@ RETURNS TABLE (
     post_reply_count          BIGINT,
     post_share_count          BIGINT,
     post_rel_liked            BOOLEAN,
+    post_rel_shared           BOOLEAN,
     author_is_self            BOOLEAN,
     author_id                 UUID,
     author_username           VARCHAR(15),
@@ -41,10 +41,11 @@ AS
         RETURN QUERY
         WITH post_replies AS (
             SELECT 
-                p.*,
-                (SELECT COUNT(*) FROM post_like pl WHERE pl.post_id = p.id) AS likes,
-                (SELECT COUNT(*) FROM post pr WHERE pr.parent_id = p.id) AS replies,
-                0::BIGINT AS shares,
+                p.id,
+                p.created_at,
+                (SELECT COUNT(*) FROM post_like pl WHERE pl.post_id = p.id) AS like_count,
+                (SELECT COUNT(*) FROM post pr WHERE pr.parent_id = p.id) AS reply_count,
+                0::BIGINT AS share_count,
                 EXISTS (
                     SELECT 1
                     FROM post p2
@@ -55,71 +56,20 @@ AS
             WHERE p.parent_id = p_post_id
         ),
         sorted_replies AS (
-            SELECT 
-                pr.*,
-                (pr.likes + pr.replies + pr.shares) AS engagement
+            SELECT
+                pr.id,
+                ROW_NUMBER() OVER(ORDER BY pr.has_original_author_response DESC,
+                                           (pr.like_count + pr.reply_count + pr.share_count) DESC,
+                                           pr.created_at DESC) AS sort_order
             FROM post_replies pr
-            ORDER BY pr.has_original_author_response DESC, engagement DESC, pr.created_at DESC
             OFFSET p_offset
             LIMIT p_limit
-        ),
-        post_metrics AS (
-            SELECT
-                sr.id AS post_id,
-                sr.likes AS post_like_count,
-                sr.replies AS post_reply_count,
-                sr.shares AS post_share_count
-            FROM sorted_replies sr
-        ),
-        post_relationship AS (
-            SELECT
-                sr.id AS post_id,
-                EXISTS(
-                    SELECT 1 FROM post_like pl
-                    WHERE pl.post_id = sr.id
-                    AND pl.author_id = p_authenticated_user_id
-                ) AS post_rel_liked
-            FROM sorted_replies sr
-        ),
-        author_data AS (
-            SELECT
-                sr.id AS post_id,
-                sp.is_self AS author_is_self,
-                sp.id AS author_id,
-                sp.username AS author_username,
-                sp.name AS author_name,
-                sp.avatar_url AS author_avatar_url,
-                sp.rel_following AS author_rel_following,
-                sp.rel_followed_by AS author_rel_followed_by,
-                sp.rel_blocking AS author_rel_blocking,
-                sp.rel_blocked_by AS author_rel_blocked_by
-            FROM sorted_replies sr
-            CROSS JOIN LATERAL fetch_simplified_profile(sr.author_id, p_authenticated_user_id) sp
         )
         SELECT
-            sr.id,
-            sr.parent_id,
-            sr.conversation_id,
-            sr.text,
-            sr.created_at,
-            pm.post_like_count,
-            pm.post_reply_count,
-            pm.post_share_count,
-            pr.post_rel_liked,
-            ad.author_is_self,
-            ad.author_id,
-            ad.author_username,
-            ad.author_name,
-            ad.author_avatar_url,
-            ad.author_rel_following,
-            ad.author_rel_followed_by,
-            ad.author_rel_blocking,
-            ad.author_rel_blocked_by,
-            fetch_post_entities(sr.id) AS post_entities
-        FROM sorted_replies sr
-        LEFT JOIN post_metrics pm ON sr.id = pm.post_id
-        LEFT JOIN post_relationship pr ON sr.id = pr.post_id
-        LEFT JOIN author_data ad ON sr.id = ad.post_id;
+            fp.*
+        FROM fetch_posts(ARRAY(SELECT sr.id FROM sorted_replies sr), p_authenticated_user_id) fp
+        JOIN sorted_replies sr ON fp.id = sr.id
+        ORDER BY sr.sort_order;
     END;
 '
 LANGUAGE plpgsql;
