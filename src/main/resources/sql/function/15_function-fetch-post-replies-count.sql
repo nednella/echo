@@ -9,14 +9,11 @@
 CREATE OR REPLACE FUNCTION fetch_post_replies_count(
     p_post_id UUID
 )
-RETURNS INTEGER
+RETURNS BIGINT
 AS
 '
-    BEGIN 
-        RETURN QUERY
-        SELECT COUNT(*)
-        FROM post p
-        WHERE p.parent_id = p_post_id;
-    END;
+    SELECT COUNT(*)
+    FROM post p
+    WHERE p.parent_id = p_post_id;
 '
-LANGUAGE plpgsql;
+LANGUAGE sql;

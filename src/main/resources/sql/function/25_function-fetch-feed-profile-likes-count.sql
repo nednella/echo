@@ -9,14 +9,11 @@
 CREATE OR REPLACE FUNCTION fetch_feed_profile_likes_count(
     p_profile_id UUID
 )
-RETURNS INTEGER
+RETURNS BIGINT
 AS
 '
-    BEGIN 
-        RETURN QUERY
-        SELECT COUNT(*)
-        FROM post p
-        INNER JOIN post_like pl ON p.id = pl.post_id AND pl.author_id = p_profile_id;
-    END;
+    SELECT COUNT(*)
+    FROM post p
+    INNER JOIN post_like pl ON p.id = pl.post_id AND pl.author_id = p_profile_id;
 '
-LANGUAGE plpgsql;
+LANGUAGE sql;

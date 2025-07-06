@@ -9,15 +9,12 @@
 CREATE OR REPLACE FUNCTION fetch_feed_profile_replies_count(
     p_profile_id UUID
 )
-RETURNS INTEGER
+RETURNS BIGINT
 AS
 '
-    BEGIN 
-        RETURN QUERY
-        SELECT COUNT(*)
-        FROM post p
-        WHERE p.author_id = p_profile_id
-        AND p.parent_id IS NOT NULL;
-    END;
+    SELECT COUNT(*)
+    FROM post p
+    WHERE p.author_id = p_profile_id
+    AND p.parent_id IS NOT NULL;
 '
-LANGUAGE plpgsql;
+LANGUAGE sql;
