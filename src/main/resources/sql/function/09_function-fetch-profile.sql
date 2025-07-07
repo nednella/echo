@@ -9,7 +9,7 @@
 */
 
 CREATE OR REPLACE FUNCTION fetch_profile(
-    p_id UUID,
+    p_profile_id UUID,
     p_username VARCHAR,
     p_authenticated_user_id UUID
 )
@@ -50,7 +50,7 @@ AS
             FROM profile p
             LEFT JOIN image avatar ON p.avatar_id = avatar.id
             LEFT JOIN image banner ON p.banner_id = banner.id
-            WHERE (p_id IS NOT NULL AND p.id = p_id)
+            WHERE (p_profile_id IS NOT NULL AND p.id = p_profile_id)
                OR (p_username IS NOT NULL AND p.username = p_username)
         ),
         metrics AS (

@@ -7,7 +7,7 @@
 */
 
 CREATE OR REPLACE FUNCTION fetch_profile_following(
-    p_id UUID,
+    p_profile_id UUID,
     p_authenticated_user_id UUID,
     p_offset INTEGER,
     p_limit INTEGER
@@ -40,7 +40,7 @@ AS
         FROM (
             SELECT followed_id
             FROM follow
-            WHERE follower_id = p_id
+            WHERE follower_id = p_profile_id
             ORDER BY created_at DESC
             OFFSET p_offset
             LIMIT p_limit

@@ -7,7 +7,7 @@
 */
 
 CREATE OR REPLACE FUNCTION fetch_simplified_profile(
-    p_id UUID,
+    p_profile_id UUID,
     p_authenticated_user_id UUID
 )
 RETURNS TABLE (
@@ -34,7 +34,7 @@ AS
                 avatar.transformed_url AS avatar_url
             FROM profile p
             LEFT JOIN image avatar ON p.avatar_id = avatar.id
-            WHERE p.id = p_id
+            WHERE p.id = p_profile_id
         ),
         relationship AS (
             SELECT
