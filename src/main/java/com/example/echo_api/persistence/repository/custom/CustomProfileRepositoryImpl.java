@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.lang.NonNull;
 
 import com.example.echo_api.persistence.dto.response.profile.ProfileMetricsDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
@@ -26,94 +25,97 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
 
     private final NamedParameterJdbcTemplate template;
 
-    @Override // @formatter:off
-    public Optional<ProfileDTO> findProfileDtoById(@NonNull UUID id, @NonNull UUID authenticatedUserId) {
+    @Override
+    public Optional<ProfileDTO> findProfileDtoById(UUID id, UUID authUserId) {
         String sql = "SELECT * FROM fetch_profile(:id, NULL, :authenticated_user_id)";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-            .addValue("id", id)
-            .addValue("authenticated_user_id", authenticatedUserId);
+            .addValue("profile_id", id)
+            .addValue("authenticated_user_id", authUserId);
 
         return template.query(
             sql,
             params,
-            new ProfileDtoRowMapper()
-        ).stream().findFirst();
-    } // @formatter:on
+            new ProfileDtoRowMapper()).stream().findFirst();
+    }
 
-    @Override // @formatter:off
-    public Optional<ProfileDTO> findProfileDtoByUsername(@NonNull String username, @NonNull UUID authenticatedUserId) {
+    @Override
+    public Optional<ProfileDTO> findProfileDtoByUsername(String username, UUID authUserId) {
         String sql = "SELECT * FROM fetch_profile(NULL, :username, :authenticated_user_id)";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
             .addValue("username", username)
-            .addValue("authenticated_user_id", authenticatedUserId);
+            .addValue("authenticated_user_id", authUserId);
 
         return template.query(
             sql,
             params,
-            new ProfileDtoRowMapper()
-        ).stream().findFirst();
-    } // @formatter:on
+            new ProfileDtoRowMapper()).stream().findFirst();
+    }
 
-    @Override // @formatter:off
-    public Page<SimplifiedProfileDTO> findFollowerDtosById(@NonNull UUID id, @NonNull UUID authenticatedUserId, @NonNull Pageable p) {
-        String followersSql = "SELECT * FROM fetch_profile_followers(:profile_id, :authenticated_user_id, :offset, :limit)";
-
-        MapSqlParameterSource followersParams = new MapSqlParameterSource()
-            .addValue("profile_id", id)
-            .addValue("authenticated_user_id", authenticatedUserId)
-            .addValue("offset", (int) p.getOffset())
-            .addValue("limit", p.getPageSize());
-
-        List<SimplifiedProfileDTO> followers = template.query(
-            followersSql,
-            followersParams,
-            new SimplifiedProfileDtoRowMapper()
-        );
-
+    @Override
+    public Page<SimplifiedProfileDTO> findFollowerDtosById(UUID id, UUID authUserId, Pageable p) {
+        String sql = "SELECT * FROM fetch_profile_followers(:profile_id, :authenticated_user_id, :offset, :limit)";
         String countSql = "SELECT * FROM fetch_profile_followers_count(:profile_id)";
 
-        MapSqlParameterSource countParams = new MapSqlParameterSource()
-            .addValue("profile_id", id);
-
-        Long count = template.queryForObject(
-            countSql,
-            countParams,
-            Long.class
-        );
-
-        return new PageImpl<>(followers, p, count == null ? 0L : count);
-    } // @formatter:on
-
-    @Override // @formatter:off
-    public Page<SimplifiedProfileDTO> findFollowingDtosById(@NonNull UUID id, @NonNull UUID authenticatedUserId, @NonNull Pageable p) {
-        String followingSql = "SELECT * FROM fetch_profile_following(:profile_id, :authenticated_user_id, :offset, :limit)";
-        
-        MapSqlParameterSource followingParams = new MapSqlParameterSource()
+        MapSqlParameterSource params = new MapSqlParameterSource()
             .addValue("profile_id", id)
-            .addValue("authenticated_user_id", authenticatedUserId)
+            .addValue("authenticated_user_id", authUserId)
             .addValue("offset", (int) p.getOffset())
             .addValue("limit", p.getPageSize());
 
-        List<SimplifiedProfileDTO> followers = template.query(
-            followingSql,
-            followingParams,
-            new SimplifiedProfileDtoRowMapper()
-        );
+        return fetchPaginatedProfiles(sql, countSql, params, p);
+    }
 
+    @Override
+    public Page<SimplifiedProfileDTO> findFollowingDtosById(UUID id, UUID authUserId, Pageable p) {
+        String sql = "SELECT * FROM fetch_profile_following(:profile_id, :authenticated_user_id, :offset, :limit)";
         String countSql = "SELECT * FROM fetch_profile_following_count(:profile_id)";
 
-        MapSqlParameterSource countParams = new MapSqlParameterSource()
-            .addValue("profile_id", id);
+        MapSqlParameterSource params = new MapSqlParameterSource()
+            .addValue("profile_id", id)
+            .addValue("authenticated_user_id", authUserId)
+            .addValue("offset", (int) p.getOffset())
+            .addValue("limit", p.getPageSize());
+
+        return fetchPaginatedProfiles(sql, countSql, params, p);
+    }
+
+    /**
+     * Private method that fetches a paginated list of {@link SimplifiedProfileDTO}
+     * based on the provided SQL query and parameters.
+     * 
+     * This method executes the main query to retrieve the profiles and a separate
+     * count query to determine the total number of available profiles, returning a
+     * constructed {@link PageImpl}.
+     * 
+     * @param sql      The query related to fetching the paginated profiles.
+     * @param countSql The query related to obtaining a total count of available
+     *                 profiles.
+     * @param params
+     * @param p        The pagination and sorting configuration.
+     * @return A {@link PageImpl} containing the list of
+     *         {@link SimplifiedProfileDTO} objects, the current page details, and
+     *         the total number of available profiles.
+     */
+    // @formatter:off
+    private Page<SimplifiedProfileDTO> fetchPaginatedProfiles(
+        String sql,
+        String countSql,
+        MapSqlParameterSource params,
+        Pageable p
+    ) {
+        List<SimplifiedProfileDTO> profiles = template.query(
+            sql,
+            params,
+            new SimplifiedProfileDtoRowMapper());
 
         Long count = template.queryForObject(
             countSql,
-            countParams,
-            Long.class
-        );
+            params,
+            Long.class);
 
-        return new PageImpl<>(followers, p, count == null ? 0L : count);
+        return new PageImpl<>(profiles, p, count == null ? 0L : count);
     } // @formatter:on
 
     /**
@@ -123,7 +125,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
     private static class ProfileDtoRowMapper implements RowMapper<ProfileDTO> {
 
         @Override
-        public ProfileDTO mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
+        public ProfileDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
             boolean isSelf = rs.getBoolean("is_self");
 
             return new ProfileDTO(
@@ -157,7 +159,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
     private static class SimplifiedProfileDtoRowMapper implements RowMapper<SimplifiedProfileDTO> {
 
         @Override
-        public SimplifiedProfileDTO mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
+        public SimplifiedProfileDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
             boolean isSelf = rs.getBoolean("is_self");
 
             return new SimplifiedProfileDTO(
