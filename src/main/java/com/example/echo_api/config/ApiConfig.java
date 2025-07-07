@@ -36,10 +36,10 @@ public final class ApiConfig {
         public static final String ME_AVATAR = ROOT + "/me/avatar"; // TODO: consolidate into single PUT to /me
         public static final String ME_BANNER = ROOT + "/me/banner"; // TODO: consolidate into single PUT to /me
         public static final String GET_BY_USERNAME = ROOT + "/{username}";
-        public static final String GET_FOLLOWERS_BY_USERNAME = ROOT + "/{username}/followers";
-        public static final String GET_FOLLOWING_BY_USERNAME = ROOT + "/{username}/following";
-        public static final String FOLLOW_BY_USERNAME = ROOT + "/{username}/follow";
-        public static final String BLOCK_BY_USERNAME = ROOT + "/{username}/block";
+        public static final String GET_FOLLOWERS_BY_USERNAME = ROOT + "/{username}/followers"; // TODO: migrate to {id}
+        public static final String GET_FOLLOWING_BY_USERNAME = ROOT + "/{username}/following"; // TODO: migrate to {id}
+        public static final String FOLLOW_BY_USERNAME = ROOT + "/{username}/follow"; // TODO: migrate to {id}
+        public static final String BLOCK_BY_USERNAME = ROOT + "/{username}/block"; // TODO: migrate to {id}
     }
 
     @NoArgsConstructor(access = PRIVATE)
