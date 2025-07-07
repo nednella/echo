@@ -30,10 +30,10 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
 
     @Override
     public Optional<PostDTO> findPostDtoById(UUID id, UUID authUserId) {
-        String sql = "SELECT * FROM fetch_post(:post_id, :authenticated_user_id)";
+        String sql = "SELECT * FROM fetch_posts(:post_id, :authenticated_user_id)";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-            .addValue("post_id", id)
+            .addValue("post_id", new UUID[] { id })
             .addValue("authenticated_user_id", authUserId);
 
         return template.query(

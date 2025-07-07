@@ -30,7 +30,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
         String sql = "SELECT * FROM fetch_profile(:id, NULL, :authenticated_user_id)";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-            .addValue("profile_id", id)
+            .addValue("id", id)
             .addValue("authenticated_user_id", authUserId);
 
         return template.query(
