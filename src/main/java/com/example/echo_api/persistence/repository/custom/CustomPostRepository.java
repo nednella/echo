@@ -43,4 +43,77 @@ public interface CustomPostRepository {
      */
     Page<PostDTO> findReplyPostsById(@NonNull UUID postId, @NonNull UUID authUserId, @NonNull Pageable p);
 
+    /**
+     * Retrieves a paginated list of {@link PostDTO} for root-level posts from the
+     * authenticated user and profiles that the authenticated user follows, sorted
+     * by newest first.
+     * 
+     * @param authUserId The id of the authenticated user, required for obtaining
+     *                   profile and post relationships.
+     * @param p          The pagination and sorting configuration.
+     * @return a {@link Page} of {@link PostDTO}.
+     */
+    Page<PostDTO> findHomepagePosts(@NonNull UUID authUserId, @NonNull Pageable p);
+
+    /**
+     * Retrieves a paginated list of {@link PostDTO} for root-level posts from all
+     * profiles, except those blocked by the authenticated user, sorted by newest
+     * first.
+     * 
+     * @param authUserId The id of the authenticated user, required for obtaining
+     *                   profile and post relationships.
+     * @param p          The pagination and sorting configuration.
+     * @return a {@link Page} of {@link PostDTO}.
+     */
+    Page<PostDTO> findDiscoverPosts(@NonNull UUID authUserId, @NonNull Pageable p);
+
+    /**
+     * Retrieves a paginated list of {@link PostDTO} for root-level posts from the
+     * profile with the specified ID, sorted by newest first.
+     * 
+     * @param profileId  The id of the target profile to query.
+     * @param authUserId The id of the authenticated user, required for obtaining
+     *                   profile and post relationships.
+     * @param p          The pagination and sorting configuration.
+     * @return a {@link Page} of {@link PostDTO}.
+     */
+    Page<PostDTO> findPostsByProfileId(@NonNull UUID profileId, @NonNull UUID authUserId, @NonNull Pageable p);
+
+    /**
+     * Retrieves a paginated list of {@link PostDTO} for posts from the profile with
+     * the specified ID, that are in reply to another post, sorted by newest first.
+     * 
+     * @param profileId  The id of the target profile to query.
+     * @param authUserId The id of the authenticated user, required for obtaining
+     *                   profile and post relationships.
+     * @param p          The pagination and sorting configuration.
+     * @return a {@link Page} of {@link PostDTO}.
+     */
+    Page<PostDTO> findReplyPostsByProfileId(@NonNull UUID profileId, @NonNull UUID authUserId, @NonNull Pageable p);
+
+    /**
+     * Retrieves a paginated list of {@link PostDTO} for posts liked by the profile
+     * with the specified ID, sorted by newest first.
+     * 
+     * @param profileId  The id of the target profile to query.
+     * @param authUserId The id of the authenticated user, required for obtaining
+     *                   profile and post relationships.
+     * @param p          The pagination and sorting configuration.
+     * @return a {@link Page} of {@link PostDTO}.
+     */
+    Page<PostDTO> findLikedPostsByProfileId(@NonNull UUID profileId, @NonNull UUID authUserId, @NonNull Pageable p);
+
+    /**
+     * Retrieves a paginated list of {@link PostDTO} for posts that include a
+     * mention, e.g. {@code @elonmusk}, of the profile with the specified ID, sorted
+     * by newest first.
+     * 
+     * @param profileId  The id of the target profile to query.
+     * @param authUserId The id of the authenticated user, required for obtaining
+     *                   profile and post relationships.
+     * @param p          The pagination and sorting configuration.
+     * @return a {@link Page} of {@link PostDTO}.
+     */
+    Page<PostDTO> findMentionedPostsByProfileId(@NonNull UUID profileId, @NonNull UUID authUserId, @NonNull Pageable p);
+
 }

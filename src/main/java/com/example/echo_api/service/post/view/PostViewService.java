@@ -30,4 +30,66 @@ public interface PostViewService {
      */
     public PageDTO<PostDTO> getPostRepliesById(UUID id, Pageable page);
 
+    /**
+     * Fetch a {@link PageDTO} of {@link PostDTO} for posts from the authenticated
+     * user and profiles that the authenticated user follows.
+     * 
+     * @param page The {@link Pageable} containing the pagination parameters.
+     * @return A {@link PageDTO} of {@link PostDTO} for matches, otherwise empty.
+     */
+    public PageDTO<PostDTO> getHomepagePosts(Pageable page);
+
+    /**
+     * Fetch a {@link PageDTO} of {@link PostDTO} for posts from all users, except
+     * those blocked by the authenticated user.
+     * 
+     * @param page The {@link Pageable} containing the pagination parameters.
+     * @return A {@link PageDTO} of {@link PostDTO} for matches, otherwise empty.
+     */
+    public PageDTO<PostDTO> getDiscoverPosts(Pageable page);
+
+    /**
+     * Fetch a {@link PageDTO} of {@link PostDTO} for posts from the user with the
+     * supplied profile {@code username}.
+     * 
+     * @param username The username of the profile to query.
+     * @param page     The {@link Pageable} containing the pagination parameters.
+     * @return A {@link PageDTO} of {@link PostDTO} for matches, otherwise empty.
+     * @throws ResourceNotFoundException If no profile by that username exists.
+     */
+    public PageDTO<PostDTO> getProfilePostsByUsername(String username, Pageable page);
+
+    /**
+     * Fetch a {@link PageDTO} of {@link PostDTO} for posts from the user with the
+     * supplied profile {@code id}, that are in reply to another post.
+     * 
+     * @param id   The id of the profile to query.
+     * @param page The {@link Pageable} containing the pagination parameters.
+     * @return A {@link PageDTO} of {@link PostDTO} for matches, otherwise empty.
+     * @throws ResourceNotFoundException If no profile by that id exists.
+     */
+    public PageDTO<PostDTO> getProfileRepliesById(UUID id, Pageable page);
+
+    /**
+     * Fetch a {@link PageDTO} of {@link PostDTO} for posts liked by the user with
+     * the supplied profile {@code id}.
+     * 
+     * @param id   The id of the profile to query.
+     * @param page The {@link Pageable} containing the pagination parameters.
+     * @return A {@link PageDTO} of {@link PostDTO} for matches, otherwise empty.
+     * @throws ResourceNotFoundException If no profile by that id exists.
+     */
+    public PageDTO<PostDTO> getProfileLikesById(UUID id, Pageable page);
+
+    /**
+     * Fetch a {@link PageDTO} of {@link PostDTO} for posts that mention the user
+     * with the supplied profile {@code id}.
+     * 
+     * @param id   The id of the profile to query.
+     * @param page The {@link Pageable} containing the pagination parameters.
+     * @return A {@link PageDTO} of {@link PostDTO} for matches, otherwise empty.
+     * @throws ResourceNotFoundException If no profile by that id exists.
+     */
+    public PageDTO<PostDTO> getProfileMentionsById(UUID id, Pageable page);
+
 }

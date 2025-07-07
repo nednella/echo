@@ -41,7 +41,70 @@ public class PostViewController {
     ) {
         Pageable page = new OffsetLimitRequest(offset, limit);
         return ResponseEntity.ok(postViewService.getPostRepliesById(id, page));
-    }
-    // @formatter:on
+    } // @formatter:on
+
+    // @formatter:off
+    @GetMapping(ApiConfig.Feed.HOMEPAGE)
+    public ResponseEntity<PageDTO<PostDTO>> getHomepagePosts(
+        @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
+        @RequestParam(name = "limit", defaultValue = "20") @Limit int limit)
+    {
+        Pageable page = new OffsetLimitRequest(offset, limit);
+        return ResponseEntity.ok(postViewService.getHomepagePosts(page));
+    } // @formatter:on
+
+    // @formatter:off
+    @GetMapping(ApiConfig.Feed.DISCOVER)
+    public ResponseEntity<PageDTO<PostDTO>> getDiscoverPosts(
+        @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
+        @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
+    ) {
+        Pageable page = new OffsetLimitRequest(offset, limit);
+        return ResponseEntity.ok(postViewService.getDiscoverPosts(page));
+    } // @formatter:on
+
+    // @formatter:off
+    @GetMapping(ApiConfig.Feed.PROFILE_BY_USERNAME)
+    public ResponseEntity<PageDTO<PostDTO>> getProfilePostsByUsername(
+        @PathVariable("username") String username,
+        @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
+        @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
+    ) {
+        Pageable page = new OffsetLimitRequest(offset, limit);
+        return ResponseEntity.ok(postViewService.getProfilePostsByUsername(username, page));
+    } // @formatter:on
+
+    // @formatter:off
+    @GetMapping(ApiConfig.Feed.PROFILE_REPLIES_BY_ID)
+    public ResponseEntity<PageDTO<PostDTO>> getProfileRepliesById(
+        @PathVariable("id") UUID id,
+        @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
+        @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
+    ) {
+        Pageable page = new OffsetLimitRequest(offset, limit);
+        return ResponseEntity.ok(postViewService.getProfileRepliesById(id, page));
+    } // @formatter:on
+
+    // @formatter:off
+    @GetMapping(ApiConfig.Feed.PROFILE_LIKES_BY_ID)
+    public ResponseEntity<PageDTO<PostDTO>> getProfileLikesById(
+        @PathVariable("id") UUID id,
+        @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
+        @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
+    ) {
+        Pageable page = new OffsetLimitRequest(offset, limit);
+        return ResponseEntity.ok(postViewService.getProfileLikesById(id, page));
+    } // @formatter:on
+
+    // @formatter:off
+    @GetMapping(ApiConfig.Feed.PROFILE_MENTIONS_BY_ID)
+    public ResponseEntity<PageDTO<PostDTO>> getProfileMentionsById(
+        @PathVariable("id") UUID id,
+        @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
+        @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
+    ) {
+        Pageable page = new OffsetLimitRequest(offset, limit);
+        return ResponseEntity.ok(postViewService.getProfileMentionsById(id, page));
+    } // @formatter:on
 
 }
