@@ -123,7 +123,7 @@ class PostViewServiceTest {
 
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
         when(postRepository.findById(id)).thenReturn(Optional.of(post));
-        when(postRepository.findReplyDtosById(post.getId(), authenticatedUser.getId(), page)).thenReturn(repliesDto);
+        when(postRepository.findReplyPostsById(post.getId(), authenticatedUser.getId(), page)).thenReturn(repliesDto);
         when(httpServletRequest.getRequestURI()).thenReturn(uri);
 
         // act
@@ -132,7 +132,7 @@ class PostViewServiceTest {
         // assert
         assertEquals(expected, actual);
         verify(postRepository, times(1)).findById(id);
-        verify(postRepository, times(1)).findReplyDtosById(post.getId(), authenticatedUser.getId(), page);
+        verify(postRepository, times(1)).findReplyPostsById(post.getId(), authenticatedUser.getId(), page);
     }
 
     @Test
@@ -149,7 +149,7 @@ class PostViewServiceTest {
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> postViewService.getPostRepliesById(id, page));
         verify(postRepository, times(1)).findById(id);
-        verify(postRepository, times(0)).findReplyDtosById(any(UUID.class), eq(authenticatedUser.getId()), eq(page));
+        verify(postRepository, times(0)).findReplyPostsById(any(UUID.class), eq(authenticatedUser.getId()), eq(page));
     }
 
 }

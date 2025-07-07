@@ -49,7 +49,7 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
         Post post = getPostEntityById(id); // validate existence of id
         UUID authenticatedUserId = getAuthenticatedUser().getId();
 
-        Page<PostDTO> query = postRepository.findReplyDtosById(post.getId(), authenticatedUserId, page);
+        Page<PostDTO> query = postRepository.findReplyPostsById(post.getId(), authenticatedUserId, page);
         String uri = getCurrentRequestUri();
 
         return PageMapper.toDTO(query, uri);

@@ -161,15 +161,15 @@ class PostRepositoryIT extends RepositoryTest {
     }
 
     /**
-     * Test {@link PostRepository#findReplyDtosById(UUID, UUID, Pageable)} to verify
-     * that searching for a posts' replies by its {@code id} returns a {@link Page}
-     * of {@link PostDTO}.
+     * Test {@link PostRepository#findReplyPostsById(UUID, UUID, Pageable)} to
+     * verify that searching for a posts' replies by its {@code id} returns a
+     * {@link Page} of {@link PostDTO}.
      */
     @Test
-    void PostRepository_FindReplyDtosById_ReturnPageOfPostDto() {
+    void PostRepository_findReplyPostsById_ReturnPageOfPostDto() {
         Pageable page = new OffsetLimitRequest(0, 10);
 
-        Page<PostDTO> repliesPage = postRepository.findReplyDtosById(
+        Page<PostDTO> repliesPage = postRepository.findReplyPostsById(
             selfPostWithReply.getId(),
             self.getId(),
             page);
@@ -180,15 +180,15 @@ class PostRepositoryIT extends RepositoryTest {
     }
 
     /**
-     * Test {@link PostRepository#findReplyDtosById(UUID, UUID, Pageable)} to verify
-     * that searching for a posts' replies by its {@code id}, that has no replies,
-     * returns an empty {@link Page}.
+     * Test {@link PostRepository#findReplyPostsById(UUID, UUID, Pageable)} to
+     * verify that searching for a posts' replies by its {@code id}, that has no
+     * replies, returns an empty {@link Page}.
      */
     @Test
-    void PostRepository_FindReplyDtosById_ReturnPageOfEmpty() {
+    void PostRepository_findReplyPostsById_ReturnPageOfEmpty() {
         Pageable page = new OffsetLimitRequest(0, 10);
 
-        Page<PostDTO> repliesPage = postRepository.findReplyDtosById(
+        Page<PostDTO> repliesPage = postRepository.findReplyPostsById(
             replyPost.getId(),
             self.getId(),
             page);
