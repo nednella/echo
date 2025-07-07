@@ -26,8 +26,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
 
     private final NamedParameterJdbcTemplate template;
 
-    // @formatter:off
-    @Override
+    @Override // @formatter:off
     public Optional<ProfileDTO> findProfileDtoById(@NonNull UUID id, @NonNull UUID authenticatedUserId) {
         String sql = "SELECT * FROM fetch_profile(:id, NULL, :authenticated_user_id)";
 
@@ -40,11 +39,9 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
             params,
             new ProfileDtoRowMapper()
         ).stream().findFirst();
-    }
-    // @formatter:on
+    } // @formatter:on
 
-    // @formatter:off
-    @Override
+    @Override // @formatter:off
     public Optional<ProfileDTO> findProfileDtoByUsername(@NonNull String username, @NonNull UUID authenticatedUserId) {
         String sql = "SELECT * FROM fetch_profile(NULL, :username, :authenticated_user_id)";
 
@@ -57,16 +54,14 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
             params,
             new ProfileDtoRowMapper()
         ).stream().findFirst();
-    }
-    // @formatter:on
+    } // @formatter:on
 
-    // @formatter:off
-    @Override
+    @Override // @formatter:off
     public Page<SimplifiedProfileDTO> findFollowerDtosById(@NonNull UUID id, @NonNull UUID authenticatedUserId, @NonNull Pageable p) {
-        String followersSql = "SELECT * FROM fetch_profile_followers(:id, :authenticated_user_id, :offset, :limit)";
+        String followersSql = "SELECT * FROM fetch_profile_followers(:profile_id, :authenticated_user_id, :offset, :limit)";
 
         MapSqlParameterSource followersParams = new MapSqlParameterSource()
-            .addValue("id", id)
+            .addValue("profile_id", id)
             .addValue("authenticated_user_id", authenticatedUserId)
             .addValue("offset", (int) p.getOffset())
             .addValue("limit", p.getPageSize());
@@ -77,10 +72,10 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
             new SimplifiedProfileDtoRowMapper()
         );
 
-        String countSql = "SELECT COUNT(*) FROM follow f WHERE f.followed_id = :id";
+        String countSql = "SELECT * FROM fetch_profile_followers_count(:profile_id)";
 
         MapSqlParameterSource countParams = new MapSqlParameterSource()
-            .addValue("id", id);
+            .addValue("profile_id", id);
 
         Long count = template.queryForObject(
             countSql,
@@ -89,16 +84,14 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
         );
 
         return new PageImpl<>(followers, p, count == null ? 0L : count);
-    }
-    // @formatter:on
+    } // @formatter:on
 
-    // @formatter:off
-    @Override
+    @Override // @formatter:off
     public Page<SimplifiedProfileDTO> findFollowingDtosById(@NonNull UUID id, @NonNull UUID authenticatedUserId, @NonNull Pageable p) {
-        String followingSql = "SELECT * FROM fetch_profile_following(:id, :authenticated_user_id, :offset, :limit)";
+        String followingSql = "SELECT * FROM fetch_profile_following(:profile_id, :authenticated_user_id, :offset, :limit)";
         
         MapSqlParameterSource followingParams = new MapSqlParameterSource()
-            .addValue("id", id)
+            .addValue("profile_id", id)
             .addValue("authenticated_user_id", authenticatedUserId)
             .addValue("offset", (int) p.getOffset())
             .addValue("limit", p.getPageSize());
@@ -109,10 +102,10 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
             new SimplifiedProfileDtoRowMapper()
         );
 
-        String countSql = "SELECT COUNT(*) FROM follow f WHERE f.follower_id = :id";
+        String countSql = "SELECT * FROM fetch_profile_following_count(:profile_id)";
 
         MapSqlParameterSource countParams = new MapSqlParameterSource()
-            .addValue("id", id);
+            .addValue("profile_id", id);
 
         Long count = template.queryForObject(
             countSql,
@@ -121,8 +114,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
         );
 
         return new PageImpl<>(followers, p, count == null ? 0L : count);
-    }
-    // @formatter:on
+    } // @formatter:on
 
     /**
      * Maps {@link ResultSet} rows to full {@link ProfileDTO} objects, including
