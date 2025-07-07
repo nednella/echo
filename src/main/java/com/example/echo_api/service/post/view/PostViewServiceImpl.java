@@ -11,7 +11,9 @@ import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.post.PostDTO;
 import com.example.echo_api.persistence.mapper.PageMapper;
 import com.example.echo_api.persistence.model.post.Post;
+import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.PostRepository;
+import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.service.post.BasePostService;
 import com.example.echo_api.service.session.SessionService;
 
@@ -24,14 +26,18 @@ import jakarta.servlet.http.HttpServletRequest;
 @Service
 public class PostViewServiceImpl extends BasePostService implements PostViewService {
 
+    private final ProfileRepository profileRepository;
+
     private final HttpServletRequest httpServletRequest;
 
     // @formatter:off
     protected PostViewServiceImpl(
         SessionService sessionService,
         PostRepository postRepository,
+        ProfileRepository profileRepository,
         HttpServletRequest httpServletRequest) {
         super(sessionService, postRepository);
+        this.profileRepository = profileRepository;
         this.httpServletRequest = httpServletRequest;
     }
     // @formatter:on
@@ -46,13 +52,103 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
 
     @Override
     public PageDTO<PostDTO> getPostRepliesById(UUID id, Pageable page) throws ResourceNotFoundException {
-        Post post = getPostEntityById(id); // validate existence of id
+        UUID postId = getPostEntityById(id).getId(); // validate existence of id
         UUID authenticatedUserId = getAuthenticatedUser().getId();
 
-        Page<PostDTO> query = postRepository.findReplyPostsById(post.getId(), authenticatedUserId, page);
+        Page<PostDTO> query = postRepository.findReplyPostsById(postId, authenticatedUserId, page);
         String uri = getCurrentRequestUri();
 
         return PageMapper.toDTO(query, uri);
+    }
+
+    @Override
+    public PageDTO<PostDTO> getHomepagePosts(Pageable page) {
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
+
+        Page<PostDTO> query = postRepository.findHomepagePosts(authenticatedUserId, page);
+        String uri = getCurrentRequestUri();
+
+        return PageMapper.toDTO(query, uri);
+    }
+
+    @Override
+    public PageDTO<PostDTO> getDiscoverPosts(Pageable page) {
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
+
+        Page<PostDTO> query = postRepository.findDiscoverPosts(authenticatedUserId, page);
+        String uri = getCurrentRequestUri();
+
+        return PageMapper.toDTO(query, uri);
+    }
+
+    @Override
+    public PageDTO<PostDTO> getProfilePostsByUsername(String username, Pageable page) {
+        UUID profileId = getProfileEntityByUsername(username).getId(); // validate existence of username & convert to id
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
+
+        Page<PostDTO> query = postRepository.findPostsByProfileId(profileId, authenticatedUserId, page);
+        String uri = getCurrentRequestUri();
+
+        return PageMapper.toDTO(query, uri);
+    }
+
+    @Override
+    public PageDTO<PostDTO> getProfileRepliesById(UUID id, Pageable page) {
+        UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
+
+        Page<PostDTO> query = postRepository.findReplyPostsByProfileId(profileId, authenticatedUserId, page);
+        String uri = getCurrentRequestUri();
+
+        return PageMapper.toDTO(query, uri);
+    }
+
+    @Override
+    public PageDTO<PostDTO> getProfileLikesById(UUID id, Pageable page) {
+        UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
+
+        Page<PostDTO> query = postRepository.findLikedPostsByProfileId(profileId, authenticatedUserId, page);
+        String uri = getCurrentRequestUri();
+
+        return PageMapper.toDTO(query, uri);
+    }
+
+    @Override
+    public PageDTO<PostDTO> getProfileMentionsById(UUID id, Pageable page) {
+        UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
+
+        Page<PostDTO> query = postRepository.findMentionedPostsByProfileId(profileId, authenticatedUserId, page);
+        String uri = getCurrentRequestUri();
+
+        return PageMapper.toDTO(query, uri);
+    }
+
+    /**
+     * Private method for obtaining a {@link Profile} via {@code id} from
+     * {@link ProfileRepository}.
+     * 
+     * @param id The id of the profile.
+     * @return The {@link Profile} entity.
+     * @throws ResourceNotFoundException If no profile by that id exists.
+     */
+    private Profile getProfileEntityById(UUID id) throws ResourceNotFoundException {
+        return profileRepository.findById(id)
+            .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    /**
+     * Private method for obtaining a {@link Profile} via {@code username} from
+     * {@link ProfileRepository}.
+     * 
+     * @param username The username of the profile.
+     * @return The {@link Profile} entity.
+     * @throws ResourceNotFoundException If no profile by that username exists.
+     */
+    private Profile getProfileEntityByUsername(String username) throws ResourceNotFoundException {
+        return profileRepository.findByUsername(username)
+            .orElseThrow(ResourceNotFoundException::new);
     }
 
     /**
