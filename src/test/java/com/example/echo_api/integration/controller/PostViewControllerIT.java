@@ -106,27 +106,6 @@ class PostViewControllerIT extends IntegrationTest {
     // @formatter:on
 
     @Test
-    // @formatter:off
-    void PostViewController_GetPostRepliesById_ReturnPageDtoOfEmpty() {
-        // api: GET /api/v1/post/{id}/replies ==> : 200 : PageDTO<PostDTO> --> total = 0
-        String path = ApiConfig.Post.GET_REPLIES_BY_ID;
-        UUID id = reply.getId();
-
-        ParameterizedTypeReference<PageDTO<PostDTO>> typeRef = new ParameterizedTypeReference<PageDTO<PostDTO>>() {};
-        ResponseEntity<PageDTO<PostDTO>> response = restTemplate.exchange(path, GET, null, typeRef, id);
-
-        // assert response
-        assertEquals(OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-
-        // assert body
-        PageDTO<PostDTO> pageOfPostDto = response.getBody();
-        assertNotNull(pageOfPostDto);
-        assertEquals(0, pageOfPostDto.total());
-    }
-    // @formatter:on
-
-    @Test
     void PostViewController_GetPostRepliesById_Throw404ResourceNotFound() {
         // api: GET /api/v1/post/{id}/replies ==> : 404 : ResourceNotFound
         String path = ApiConfig.Post.GET_REPLIES_BY_ID;

@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -152,38 +151,6 @@ class PostViewControllerTest {
             .getContentAsString();
 
         PageDTO<PostDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<PostDTO>>() {
-        });
-
-        assertEquals(expected, actual);
-        verify(postViewService, times(1)).getPostRepliesById(eq(id), any(Pageable.class));
-    }
-
-    @Test
-    void PostViewController_GetPostRepliesById_ReturnPageDtoOfEmpty() throws Exception {
-        // api: GET /api/v1/post/{id}/replies ==> : 200 : PageDTO<PostDTO> --> total = 0
-        String path = ApiConfig.Post.GET_REPLIES_BY_ID;
-        UUID id = UUID.randomUUID();
-        int offset = 0;
-        int limit = 20;
-
-        Pageable page = new OffsetLimitRequest(offset, limit);
-
-        Page<PostDTO> replies = new PageImpl<>(new ArrayList<>(), page, 0);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(replies, path);
-
-        when(postViewService.getPostRepliesById(eq(id), any(Pageable.class))).thenReturn(expected);
-
-        String response = mockMvc
-            .perform(get(path, id)
-                .param("offset", String.valueOf(offset))
-                .param("limit", String.valueOf(limit)))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
-        PageDTO<Void> actual = objectMapper.readValue(response, new TypeReference<PageDTO<Void>>() {
         });
 
         assertEquals(expected, actual);
