@@ -22,6 +22,8 @@ import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.post.PostDTO;
 import com.example.echo_api.persistence.model.post.Post;
+import com.example.echo_api.persistence.model.post.like.PostLike;
+import com.example.echo_api.persistence.repository.PostLikeRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
 
 /**
@@ -34,16 +36,35 @@ class PostViewControllerIT extends IntegrationTest {
     @Autowired
     private PostRepository postRepository;
 
+    @Autowired
+    private PostLikeRepository postLikeRepository;
+
     private Post post;
     private Post reply;
+    private Post homepagePost;
+    private Post discoverPost;
 
     @BeforeAll
     void setup() {
+        // get by id, homepage feed, discover feed
         post = new Post(authenticatedUser.getId(), "Test post.");
         post = postRepository.save(post);
 
+        // post replies, replies feed
         reply = new Post(post.getId(), otherUser.getId(), "Test reply.");
         reply = postRepository.save(reply);
+
+        // homepage feed, discover feed
+        homepagePost = new Post(authenticatedUser.getId(), "This post will appear on the homepage feed.");
+        homepagePost = postRepository.save(homepagePost);
+
+        // discover feed
+        discoverPost = new Post(otherUser.getId(), "The post will appear on the discover feed.");
+        discoverPost = postRepository.save(discoverPost);
+
+        // likes feed
+        PostLike like = new PostLike(reply.getId(), authenticatedUser.getId());
+        postLikeRepository.save(like);
     }
 
     @Test
@@ -83,11 +104,10 @@ class PostViewControllerIT extends IntegrationTest {
         assertEquals(ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND, error.message());
     }
 
-    @Test
-    // @formatter:off
+    @Test // @formatter:off
     void PostViewController_GetPostRepliesById_ReturnPageDtoOfPostDto() {
         // api: GET /api/v1/post/{id}/replies ==> : 200 : PageDTO<PostDTO>
-        String path = ApiConfig.Post.GET_REPLIES_BY_ID;
+        String path = ApiConfig.Post.GET_REPLIES_BY_ID + "?offset=0&limit=20";
         UUID id = post.getId();
 
         ParameterizedTypeReference<PageDTO<PostDTO>> typeRef = new ParameterizedTypeReference<PageDTO<PostDTO>>() {};
@@ -102,13 +122,211 @@ class PostViewControllerIT extends IntegrationTest {
         assertNotNull(pageOfPostDto);
         assertEquals(1, pageOfPostDto.total());
         assertEquals(reply.getId().toString(), pageOfPostDto.items().getFirst().id());
-    }
-    // @formatter:on
+    } // @formatter:on
 
     @Test
     void PostViewController_GetPostRepliesById_Throw404ResourceNotFound() {
         // api: GET /api/v1/post/{id}/replies ==> : 404 : ResourceNotFound
-        String path = ApiConfig.Post.GET_REPLIES_BY_ID;
+        String path = ApiConfig.Post.GET_REPLIES_BY_ID + "?offset=0&limit=20";
+        UUID id = UUID.randomUUID();
+
+        ResponseEntity<ErrorDTO> response = restTemplate.getForEntity(path, ErrorDTO.class, id);
+
+        // assert response
+        assertEquals(NOT_FOUND, response.getStatusCode());
+        assertNotNull(response.getBody());
+
+        // assert error
+        ErrorDTO error = response.getBody();
+        assertNotNull(error);
+        assertEquals(NOT_FOUND.value(), error.status());
+        assertEquals(ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND, error.message());
+    }
+
+    @Test // @formatter:off
+    void PostViewController_GetHomepagePosts_ReturnPageDtoOfPostDto() {
+        // api: GET /api/v1/feed/homepage ==> : 200 : PageDTO<PostDTO>
+        String path = ApiConfig.Feed.HOMEPAGE + "?offset=0&limit=20";
+
+        ParameterizedTypeReference<PageDTO<PostDTO>> typeRef = new ParameterizedTypeReference<PageDTO<PostDTO>>() {};
+        ResponseEntity<PageDTO<PostDTO>> response = restTemplate.exchange(path, GET, null, typeRef);
+
+        // assert response
+        assertEquals(OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+
+        // assert body
+        PageDTO<PostDTO> posts = response.getBody();
+        assertNotNull(posts);
+        assertEquals(2, posts.total());
+        assertTrue(posts.items().stream().anyMatch(p -> p.id().equals(homepagePost.getId().toString())));
+        assertTrue(posts.items().stream().anyMatch(p -> p.id().equals(post.getId().toString())));
+    } // @formatter:on
+
+    @Test // @formatter:off
+    void PostViewController_GetDiscoverPosts_ReturnPageDtoOfPostDto() {
+        // api: GET /api/v1/feed/discover ==> : 200 : PageDTO<PostDTO>
+        String path = ApiConfig.Feed.DISCOVER + "?offset=0&limit=20";
+
+        ParameterizedTypeReference<PageDTO<PostDTO>> typeRef = new ParameterizedTypeReference<PageDTO<PostDTO>>() {};
+        ResponseEntity<PageDTO<PostDTO>> response = restTemplate.exchange(path, GET, null, typeRef);
+
+        // assert response
+        assertEquals(OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+
+        // assert body
+        PageDTO<PostDTO> posts = response.getBody();
+        assertNotNull(posts);
+        assertEquals(3, posts.total());
+        assertTrue(posts.items().stream().anyMatch(p -> p.id().equals(post.getId().toString())));
+        assertTrue(posts.items().stream().anyMatch(p -> p.id().equals(homepagePost.getId().toString())));
+        assertTrue(posts.items().stream().anyMatch(p -> p.id().equals(discoverPost.getId().toString())));
+    }
+
+    @Test // @formatter:off
+    void PostViewController_GetProfilePostsByUsername_ReturnPageDtoOfPostDto() {
+        // api: GET /api/v1/feed/profile/{username} ==> : 200 : PageDTO<PostDTO>
+        String path = ApiConfig.Feed.PROFILE_BY_USERNAME + "?offset=0&limit=20";
+        String username = AUTH_USER_USERNAME;
+
+        ParameterizedTypeReference<PageDTO<PostDTO>> typeRef = new ParameterizedTypeReference<PageDTO<PostDTO>>() {};
+        ResponseEntity<PageDTO<PostDTO>> response = restTemplate.exchange(path, GET, null, typeRef, username);
+
+        // assert response
+        assertEquals(OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+
+        // assert body
+        PageDTO<PostDTO> posts = response.getBody();
+        assertNotNull(posts);
+        assertEquals(2, posts.total());
+        assertTrue(posts.items().stream().anyMatch(p -> p.id().equals(post.getId().toString())));
+        assertTrue(posts.items().stream().anyMatch(p -> p.id().equals(homepagePost.getId().toString())));
+    } // @formatter:on
+
+    @Test
+    void PostViewController_GetProfilePostsByUsername_Throw404ResourceNotFound() {
+        // api: GET /api/v1/feed/profile/{username} ==> : 404 : ResourceNotFound
+        String path = ApiConfig.Feed.PROFILE_BY_USERNAME + "?offset=0&limit=20";
+        String username = "non-existent-user";
+
+        ResponseEntity<ErrorDTO> response = restTemplate.getForEntity(path, ErrorDTO.class, username);
+
+        // assert response
+        assertEquals(NOT_FOUND, response.getStatusCode());
+        assertNotNull(response.getBody());
+
+        // assert error
+        ErrorDTO error = response.getBody();
+        assertNotNull(error);
+        assertEquals(NOT_FOUND.value(), error.status());
+        assertEquals(ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND, error.message());
+    }
+
+    @Test // @formatter:off
+    void PostViewController_GetProfileRepliesById_ReturnPageDtoOfPostDto() {
+        // api: GET /api/v1/feed/profile/{id}/replies ==> : 200 : PageDTO<PostDTO>
+        String path = ApiConfig.Feed.PROFILE_REPLIES_BY_ID + "?offset=0&limit=20";
+        UUID id = otherUser.getId();
+
+        ParameterizedTypeReference<PageDTO<PostDTO>> typeRef = new ParameterizedTypeReference<PageDTO<PostDTO>>() {};
+        ResponseEntity<PageDTO<PostDTO>> response = restTemplate.exchange(path, GET, null, typeRef, id);
+
+        // assert response
+        assertEquals(OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+
+        // assert body
+        PageDTO<PostDTO> posts = response.getBody();
+        assertNotNull(posts);
+        assertEquals(1, posts.total());
+        assertTrue(posts.items().stream().anyMatch(p -> p.id().equals(reply.getId().toString())));
+    } // @formatter:on
+
+    @Test
+    void PostViewController_GetProfileRepliesById_Throw404ResourceNotFound() {
+        // api: GET /api/v1/feed/profile/{id}/replies ==> : 404 : ResourceNotFound
+        String path = ApiConfig.Feed.PROFILE_REPLIES_BY_ID + "?offset=0&limit=20";
+        UUID id = UUID.randomUUID();
+
+        ResponseEntity<ErrorDTO> response = restTemplate.getForEntity(path, ErrorDTO.class, id);
+
+        // assert response
+        assertEquals(NOT_FOUND, response.getStatusCode());
+        assertNotNull(response.getBody());
+
+        // assert error
+        ErrorDTO error = response.getBody();
+        assertNotNull(error);
+        assertEquals(NOT_FOUND.value(), error.status());
+        assertEquals(ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND, error.message());
+    }
+
+    @Test // @formatter:off
+    void PostViewController_GetProfileLikesById_ReturnPageDtoOfPostDto() {
+        // api: GET /api/v1/feed/profile/{id}/likes ==> : 200 : PageDTO<PostDTO>
+        String path = ApiConfig.Feed.PROFILE_LIKES_BY_ID + "?offset=0&limit=20";
+        UUID id = authenticatedUser.getId();
+
+        ParameterizedTypeReference<PageDTO<PostDTO>> typeRef = new ParameterizedTypeReference<PageDTO<PostDTO>>() {};
+        ResponseEntity<PageDTO<PostDTO>> response = restTemplate.exchange(path, GET, null, typeRef, id);
+
+        // assert response
+        assertEquals(OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+
+        // assert body
+        PageDTO<PostDTO> posts = response.getBody();
+        assertNotNull(posts);
+        assertEquals(1, posts.total());
+        assertTrue(posts.items().stream().anyMatch(p -> p.id().equals(reply.getId().toString())));
+    } // @formatter:on
+
+    @Test
+    void PostViewController_GetProfileLikesById_Throw404ResourceNotFound() {
+        // api: GET /api/v1/feed/profile/{id}/likes ==> : 404 : ResourceNotFound
+        String path = ApiConfig.Feed.PROFILE_LIKES_BY_ID + "?offset=0&limit=20";
+        UUID id = UUID.randomUUID();
+
+        ResponseEntity<ErrorDTO> response = restTemplate.getForEntity(path, ErrorDTO.class, id);
+
+        // assert response
+        assertEquals(NOT_FOUND, response.getStatusCode());
+        assertNotNull(response.getBody());
+
+        // assert error
+        ErrorDTO error = response.getBody();
+        assertNotNull(error);
+        assertEquals(NOT_FOUND.value(), error.status());
+        assertEquals(ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND, error.message());
+    }
+
+    @Test // @formatter:off
+    void PostViewController_GetProfileMentionsById_ReturnPageDtoOfPostDto() {
+        // api: GET /api/v1/feed/profile/{id}/mentions ==> : 200 : PageDTO<PostDTO>
+        String path = ApiConfig.Feed.PROFILE_MENTIONS_BY_ID + "?offset=0&limit=20";
+        UUID id = authenticatedUser.getId();
+
+        ParameterizedTypeReference<PageDTO<PostDTO>> typeRef = new ParameterizedTypeReference<PageDTO<PostDTO>>() {};
+        ResponseEntity<PageDTO<PostDTO>> response = restTemplate.exchange(path, GET, null, typeRef, id);
+
+        // assert response
+        assertEquals(OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+
+        // assert body
+        PageDTO<PostDTO> posts = response.getBody();
+        assertNotNull(posts);
+        assertEquals(0, posts.total());
+        assertTrue(posts.items().isEmpty());
+        
+    } // @formatter:on
+
+    @Test
+    void PostViewController_GetProfileMentionsById_Throw404ResourceNotFound() {
+        // api: GET /api/v1/feed/profile/{id}/mentions ==> : 404 : ResourceNotFound
+        String path = ApiConfig.Feed.PROFILE_MENTIONS_BY_ID + "?offset=0&limit=20";
         UUID id = UUID.randomUUID();
 
         ResponseEntity<ErrorDTO> response = restTemplate.getForEntity(path, ErrorDTO.class, id);
