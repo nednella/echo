@@ -11,6 +11,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.DirtiesContext;
 
@@ -18,13 +19,14 @@ import com.example.echo_api.integration.util.RepositoryTest;
 import com.example.echo_api.persistence.dto.response.post.PostDTO;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.post.Post;
+import com.example.echo_api.persistence.model.post.like.PostLike;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.AccountRepository;
 import com.example.echo_api.persistence.repository.PostEntityRepository;
+import com.example.echo_api.persistence.repository.PostLikeRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.util.extractor.PostEntityExtractor;
-import com.example.echo_api.util.pagination.OffsetLimitRequest;
 
 /**
  * Integration test class for {@link PostRepository}.
@@ -44,38 +46,59 @@ class PostRepositoryIT extends RepositoryTest {
     private PostRepository postRepository;
 
     @Autowired
+    private PostLikeRepository postLikeRepository;
+
+    @Autowired
     private PostEntityRepository postEntityRepository;
 
     private Profile self;
     private Profile notSelf;
-    private Post selfPostWithReply;
-    private Post replyPost;
+
+    private Post postWithReplies;
     private Post postWithEntities;
+
+    private Post replyWithOpResponse;
+    private Post opResponse;
+    private Post replyWithLike;
+    private Post reply;
 
     @BeforeAll
     void setup() {
         Account selfAcc = new Account("self", "password");
-        accountRepository.save(selfAcc); // save account to repository to generate a UUID & foreign key
+        accountRepository.save(selfAcc); // save account to repository to generate a UUID
         self = new Profile(selfAcc.getId(), selfAcc.getUsername());
         self = profileRepository.save(self); // save profile to provide foreign key
 
         Account notSelfAcc = new Account("notSelf", "password");
-        accountRepository.save(notSelfAcc); // save account to repository to generate a UUID & foreign key
+        accountRepository.save(notSelfAcc); // save account to repository to generate a UUID
         notSelf = new Profile(notSelfAcc.getId(), notSelfAcc.getUsername());
         notSelf = profileRepository.save(notSelf); // save profile to provide foreign key
 
-        // save a post to db
-        selfPostWithReply = new Post(self.getId(), "Test post.");
-        selfPostWithReply = postRepository.save(selfPostWithReply);
+        // save a post that will be the root of a conversation
+        postWithReplies = new Post(self.getId(), "This post has some replies.");
+        postWithReplies = postRepository.save(postWithReplies);
 
-        // save a post reply to db
-        replyPost = new Post(selfPostWithReply.getId(), notSelf.getId(), "A reply test post.");
-        replyPost = postRepository.save(replyPost);
-
-        // save a post with text entities to db
-        postWithEntities = new Post(self.getId(), "Hey @john_doe and @admin! Nice #SpringBoot app, github.com/repo");
+        // save a post with some entities, but no replies
+        postWithEntities = new Post(notSelf.getId(), "Hey @john_doe and @admin! Nice #SpringBoot app, github.com/repo");
         postWithEntities = postRepository.save(postWithEntities);
         postEntityRepository.saveAll(PostEntityExtractor.extract(postWithEntities.getId(), postWithEntities.getText()));
+
+        // save a reply with an OP (original poster) response
+        replyWithOpResponse = new Post(postWithReplies.getId(), notSelf.getId(), "A reply with an OP response.");
+        replyWithOpResponse = postRepository.save(replyWithOpResponse);
+
+        // save an OP response
+        opResponse = new Post(replyWithOpResponse.getId(), self.getId(), "An original poster response to a reply.");
+        opResponse = postRepository.save(opResponse);
+
+        // save a reply with a like
+        replyWithLike = new Post(postWithReplies.getId(), notSelf.getId(), "A reply with a like.");
+        replyWithLike = postRepository.save(replyWithLike);
+        postLikeRepository.save(new PostLike(replyWithLike.getId(), self.getId()));
+
+        // save a reply with no engagement
+        reply = new Post(postWithReplies.getId(), notSelf.getId(), "A reply with no engagement.");
+        reply = postRepository.save(reply);
     }
 
     /**
@@ -83,18 +106,33 @@ class PostRepositoryIT extends RepositoryTest {
      * can be found by its {@code id}.
      */
     @Test
-    void PostRepository_FindPostDtoById_ReturnPostDto() {
+    void PostRepository_FindPostDtoById_ReturnOptionalPostDto() {
+        UUID postId = postWithReplies.getId();
+        UUID authUserId = self.getId();
+
         Optional<PostDTO> optPost = postRepository.findPostDtoById(
-            replyPost.getId(),
-            self.getId());
+            postId,
+            authUserId);
 
         assertNotNull(optPost);
         assertTrue(optPost.isPresent());
+    }
 
-        PostDTO post = optPost.get();
-        assertNotNull(post.metrics());
-        assertNotNull(post.relationship());
-        assertNotNull(post.author().relationship());
+    /**
+     * Test {@link PostRepository#findPostDtoById(UUID, UUID)} to verify that a
+     * non-existent post {@code id} returns an empty {@link Optional}.
+     */
+    @Test
+    void PostRepository_FindPostDtoById_ReturnOptionalEmpty() {
+        UUID postId = UUID.randomUUID();
+        UUID authUserId = self.getId();
+
+        Optional<PostDTO> optPost = postRepository.findPostDtoById(
+            postId,
+            authUserId);
+
+        assertNotNull(optPost);
+        assertTrue(optPost.isEmpty());
     }
 
     /**
@@ -104,9 +142,12 @@ class PostRepositoryIT extends RepositoryTest {
      */
     @Test
     void PostRepository_FindPostDtoById_ReturnPostDtoWithNullAuthorRelationshipDto() {
+        UUID postId = postWithReplies.getId();
+        UUID authUserId = self.getId();
+
         Optional<PostDTO> optPost = postRepository.findPostDtoById(
-            selfPostWithReply.getId(),
-            self.getId());
+            postId,
+            authUserId);
 
         assertNotNull(optPost);
         assertTrue(optPost.isPresent());
@@ -114,28 +155,44 @@ class PostRepositoryIT extends RepositoryTest {
         PostDTO post = optPost.get();
         assertNotNull(post.metrics());
         assertNotNull(post.relationship());
-        assertNull(post.author().relationship()); // author is self thus null
+        assertNull(post.author().relationship()); // author is self, thus NULL
     }
 
     /**
-     * Test {@link PostRepository#findPostDtoById(UUID, UUID)} to verify that
-     * searching for a non-existent post {@code id} returns an empty optional.
+     * Test {@link PostRepository#findPostDtoById(UUID, UUID)} to verify that a post
+     * NOT belonging to the authenticated user can be found by its {@code id}, and
+     * returns an author relationship object.
      */
     @Test
-    void PostRepository_FindPostDtoById_ReturnEmpty() {
+    void PostRepository_FindPostDtoById_ReturnPostDtoWithAuthorRelationshipDto() {
+        UUID postId = postWithEntities.getId();
+        UUID authUserId = self.getId();
+
         Optional<PostDTO> optPost = postRepository.findPostDtoById(
-            UUID.randomUUID(),
-            self.getId());
+            postId,
+            authUserId);
 
         assertNotNull(optPost);
-        assertTrue(optPost.isEmpty());
+        assertTrue(optPost.isPresent());
+
+        PostDTO post = optPost.get();
+        assertNotNull(post.metrics());
+        assertNotNull(post.relationship());
+        assertNotNull(post.author().relationship()); // author is not self, thus NOT NULL
     }
 
+    /**
+     * Test {@link PostRepository#findPostDtoById(UUID, UUID)} to verify that a post
+     * containing no entities returns empty entity arrays.
+     */
     @Test
     void PostRepository_FindPostDtoById_ReturnsNoEntities() {
+        UUID postId = postWithReplies.getId();
+        UUID authUserId = self.getId();
+
         Optional<PostDTO> optPost = postRepository.findPostDtoById(
-            selfPostWithReply.getId(),
-            self.getId());
+            postId,
+            authUserId);
 
         assertNotNull(optPost);
         assertTrue(optPost.isPresent());
@@ -145,11 +202,19 @@ class PostRepositoryIT extends RepositoryTest {
         assertTrue(post.entities().mentions().isEmpty()); // no related mentions
     }
 
+    /**
+     * Test {@link PostRepository#findPostDtoById(UUID, UUID)} to verify that a post
+     * containing some entities returns those entities within their respective
+     * arrays.
+     */
     @Test
     void PostRepository_FindPostDtoById_ReturnsMultipleEntities() {
+        UUID postId = postWithEntities.getId();
+        UUID authUserId = self.getId();
+
         Optional<PostDTO> optPost = postRepository.findPostDtoById(
-            postWithEntities.getId(),
-            self.getId());
+            postId,
+            authUserId);
 
         assertNotNull(optPost);
         assertTrue(optPost.isPresent());
@@ -166,17 +231,19 @@ class PostRepositoryIT extends RepositoryTest {
      * {@link Page} of {@link PostDTO}.
      */
     @Test
-    void PostRepository_findReplyPostsById_ReturnPageOfPostDto() {
-        Pageable page = new OffsetLimitRequest(0, 10);
+    void PostRepository_findReplyPostsById_HasRepliesReturnsPageOfPostDto() {
+        UUID postId = postWithReplies.getId();
+        UUID authUserId = self.getId();
+        Pageable page = PageRequest.of(0, 10);
 
-        Page<PostDTO> repliesPage = postRepository.findReplyPostsById(
-            selfPostWithReply.getId(),
-            self.getId(),
+        Page<PostDTO> replies = postRepository.findReplyPostsById(
+            postId,
+            authUserId,
             page);
 
-        assertNotNull(repliesPage);
-        assertTrue(repliesPage.hasContent());
-        assertEquals(1, repliesPage.getTotalElements());
+        assertNotNull(replies);
+        assertTrue(replies.hasContent());
+        assertEquals(3, replies.getTotalElements());
     }
 
     /**
@@ -185,17 +252,19 @@ class PostRepositoryIT extends RepositoryTest {
      * replies, returns an empty {@link Page}.
      */
     @Test
-    void PostRepository_findReplyPostsById_ReturnPageOfEmpty() {
-        Pageable page = new OffsetLimitRequest(0, 10);
+    void PostRepository_findReplyPostsById_HasNoRepliesReturnsEmptyPage() {
+        UUID postId = postWithEntities.getId();
+        UUID authUserId = self.getId();
+        Pageable page = PageRequest.of(0, 10);
 
-        Page<PostDTO> repliesPage = postRepository.findReplyPostsById(
-            replyPost.getId(),
-            self.getId(),
+        Page<PostDTO> replies = postRepository.findReplyPostsById(
+            postId,
+            authUserId,
             page);
 
-        assertNotNull(repliesPage);
-        assertTrue(repliesPage.isEmpty());
-        assertEquals(0, repliesPage.getTotalElements());
+        assertNotNull(replies);
+        assertTrue(replies.isEmpty());
+        assertEquals(0, replies.getTotalElements());
     }
 
 }
