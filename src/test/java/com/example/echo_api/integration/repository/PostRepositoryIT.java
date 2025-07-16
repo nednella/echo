@@ -267,4 +267,49 @@ class PostRepositoryIT extends RepositoryTest {
         assertEquals(0, replies.getTotalElements());
     }
 
+    /**
+     * Test {@link PostRepository#findReplyPostsById(UUID, UUID, Pageable)} to
+     * verify that searching for a posts' replies by its {@code id}, correctly ranks
+     * the reply with an original poster response highest.
+     */
+    @Test
+    void PostRepository_findReplyPostsById_ReplyWithOpResponseIsRankedHighest() {
+        UUID postId = postWithReplies.getId();
+        UUID authUserId = self.getId();
+        Pageable page = PageRequest.of(0, 10);
+
+        Page<PostDTO> replies = postRepository.findReplyPostsById(
+            postId,
+            authUserId,
+            page);
+
+        assertNotNull(replies);
+        assertTrue(replies.hasContent());
+        assertTrue(replies.getTotalElements() > 1);
+        assertEquals("A reply with an OP response.", replies.getContent().getFirst().text());
+    }
+
+    /**
+     * Test {@link PostRepository#findReplyPostsById(UUID, UUID, Pageable)} to
+     * verify that searching for a posts' replies by its {@code id}, correctly ranks
+     * the reply with engagement higher than those without any engagement.
+     */
+    @Test
+    void PostRepository_findReplyPostsById_ReplyWithEngagementIsRankedHigherThanReplyWithoutEngagement() {
+        UUID postId = postWithReplies.getId();
+        UUID authUserId = self.getId();
+        Pageable page = PageRequest.of(0, 10);
+
+        Page<PostDTO> replies = postRepository.findReplyPostsById(
+            postId,
+            authUserId,
+            page);
+
+        assertNotNull(replies);
+        assertTrue(replies.hasContent());
+        assertTrue(replies.getTotalElements() > 1);
+        assertEquals("A reply with a like.", replies.getContent().get(1).text());
+        assertEquals("A reply with no engagement.", replies.getContent().get(2).text());
+    }
+
 }
