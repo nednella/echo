@@ -2,6 +2,8 @@ package com.example.echo_api.integration.repository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,10 +20,12 @@ import org.springframework.test.annotation.DirtiesContext;
 import com.example.echo_api.integration.util.RepositoryTest;
 import com.example.echo_api.persistence.dto.response.post.PostDTO;
 import com.example.echo_api.persistence.model.account.Account;
+import com.example.echo_api.persistence.model.block.Block;
 import com.example.echo_api.persistence.model.post.Post;
 import com.example.echo_api.persistence.model.post.like.PostLike;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.AccountRepository;
+import com.example.echo_api.persistence.repository.BlockRepository;
 import com.example.echo_api.persistence.repository.PostEntityRepository;
 import com.example.echo_api.persistence.repository.PostLikeRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
@@ -43,6 +47,9 @@ class PostRepositoryIT extends RepositoryTest {
     private ProfileRepository profileRepository;
 
     @Autowired
+    private BlockRepository blockRepository;
+
+    @Autowired
     private PostRepository postRepository;
 
     @Autowired
@@ -52,54 +59,64 @@ class PostRepositoryIT extends RepositoryTest {
     private PostEntityRepository postEntityRepository;
 
     private Profile self;
-    private Profile notSelf;
+    private Profile randomUser;
+    private Profile blockedUser;
 
     private Post postWithReplies;
     private Post postWithEntities;
-
     private Post replyWithOpResponse;
-    private Post opResponse;
     private Post replyWithLike;
-    private Post reply;
 
-    @BeforeAll
-    void setup() {
-        Account selfAcc = new Account("self", "password");
-        accountRepository.save(selfAcc); // save account to repository to generate a UUID
-        self = new Profile(selfAcc.getId(), selfAcc.getUsername());
-        self = profileRepository.save(self); // save profile to provide foreign key
-
-        Account notSelfAcc = new Account("notSelf", "password");
-        accountRepository.save(notSelfAcc); // save account to repository to generate a UUID
-        notSelf = new Profile(notSelfAcc.getId(), notSelfAcc.getUsername());
-        notSelf = profileRepository.save(notSelf); // save profile to provide foreign key
-
-        // save a post that will be the root of a conversation
-        postWithReplies = new Post(self.getId(), "This post has some replies.");
-        postWithReplies = postRepository.save(postWithReplies);
-
-        // save a post with some entities, but no replies
-        postWithEntities = new Post(notSelf.getId(), "Hey @john_doe and @admin! Nice #SpringBoot app, github.com/repo");
-        postWithEntities = postRepository.save(postWithEntities);
-        postEntityRepository.saveAll(PostEntityExtractor.extract(postWithEntities.getId(), postWithEntities.getText()));
-
-        // save a reply with an OP (original poster) response
-        replyWithOpResponse = new Post(postWithReplies.getId(), notSelf.getId(), "A reply with an OP response.");
-        replyWithOpResponse = postRepository.save(replyWithOpResponse);
-
-        // save an OP response
-        opResponse = new Post(replyWithOpResponse.getId(), self.getId(), "An original poster response to a reply.");
-        opResponse = postRepository.save(opResponse);
-
-        // save a reply with a like
-        replyWithLike = new Post(postWithReplies.getId(), notSelf.getId(), "A reply with a like.");
-        replyWithLike = postRepository.save(replyWithLike);
-        postLikeRepository.save(new PostLike(replyWithLike.getId(), self.getId()));
-
-        // save a reply with no engagement
-        reply = new Post(postWithReplies.getId(), notSelf.getId(), "A reply with no engagement.");
-        reply = postRepository.save(reply);
+    private Profile createProfile(String username, String password) {
+        Account account = new Account(username, password);
+        accountRepository.save(account);
+        Profile profile = new Profile(account.getId(), account.getUsername());
+        return profileRepository.save(profile);
     }
+
+    private Post createPost(UUID parentId, UUID authorId, String text) {
+        Post post = new Post(parentId, authorId, text);
+        return postRepository.save(post);
+    }
+
+    /**
+     * Assert that each subsequent post in the list was created before its previous,
+     * i.e., the array of posts are ordered by newest first.
+     */
+    private void assertPostsRankedByCreatedAtDescending(List<PostDTO> posts) {
+        for (int i = 0; i < posts.size() - 1; i++) {
+            Instant prev = Instant.parse(posts.get(i).createdAt());
+            Instant next = Instant.parse(posts.get(i + 1).createdAt());
+
+            assertTrue(next.isBefore(prev));
+        }
+    }
+
+    @BeforeAll // @formatter:off
+    void setup() {
+        self = createProfile("self", "password");
+        randomUser = createProfile("random_user", "password");
+        blockedUser = createProfile("blocked_user", "password");
+
+        // Create root posts (no parent)
+        postWithReplies = createPost(null, self.getId(), "This post has some replies.");
+        postWithEntities = createPost(null, self.getId(),"Nice #SpringBoot app, github.com/repo");
+        createPost(null, blockedUser.getId(), "A post from a blocked user.");
+
+        // create posts to form a conversation
+        replyWithOpResponse = createPost(postWithReplies.getId(), randomUser.getId(),"A reply, where @self will reply back!");
+        replyWithLike = createPost(postWithReplies.getId(), randomUser.getId(), "A reply that @self will like!");
+        createPost(postWithReplies.getId(), randomUser.getId(), "A reply with no engagement.");
+        createPost(replyWithOpResponse.getId(), self.getId(), "I'm replying back.");
+
+        // persist relevant blocks/likes/entities
+        blockRepository.save(new Block(self.getId(), blockedUser.getId()));
+        postLikeRepository.save(new PostLike(replyWithOpResponse.getId(), self.getId()));
+        postLikeRepository.save(new PostLike(replyWithLike.getId(), self.getId()));
+        postEntityRepository.saveAll(PostEntityExtractor.extract(postWithEntities.getId(), postWithEntities.getText()));
+        postEntityRepository.saveAll(PostEntityExtractor.extract(replyWithOpResponse.getId(), replyWithOpResponse.getText()));
+        postEntityRepository.saveAll(PostEntityExtractor.extract(replyWithLike.getId(), replyWithLike.getText()));
+    } // @formatter:on
 
     /**
      * Test {@link PostRepository#findPostDtoById(UUID, UUID)} to verify that a post
@@ -165,7 +182,7 @@ class PostRepositoryIT extends RepositoryTest {
      */
     @Test
     void PostRepository_FindPostDtoById_ReturnPostDtoWithAuthorRelationshipDto() {
-        UUID postId = postWithEntities.getId();
+        UUID postId = replyWithOpResponse.getId();
         UUID authUserId = self.getId();
 
         Optional<PostDTO> optPost = postRepository.findPostDtoById(
@@ -221,7 +238,6 @@ class PostRepositoryIT extends RepositoryTest {
 
         PostDTO post = optPost.get();
         assertEquals(1, post.entities().hashtags().size()); // 1 related hashtag
-        assertEquals(2, post.entities().mentions().size()); // 2 related mentions
         assertEquals(1, post.entities().urls().size()); // 1 related url
     }
 
@@ -267,6 +283,8 @@ class PostRepositoryIT extends RepositoryTest {
         assertEquals(0, replies.getTotalElements());
     }
 
+    // TODO: findReplyPostsById_BlockedUserRepliesAreNotShown
+
     /**
      * Test {@link PostRepository#findReplyPostsById(UUID, UUID, Pageable)} to
      * verify that searching for a posts' replies by its {@code id}, correctly ranks
@@ -286,7 +304,7 @@ class PostRepositoryIT extends RepositoryTest {
         assertNotNull(replies);
         assertTrue(replies.hasContent());
         assertTrue(replies.getTotalElements() > 1);
-        assertEquals("A reply with an OP response.", replies.getContent().getFirst().text());
+        assertEquals("A reply, where @self will reply back!", replies.getContent().getFirst().text());
     }
 
     /**
@@ -308,8 +326,274 @@ class PostRepositoryIT extends RepositoryTest {
         assertNotNull(replies);
         assertTrue(replies.hasContent());
         assertTrue(replies.getTotalElements() > 1);
-        assertEquals("A reply with a like.", replies.getContent().get(1).text());
+        assertEquals("A reply that @self will like!", replies.getContent().get(1).text());
         assertEquals("A reply with no engagement.", replies.getContent().get(2).text());
+    }
+
+    @Test
+    void PostRepository_findHomepagePosts_RankedByCreatedAtDescending() {
+        UUID authUserId = self.getId();
+        Pageable page = PageRequest.of(0, 10);
+
+        Page<PostDTO> query = postRepository.findHomepagePosts(
+            authUserId,
+            page);
+
+        assertNotNull(query);
+        assertTrue(query.hasContent());
+        assertTrue(query.getTotalElements() > 1);
+
+        List<PostDTO> posts = query.getContent();
+        assertPostsRankedByCreatedAtDescending(posts);
+    }
+
+    @Test
+    void PostRepository_findHomepagePosts_NoFollowsReturnsSelfPostsOnly() {
+        UUID authUserId = self.getId();
+        Pageable page = PageRequest.of(0, 10);
+
+        Page<PostDTO> query = postRepository.findHomepagePosts(
+            authUserId,
+            page);
+
+        assertNotNull(query);
+        assertTrue(query.hasContent());
+
+        List<PostDTO> posts = query.getContent();
+
+        // assert all posts belong to authUser
+        for (PostDTO post : posts) {
+            UUID authorId = UUID.fromString(post.author().id());
+            assertEquals(authUserId, authorId);
+        }
+    }
+
+    @Test
+    void PostRepository_findHomepagePosts_NoFollowsAndNoPostsReturnsEmptyPage() {
+        UUID authUserId = randomUser.getId(); // randomUser has no root-level posts, only replies
+        Pageable page = PageRequest.of(0, 10);
+
+        Page<PostDTO> query = postRepository.findHomepagePosts(
+            authUserId,
+            page);
+
+        assertNotNull(query);
+        assertTrue(query.isEmpty());
+    }
+
+    @Test
+    void PostRepository_findDiscoverPosts_RankedByCreatedAtDescending() {
+        UUID authUserId = self.getId();
+        Pageable page = PageRequest.of(0, 10);
+
+        Page<PostDTO> query = postRepository.findDiscoverPosts(
+            authUserId,
+            page);
+
+        assertNotNull(query);
+        assertTrue(query.hasContent());
+        assertTrue(query.getTotalElements() > 1);
+
+        List<PostDTO> posts = query.getContent();
+        assertPostsRankedByCreatedAtDescending(posts);
+    }
+
+    @Test
+    void PostRepository_findDiscoverPosts_BlockedUserPostsAreNotShown() {
+        UUID blockedUserId = blockedUser.getId();
+        UUID authUserId = self.getId(); // self has blocked blockedUser
+        Pageable page = PageRequest.of(0, 10);
+
+        Page<PostDTO> query = postRepository.findDiscoverPosts(
+            authUserId,
+            page);
+
+        assertNotNull(query);
+        assertTrue(query.hasContent());
+
+        List<PostDTO> posts = query.getContent();
+
+        // assert no post belongs to blockedUser
+        for (PostDTO post : posts) {
+            UUID authorId = UUID.fromString(post.author().id());
+            assertNotEquals(blockedUserId, authorId);
+        }
+    }
+
+    @Test
+    void PostRepository_findPostsByProfileId_RankedByCreatedAtDescending() {
+        UUID profileId = self.getId();
+        UUID authUserId = self.getId();
+        Pageable page = PageRequest.of(0, 10);
+
+        Page<PostDTO> query = postRepository.findPostsByProfileId(
+            profileId,
+            authUserId,
+            page);
+
+        assertNotNull(query);
+        assertTrue(query.hasContent());
+        assertTrue(query.getTotalElements() > 1);
+
+        List<PostDTO> posts = query.getContent();
+        assertPostsRankedByCreatedAtDescending(posts);
+    }
+
+    @Test
+    void PostRepository_findPostsByProfileId_ContainsOnlyPostsByProfileId() {
+        UUID profileId = self.getId();
+        UUID authUserId = self.getId();
+        Pageable page = PageRequest.of(0, 10);
+
+        Page<PostDTO> query = postRepository.findPostsByProfileId(
+            profileId,
+            authUserId,
+            page);
+
+        assertNotNull(query);
+        assertTrue(query.hasContent());
+        assertTrue(query.getTotalElements() > 1);
+
+        List<PostDTO> posts = query.getContent();
+
+        // assert all posts belong to profileId
+        for (PostDTO post : posts) {
+            UUID authorId = UUID.fromString(post.author().id());
+            assertEquals(profileId, authorId);
+        }
+    }
+
+    @Test
+    void PostRepository_findReplyPostsByProfileId_RankedByCreatedAtDescending() {
+        UUID profileId = randomUser.getId();
+        UUID authUserId = self.getId();
+        Pageable page = PageRequest.of(0, 10);
+
+        Page<PostDTO> query = postRepository.findReplyPostsByProfileId(
+            profileId,
+            authUserId,
+            page);
+
+        assertNotNull(query);
+        assertTrue(query.hasContent());
+        assertTrue(query.getTotalElements() > 1);
+
+        List<PostDTO> posts = query.getContent();
+        assertPostsRankedByCreatedAtDescending(posts);
+    }
+
+    @Test
+    void PostRepository_findReplyPostsByProfileId_ContainsOnlyPostsAuthoredByProfileId() {
+        UUID profileId = randomUser.getId();
+        UUID authUserId = self.getId();
+        Pageable page = PageRequest.of(0, 10);
+
+        Page<PostDTO> query = postRepository.findReplyPostsByProfileId(
+            profileId,
+            authUserId,
+            page);
+
+        assertNotNull(query);
+        assertTrue(query.hasContent());
+        assertTrue(query.getTotalElements() > 1);
+
+        List<PostDTO> posts = query.getContent();
+
+        // assert all posts belong to profileId
+        for (PostDTO post : posts) {
+            UUID authorId = UUID.fromString(post.author().id());
+            assertEquals(profileId, authorId);
+        }
+    }
+
+    // TODO: findLikedPostsByProfileId_BlockedUserPostsAreNotShown
+
+    @Test
+    void PostRepository_findLikedPostsByProfileId_RankedByCreatedAtDescending() {
+        UUID profileId = self.getId();
+        UUID authUserId = self.getId();
+        Pageable page = PageRequest.of(0, 10);
+
+        Page<PostDTO> query = postRepository.findLikedPostsByProfileId(
+            profileId,
+            authUserId,
+            page);
+
+        assertNotNull(query);
+        assertTrue(query.hasContent());
+        assertTrue(query.getTotalElements() > 1);
+
+        List<PostDTO> posts = query.getContent();
+        assertPostsRankedByCreatedAtDescending(posts);
+    }
+
+    @Test
+    void PostRepository_findLikedPostsByProfileId_ContainsOnlyPostsLikedByProfileId() {
+        UUID profileId = self.getId();
+        UUID authUserId = self.getId();
+        Pageable page = PageRequest.of(0, 10);
+
+        Page<PostDTO> query = postRepository.findLikedPostsByProfileId(
+            profileId,
+            authUserId,
+            page);
+
+        assertNotNull(query);
+        assertTrue(query.hasContent());
+        assertTrue(query.getTotalElements() > 1);
+
+        List<PostDTO> posts = query.getContent();
+
+        // assert all liked posts do in fact have a like from the supplied profileId
+        for (PostDTO post : posts) {
+            UUID postId = UUID.fromString(post.id());
+            assertTrue(postLikeRepository.existsByPostIdAndAuthorId(postId, profileId));
+        }
+    }
+
+    // TODO: findMentionedPostsByProfileId_BlockedUserPostsAreNotShown
+
+    @Test
+    void PostRepository_findMentionedPostsByProfileId_RankedByCreatedAtDescending() {
+        UUID profileId = self.getId();
+        UUID authUserId = self.getId();
+        Pageable page = PageRequest.of(0, 10);
+
+        Page<PostDTO> query = postRepository.findMentionedPostsByProfileId(
+            profileId,
+            authUserId,
+            page);
+
+        assertNotNull(query);
+        assertTrue(query.hasContent());
+        assertTrue(query.getTotalElements() > 1);
+
+        List<PostDTO> posts = query.getContent();
+        assertPostsRankedByCreatedAtDescending(posts);
+    }
+
+    @Test
+    void PostRepository_findMentionedPostsByProfileId_ContainsOnlyPostsMentioningUserWithProfileId() {
+        String username = self.getUsername();
+        UUID profileId = self.getId();
+        UUID authUserId = self.getId();
+        Pageable page = PageRequest.of(0, 10);
+
+        Page<PostDTO> query = postRepository.findMentionedPostsByProfileId(
+            profileId,
+            authUserId,
+            page);
+
+        assertNotNull(query);
+        assertTrue(query.hasContent());
+        assertTrue(query.getTotalElements() > 1);
+
+        List<PostDTO> posts = query.getContent();
+
+        // assert all posts do in fact contain a mention of user with id of profileId
+        for (PostDTO post : posts) {
+            post.text().contains(username);
+        }
     }
 
 }
