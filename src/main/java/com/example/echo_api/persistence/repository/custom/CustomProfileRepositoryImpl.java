@@ -136,7 +136,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                 rs.getString("location"),
                 rs.getString("avatar_url"),
                 rs.getString("banner_url"),
-                rs.getTimestamp("created_at").toInstant().toString(),
+                rs.getTimestamp("created_at").toInstant().toString(), // correctly reformats timestamp to ISO-8601
                 new ProfileMetricsDTO(
                     rs.getInt("followers_count"),
                     rs.getInt("following_count"),

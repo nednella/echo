@@ -216,7 +216,7 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
                 rs.getString("conversation_id"),
                 author,
                 rs.getString("text"),
-                rs.getString("created_at"),
+                rs.getTimestamp("created_at").toInstant().toString(), // correctly reformats timestamp to ISO-8601
                 new PostMetricsDTO(
                     rs.getInt("post_like_count"),
                     rs.getInt("post_reply_count")),
