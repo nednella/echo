@@ -85,7 +85,7 @@ class ProfileViewControllerTest {
 
         ProfileDTO expected = createProfileDto(UUID.randomUUID(), "test");
 
-        when(profileViewService.getSelf()).thenReturn(expected);
+        when(profileViewService.getMe()).thenReturn(expected);
 
         String response = mockMvc
             .perform(get(path))
@@ -98,7 +98,7 @@ class ProfileViewControllerTest {
         ProfileDTO actual = objectMapper.readValue(response, ProfileDTO.class);
 
         assertEquals(expected, actual);
-        verify(profileViewService, times(1)).getSelf();
+        verify(profileViewService, times(1)).getMe();
     }
 
     @Test
@@ -106,7 +106,7 @@ class ProfileViewControllerTest {
         // api: GET /api/v1/profile/me ==> 404 : Resource Not Found
         String path = ApiConfig.Profile.ME;
 
-        when(profileViewService.getSelf()).thenThrow(new ResourceNotFoundException());
+        when(profileViewService.getMe()).thenThrow(new ResourceNotFoundException());
 
         String response = mockMvc
             .perform(get(path))
@@ -125,7 +125,7 @@ class ProfileViewControllerTest {
         ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
 
         assertEquals(expected, actual);
-        verify(profileViewService, times(1)).getSelf();
+        verify(profileViewService, times(1)).getMe();
     }
 
     @Test
@@ -182,22 +182,22 @@ class ProfileViewControllerTest {
 
     @Test
     void ProfileViewController_GetFollowers_Return200PageOfProfileDTO() throws Exception {
-        // api: GET /api/v1/profile/{username}/followers ==> 200 : PageDTO<ProfileDTO>
-        String path = ApiConfig.Profile.GET_FOLLOWERS_BY_USERNAME;
-        String username = "existing-user";
+        // api: GET /api/v1/profile/{id}/followers ==> 200 : PageDTO<ProfileDTO>
+        String path = ApiConfig.Profile.GET_FOLLOWERS_BY_ID;
+        UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 1;
 
         Pageable page = new OffsetLimitRequest(offset, limit);
 
-        SimplifiedProfileDTO profileDto = createSimplifiedProfileDto(UUID.randomUUID(), username);
+        SimplifiedProfileDTO profileDto = createSimplifiedProfileDto(id, "username");
         Page<SimplifiedProfileDTO> pageProfileDto = new PageImpl<>(List.of(profileDto), page, 1);
         PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(pageProfileDto, path);
 
-        when(profileViewService.getFollowers(eq(username), any(Pageable.class))).thenReturn(expected);
+        when(profileViewService.getFollowers(eq(id), any(Pageable.class))).thenReturn(expected);
 
         String response = mockMvc
-            .perform(get(path, username)
+            .perform(get(path, id)
                 .param("offset", String.valueOf(offset))
                 .param("limit", String.valueOf(limit)))
             .andDo(print())
@@ -213,14 +213,14 @@ class ProfileViewControllerTest {
         assertEquals(expected, actual);
         assertEquals(1, actual.total());
         assertEquals(1, actual.items().size());
-        verify(profileViewService, times(1)).getFollowers(eq(username), any(Pageable.class));
+        verify(profileViewService, times(1)).getFollowers(eq(id), any(Pageable.class));
     }
 
     @Test
     void ProfileViewController_GetFollowers_Return200PageOfEmpty() throws Exception {
-        // api: GET /api/v1/profile/{username}/followers ==> 200 : PageDTO<ProfileDTO>
-        String path = ApiConfig.Profile.GET_FOLLOWERS_BY_USERNAME;
-        String username = "existing-user";
+        // api: GET /api/v1/profile/{id}/followers ==> 200 : PageDTO<ProfileDTO>
+        String path = ApiConfig.Profile.GET_FOLLOWERS_BY_ID;
+        UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 1;
 
@@ -229,10 +229,10 @@ class ProfileViewControllerTest {
         Page<SimplifiedProfileDTO> pageProfileDto = new PageImpl<>(new ArrayList<>(), page, 0);
         PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(pageProfileDto, path);
 
-        when(profileViewService.getFollowers(eq(username), any(Pageable.class))).thenReturn(expected);
+        when(profileViewService.getFollowers(eq(id), any(Pageable.class))).thenReturn(expected);
 
         String response = mockMvc
-            .perform(get(path, username)
+            .perform(get(path, id)
                 .param("offset", String.valueOf(offset))
                 .param("limit", String.valueOf(limit)))
             .andDo(print())
@@ -247,19 +247,19 @@ class ProfileViewControllerTest {
         assertEquals(expected, actual);
         assertEquals(0, actual.total());
         assertEquals(0, actual.items().size());
-        verify(profileViewService, times(1)).getFollowers(eq(username), any(Pageable.class));
+        verify(profileViewService, times(1)).getFollowers(eq(id), any(Pageable.class));
     }
 
     @Test
     void ProfileViewController_GetFollowers_Throw400InvalidRequest_InvalidOffset() throws Exception {
-        // api: GET /api/v1/profile/{username}/followers ==> 400 : InvalidRequest
-        String path = ApiConfig.Profile.GET_FOLLOWERS_BY_USERNAME;
-        String username = "existing-user";
+        // api: GET /api/v1/profile/{id}/followers ==> 400 : InvalidRequest
+        String path = ApiConfig.Profile.GET_FOLLOWERS_BY_ID;
+        UUID id = UUID.randomUUID();
         int offset = -1;
         int limit = 1;
 
         String response = mockMvc
-            .perform(get(path, username)
+            .perform(get(path, id)
                 .param("offset", String.valueOf(offset))
                 .param("limit", String.valueOf(limit)))
             .andDo(print())
@@ -277,19 +277,19 @@ class ProfileViewControllerTest {
         ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
 
         assertEquals(expected, actual);
-        verify(profileViewService, never()).getFollowers(eq(username), any(Pageable.class));
+        verify(profileViewService, never()).getFollowers(eq(id), any(Pageable.class));
     }
 
     @Test
     void ProfileViewController_GetFollowers_Throw400InvalidRequest_InvalidLimit() throws Exception {
-        // api: GET /api/v1/profile/{username}/followers ==> 400 : InvalidRequest
-        String path = ApiConfig.Profile.GET_FOLLOWERS_BY_USERNAME;
-        String username = "existing-user";
+        // api: GET /api/v1/profile/{id}/followers ==> 400 : InvalidRequest
+        String path = ApiConfig.Profile.GET_FOLLOWERS_BY_ID;
+        UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 0;
 
         String response = mockMvc
-            .perform(get(path, username)
+            .perform(get(path, id)
                 .param("offset", String.valueOf(offset))
                 .param("limit", String.valueOf(limit)))
             .andDo(print())
@@ -307,22 +307,22 @@ class ProfileViewControllerTest {
         ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
 
         assertEquals(expected, actual);
-        verify(profileViewService, never()).getFollowers(eq(username), any(Pageable.class));
+        verify(profileViewService, never()).getFollowers(eq(id), any(Pageable.class));
     }
 
     @Test
     void ProfileViewController_GetFollowers_Throw404ResourceNotFound() throws Exception {
-        // api: GET /api/v1/profile/{username}/followers ==> 404 : Resource Not Found
-        String path = ApiConfig.Profile.GET_FOLLOWERS_BY_USERNAME;
-        String username = "non-existent-user";
+        // api: GET /api/v1/profile/{id}/followers ==> 404 : Resource Not Found
+        String path = ApiConfig.Profile.GET_FOLLOWERS_BY_ID;
+        UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 1;
 
-        when(profileViewService.getFollowers(eq(username), any(Pageable.class)))
+        when(profileViewService.getFollowers(eq(id), any(Pageable.class)))
             .thenThrow(new ResourceNotFoundException());
 
         String response = mockMvc
-            .perform(get(path, username)
+            .perform(get(path, id)
                 .param("offset", String.valueOf(offset))
                 .param("limit", String.valueOf(limit)))
             .andDo(print())
@@ -340,27 +340,27 @@ class ProfileViewControllerTest {
         ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
 
         assertEquals(expected, actual);
-        verify(profileViewService, times(1)).getFollowers(eq(username), any(Pageable.class));
+        verify(profileViewService, times(1)).getFollowers(eq(id), any(Pageable.class));
     }
 
     @Test
     void ProfileViewController_GetFollowing_Return200PageOfProfileDTO() throws Exception {
-        // api: GET /api/v1/profile/{username}/following ==> 200 : PageDTO<ProfileDTO>
-        String path = ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME;
-        String username = "existing-user";
+        // api: GET /api/v1/profile/{id}/following ==> 200 : PageDTO<ProfileDTO>
+        String path = ApiConfig.Profile.GET_FOLLOWING_BY_ID;
+        UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 1;
 
         Pageable page = new OffsetLimitRequest(offset, limit);
 
-        SimplifiedProfileDTO profileDto = createSimplifiedProfileDto(UUID.randomUUID(), username);
+        SimplifiedProfileDTO profileDto = createSimplifiedProfileDto(id, "username");
         Page<SimplifiedProfileDTO> pageProfileDto = new PageImpl<>(List.of(profileDto), page, 1);
         PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(pageProfileDto, path);
 
-        when(profileViewService.getFollowing(eq(username), any(Pageable.class))).thenReturn(expected);
+        when(profileViewService.getFollowing(eq(id), any(Pageable.class))).thenReturn(expected);
 
         String response = mockMvc
-            .perform(get(path, username)
+            .perform(get(path, id)
                 .param("offset", String.valueOf(offset))
                 .param("limit", String.valueOf(limit)))
             .andDo(print())
@@ -376,14 +376,14 @@ class ProfileViewControllerTest {
         assertEquals(expected, actual);
         assertEquals(1, actual.total());
         assertEquals(1, actual.items().size());
-        verify(profileViewService, times(1)).getFollowing(eq(username), any(Pageable.class));
+        verify(profileViewService, times(1)).getFollowing(eq(id), any(Pageable.class));
     }
 
     @Test
     void ProfileViewController_GetFollowing_Return200PageOfEmpty() throws Exception {
-        // api: GET /api/v1/profile/{username}/following ==> 200 : PageDTO<ProfileDTO>
-        String path = ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME;
-        String username = "existing-user";
+        // api: GET /api/v1/profile/{id}/following ==> 200 : PageDTO<ProfileDTO>
+        String path = ApiConfig.Profile.GET_FOLLOWING_BY_ID;
+        UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 1;
 
@@ -392,10 +392,10 @@ class ProfileViewControllerTest {
         Page<SimplifiedProfileDTO> pageProfileDto = new PageImpl<>(new ArrayList<>(), page, 0);
         PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(pageProfileDto, path);
 
-        when(profileViewService.getFollowing(eq(username), any(Pageable.class))).thenReturn(expected);
+        when(profileViewService.getFollowing(eq(id), any(Pageable.class))).thenReturn(expected);
 
         String response = mockMvc
-            .perform(get(path, username)
+            .perform(get(path, id)
                 .param("offset", String.valueOf(offset))
                 .param("limit", String.valueOf(limit)))
             .andDo(print())
@@ -410,19 +410,19 @@ class ProfileViewControllerTest {
         assertEquals(expected, actual);
         assertEquals(0, actual.total());
         assertEquals(0, actual.items().size());
-        verify(profileViewService, times(1)).getFollowing(eq(username), any(Pageable.class));
+        verify(profileViewService, times(1)).getFollowing(eq(id), any(Pageable.class));
     }
 
     @Test
     void ProfileViewController_GetFollowing_Throw400InvalidRequest_InvalidOffset() throws Exception {
-        // api: GET /api/v1/profile/{username}/following ==> 400 : InvalidRequest
-        String path = ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME;
-        String username = "existing-user";
+        // api: GET /api/v1/profile/{id}/following ==> 400 : InvalidRequest
+        String path = ApiConfig.Profile.GET_FOLLOWING_BY_ID;
+        UUID id = UUID.randomUUID();
         int offset = -1;
         int limit = 1;
 
         String response = mockMvc
-            .perform(get(path, username)
+            .perform(get(path, id)
                 .param("offset", String.valueOf(offset))
                 .param("limit", String.valueOf(limit)))
             .andDo(print())
@@ -440,19 +440,19 @@ class ProfileViewControllerTest {
         ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
 
         assertEquals(expected, actual);
-        verify(profileViewService, never()).getFollowing(eq(username), any(Pageable.class));
+        verify(profileViewService, never()).getFollowing(eq(id), any(Pageable.class));
     }
 
     @Test
     void ProfileViewController_GetFollowing_Throw400InvalidRequest_InvalidLimit() throws Exception {
-        // api: GET /api/v1/profile/{username}/following ==> 400 : InvalidRequest
-        String path = ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME;
-        String username = "existing-user";
+        // api: GET /api/v1/profile/{id}/following ==> 400 : InvalidRequest
+        String path = ApiConfig.Profile.GET_FOLLOWING_BY_ID;
+        UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 0;
 
         String response = mockMvc
-            .perform(get(path, username)
+            .perform(get(path, id)
                 .param("offset", String.valueOf(offset))
                 .param("limit", String.valueOf(limit)))
             .andDo(print())
@@ -470,22 +470,22 @@ class ProfileViewControllerTest {
         ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
 
         assertEquals(expected, actual);
-        verify(profileViewService, never()).getFollowing(eq(username), any(Pageable.class));
+        verify(profileViewService, never()).getFollowing(eq(id), any(Pageable.class));
     }
 
     @Test
     void ProfileViewController_GetFollowing_Throw404ResourceNotFound() throws Exception {
-        // api: GET /api/v1/profile/{username}/following ==> 404 : Resource Not Found
-        String path = ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME;
-        String username = "non-existent-user";
+        // api: GET /api/v1/profile/{id}/following ==> 404 : Resource Not Found
+        String path = ApiConfig.Profile.GET_FOLLOWING_BY_ID;
+        UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 1;
 
-        when(profileViewService.getFollowing(eq(username), any(Pageable.class)))
+        when(profileViewService.getFollowing(eq(id), any(Pageable.class)))
             .thenThrow(new ResourceNotFoundException());
 
         String response = mockMvc
-            .perform(get(path, username)
+            .perform(get(path, id)
                 .param("offset", String.valueOf(offset))
                 .param("limit", String.valueOf(limit)))
             .andDo(print())
@@ -503,7 +503,7 @@ class ProfileViewControllerTest {
         ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
 
         assertEquals(expected, actual);
-        verify(profileViewService, times(1)).getFollowing(eq(username), any(Pageable.class));
+        verify(profileViewService, times(1)).getFollowing(eq(id), any(Pageable.class));
     }
 
 }
