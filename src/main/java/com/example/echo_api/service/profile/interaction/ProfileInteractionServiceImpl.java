@@ -43,9 +43,9 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
     // @formatter:on
 
     @Override
-    public void follow(String username) {
+    public void follow(UUID id) {
         UUID source = getAuthenticatedUser().getId();
-        UUID target = getProfileEntityByUsername(username).getId();
+        UUID target = getProfileEntityById(id).getId();
 
         validateSelfAction(source, target);
         validateNoBlock(source, target);
@@ -57,18 +57,18 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
     }
 
     @Override
-    public void unfollow(String username) {
+    public void unfollow(UUID id) {
         UUID source = getAuthenticatedUser().getId();
-        UUID target = getProfileEntityByUsername(username).getId();
+        UUID target = getProfileEntityById(id).getId();
 
         validateSelfAction(source, target);
         followRepository.deleteByFollowerIdAndFollowedId(source, target);
     }
 
     @Override
-    public void block(String username) {
+    public void block(UUID id) {
         UUID source = getAuthenticatedUser().getId();
-        UUID target = getProfileEntityByUsername(username).getId();
+        UUID target = getProfileEntityById(id).getId();
 
         validateSelfAction(source, target);
         if (blockRepository.existsByBlockerIdAndBlockedId(source, target)) {
@@ -80,9 +80,9 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
     }
 
     @Override
-    public void unblock(String username) {
+    public void unblock(UUID id) {
         UUID source = getAuthenticatedUser().getId();
-        UUID target = getProfileEntityByUsername(username).getId();
+        UUID target = getProfileEntityById(id).getId();
 
         validateSelfAction(source, target);
         blockRepository.deleteByBlockerIdAndBlockedId(source, target);

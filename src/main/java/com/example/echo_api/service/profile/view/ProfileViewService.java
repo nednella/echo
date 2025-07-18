@@ -16,7 +16,7 @@ public interface ProfileViewService {
      * 
      * @return A {@link ProfileDTO} resembling the users profile.
      */
-    public ProfileDTO getSelf();
+    public ProfileDTO getMe();
 
     /**
      * Fetch a {@link ProfileDTO} by {@code id}.
@@ -38,26 +38,26 @@ public interface ProfileViewService {
 
     /**
      * Fetch a {@link PageDTO} of {@link SimplifiedProfileDTO} for the followers
-     * list of the supplied {@code username} and {@code page} parameters.
+     * list of the supplied {@code id} and {@code page} parameters.
      * 
-     * @param username The username of the profile to query.
-     * @param page     The {@link Pageable} containing the pagination parameters.
+     * @param id   The id of the profile to query.
+     * @param page The {@link Pageable} containing the pagination parameters.
      * @return A {@link PageDTO} of {@link SimplifiedProfileDTO} for matches,
      *         otherwise empty.
-     * @throws ResourceNotFoundException If no profile by that username exists.
+     * @throws ResourceNotFoundException If no profile by that id exists.
      */
-    public PageDTO<SimplifiedProfileDTO> getFollowers(String username, Pageable page) throws ResourceNotFoundException;
+    public PageDTO<SimplifiedProfileDTO> getFollowers(UUID id, Pageable page) throws ResourceNotFoundException;
 
     /**
      * Fetch a {@link PageDTO} of {@link SimplifiedProfileDTO} for the following
-     * list of the supplied {@code username} and {@code page} parameters.
+     * list of the supplied {@code id} and {@code page} parameters.
      * 
-     * @param username The username of the profile to query.
-     * @param page     The {@link Pageable} containing the pagination parameters.
+     * @param id   The id of the profile to query.
+     * @param page The {@link Pageable} containing the pagination parameters.
      * @return A {@link PageDTO} of {@link SimplifiedProfileDTO} for matches,
      *         otherwise empty.
-     * @throws ResourceNotFoundException If no profile by that username exists.
+     * @throws ResourceNotFoundException If no profile by that id exists.
      */
-    public PageDTO<SimplifiedProfileDTO> getFollowing(String username, Pageable page) throws ResourceNotFoundException;
+    public PageDTO<SimplifiedProfileDTO> getFollowing(UUID id, Pageable page) throws ResourceNotFoundException;
 
 }

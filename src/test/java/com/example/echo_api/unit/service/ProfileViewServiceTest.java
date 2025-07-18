@@ -77,7 +77,7 @@ class ProfileViewServiceTest {
     }
 
     @Test
-    void ProfileViewService_GetSelf_ReturnProfileDto() {
+    void ProfileViewService_GetMe_ReturnProfileDto() {
         // arrange
         ProfileDTO expected = createProfileDto(UUID.randomUUID(), authenticatedUser.getUsername());
 
@@ -86,7 +86,7 @@ class ProfileViewServiceTest {
             .thenReturn(Optional.of(expected));
 
         // act
-        ProfileDTO actual = profileViewService.getSelf();
+        ProfileDTO actual = profileViewService.getMe();
 
         // assert
         assertEquals(expected, actual);
@@ -95,14 +95,14 @@ class ProfileViewServiceTest {
     }
 
     @Test
-    void ProfileViewService_GetSelf_ThrowResourceNotFound() {
+    void ProfileViewService_GetMe_ThrowResourceNotFound() {
         // arrange
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
         when(profileRepository.findProfileDtoById(authenticatedUser.getId(), authenticatedUser.getId()))
             .thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(ResourceNotFoundException.class, () -> profileViewService.getSelf());
+        assertThrows(ResourceNotFoundException.class, () -> profileViewService.getMe());
         verify(sessionService, times(1)).getAuthenticatedUser();
         verify(profileRepository, times(1)).findProfileDtoById(authenticatedUser.getId(), authenticatedUser.getId());
     }
@@ -110,78 +110,78 @@ class ProfileViewServiceTest {
     @Test
     void ProfileViewService_GetById_ReturnProfileDto() {
         // arrange
-        UUID targetId = UUID.randomUUID();
-        ProfileDTO expected = createProfileDto(targetId, "test");
+        UUID id = UUID.randomUUID();
+        ProfileDTO expected = createProfileDto(id, "test");
 
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findProfileDtoById(targetId, authenticatedUser.getId()))
+        when(profileRepository.findProfileDtoById(id, authenticatedUser.getId()))
             .thenReturn(Optional.of(expected));
 
         // act
-        ProfileDTO actual = profileViewService.getById(targetId);
+        ProfileDTO actual = profileViewService.getById(id);
 
         // assert
         assertEquals(expected, actual);
         verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findProfileDtoById(targetId, authenticatedUser.getId());
+        verify(profileRepository, times(1)).findProfileDtoById(id, authenticatedUser.getId());
     }
 
     @Test
     void ProfileViewService_GetById_ThrowResourceNotFound() {
         // arrange
-        UUID targetId = UUID.randomUUID();
+        UUID id = UUID.randomUUID();
 
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findProfileDtoById(targetId, authenticatedUser.getId()))
+        when(profileRepository.findProfileDtoById(id, authenticatedUser.getId()))
             .thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(ResourceNotFoundException.class, () -> profileViewService.getById(targetId));
+        assertThrows(ResourceNotFoundException.class, () -> profileViewService.getById(id));
         verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findProfileDtoById(targetId, authenticatedUser.getId());
+        verify(profileRepository, times(1)).findProfileDtoById(id, authenticatedUser.getId());
 
     }
 
     @Test
     void ProfileViewService_GetByUsername_ReturnProfileDto() {
         // arrange
-        String targetUsername = "test";
-        ProfileDTO expected = createProfileDto(UUID.randomUUID(), targetUsername);
+        String username = "test";
+        ProfileDTO expected = createProfileDto(UUID.randomUUID(), username);
 
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findProfileDtoByUsername(targetUsername, authenticatedUser.getId()))
+        when(profileRepository.findProfileDtoByUsername(username, authenticatedUser.getId()))
             .thenReturn(Optional.of(expected));
 
         // act
-        ProfileDTO actual = profileViewService.getByUsername(targetUsername);
+        ProfileDTO actual = profileViewService.getByUsername(username);
 
         // assert
         assertEquals(expected, actual);
         verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findProfileDtoByUsername(targetUsername, authenticatedUser.getId());
+        verify(profileRepository, times(1)).findProfileDtoByUsername(username, authenticatedUser.getId());
     }
 
     @Test
     void ProfileViewService_GetByUsername_ThrowResourceNotFound() {
         // arrange
-        String targetUsername = "test";
+        String username = "test";
 
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findProfileDtoByUsername(targetUsername, authenticatedUser.getId()))
+        when(profileRepository.findProfileDtoByUsername(username, authenticatedUser.getId()))
             .thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(ResourceNotFoundException.class, () -> profileViewService.getByUsername(targetUsername));
+        assertThrows(ResourceNotFoundException.class, () -> profileViewService.getByUsername(username));
         verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findProfileDtoByUsername(targetUsername, authenticatedUser.getId());
+        verify(profileRepository, times(1)).findProfileDtoByUsername(username, authenticatedUser.getId());
 
     }
 
     @Test
     void ProfileViewService_GetFollowers_ReturnPageDtoOfProfileDto() {
         // arrange
-        String targetUsername = "non-existing-user";
-        Profile targetProfile = createProfile(UUID.randomUUID(), targetUsername);
+        UUID id = UUID.randomUUID();
+        Profile profile = createProfile(id, "username");
 
         String uri = "/some/api/uri";
         int offset = 0;
@@ -190,42 +190,41 @@ class ProfileViewServiceTest {
         Page<SimplifiedProfileDTO> followersDto = new PageImpl<>(new ArrayList<>(), page, 0);
         PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(followersDto, uri);
 
-        when(profileRepository.findByUsername(targetUsername)).thenReturn(Optional.of(targetProfile));
+        when(profileRepository.findById(id)).thenReturn(Optional.of(profile));
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findFollowerDtosById(targetProfile.getId(), authenticatedUser.getId(), page))
+        when(profileRepository.findFollowerDtosById(profile.getId(), authenticatedUser.getId(), page))
             .thenReturn(followersDto);
         when(httpServletRequest.getRequestURI()).thenReturn(uri);
 
         // act
-        PageDTO<SimplifiedProfileDTO> actual = profileViewService.getFollowers(targetUsername, page);
+        PageDTO<SimplifiedProfileDTO> actual = profileViewService.getFollowers(id, page);
 
         // assert
         assertTrue(actual.items().isEmpty());
         assertEquals(expected, actual);
-        verify(profileRepository, times(1))
-            .findFollowerDtosById(targetProfile.getId(), authenticatedUser.getId(), page);
+        verify(profileRepository, times(1)).findFollowerDtosById(profile.getId(), authenticatedUser.getId(), page);
     }
 
     @Test
     void ProfileViewService_GetFollowers_ThrowResourceNotFound() {
         // arrange
-        String targetUsername = "non-existing-user";
+        UUID id = UUID.randomUUID();
 
         int offset = 0;
         int limit = 1;
         Pageable page = new OffsetLimitRequest(offset, limit);
 
-        when(profileRepository.findByUsername(targetUsername)).thenReturn(Optional.empty());
+        when(profileRepository.findById(id)).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(ResourceNotFoundException.class, () -> profileViewService.getFollowers(targetUsername, page));
+        assertThrows(ResourceNotFoundException.class, () -> profileViewService.getFollowers(id, page));
     }
 
     @Test
     void ProfileViewService_GetFollowing_ReturnPageDtoOfProfileDto() {
         // arrange
-        String targetUsername = "non-existing-user";
-        Profile targetProfile = createProfile(UUID.randomUUID(), targetUsername);
+        UUID id = UUID.randomUUID();
+        Profile profile = createProfile(id, "username");
 
         String uri = "/some/api/uri";
         int offset = 0;
@@ -234,35 +233,34 @@ class ProfileViewServiceTest {
         Page<SimplifiedProfileDTO> followingDto = new PageImpl<>(new ArrayList<>(), page, 0);
         PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(followingDto, uri);
 
-        when(profileRepository.findByUsername(targetUsername)).thenReturn(Optional.of(targetProfile));
+        when(profileRepository.findById(id)).thenReturn(Optional.of(profile));
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findFollowingDtosById(targetProfile.getId(), authenticatedUser.getId(), page))
+        when(profileRepository.findFollowingDtosById(profile.getId(), authenticatedUser.getId(), page))
             .thenReturn(followingDto);
         when(httpServletRequest.getRequestURI()).thenReturn(uri);
 
         // act
-        PageDTO<SimplifiedProfileDTO> actual = profileViewService.getFollowing(targetUsername, page);
+        PageDTO<SimplifiedProfileDTO> actual = profileViewService.getFollowing(id, page);
 
         // assert
         assertTrue(actual.items().isEmpty());
         assertEquals(expected, actual);
-        verify(profileRepository, times(1))
-            .findFollowingDtosById(targetProfile.getId(), authenticatedUser.getId(), page);
+        verify(profileRepository, times(1)).findFollowingDtosById(profile.getId(), authenticatedUser.getId(), page);
     }
 
     @Test
     void ProfileViewService_GetFollowing_ThrowResourceNotFound() {
         // arrange
-        String targetUsername = "non-existing-user";
+        UUID id = UUID.randomUUID();
 
         int offset = 0;
         int limit = 1;
         Pageable page = new OffsetLimitRequest(offset, limit);
 
-        when(profileRepository.findByUsername(targetUsername)).thenReturn(Optional.empty());
+        when(profileRepository.findById(id)).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(ResourceNotFoundException.class, () -> profileViewService.getFollowing(targetUsername, page));
+        assertThrows(ResourceNotFoundException.class, () -> profileViewService.getFollowing(id, page));
     }
 
 }

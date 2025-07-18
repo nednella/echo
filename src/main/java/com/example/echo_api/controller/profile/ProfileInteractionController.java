@@ -1,5 +1,7 @@
 package com.example.echo_api.controller.profile;
 
+import java.util.UUID;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,27 +19,27 @@ public class ProfileInteractionController {
 
     private final ProfileInteractionService profileInteractionService;
 
-    @PostMapping(ApiConfig.Profile.FOLLOW_BY_USERNAME)
-    public ResponseEntity<Void> followByUsername(@PathVariable("username") String username) {
-        profileInteractionService.follow(username);
+    @PostMapping(ApiConfig.Profile.FOLLOW_BY_ID)
+    public ResponseEntity<Void> followById(@PathVariable("id") UUID id) {
+        profileInteractionService.follow(id);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(ApiConfig.Profile.FOLLOW_BY_USERNAME)
-    public ResponseEntity<Void> unfollowByUsername(@PathVariable("username") String username) {
-        profileInteractionService.unfollow(username);
+    @DeleteMapping(ApiConfig.Profile.FOLLOW_BY_ID)
+    public ResponseEntity<Void> unfollowById(@PathVariable("id") UUID id) {
+        profileInteractionService.unfollow(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping(ApiConfig.Profile.BLOCK_BY_USERNAME)
-    public ResponseEntity<Void> blockByUsername(@PathVariable("username") String username) {
-        profileInteractionService.block(username);
+    @PostMapping(ApiConfig.Profile.BLOCK_BY_ID)
+    public ResponseEntity<Void> blockById(@PathVariable("id") UUID id) {
+        profileInteractionService.block(id);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(ApiConfig.Profile.BLOCK_BY_USERNAME)
-    public ResponseEntity<Void> unblockByUsername(@PathVariable("username") String username) {
-        profileInteractionService.unblock(username);
+    @DeleteMapping(ApiConfig.Profile.BLOCK_BY_ID)
+    public ResponseEntity<Void> unblockById(@PathVariable("id") UUID id) {
+        profileInteractionService.unblock(id);
         return ResponseEntity.noContent().build();
     }
 
