@@ -50,14 +50,14 @@ public interface PostViewService {
 
     /**
      * Fetch a {@link PageDTO} of {@link PostDTO} for posts from the user with the
-     * supplied profile {@code username}.
+     * supplied profile {@code id}, that are root-level posts (no parent).
      * 
-     * @param username The username of the profile to query.
-     * @param page     The {@link Pageable} containing the pagination parameters.
+     * @param id   The id of the profile to query.
+     * @param page The {@link Pageable} containing the pagination parameters.
      * @return A {@link PageDTO} of {@link PostDTO} for matches, otherwise empty.
-     * @throws ResourceNotFoundException If no profile by that username exists.
+     * @throws ResourceNotFoundException If no profile by that id exists.
      */
-    public PageDTO<PostDTO> getProfilePostsByUsername(String username, Pageable page);
+    public PageDTO<PostDTO> getProfilePostsById(UUID id, Pageable page);
 
     /**
      * Fetch a {@link PageDTO} of {@link PostDTO} for posts from the user with the

@@ -185,13 +185,13 @@ class PostViewControllerIT extends IntegrationTest {
     }
 
     @Test // @formatter:off
-    void PostViewController_GetProfilePostsByUsername_ReturnPageDtoOfPostDto() {
+    void PostViewController_GetProfilePostsById_ReturnPageDtoOfPostDto() {
         // api: GET /api/v1/feed/profile/{username} ==> : 200 : PageDTO<PostDTO>
-        String path = ApiConfig.Feed.PROFILE_BY_USERNAME + "?offset=0&limit=20";
-        String username = AUTH_USER_USERNAME;
+        String path = ApiConfig.Feed.PROFILE_POSTS_BY_ID + "?offset=0&limit=20";
+        UUID id = authenticatedUser.getId();
 
         ParameterizedTypeReference<PageDTO<PostDTO>> typeRef = new ParameterizedTypeReference<PageDTO<PostDTO>>() {};
-        ResponseEntity<PageDTO<PostDTO>> response = restTemplate.exchange(path, GET, null, typeRef, username);
+        ResponseEntity<PageDTO<PostDTO>> response = restTemplate.exchange(path, GET, null, typeRef, id);
 
         // assert response
         assertEquals(OK, response.getStatusCode());
@@ -206,12 +206,12 @@ class PostViewControllerIT extends IntegrationTest {
     } // @formatter:on
 
     @Test
-    void PostViewController_GetProfilePostsByUsername_Throw404ResourceNotFound() {
+    void PostViewController_GetProfilePostsById_Throw404ResourceNotFound() {
         // api: GET /api/v1/feed/profile/{username} ==> : 404 : ResourceNotFound
-        String path = ApiConfig.Feed.PROFILE_BY_USERNAME + "?offset=0&limit=20";
-        String username = "non-existent-user";
+        String path = ApiConfig.Feed.PROFILE_POSTS_BY_ID + "?offset=0&limit=20";
+        UUID id = UUID.randomUUID();
 
-        ResponseEntity<ErrorDTO> response = restTemplate.getForEntity(path, ErrorDTO.class, username);
+        ResponseEntity<ErrorDTO> response = restTemplate.getForEntity(path, ErrorDTO.class, id);
 
         // assert response
         assertEquals(NOT_FOUND, response.getStatusCode());

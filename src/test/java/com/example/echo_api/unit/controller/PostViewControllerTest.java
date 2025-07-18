@@ -429,10 +429,10 @@ class PostViewControllerTest {
     }
 
     @Test
-    void PostViewController_GetProfilePostsByUsername_ReturnPageDtoOfPostDto() throws Exception {
+    void PostViewController_GetProfilePostsById_ReturnPageDtoOfPostDto() throws Exception {
         // api: GET /api/v1/feed/profile/{username} ==> : 200 : PageDTO<PostDTO>
-        String path = ApiConfig.Feed.PROFILE_BY_USERNAME;
-        String username = "random-string";
+        String path = ApiConfig.Feed.PROFILE_POSTS_BY_ID;
+        UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 20;
 
@@ -441,10 +441,10 @@ class PostViewControllerTest {
         Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
         PageDTO<PostDTO> expected = PageMapper.toDTO(posts, path);
 
-        when(postViewService.getProfilePostsByUsername(eq(username), any(Pageable.class))).thenReturn(expected);
+        when(postViewService.getProfilePostsById(eq(id), any(Pageable.class))).thenReturn(expected);
 
         String response = mockMvc
-            .perform(get(path, username)
+            .perform(get(path, id)
                 .param("offset", String.valueOf(offset))
                 .param("limit", String.valueOf(limit)))
             .andDo(print())
@@ -457,19 +457,19 @@ class PostViewControllerTest {
         });
 
         assertEquals(expected, actual);
-        verify(postViewService, times(1)).getProfilePostsByUsername(eq(username), any(Pageable.class));
+        verify(postViewService, times(1)).getProfilePostsById(eq(id), any(Pageable.class));
     }
 
     @Test
-    void PostViewController_GetProfilePostsByUsername_Throw400InvalidRequest_InvalidOffset() throws Exception {
+    void PostViewController_GetProfilePostsById_Throw400InvalidRequest_InvalidOffset() throws Exception {
         // api: GET /api/v1/feed/profile/{username} ==> : 400 : InvalidRequest
-        String path = ApiConfig.Feed.PROFILE_BY_USERNAME;
-        String username = "random-string";
+        String path = ApiConfig.Feed.PROFILE_POSTS_BY_ID;
+        UUID id = UUID.randomUUID();
         int offset = -1;
         int limit = 20;
 
         String response = mockMvc
-            .perform(get(path, username)
+            .perform(get(path, id)
                 .param("offset", String.valueOf(offset))
                 .param("limit", String.valueOf(limit)))
             .andDo(print())
@@ -487,19 +487,19 @@ class PostViewControllerTest {
         ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
 
         assertEquals(expected, actual);
-        verify(postViewService, never()).getProfilePostsByUsername(eq(username), any(Pageable.class));
+        verify(postViewService, never()).getProfilePostsById(eq(id), any(Pageable.class));
     }
 
     @Test
-    void PostViewController_GetProfilePostsByUsername_Throw400InvalidRequest_InvalidLimit() throws Exception {
+    void PostViewController_GetProfilePostsById_Throw400InvalidRequest_InvalidLimit() throws Exception {
         // api: GET /api/v1/feed/profile/{username} ==> : 400 : InvalidRequest
-        String path = ApiConfig.Feed.PROFILE_BY_USERNAME;
-        String username = "random-string";
+        String path = ApiConfig.Feed.PROFILE_POSTS_BY_ID;
+        UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 51;
 
         String response = mockMvc
-            .perform(get(path, username)
+            .perform(get(path, id)
                 .param("offset", String.valueOf(offset))
                 .param("limit", String.valueOf(limit)))
             .andDo(print())
@@ -517,22 +517,22 @@ class PostViewControllerTest {
         ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
 
         assertEquals(expected, actual);
-        verify(postViewService, never()).getProfilePostsByUsername(eq(username), any(Pageable.class));
+        verify(postViewService, never()).getProfilePostsById(eq(id), any(Pageable.class));
     }
 
     @Test
-    void PostViewController_GetProfilePostsByUsername_Throw404ResourceNotFound() throws Exception {
+    void PostViewController_GetProfilePostsById_Throw404ResourceNotFound() throws Exception {
         // api: GET /api/v1/feed/profile/{username} ==> : 404 : ResourceNotFound
-        String path = ApiConfig.Feed.PROFILE_BY_USERNAME;
-        String username = "random-string";
+        String path = ApiConfig.Feed.PROFILE_POSTS_BY_ID;
+        UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 20;
 
-        when(postViewService.getProfilePostsByUsername(eq(username), any(Pageable.class)))
+        when(postViewService.getProfilePostsById(eq(id), any(Pageable.class)))
             .thenThrow(new ResourceNotFoundException());
 
         String response = mockMvc
-            .perform(get(path, username)
+            .perform(get(path, id)
                 .param("offset", String.valueOf(offset))
                 .param("limit", String.valueOf(limit)))
             .andDo(print())
@@ -550,7 +550,7 @@ class PostViewControllerTest {
         ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
 
         assertEquals(expected, actual);
-        verify(postViewService, times(1)).getProfilePostsByUsername(eq(username), any(Pageable.class));
+        verify(postViewService, times(1)).getProfilePostsById(eq(id), any(Pageable.class));
     }
 
     @Test

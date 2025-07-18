@@ -64,14 +64,14 @@ public class PostViewController {
     } // @formatter:on
 
     // @formatter:off
-    @GetMapping(ApiConfig.Feed.PROFILE_BY_USERNAME)
-    public ResponseEntity<PageDTO<PostDTO>> getProfilePostsByUsername(
-        @PathVariable("username") String username,
+    @GetMapping(ApiConfig.Feed.PROFILE_POSTS_BY_ID)
+    public ResponseEntity<PageDTO<PostDTO>> getProfilePostsById(
+        @PathVariable("id") UUID id,
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
     ) {
         Pageable page = new OffsetLimitRequest(offset, limit);
-        return ResponseEntity.ok(postViewService.getProfilePostsByUsername(username, page));
+        return ResponseEntity.ok(postViewService.getProfilePostsById(id, page));
     } // @formatter:on
 
     // @formatter:off

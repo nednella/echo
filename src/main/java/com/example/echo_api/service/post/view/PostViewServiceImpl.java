@@ -82,9 +82,11 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
     }
 
     @Override
-    public PageDTO<PostDTO> getProfilePostsByUsername(String username, Pageable page) {
-        UUID profileId = getProfileEntityByUsername(username).getId(); // validate existence of username & convert to id
+    public PageDTO<PostDTO> getProfilePostsById(UUID id, Pageable page) {
+        UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
         UUID authenticatedUserId = getAuthenticatedUser().getId();
+
+        // TODO: validateNoBlock
 
         Page<PostDTO> query = postRepository.findPostsByProfileId(profileId, authenticatedUserId, page);
         String uri = getCurrentRequestUri();
@@ -97,6 +99,8 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
         UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
         UUID authenticatedUserId = getAuthenticatedUser().getId();
 
+        // TODO: validateNoBlock
+
         Page<PostDTO> query = postRepository.findReplyPostsByProfileId(profileId, authenticatedUserId, page);
         String uri = getCurrentRequestUri();
 
@@ -108,6 +112,8 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
         UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
         UUID authenticatedUserId = getAuthenticatedUser().getId();
 
+        // TODO: validateNoBlock
+
         Page<PostDTO> query = postRepository.findLikedPostsByProfileId(profileId, authenticatedUserId, page);
         String uri = getCurrentRequestUri();
 
@@ -118,6 +124,8 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
     public PageDTO<PostDTO> getProfileMentionsById(UUID id, Pageable page) {
         UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
         UUID authenticatedUserId = getAuthenticatedUser().getId();
+
+        // TODO: validateNoBlock
 
         Page<PostDTO> query = postRepository.findMentionedPostsByProfileId(profileId, authenticatedUserId, page);
         String uri = getCurrentRequestUri();
@@ -135,19 +143,6 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
      */
     private Profile getProfileEntityById(UUID id) throws ResourceNotFoundException {
         return profileRepository.findById(id)
-            .orElseThrow(ResourceNotFoundException::new);
-    }
-
-    /**
-     * Private method for obtaining a {@link Profile} via {@code username} from
-     * {@link ProfileRepository}.
-     * 
-     * @param username The username of the profile.
-     * @return The {@link Profile} entity.
-     * @throws ResourceNotFoundException If no profile by that username exists.
-     */
-    private Profile getProfileEntityByUsername(String username) throws ResourceNotFoundException {
-        return profileRepository.findByUsername(username)
             .orElseThrow(ResourceNotFoundException::new);
     }
 
