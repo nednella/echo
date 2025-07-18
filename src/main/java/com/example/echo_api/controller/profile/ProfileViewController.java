@@ -1,5 +1,7 @@
 package com.example.echo_api.controller.profile;
 
+import java.util.UUID;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -28,7 +30,7 @@ public class ProfileViewController {
 
     @GetMapping(ApiConfig.Profile.ME)
     public ResponseEntity<ProfileDTO> getMe() {
-        return ResponseEntity.ok(profileViewService.getSelf());
+        return ResponseEntity.ok(profileViewService.getMe());
     }
 
     @GetMapping(ApiConfig.Profile.GET_BY_USERNAME)
@@ -37,24 +39,24 @@ public class ProfileViewController {
     }
 
     // @formatter:off
-    @GetMapping(ApiConfig.Profile.GET_FOLLOWERS_BY_USERNAME)
+    @GetMapping(ApiConfig.Profile.GET_FOLLOWERS_BY_ID)
     public ResponseEntity<PageDTO<SimplifiedProfileDTO>> getFollowers(
-        @PathVariable("username") String username,
+        @PathVariable("id") UUID id,
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
     ) {
         Pageable page = new OffsetLimitRequest(offset, limit);
-        return ResponseEntity.ok(profileViewService.getFollowers(username, page));
+        return ResponseEntity.ok(profileViewService.getFollowers(id, page));
     }
 
-    @GetMapping(ApiConfig.Profile.GET_FOLLOWING_BY_USERNAME)
+    @GetMapping(ApiConfig.Profile.GET_FOLLOWING_BY_ID)
     public ResponseEntity<PageDTO<SimplifiedProfileDTO>> getFollowing(
-        @PathVariable("username") String username,
+       @PathVariable("id") UUID id,
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
     ) {
         Pageable page = new OffsetLimitRequest(offset, limit);
-        return ResponseEntity.ok(profileViewService.getFollowing(username, page));
+        return ResponseEntity.ok(profileViewService.getFollowing(id, page));
     }
     // @formatter:on
 

@@ -39,7 +39,7 @@ public class ProfileViewServiceImpl extends BaseProfileService implements Profil
     // @formatter:on
 
     @Override
-    public ProfileDTO getSelf() {
+    public ProfileDTO getMe() {
         UUID authenticatedUserId = getAuthenticatedUser().getId();
 
         return profileRepository.findProfileDtoById(authenticatedUserId, authenticatedUserId)
@@ -63,22 +63,23 @@ public class ProfileViewServiceImpl extends BaseProfileService implements Profil
     }
 
     @Override
-    public PageDTO<SimplifiedProfileDTO> getFollowers(String username, Pageable page) throws ResourceNotFoundException {
-        UUID id = getProfileEntityByUsername(username).getId(); // validate existence of username & convert to id
+    public PageDTO<SimplifiedProfileDTO> getFollowers(UUID id, Pageable page) throws ResourceNotFoundException {
+        UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
         UUID authenticatedUserId = getAuthenticatedUser().getId();
 
-        Page<SimplifiedProfileDTO> query = profileRepository.findFollowerDtosById(id, authenticatedUserId, page);
+        Page<SimplifiedProfileDTO> query = profileRepository.findFollowerDtosById(profileId, authenticatedUserId, page);
         String uri = getCurrentRequestUri();
 
         return PageMapper.toDTO(query, uri);
     }
 
     @Override
-    public PageDTO<SimplifiedProfileDTO> getFollowing(String username, Pageable page) throws ResourceNotFoundException {
-        UUID id = getProfileEntityByUsername(username).getId(); // validate existence of username & convert to id
+    public PageDTO<SimplifiedProfileDTO> getFollowing(UUID id, Pageable page) throws ResourceNotFoundException {
+        UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
         UUID authenticatedUserId = getAuthenticatedUser().getId();
 
-        Page<SimplifiedProfileDTO> query = profileRepository.findFollowingDtosById(id, authenticatedUserId, page);
+        Page<SimplifiedProfileDTO> query = profileRepository.findFollowingDtosById(profileId, authenticatedUserId,
+            page);
         String uri = getCurrentRequestUri();
 
         return PageMapper.toDTO(query, uri);
