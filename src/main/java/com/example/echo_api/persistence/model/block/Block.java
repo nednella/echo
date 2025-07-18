@@ -1,6 +1,6 @@
 package com.example.echo_api.persistence.model.block;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import com.example.echo_api.persistence.model.profile.Profile;
@@ -33,7 +33,7 @@ public class Block {
 
     @CreationTimestamp
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     public Block(UUID source, UUID target) {
         this.blockerId = source;

@@ -1,6 +1,6 @@
 package com.example.echo_api.persistence.model.image;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -52,7 +52,7 @@ public class Image {
 
     @CreationTimestamp
     @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     // ---- constructors ----
 

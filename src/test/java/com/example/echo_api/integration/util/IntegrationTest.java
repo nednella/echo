@@ -30,7 +30,7 @@ import com.redis.testcontainers.RedisContainer;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class IntegrationTest {
 
-    private static final String AUTH_USER_USERNAME = "test1";
+    public static final String AUTH_USER_USERNAME = "test1";
     private static final String OTHER_USER_USERNAME = "test2";
     protected static final String TEST_ENV_PASSWORD = "password1";
 

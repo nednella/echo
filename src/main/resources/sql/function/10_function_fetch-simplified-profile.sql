@@ -1,16 +1,13 @@
 
 /*
- * Function fetches a single profile by its ID or username with the relevant data
- * required for building a complete ProfileDTO object that the frontend can display
+ * Function fetches a single profile by its ID with the relevant data required for
+ * building a complete SimplifiedProfileDTO object that the frontend can display
  * to end users.
- *
- * This function should be called with id OR username, with the other being NULL.
  *
 */
 
-CREATE OR REPLACE FUNCTION fetch_profile(
-    p_id UUID,
-    p_username VARCHAR,
+CREATE OR REPLACE FUNCTION fetch_simplified_profile(
+    p_profile_id UUID,
     p_authenticated_user_id UUID
 )
 RETURNS TABLE (
@@ -18,15 +15,7 @@ RETURNS TABLE (
     id                 UUID,
     username           VARCHAR(15),
     name               VARCHAR(50),
-    bio                VARCHAR(160),
-    location           VARCHAR(30),
     avatar_url         VARCHAR(255),
-    banner_url         VARCHAR(255),
-    created_at         TIMESTAMPTZ,
-    followers_count    BIGINT,
-    following_count    BIGINT,
-    post_count         BIGINT,
-    media_count        BIGINT,
     rel_following      BOOLEAN,
     rel_followed_by    BOOLEAN,
     rel_blocking       BOOLEAN,
@@ -42,24 +31,10 @@ AS
                 p.id,
                 p.username,
                 p.name,
-                p.bio,
-                p.location,
-                avatar.transformed_url AS avatar_url,
-                banner.transformed_url AS banner_url,
-                p.created_at
+                avatar.transformed_url AS avatar_url
             FROM profile p
             LEFT JOIN image avatar ON p.avatar_id = avatar.id
-            LEFT JOIN image banner ON p.banner_id = banner.id
-            WHERE (p_id IS NOT NULL AND p.id = p_id)
-               OR (p_username IS NOT NULL AND p.username = p_username)
-        ),
-        metrics AS (
-            SELECT
-                (SELECT COUNT(*) FROM follow WHERE followed_id = pd.id) AS followers_count,
-                (SELECT COUNT(*) FROM follow WHERE follower_id = pd.id) AS following_count,
-                0::BIGINT AS post_count,
-                0::BIGINT AS media_count
-            FROM profile_data pd
+            WHERE p.id = p_profile_id
         ),
         relationship AS (
             SELECT
@@ -98,21 +73,12 @@ AS
             pd.id,
             pd.username,
             pd.name,
-            pd.bio,
-            pd.location,
             pd.avatar_url,
-            pd.banner_url,
-            pd.created_at,
-            m.followers_count,
-            m.following_count,
-            m.post_count,
-            m.media_count,
             r.rel_following,
             r.rel_followed_by,
             r.rel_blocking,
             r.rel_blocked_by
         FROM profile_data pd
-        CROSS JOIN metrics m
         CROSS JOIN relationship r;
     END;
 '

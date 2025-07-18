@@ -1,6 +1,6 @@
 package com.example.echo_api.persistence.model.post;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -41,7 +41,7 @@ public class Post {
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     // ---- production constructors ----
 

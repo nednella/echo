@@ -1,4 +1,8 @@
 spring:
+    sql:
+        init:
+            mode: always
+
     datasource:
         name: echo
         url: jdbc:postgresql://localhost:5432/echo
@@ -9,14 +13,6 @@ spring:
         redis:
             host: localhost
             port: 6379
-
-    sql:
-        init:
-            schema-locations:
-                - classpath:sql/schema/*.sql
-                - classpath:sql/function/*.sql
-                - classpath:sql/trigger/*.sql
-            mode: always
 
     docker:
         compose:
@@ -35,3 +31,10 @@ cloudinary:
 
 cors:
     allowed-origins: http://localhost:5173 # comma-separated values
+
+logging:
+    level:
+        org:
+            springframework:
+                jdbc:
+                    core: DEBUG

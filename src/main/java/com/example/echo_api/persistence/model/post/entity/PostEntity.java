@@ -1,6 +1,6 @@
 package com.example.echo_api.persistence.model.post.entity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -44,7 +44,7 @@ public class PostEntity {
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     public PostEntity(UUID postId, PostEntityType type, int start, int end, String text) {
         this.postId = postId;

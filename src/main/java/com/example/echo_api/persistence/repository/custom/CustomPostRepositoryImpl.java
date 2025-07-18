@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.lang.NonNull;
 
 import com.example.echo_api.persistence.dto.response.post.PostDTO;
 import com.example.echo_api.persistence.dto.response.post.PostEntitiesDTO;
@@ -29,55 +28,156 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
 
     private final NamedParameterJdbcTemplate template;
 
-    // @formatter:off
     @Override
-    public Optional<PostDTO> findPostDtoById(@NonNull UUID id, @NonNull UUID authenticatedUserId) {
-        String sql = "SELECT * FROM fetch_post(:post_id, :authenticated_user_id)";
+    public Optional<PostDTO> findPostDtoById(UUID id, UUID authUserId) {
+        String sql = "SELECT * FROM fetch_posts(:post_id, :authenticated_user_id)";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-            .addValue("post_id", id)
-            .addValue("authenticated_user_id", authenticatedUserId);
+            .addValue("post_id", new UUID[] { id })
+            .addValue("authenticated_user_id", authUserId);
 
         return template.query(
             sql,
             params,
-            new PostDtoRowMapper()
-        ).stream().findFirst();
+            new PostDtoRowMapper()).stream().findFirst();
     }
-    // @formatter:on
 
-    // @formatter:off
     @Override
-    public Page<PostDTO> findReplyDtosById(@NonNull UUID id, @NonNull UUID authenticatedUserId, @NonNull Pageable p) {
-        String repliesSql = "SELECT * FROM fetch_post_replies(:post_id, :authenticated_user_id, :offset, :limit)";
+    public Page<PostDTO> findReplyPostsById(UUID id, UUID authUserId, Pageable p) {
+        String sql = "SELECT * FROM fetch_post_replies(:post_id, :authenticated_user_id, :offset, :limit)";
+        String countSql = "SELECT * FROM fetch_post_replies_count(:post_id)";
 
-        MapSqlParameterSource repliesParams = new MapSqlParameterSource()
+        MapSqlParameterSource params = new MapSqlParameterSource()
             .addValue("post_id", id)
-            .addValue("authenticated_user_id", authenticatedUserId)
+            .addValue("authenticated_user_id", authUserId)
             .addValue("offset", (int) p.getOffset())
             .addValue("limit", p.getPageSize());
 
-        List<PostDTO> replies = template.query(
-            repliesSql,
-            repliesParams,
-            new PostDtoRowMapper()
-        );
+        return fetchPaginatedPosts(sql, countSql, params, p);
+    }
 
-        String countSql = "SELECT COUNT(*) FROM post p WHERE p.parent_id = :post_id";
+    @Override
+    public Page<PostDTO> findHomepagePosts(UUID authUserId, Pageable p) {
+        String sql = "SELECT * FROM fetch_feed_homepage(:authenticated_user_id, :offset, :limit)";
+        String countSql = "SELECT * FROM fetch_feed_homepage_count(:authenticated_user_id)";
 
-        MapSqlParameterSource countParams = new MapSqlParameterSource()
-            .addValue("post_id", id);
+        MapSqlParameterSource params = new MapSqlParameterSource()
+            .addValue("authenticated_user_id", authUserId)
+            .addValue("offset", (int) p.getOffset())
+            .addValue("limit", p.getPageSize());
+
+        return fetchPaginatedPosts(sql, countSql, params, p);
+    }
+
+    @Override
+    public Page<PostDTO> findDiscoverPosts(UUID authUserId, Pageable p) {
+        String sql = "SELECT * FROM fetch_feed_discover(:authenticated_user_id, :offset, :limit)";
+        String countSql = "SELECT * FROM fetch_feed_discover_count(:authenticated_user_id)";
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+            .addValue("authenticated_user_id", authUserId)
+            .addValue("offset", (int) p.getOffset())
+            .addValue("limit", p.getPageSize());
+
+        return fetchPaginatedPosts(sql, countSql, params, p);
+    }
+
+    @Override
+    public Page<PostDTO> findPostsByProfileId(UUID profileId, UUID authUserId, Pageable p) {
+        String sql = "SELECT * FROM fetch_feed_profile(:profile_id, :authenticated_user_id, :offset, :limit)";
+        String countSql = "SELECT * FROM fetch_feed_profile_count(:profile_id)";
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+            .addValue("profile_id", profileId)
+            .addValue("authenticated_user_id", authUserId)
+            .addValue("offset", (int) p.getOffset())
+            .addValue("limit", p.getPageSize());
+
+        return fetchPaginatedPosts(sql, countSql, params, p);
+    }
+
+    @Override
+    public Page<PostDTO> findReplyPostsByProfileId(UUID profileId, UUID authUserId, Pageable p) {
+        String sql = "SELECT * FROM fetch_feed_profile_replies(:profile_id, :authenticated_user_id, :offset, :limit)";
+        String countSql = "SELECT * FROM fetch_feed_profile_replies_count(:profile_id)";
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+            .addValue("profile_id", profileId)
+            .addValue("authenticated_user_id", authUserId)
+            .addValue("offset", (int) p.getOffset())
+            .addValue("limit", p.getPageSize());
+
+        return fetchPaginatedPosts(sql, countSql, params, p);
+    }
+
+    @Override
+    public Page<PostDTO> findLikedPostsByProfileId(UUID profileId, UUID authUserId, Pageable p) {
+        String sql = "SELECT * FROM fetch_feed_profile_likes(:profile_id, :authenticated_user_id, :offset, :limit)";
+        String countSql = "SELECT * FROM fetch_feed_profile_likes_count(:profile_id)";
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+            .addValue("profile_id", profileId)
+            .addValue("authenticated_user_id", authUserId)
+            .addValue("offset", (int) p.getOffset())
+            .addValue("limit", p.getPageSize());
+
+        return fetchPaginatedPosts(sql, countSql, params, p);
+    }
+
+    @Override
+    public Page<PostDTO> findMentionedPostsByProfileId(UUID profileId, UUID authUserId, Pageable p) {
+        String sql = "SELECT * FROM fetch_feed_profile_mentions(:profile_id, :authenticated_user_id, :offset, :limit)";
+        String countSql = "SELECT * FROM fetch_feed_profile_mentions_count(:profile_id)";
+
+        MapSqlParameterSource params = new MapSqlParameterSource()
+            .addValue("profile_id", profileId)
+            .addValue("authenticated_user_id", authUserId)
+            .addValue("offset", (int) p.getOffset())
+            .addValue("limit", p.getPageSize());
+
+        return fetchPaginatedPosts(sql, countSql, params, p);
+    }
+
+    /**
+     * Private method that fetches a paginated list of {@link PostDTO} based on the
+     * provided SQL query and parameters.
+     * 
+     * This method executes the main query to retrieve the posts and a separate
+     * count query to determine the total number of available posts, returning a
+     * constructed {@link PageImpl}.
+     * 
+     * @param sql      The query related to fetching the paginated posts.
+     * @param countSql The query related to obtaining a total count of available
+     *                 posts.
+     * @param params
+     * @param p        The pagination and sorting configuration.
+     * @return A {@link PageImpl} containing the list of {@link PostDTO} objects,
+     *         the current page details, and the total number of available posts.
+     */
+    // @formatter:off
+    private Page<PostDTO> fetchPaginatedPosts(
+        String sql,
+        String countSql,
+        MapSqlParameterSource params,
+        Pageable p
+    ) {
+        List<PostDTO> posts = template.query(
+            sql,
+            params,
+            new PostDtoRowMapper());
 
         Long count = template.queryForObject(
             countSql,
-            countParams,
-            Long.class
-        );
+            params,
+            Long.class);
 
-        return new PageImpl<>(replies, p, count == null ? 0L : count);
-    }
-    // @formatter:on
+        return new PageImpl<>(posts, p, count == null ? 0L : count);
+    } // @formatter:on
 
+    /**
+     * Maps {@link ResultSet} rows to full {@link PostDTO} objects, including
+     * metrics, relationship and entity data where applicable.
+     */
     private static class PostDtoRowMapper implements RowMapper<PostDTO> {
 
         private final ObjectMapper objectMapper;
@@ -87,7 +187,7 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
         }
 
         @Override
-        public PostDTO mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
+        public PostDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
             boolean isSelf = rs.getBoolean("author_is_self");
 
             SimplifiedProfileDTO author = new SimplifiedProfileDTO(
@@ -116,7 +216,7 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
                 rs.getString("conversation_id"),
                 author,
                 rs.getString("text"),
-                rs.getString("created_at"),
+                rs.getTimestamp("created_at").toInstant().toString(), // correctly reformats timestamp to ISO-8601
                 new PostMetricsDTO(
                     rs.getInt("post_like_count"),
                     rs.getInt("post_reply_count")),

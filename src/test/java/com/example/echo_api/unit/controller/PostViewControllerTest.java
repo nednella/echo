@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,7 +37,7 @@ import com.example.echo_api.persistence.dto.response.post.PostMetricsDTO;
 import com.example.echo_api.persistence.dto.response.post.PostRelationshipDTO;
 import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
 import com.example.echo_api.persistence.mapper.PageMapper;
-import com.example.echo_api.service.post.view.post.PostViewService;
+import com.example.echo_api.service.post.view.PostViewService;
 import com.example.echo_api.util.pagination.OffsetLimitRequest;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -159,38 +158,6 @@ class PostViewControllerTest {
     }
 
     @Test
-    void PostViewController_GetPostRepliesById_ReturnPageDtoOfEmpty() throws Exception {
-        // api: GET /api/v1/post/{id}/replies ==> : 200 : PageDTO<PostDTO> --> total = 0
-        String path = ApiConfig.Post.GET_REPLIES_BY_ID;
-        UUID id = UUID.randomUUID();
-        int offset = 0;
-        int limit = 20;
-
-        Pageable page = new OffsetLimitRequest(offset, limit);
-
-        Page<PostDTO> replies = new PageImpl<>(new ArrayList<>(), page, 0);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(replies, path);
-
-        when(postViewService.getPostRepliesById(eq(id), any(Pageable.class))).thenReturn(expected);
-
-        String response = mockMvc
-            .perform(get(path, id)
-                .param("offset", String.valueOf(offset))
-                .param("limit", String.valueOf(limit)))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
-        PageDTO<Void> actual = objectMapper.readValue(response, new TypeReference<PageDTO<Void>>() {
-        });
-
-        assertEquals(expected, actual);
-        verify(postViewService, times(1)).getPostRepliesById(eq(id), any(Pageable.class));
-    }
-
-    @Test
     void PostViewController_GetPostRepliesById_Throw400InvalidRequest_InvalidOffset() throws Exception {
         // api: GET /api/v1/post/{id}/replies ==> : 400 : InvalidRequest
         String path = ApiConfig.Post.GET_REPLIES_BY_ID;
@@ -227,9 +194,6 @@ class PostViewControllerTest {
         UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 51;
-
-        when(postViewService.getPostRepliesById(eq(id), any(Pageable.class)))
-            .thenThrow(new ResourceNotFoundException());
 
         String response = mockMvc
             .perform(get(path, id)
@@ -284,6 +248,684 @@ class PostViewControllerTest {
 
         assertEquals(expected, actual);
         verify(postViewService, times(1)).getPostRepliesById(eq(id), any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetHomepagePosts_ReturnPageDtoOfPostDto() throws Exception {
+        // api: GET /api/v1/feed/homepage ==> : 200 : PageDTO<PostDTO>
+        String path = ApiConfig.Feed.HOMEPAGE;
+        int offset = 0;
+        int limit = 20;
+
+        Pageable page = new OffsetLimitRequest(offset, limit);
+
+        Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
+        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, path);
+
+        when(postViewService.getHomepagePosts(any(Pageable.class))).thenReturn(expected);
+
+        String response = mockMvc
+            .perform(get(path)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        PageDTO<PostDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<PostDTO>>() {
+        });
+
+        assertEquals(expected, actual);
+        verify(postViewService, times(1)).getHomepagePosts(any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetHomepagePosts_Throw400InvalidRequest_InvalidOffset() throws Exception {
+        // api: GET /api/v1/feed/homepage ==> : 400 : InvalidRequest
+        String path = ApiConfig.Feed.HOMEPAGE;
+        int offset = -1;
+        int limit = 20;
+
+        String response = mockMvc
+            .perform(get(path)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_OFFSET,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(postViewService, never()).getHomepagePosts(any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetHomepagePosts_Throw400InvalidRequest_InvalidLimit() throws Exception {
+        // api: GET /api/v1/feed/homepage ==> : 400 : InvalidRequest
+        String path = ApiConfig.Feed.HOMEPAGE;
+        int offset = 0;
+        int limit = 51;
+
+        String response = mockMvc
+            .perform(get(path)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_LIMIT,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(postViewService, never()).getHomepagePosts(any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetDiscoverPosts_ReturnPageDtoOfPostDto() throws Exception {
+        // api: GET /api/v1/feed/discover ==> : 200 : PageDTO<PostDTO>
+        String path = ApiConfig.Feed.DISCOVER;
+        int offset = 0;
+        int limit = 20;
+
+        Pageable page = new OffsetLimitRequest(offset, limit);
+
+        Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
+        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, path);
+
+        when(postViewService.getDiscoverPosts(any(Pageable.class))).thenReturn(expected);
+
+        String response = mockMvc
+            .perform(get(path)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        PageDTO<PostDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<PostDTO>>() {
+        });
+
+        assertEquals(expected, actual);
+        verify(postViewService, times(1)).getDiscoverPosts(any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetDiscoverPosts_Throw400InvalidRequest_InvalidOffset() throws Exception {
+        // api: GET /api/v1/feed/discover ==> : 400 : InvalidRequest
+        String path = ApiConfig.Feed.DISCOVER;
+        int offset = -1;
+        int limit = 20;
+
+        String response = mockMvc
+            .perform(get(path)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_OFFSET,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(postViewService, never()).getDiscoverPosts(any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetDiscoverPosts_Throw400InvalidRequest_InvalidLimit() throws Exception {
+        // api: GET /api/v1/feed/discover ==> : 400 : InvalidRequest
+        String path = ApiConfig.Feed.DISCOVER;
+        int offset = 0;
+        int limit = 51;
+
+        String response = mockMvc
+            .perform(get(path)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_LIMIT,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(postViewService, never()).getDiscoverPosts(any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetProfilePostsById_ReturnPageDtoOfPostDto() throws Exception {
+        // api: GET /api/v1/feed/profile/{username} ==> : 200 : PageDTO<PostDTO>
+        String path = ApiConfig.Feed.PROFILE_POSTS_BY_ID;
+        UUID id = UUID.randomUUID();
+        int offset = 0;
+        int limit = 20;
+
+        Pageable page = new OffsetLimitRequest(offset, limit);
+
+        Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
+        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, path);
+
+        when(postViewService.getProfilePostsById(eq(id), any(Pageable.class))).thenReturn(expected);
+
+        String response = mockMvc
+            .perform(get(path, id)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        PageDTO<PostDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<PostDTO>>() {
+        });
+
+        assertEquals(expected, actual);
+        verify(postViewService, times(1)).getProfilePostsById(eq(id), any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetProfilePostsById_Throw400InvalidRequest_InvalidOffset() throws Exception {
+        // api: GET /api/v1/feed/profile/{username} ==> : 400 : InvalidRequest
+        String path = ApiConfig.Feed.PROFILE_POSTS_BY_ID;
+        UUID id = UUID.randomUUID();
+        int offset = -1;
+        int limit = 20;
+
+        String response = mockMvc
+            .perform(get(path, id)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_OFFSET,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(postViewService, never()).getProfilePostsById(eq(id), any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetProfilePostsById_Throw400InvalidRequest_InvalidLimit() throws Exception {
+        // api: GET /api/v1/feed/profile/{username} ==> : 400 : InvalidRequest
+        String path = ApiConfig.Feed.PROFILE_POSTS_BY_ID;
+        UUID id = UUID.randomUUID();
+        int offset = 0;
+        int limit = 51;
+
+        String response = mockMvc
+            .perform(get(path, id)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_LIMIT,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(postViewService, never()).getProfilePostsById(eq(id), any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetProfilePostsById_Throw404ResourceNotFound() throws Exception {
+        // api: GET /api/v1/feed/profile/{username} ==> : 404 : ResourceNotFound
+        String path = ApiConfig.Feed.PROFILE_POSTS_BY_ID;
+        UUID id = UUID.randomUUID();
+        int offset = 0;
+        int limit = 20;
+
+        when(postViewService.getProfilePostsById(eq(id), any(Pageable.class)))
+            .thenThrow(new ResourceNotFoundException());
+
+        String response = mockMvc
+            .perform(get(path, id)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.NOT_FOUND,
+            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            null,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(postViewService, times(1)).getProfilePostsById(eq(id), any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetProfileRepliesById_ReturnPageDtoOfPostDto() throws Exception {
+        // api: GET /api/v1/feed/profile/{id}/replies ==> : 200 : PageDTO<PostDTO>
+        String path = ApiConfig.Feed.PROFILE_REPLIES_BY_ID;
+        UUID id = UUID.randomUUID();
+        int offset = 0;
+        int limit = 20;
+
+        Pageable page = new OffsetLimitRequest(offset, limit);
+
+        Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
+        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, path);
+
+        when(postViewService.getProfileRepliesById(eq(id), any(Pageable.class))).thenReturn(expected);
+
+        String response = mockMvc
+            .perform(get(path, id)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        PageDTO<PostDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<PostDTO>>() {
+        });
+
+        assertEquals(expected, actual);
+        verify(postViewService, times(1)).getProfileRepliesById(eq(id), any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetProfileRepliesById_Throw400InvalidRequest_InvalidOffset() throws Exception {
+        // api: GET /api/v1/feed/profile/{id}/replies ==> : 400 : InvalidRequest
+        String path = ApiConfig.Feed.PROFILE_REPLIES_BY_ID;
+        UUID id = UUID.randomUUID();
+        int offset = -1;
+        int limit = 20;
+
+        String response = mockMvc
+            .perform(get(path, id)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_OFFSET,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(postViewService, never()).getProfileRepliesById(eq(id), any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetProfileRepliesById_Throw400InvalidRequest_InvalidLimit() throws Exception {
+        // api: GET /api/v1/feed/profile/{id}/replies ==> : 400 : InvalidRequest
+        String path = ApiConfig.Feed.PROFILE_REPLIES_BY_ID;
+        UUID id = UUID.randomUUID();
+        int offset = 0;
+        int limit = 51;
+
+        String response = mockMvc
+            .perform(get(path, id)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_LIMIT,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(postViewService, never()).getProfileRepliesById(eq(id), any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetProfileRepliesById_Throw404ResourceNotFound() throws Exception {
+        // api: GET /api/v1/feed/profile/{id}/replies ==> : 404 : ResourceNotFound
+        String path = ApiConfig.Feed.PROFILE_REPLIES_BY_ID;
+        UUID id = UUID.randomUUID();
+        int offset = 0;
+        int limit = 20;
+
+        when(postViewService.getProfileRepliesById(eq(id), any(Pageable.class)))
+            .thenThrow(new ResourceNotFoundException());
+
+        String response = mockMvc
+            .perform(get(path, id)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.NOT_FOUND,
+            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            null,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(postViewService, times(1)).getProfileRepliesById(eq(id), any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetProfileLikesById_ReturnPageDtoOfPostDto() throws Exception {
+        // api: GET /api/v1/feed/profile/{id}/likes ==> : 200 : PageDTO<PostDTO>
+        String path = ApiConfig.Feed.PROFILE_LIKES_BY_ID;
+        UUID id = UUID.randomUUID();
+        int offset = 0;
+        int limit = 20;
+
+        Pageable page = new OffsetLimitRequest(offset, limit);
+
+        Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
+        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, path);
+
+        when(postViewService.getProfileLikesById(eq(id), any(Pageable.class))).thenReturn(expected);
+
+        String response = mockMvc
+            .perform(get(path, id)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        PageDTO<PostDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<PostDTO>>() {
+        });
+
+        assertEquals(expected, actual);
+        verify(postViewService, times(1)).getProfileLikesById(eq(id), any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetProfileLikesById_Throw400InvalidRequest_InvalidOffset() throws Exception {
+        // api: GET /api/v1/feed/profile/{id}/likes ==> : 400 : InvalidRequest
+        String path = ApiConfig.Feed.PROFILE_LIKES_BY_ID;
+        UUID id = UUID.randomUUID();
+        int offset = -1;
+        int limit = 20;
+
+        String response = mockMvc
+            .perform(get(path, id)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_OFFSET,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(postViewService, never()).getProfileLikesById(eq(id), any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetProfileLikesById_Throw400InvalidRequest_InvalidLimit() throws Exception {
+        // api: GET /api/v1/feed/profile/{id}/likes ==> : 400 : InvalidRequest
+        String path = ApiConfig.Feed.PROFILE_LIKES_BY_ID;
+        UUID id = UUID.randomUUID();
+        int offset = 0;
+        int limit = 61;
+
+        String response = mockMvc
+            .perform(get(path, id)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_LIMIT,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(postViewService, never()).getProfileLikesById(eq(id), any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetProfileLikesById_Throw404ResourceNotFound() throws Exception {
+        // api: GET /api/v1/feed/profile/{id}/likes ==> : 404 : ResourceNotFound
+        String path = ApiConfig.Feed.PROFILE_LIKES_BY_ID;
+        UUID id = UUID.randomUUID();
+        int offset = 0;
+        int limit = 20;
+
+        when(postViewService.getProfileLikesById(eq(id), any(Pageable.class)))
+            .thenThrow(new ResourceNotFoundException());
+
+        String response = mockMvc
+            .perform(get(path, id)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.NOT_FOUND,
+            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            null,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(postViewService, times(1)).getProfileLikesById(eq(id), any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetProfileMentionsById_ReturnPageDtoOfPostDto() throws Exception {
+        // api: GET /api/v1/feed/profile/{id}/mentions ==> : 200 : PageDTO<PostDTO>
+        String path = ApiConfig.Feed.PROFILE_MENTIONS_BY_ID;
+        UUID id = UUID.randomUUID();
+        int offset = 0;
+        int limit = 20;
+
+        Pageable page = new OffsetLimitRequest(offset, limit);
+
+        Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
+        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, path);
+
+        when(postViewService.getProfileMentionsById(eq(id), any(Pageable.class))).thenReturn(expected);
+
+        String response = mockMvc
+            .perform(get(path, id)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        PageDTO<PostDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<PostDTO>>() {
+        });
+
+        assertEquals(expected, actual);
+        verify(postViewService, times(1)).getProfileMentionsById(eq(id), any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetProfileMentionsById_Throw400InvalidRequest_InvalidOffset() throws Exception {
+        // api: GET /api/v1/feed/profile/{id}/mentions ==> : 400 : InvalidRequest
+        String path = ApiConfig.Feed.PROFILE_MENTIONS_BY_ID;
+        UUID id = UUID.randomUUID();
+        int offset = -1;
+        int limit = 20;
+
+        String response = mockMvc
+            .perform(get(path, id)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_OFFSET,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(postViewService, never()).getProfileMentionsById(eq(id), any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetProfileMentionsById_Throw400InvalidRequest_InvalidLimit() throws Exception {
+        // api: GET /api/v1/feed/profile/{id}/mentions ==> : 400 : InvalidRequest
+        String path = ApiConfig.Feed.PROFILE_MENTIONS_BY_ID;
+        UUID id = UUID.randomUUID();
+        int offset = 0;
+        int limit = 51;
+
+        String response = mockMvc
+            .perform(get(path, id)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_LIMIT,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(postViewService, never()).getProfileMentionsById(eq(id), any(Pageable.class));
+    }
+
+    @Test
+    void PostViewController_GetProfileMentionsById_Throw404ResourceNotFound() throws Exception {
+        // api: GET /api/v1/feed/profile/{id}/mentions ==> : 404 : ResourceNotFound
+        String path = ApiConfig.Feed.PROFILE_MENTIONS_BY_ID;
+        UUID id = UUID.randomUUID();
+        int offset = 0;
+        int limit = 20;
+
+        when(postViewService.getProfileMentionsById(eq(id), any(Pageable.class)))
+            .thenThrow(new ResourceNotFoundException());
+
+        String response = mockMvc
+            .perform(get(path, id)
+                .param("offset", String.valueOf(offset))
+                .param("limit", String.valueOf(limit)))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.NOT_FOUND,
+            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            null,
+            path);
+
+        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+
+        assertEquals(expected, actual);
+        verify(postViewService, times(1)).getProfileMentionsById(eq(id), any(Pageable.class));
     }
 
 }

@@ -1,0 +1,159 @@
+package com.example.echo_api.service.post.view;
+
+import java.util.UUID;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
+import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
+import com.example.echo_api.persistence.dto.response.post.PostDTO;
+import com.example.echo_api.persistence.mapper.PageMapper;
+import com.example.echo_api.persistence.model.post.Post;
+import com.example.echo_api.persistence.model.profile.Profile;
+import com.example.echo_api.persistence.repository.PostRepository;
+import com.example.echo_api.persistence.repository.ProfileRepository;
+import com.example.echo_api.service.post.BasePostService;
+import com.example.echo_api.service.session.SessionService;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+/**
+ * Service implementation for managing read-only {@link Post} data presentation
+ * operations associated with singlular post objects.
+ */
+@Service
+public class PostViewServiceImpl extends BasePostService implements PostViewService {
+
+    private final ProfileRepository profileRepository;
+
+    private final HttpServletRequest httpServletRequest;
+
+    // @formatter:off
+    protected PostViewServiceImpl(
+        SessionService sessionService,
+        PostRepository postRepository,
+        ProfileRepository profileRepository,
+        HttpServletRequest httpServletRequest) {
+        super(sessionService, postRepository);
+        this.profileRepository = profileRepository;
+        this.httpServletRequest = httpServletRequest;
+    }
+    // @formatter:on
+
+    @Override
+    public PostDTO getPostById(UUID id) throws ResourceNotFoundException {
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
+
+        return postRepository.findPostDtoById(id, authenticatedUserId)
+            .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    @Override
+    public PageDTO<PostDTO> getPostRepliesById(UUID id, Pageable page) throws ResourceNotFoundException {
+        UUID postId = getPostEntityById(id).getId(); // validate existence of id
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
+
+        Page<PostDTO> query = postRepository.findReplyPostsById(postId, authenticatedUserId, page);
+        String uri = getCurrentRequestUri();
+
+        return PageMapper.toDTO(query, uri);
+    }
+
+    @Override
+    public PageDTO<PostDTO> getHomepagePosts(Pageable page) {
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
+
+        Page<PostDTO> query = postRepository.findHomepagePosts(authenticatedUserId, page);
+        String uri = getCurrentRequestUri();
+
+        return PageMapper.toDTO(query, uri);
+    }
+
+    @Override
+    public PageDTO<PostDTO> getDiscoverPosts(Pageable page) {
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
+
+        Page<PostDTO> query = postRepository.findDiscoverPosts(authenticatedUserId, page);
+        String uri = getCurrentRequestUri();
+
+        return PageMapper.toDTO(query, uri);
+    }
+
+    @Override
+    public PageDTO<PostDTO> getProfilePostsById(UUID id, Pageable page) {
+        UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
+
+        // TODO: validateNoBlock
+
+        Page<PostDTO> query = postRepository.findPostsByProfileId(profileId, authenticatedUserId, page);
+        String uri = getCurrentRequestUri();
+
+        return PageMapper.toDTO(query, uri);
+    }
+
+    @Override
+    public PageDTO<PostDTO> getProfileRepliesById(UUID id, Pageable page) {
+        UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
+
+        // TODO: validateNoBlock
+
+        Page<PostDTO> query = postRepository.findReplyPostsByProfileId(profileId, authenticatedUserId, page);
+        String uri = getCurrentRequestUri();
+
+        return PageMapper.toDTO(query, uri);
+    }
+
+    @Override
+    public PageDTO<PostDTO> getProfileLikesById(UUID id, Pageable page) {
+        UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
+
+        // TODO: validateNoBlock
+
+        Page<PostDTO> query = postRepository.findLikedPostsByProfileId(profileId, authenticatedUserId, page);
+        String uri = getCurrentRequestUri();
+
+        return PageMapper.toDTO(query, uri);
+    }
+
+    @Override
+    public PageDTO<PostDTO> getProfileMentionsById(UUID id, Pageable page) {
+        UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
+
+        // TODO: validateNoBlock
+
+        Page<PostDTO> query = postRepository.findMentionedPostsByProfileId(profileId, authenticatedUserId, page);
+        String uri = getCurrentRequestUri();
+
+        return PageMapper.toDTO(query, uri);
+    }
+
+    /**
+     * Private method for obtaining a {@link Profile} via {@code id} from
+     * {@link ProfileRepository}.
+     * 
+     * @param id The id of the profile.
+     * @return The {@link Profile} entity.
+     * @throws ResourceNotFoundException If no profile by that id exists.
+     */
+    private Profile getProfileEntityById(UUID id) throws ResourceNotFoundException {
+        return profileRepository.findById(id)
+            .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    /**
+     * Internal method for obtaining the current HTTP request URI, to be returned as
+     * part of a {@link PageDTO} response.
+     * 
+     * @return The current request's URI as a string.
+     */
+    private String getCurrentRequestUri() {
+        return httpServletRequest.getRequestURI();
+    }
+
+}
