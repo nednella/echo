@@ -41,7 +41,7 @@ public interface CustomPostRepository {
      * @param p          The pagination and sorting configuration.
      * @return a {@link Page} of {@link PostDTO}.
      */
-    Page<PostDTO> findReplyPostsById(@NonNull UUID postId, @NonNull UUID authUserId, @NonNull Pageable p);
+    Page<PostDTO> findRepliesById(@NonNull UUID postId, @NonNull UUID authUserId, @NonNull Pageable p);
 
     /**
      * Retrieves a paginated list of {@link PostDTO} for root-level posts from the
@@ -89,7 +89,7 @@ public interface CustomPostRepository {
      * @param p          The pagination and sorting configuration.
      * @return a {@link Page} of {@link PostDTO}.
      */
-    Page<PostDTO> findReplyPostsByProfileId(@NonNull UUID profileId, @NonNull UUID authUserId, @NonNull Pageable p);
+    Page<PostDTO> findRepliesByProfileId(@NonNull UUID profileId, @NonNull UUID authUserId, @NonNull Pageable p);
 
     /**
      * Retrieves a paginated list of {@link PostDTO} for posts liked by the profile
@@ -101,7 +101,7 @@ public interface CustomPostRepository {
      * @param p          The pagination and sorting configuration.
      * @return a {@link Page} of {@link PostDTO}.
      */
-    Page<PostDTO> findLikedPostsByProfileId(@NonNull UUID profileId, @NonNull UUID authUserId, @NonNull Pageable p);
+    Page<PostDTO> findPostsLikedByProfileId(@NonNull UUID profileId, @NonNull UUID authUserId, @NonNull Pageable p);
 
     /**
      * Retrieves a paginated list of {@link PostDTO} for posts that include a
@@ -114,6 +114,6 @@ public interface CustomPostRepository {
      * @param p          The pagination and sorting configuration.
      * @return a {@link Page} of {@link PostDTO}.
      */
-    Page<PostDTO> findMentionedPostsByProfileId(@NonNull UUID profileId, @NonNull UUID authUserId, @NonNull Pageable p);
+    Page<PostDTO> findPostsMentioningProfileId(@NonNull UUID profileId, @NonNull UUID authUserId, @NonNull Pageable p);
 
 }

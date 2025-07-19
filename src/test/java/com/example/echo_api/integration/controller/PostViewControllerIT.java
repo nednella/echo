@@ -105,7 +105,7 @@ class PostViewControllerIT extends IntegrationTest {
     }
 
     @Test // @formatter:off
-    void PostViewController_GetPostRepliesById_ReturnPageDtoOfPostDto() {
+    void PostViewController_GetRepliesById_ReturnPageDtoOfPostDto() {
         // api: GET /api/v1/post/{id}/replies ==> : 200 : PageDTO<PostDTO>
         String path = ApiConfig.Post.GET_REPLIES_BY_ID + "?offset=0&limit=20";
         UUID id = post.getId();
@@ -125,7 +125,7 @@ class PostViewControllerIT extends IntegrationTest {
     } // @formatter:on
 
     @Test
-    void PostViewController_GetPostRepliesById_Throw404ResourceNotFound() {
+    void PostViewController_GetRepliesById_Throw404ResourceNotFound() {
         // api: GET /api/v1/post/{id}/replies ==> : 404 : ResourceNotFound
         String path = ApiConfig.Post.GET_REPLIES_BY_ID + "?offset=0&limit=20";
         UUID id = UUID.randomUUID();
@@ -185,9 +185,9 @@ class PostViewControllerIT extends IntegrationTest {
     }
 
     @Test // @formatter:off
-    void PostViewController_GetProfilePostsById_ReturnPageDtoOfPostDto() {
-        // api: GET /api/v1/feed/profile/{username} ==> : 200 : PageDTO<PostDTO>
-        String path = ApiConfig.Feed.PROFILE_POSTS_BY_ID + "?offset=0&limit=20";
+    void PostViewController_GetPostsByProfileId_ReturnPageDtoOfPostDto() {
+        // api: GET /api/v1/feed/profile/{id} ==> : 200 : PageDTO<PostDTO>
+        String path = ApiConfig.Feed.POSTS_BY_PROFILE_ID + "?offset=0&limit=20";
         UUID id = authenticatedUser.getId();
 
         ParameterizedTypeReference<PageDTO<PostDTO>> typeRef = new ParameterizedTypeReference<PageDTO<PostDTO>>() {};
@@ -206,9 +206,9 @@ class PostViewControllerIT extends IntegrationTest {
     } // @formatter:on
 
     @Test
-    void PostViewController_GetProfilePostsById_Throw404ResourceNotFound() {
-        // api: GET /api/v1/feed/profile/{username} ==> : 404 : ResourceNotFound
-        String path = ApiConfig.Feed.PROFILE_POSTS_BY_ID + "?offset=0&limit=20";
+    void PostViewController_GetPostsByProfileId_Throw404ResourceNotFound() {
+        // api: GET /api/v1/feed/profile/{id} ==> : 404 : ResourceNotFound
+        String path = ApiConfig.Feed.POSTS_BY_PROFILE_ID + "?offset=0&limit=20";
         UUID id = UUID.randomUUID();
 
         ResponseEntity<ErrorDTO> response = restTemplate.getForEntity(path, ErrorDTO.class, id);
@@ -225,9 +225,9 @@ class PostViewControllerIT extends IntegrationTest {
     }
 
     @Test // @formatter:off
-    void PostViewController_GetProfileRepliesById_ReturnPageDtoOfPostDto() {
+    void PostViewController_GetRepliesByProfileId_ReturnPageDtoOfPostDto() {
         // api: GET /api/v1/feed/profile/{id}/replies ==> : 200 : PageDTO<PostDTO>
-        String path = ApiConfig.Feed.PROFILE_REPLIES_BY_ID + "?offset=0&limit=20";
+        String path = ApiConfig.Feed.REPLIES_BY_PROFILE_ID + "?offset=0&limit=20";
         UUID id = otherUser.getId();
 
         ParameterizedTypeReference<PageDTO<PostDTO>> typeRef = new ParameterizedTypeReference<PageDTO<PostDTO>>() {};
@@ -245,9 +245,9 @@ class PostViewControllerIT extends IntegrationTest {
     } // @formatter:on
 
     @Test
-    void PostViewController_GetProfileRepliesById_Throw404ResourceNotFound() {
+    void PostViewController_GetRepliesByProfileId_Throw404ResourceNotFound() {
         // api: GET /api/v1/feed/profile/{id}/replies ==> : 404 : ResourceNotFound
-        String path = ApiConfig.Feed.PROFILE_REPLIES_BY_ID + "?offset=0&limit=20";
+        String path = ApiConfig.Feed.REPLIES_BY_PROFILE_ID + "?offset=0&limit=20";
         UUID id = UUID.randomUUID();
 
         ResponseEntity<ErrorDTO> response = restTemplate.getForEntity(path, ErrorDTO.class, id);
@@ -264,9 +264,9 @@ class PostViewControllerIT extends IntegrationTest {
     }
 
     @Test // @formatter:off
-    void PostViewController_GetProfileLikesById_ReturnPageDtoOfPostDto() {
+    void PostViewController_GetLikesByProfileId_ReturnPageDtoOfPostDto() {
         // api: GET /api/v1/feed/profile/{id}/likes ==> : 200 : PageDTO<PostDTO>
-        String path = ApiConfig.Feed.PROFILE_LIKES_BY_ID + "?offset=0&limit=20";
+        String path = ApiConfig.Feed.LIKES_BY_PROFILE_ID + "?offset=0&limit=20";
         UUID id = authenticatedUser.getId();
 
         ParameterizedTypeReference<PageDTO<PostDTO>> typeRef = new ParameterizedTypeReference<PageDTO<PostDTO>>() {};
@@ -284,9 +284,9 @@ class PostViewControllerIT extends IntegrationTest {
     } // @formatter:on
 
     @Test
-    void PostViewController_GetProfileLikesById_Throw404ResourceNotFound() {
+    void PostViewController_GetLikesByProfileId_Throw404ResourceNotFound() {
         // api: GET /api/v1/feed/profile/{id}/likes ==> : 404 : ResourceNotFound
-        String path = ApiConfig.Feed.PROFILE_LIKES_BY_ID + "?offset=0&limit=20";
+        String path = ApiConfig.Feed.LIKES_BY_PROFILE_ID + "?offset=0&limit=20";
         UUID id = UUID.randomUUID();
 
         ResponseEntity<ErrorDTO> response = restTemplate.getForEntity(path, ErrorDTO.class, id);
@@ -303,9 +303,9 @@ class PostViewControllerIT extends IntegrationTest {
     }
 
     @Test // @formatter:off
-    void PostViewController_GetProfileMentionsById_ReturnPageDtoOfPostDto() {
+    void PostViewController_GetMentionsOfProfileId_ReturnPageDtoOfPostDto() {
         // api: GET /api/v1/feed/profile/{id}/mentions ==> : 200 : PageDTO<PostDTO>
-        String path = ApiConfig.Feed.PROFILE_MENTIONS_BY_ID + "?offset=0&limit=20";
+        String path = ApiConfig.Feed.MENTIONS_OF_PROFILE_ID + "?offset=0&limit=20";
         UUID id = authenticatedUser.getId();
 
         ParameterizedTypeReference<PageDTO<PostDTO>> typeRef = new ParameterizedTypeReference<PageDTO<PostDTO>>() {};
@@ -324,9 +324,9 @@ class PostViewControllerIT extends IntegrationTest {
     } // @formatter:on
 
     @Test
-    void PostViewController_GetProfileMentionsById_Throw404ResourceNotFound() {
+    void PostViewController_GetMentionsOfProfileId_Throw404ResourceNotFound() {
         // api: GET /api/v1/feed/profile/{id}/mentions ==> : 404 : ResourceNotFound
-        String path = ApiConfig.Feed.PROFILE_MENTIONS_BY_ID + "?offset=0&limit=20";
+        String path = ApiConfig.Feed.MENTIONS_OF_PROFILE_ID + "?offset=0&limit=20";
         UUID id = UUID.randomUUID();
 
         ResponseEntity<ErrorDTO> response = restTemplate.getForEntity(path, ErrorDTO.class, id);

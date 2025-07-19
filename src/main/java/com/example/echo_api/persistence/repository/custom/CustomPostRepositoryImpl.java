@@ -43,7 +43,7 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
     }
 
     @Override
-    public Page<PostDTO> findReplyPostsById(UUID id, UUID authUserId, Pageable p) {
+    public Page<PostDTO> findRepliesById(UUID id, UUID authUserId, Pageable p) {
         String sql = "SELECT * FROM fetch_post_replies(:post_id, :authenticated_user_id, :offset, :limit)";
         String countSql = "SELECT * FROM fetch_post_replies_count(:post_id)";
 
@@ -97,7 +97,7 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
     }
 
     @Override
-    public Page<PostDTO> findReplyPostsByProfileId(UUID profileId, UUID authUserId, Pageable p) {
+    public Page<PostDTO> findRepliesByProfileId(UUID profileId, UUID authUserId, Pageable p) {
         String sql = "SELECT * FROM fetch_feed_profile_replies(:profile_id, :authenticated_user_id, :offset, :limit)";
         String countSql = "SELECT * FROM fetch_feed_profile_replies_count(:profile_id)";
 
@@ -111,7 +111,7 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
     }
 
     @Override
-    public Page<PostDTO> findLikedPostsByProfileId(UUID profileId, UUID authUserId, Pageable p) {
+    public Page<PostDTO> findPostsLikedByProfileId(UUID profileId, UUID authUserId, Pageable p) {
         String sql = "SELECT * FROM fetch_feed_profile_likes(:profile_id, :authenticated_user_id, :offset, :limit)";
         String countSql = "SELECT * FROM fetch_feed_profile_likes_count(:profile_id)";
 
@@ -125,7 +125,7 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
     }
 
     @Override
-    public Page<PostDTO> findMentionedPostsByProfileId(UUID profileId, UUID authUserId, Pageable p) {
+    public Page<PostDTO> findPostsMentioningProfileId(UUID profileId, UUID authUserId, Pageable p) {
         String sql = "SELECT * FROM fetch_feed_profile_mentions(:profile_id, :authenticated_user_id, :offset, :limit)";
         String countSql = "SELECT * FROM fetch_feed_profile_mentions_count(:profile_id)";
 

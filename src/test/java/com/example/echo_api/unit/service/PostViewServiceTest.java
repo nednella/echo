@@ -118,7 +118,7 @@ class PostViewServiceTest {
     }
 
     @Test
-    void PostViewService_GetPostRepliesById_ReturnPageDtoOfPostDto() {
+    void PostViewService_GetRepliesById_ReturnPageDtoOfPostDto() {
         // arrange
         UUID id = UUID.randomUUID();
         Post post = new Post(UUID.randomUUID(), "Test post.");
@@ -132,20 +132,20 @@ class PostViewServiceTest {
 
         when(postRepository.findById(id)).thenReturn(Optional.of(post));
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(postRepository.findReplyPostsById(post.getId(), authenticatedUser.getId(), page)).thenReturn(repliesDto);
+        when(postRepository.findRepliesById(post.getId(), authenticatedUser.getId(), page)).thenReturn(repliesDto);
         when(httpServletRequest.getRequestURI()).thenReturn(uri);
 
         // act
-        PageDTO<PostDTO> actual = postViewService.getPostRepliesById(id, page);
+        PageDTO<PostDTO> actual = postViewService.getRepliesById(id, page);
 
         // assert
         assertEquals(expected, actual);
         verify(postRepository, times(1)).findById(id);
-        verify(postRepository, times(1)).findReplyPostsById(post.getId(), authenticatedUser.getId(), page);
+        verify(postRepository, times(1)).findRepliesById(post.getId(), authenticatedUser.getId(), page);
     }
 
     @Test
-    void PostViewService_GetPostRepliesById_ThrowResourceNotFoundException() {
+    void PostViewService_GetRepliesById_ThrowResourceNotFoundException() {
         // arrange
         UUID id = UUID.randomUUID();
 
@@ -156,9 +156,9 @@ class PostViewServiceTest {
         when(postRepository.findById(id)).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(ResourceNotFoundException.class, () -> postViewService.getPostRepliesById(id, page));
+        assertThrows(ResourceNotFoundException.class, () -> postViewService.getRepliesById(id, page));
         verify(postRepository, times(1)).findById(id);
-        verify(postRepository, times(0)).findReplyPostsById(any(UUID.class), eq(authenticatedUser.getId()), eq(page));
+        verify(postRepository, times(0)).findRepliesById(any(UUID.class), eq(authenticatedUser.getId()), eq(page));
     }
 
     @Test
@@ -204,7 +204,7 @@ class PostViewServiceTest {
     }
 
     @Test
-    void PostViewService_GetProfilePostsById_ReturnPageDtoOfPostDto() {
+    void PostViewService_GetPostsByAuthorId_ReturnPageDtoOfPostDto() {
         // arrange
         UUID id = UUID.randomUUID();
         Profile profile = createProfileEntity(id, "random_string");
@@ -221,7 +221,7 @@ class PostViewServiceTest {
         when(postRepository.findPostsByProfileId(profile.getId(), authenticatedUser.getId(), page)).thenReturn(posts);
 
         // act
-        PageDTO<PostDTO> actual = postViewService.getProfilePostsById(id, page);
+        PageDTO<PostDTO> actual = postViewService.getPostsByAuthorId(id, page);
 
         // assert
         assertEquals(expected, actual);
@@ -230,7 +230,7 @@ class PostViewServiceTest {
     }
 
     @Test
-    void PostViewService_GetProfilePostsById_ThrowResourceNotFoundException() {
+    void PostViewService_GetPostsByAuthorId_ThrowResourceNotFoundException() {
         // arrange
         UUID id = UUID.randomUUID();
 
@@ -241,13 +241,13 @@ class PostViewServiceTest {
         when(profileRepository.findById(id)).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(ResourceNotFoundException.class, () -> postViewService.getProfilePostsById(id, page));
+        assertThrows(ResourceNotFoundException.class, () -> postViewService.getPostsByAuthorId(id, page));
         verify(profileRepository, times(1)).findById(id);
         verify(postRepository, times(0)).findPostsByProfileId(any(UUID.class), eq(authenticatedUser.getId()), eq(page));
     }
 
     @Test
-    void PostViewService_GetProfileRepliesById_ReturnPageDtoOfPostDto() {
+    void PostViewService_GetRepliesByAuthorId_ReturnPageDtoOfPostDto() {
         // arrange
         UUID profileId = UUID.randomUUID();
         Profile profile = createProfileEntity(profileId, "random-string");
@@ -261,19 +261,19 @@ class PostViewServiceTest {
 
         when(profileRepository.findById(profileId)).thenReturn(Optional.of(profile));
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(postRepository.findReplyPostsByProfileId(profileId, authenticatedUser.getId(), page)).thenReturn(posts);
+        when(postRepository.findRepliesByProfileId(profileId, authenticatedUser.getId(), page)).thenReturn(posts);
 
         // act
-        PageDTO<PostDTO> actual = postViewService.getProfileRepliesById(profileId, page);
+        PageDTO<PostDTO> actual = postViewService.getRepliesByAuthorId(profileId, page);
 
         // assert
         assertEquals(expected, actual);
         verify(profileRepository, times(1)).findById(profileId);
-        verify(postRepository, times(1)).findReplyPostsByProfileId(profile.getId(), authenticatedUser.getId(), page);
+        verify(postRepository, times(1)).findRepliesByProfileId(profile.getId(), authenticatedUser.getId(), page);
     }
 
     @Test
-    void PostViewService_GetProfileRepliesById_ThrowResourceNotFoundException() {
+    void PostViewService_GetRepliesByAuthorId_ThrowResourceNotFoundException() {
         // arrange
         UUID profileId = UUID.randomUUID();
 
@@ -284,14 +284,14 @@ class PostViewServiceTest {
         when(profileRepository.findById(profileId)).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(ResourceNotFoundException.class, () -> postViewService.getProfileRepliesById(profileId, page));
+        assertThrows(ResourceNotFoundException.class, () -> postViewService.getRepliesByAuthorId(profileId, page));
         verify(profileRepository, times(1)).findById(profileId);
-        verify(postRepository, times(0)).findReplyPostsByProfileId(any(UUID.class), eq(authenticatedUser.getId()),
+        verify(postRepository, times(0)).findRepliesByProfileId(any(UUID.class), eq(authenticatedUser.getId()),
             eq(page));
     }
 
     @Test
-    void PostViewService_GetProfileLikesById_ReturnPageDtoOfPostDto() {
+    void PostViewService_GetLikesByAuthorId_ReturnPageDtoOfPostDto() {
         // arrange
         UUID profileId = UUID.randomUUID();
         Profile profile = createProfileEntity(profileId, "random-string");
@@ -305,19 +305,19 @@ class PostViewServiceTest {
 
         when(profileRepository.findById(profileId)).thenReturn(Optional.of(profile));
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(postRepository.findLikedPostsByProfileId(profileId, authenticatedUser.getId(), page)).thenReturn(posts);
+        when(postRepository.findPostsLikedByProfileId(profileId, authenticatedUser.getId(), page)).thenReturn(posts);
 
         // act
-        PageDTO<PostDTO> actual = postViewService.getProfileLikesById(profileId, page);
+        PageDTO<PostDTO> actual = postViewService.getLikesByAuthorId(profileId, page);
 
         // assert
         assertEquals(expected, actual);
         verify(profileRepository, times(1)).findById(profileId);
-        verify(postRepository, times(1)).findLikedPostsByProfileId(profile.getId(), authenticatedUser.getId(), page);
+        verify(postRepository, times(1)).findPostsLikedByProfileId(profile.getId(), authenticatedUser.getId(), page);
     }
 
     @Test
-    void PostViewService_GetProfileLikesById_ThrowResourceNotFoundException() {
+    void PostViewService_GetLikesByAuthorId_ThrowResourceNotFoundException() {
         // arrange
         UUID profileId = UUID.randomUUID();
 
@@ -328,13 +328,14 @@ class PostViewServiceTest {
         when(profileRepository.findById(profileId)).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(ResourceNotFoundException.class, () -> postViewService.getProfileLikesById(profileId, page));
+        assertThrows(ResourceNotFoundException.class, () -> postViewService.getLikesByAuthorId(profileId, page));
         verify(profileRepository, times(1)).findById(profileId);
-        verify(postRepository, times(0)).findReplyPostsById(any(UUID.class), eq(authenticatedUser.getId()), eq(page));
+        verify(postRepository, times(0)).findPostsLikedByProfileId(any(UUID.class), eq(authenticatedUser.getId()),
+            eq(page));
     }
 
     @Test
-    void PostViewService_GetProfileMentionsById_ReturnPageDtoOfPostDto() {
+    void PostViewService_GetMentionsOfAuthorId_ReturnPageDtoOfPostDto() {
         // arrange
         UUID profileId = UUID.randomUUID();
         Profile profile = createProfileEntity(profileId, "random-string");
@@ -348,21 +349,19 @@ class PostViewServiceTest {
 
         when(profileRepository.findById(profileId)).thenReturn(Optional.of(profile));
         when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(postRepository.findMentionedPostsByProfileId(profileId, authenticatedUser.getId(), page))
-            .thenReturn(posts);
+        when(postRepository.findPostsMentioningProfileId(profileId, authenticatedUser.getId(), page)).thenReturn(posts);
 
         // act
-        PageDTO<PostDTO> actual = postViewService.getProfileMentionsById(profileId, page);
+        PageDTO<PostDTO> actual = postViewService.getMentionsOfAuthorId(profileId, page);
 
         // assert
         assertEquals(expected, actual);
         verify(profileRepository, times(1)).findById(profileId);
-        verify(postRepository, times(1)).findMentionedPostsByProfileId(profile.getId(), authenticatedUser.getId(),
-            page);
+        verify(postRepository, times(1)).findPostsMentioningProfileId(profile.getId(), authenticatedUser.getId(), page);
     }
 
     @Test
-    void PostViewService_GetProfileMentionsById_ThrowResourceNotFoundException() {
+    void PostViewService_GetMentionsOfAuthorId_ThrowResourceNotFoundException() {
         // arrange
         UUID profileId = UUID.randomUUID();
 
@@ -373,9 +372,9 @@ class PostViewServiceTest {
         when(profileRepository.findById(profileId)).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(ResourceNotFoundException.class, () -> postViewService.getProfileMentionsById(profileId, page));
+        assertThrows(ResourceNotFoundException.class, () -> postViewService.getMentionsOfAuthorId(profileId, page));
         verify(profileRepository, times(1)).findById(profileId);
-        verify(postRepository, times(0)).findMentionedPostsByProfileId(any(UUID.class), eq(authenticatedUser.getId()),
+        verify(postRepository, times(0)).findPostsMentioningProfileId(any(UUID.class), eq(authenticatedUser.getId()),
             eq(page));
     }
 

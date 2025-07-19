@@ -28,7 +28,7 @@ public interface PostViewService {
      * @return A {@link PageDTO} of {@link PostDTO} for matches, otherwise empty.
      * @throws ResourceNotFoundException If no post by that id exists.
      */
-    public PageDTO<PostDTO> getPostRepliesById(UUID id, Pageable page);
+    public PageDTO<PostDTO> getRepliesById(UUID id, Pageable page); // TODO: refactor to getConversationByPostId
 
     /**
      * Fetch a {@link PageDTO} of {@link PostDTO} for posts from the authenticated
@@ -52,44 +52,44 @@ public interface PostViewService {
      * Fetch a {@link PageDTO} of {@link PostDTO} for posts from the user with the
      * supplied profile {@code id}, that are root-level posts (no parent).
      * 
-     * @param id   The id of the profile to query.
+     * @param id   The id of the profile (author) to query.
      * @param page The {@link Pageable} containing the pagination parameters.
      * @return A {@link PageDTO} of {@link PostDTO} for matches, otherwise empty.
      * @throws ResourceNotFoundException If no profile by that id exists.
      */
-    public PageDTO<PostDTO> getProfilePostsById(UUID id, Pageable page);
+    public PageDTO<PostDTO> getPostsByAuthorId(UUID id, Pageable page);
 
     /**
      * Fetch a {@link PageDTO} of {@link PostDTO} for posts from the user with the
      * supplied profile {@code id}, that are in reply to another post.
      * 
-     * @param id   The id of the profile to query.
+     * @param id   The id of the profile (author) to query.
      * @param page The {@link Pageable} containing the pagination parameters.
      * @return A {@link PageDTO} of {@link PostDTO} for matches, otherwise empty.
      * @throws ResourceNotFoundException If no profile by that id exists.
      */
-    public PageDTO<PostDTO> getProfileRepliesById(UUID id, Pageable page);
+    public PageDTO<PostDTO> getRepliesByAuthorId(UUID id, Pageable page);
 
     /**
      * Fetch a {@link PageDTO} of {@link PostDTO} for posts liked by the user with
      * the supplied profile {@code id}.
      * 
-     * @param id   The id of the profile to query.
+     * @param id   The id of the profile (author) to query.
      * @param page The {@link Pageable} containing the pagination parameters.
      * @return A {@link PageDTO} of {@link PostDTO} for matches, otherwise empty.
      * @throws ResourceNotFoundException If no profile by that id exists.
      */
-    public PageDTO<PostDTO> getProfileLikesById(UUID id, Pageable page);
+    public PageDTO<PostDTO> getLikesByAuthorId(UUID id, Pageable page);
 
     /**
-     * Fetch a {@link PageDTO} of {@link PostDTO} for posts that mention the user
-     * with the supplied profile {@code id}.
+     * Fetch a {@link PageDTO} of {@link PostDTO} for posts that contain a mention
+     * of the user with the supplied profile {@code id}.
      * 
-     * @param id   The id of the profile to query.
+     * @param id   The id of the profile (author) to query.
      * @param page The {@link Pageable} containing the pagination parameters.
      * @return A {@link PageDTO} of {@link PostDTO} for matches, otherwise empty.
      * @throws ResourceNotFoundException If no profile by that id exists.
      */
-    public PageDTO<PostDTO> getProfileMentionsById(UUID id, Pageable page);
+    public PageDTO<PostDTO> getMentionsOfAuthorId(UUID id, Pageable page);
 
 }
