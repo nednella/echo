@@ -107,8 +107,8 @@ class FollowRepositoryIT extends RepositoryTest {
      */
     @Test
     @Transactional
-    void FollowRepository_DeleteAnyFollowIfExists_Return2() {
-        int deletedCount = followRepository.deleteAnyFollowIfExists(source.getId(), target.getId());
+    void FollowRepository_DeleteAnyFollowIfExistsBetween_Return2() {
+        int deletedCount = followRepository.deleteAnyFollowIfExistsBetween(source.getId(), target.getId());
 
         assertEquals(2, deletedCount);
     }

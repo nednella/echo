@@ -52,6 +52,6 @@ public interface FollowRepository extends ListCrudRepository<Follow, FollowPK> {
         WHERE (f.followerId = :profileId1 AND f.followedId = :profileId2)
            OR (f.followerId = :profileId2 AND f.followedId = :profileId1)
         """)
-    int deleteAnyFollowIfExists(@Param("profileId1") UUID profileId1, @Param("profileId2") UUID profileId2);
+    int deleteAnyFollowIfExistsBetween(@Param("profileId1") UUID profileId1, @Param("profileId2") UUID profileId2);
 
 }
