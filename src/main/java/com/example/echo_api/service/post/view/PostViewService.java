@@ -31,24 +31,6 @@ public interface PostViewService {
     public PageDTO<PostDTO> getRepliesById(UUID id, Pageable page); // TODO: refactor to getConversationByPostId
 
     /**
-     * Fetch a {@link PageDTO} of {@link PostDTO} for posts from the authenticated
-     * user and profiles that the authenticated user follows.
-     * 
-     * @param page The {@link Pageable} containing the pagination parameters.
-     * @return A {@link PageDTO} of {@link PostDTO} for matches, otherwise empty.
-     */
-    public PageDTO<PostDTO> getHomepagePosts(Pageable page);
-
-    /**
-     * Fetch a {@link PageDTO} of {@link PostDTO} for posts from all users, except
-     * those blocked by the authenticated user.
-     * 
-     * @param page The {@link Pageable} containing the pagination parameters.
-     * @return A {@link PageDTO} of {@link PostDTO} for matches, otherwise empty.
-     */
-    public PageDTO<PostDTO> getDiscoverPosts(Pageable page);
-
-    /**
      * Fetch a {@link PageDTO} of {@link PostDTO} for posts from the user with the
      * supplied profile {@code id}, that are root-level posts (no parent).
      * 
@@ -91,5 +73,23 @@ public interface PostViewService {
      * @throws ResourceNotFoundException If no profile by that id exists.
      */
     public PageDTO<PostDTO> getMentionsOfAuthorId(UUID id, Pageable page);
+
+    /**
+     * Fetch a {@link PageDTO} of {@link PostDTO} for posts from the authenticated
+     * user and profiles that the authenticated user follows.
+     * 
+     * @param page The {@link Pageable} containing the pagination parameters.
+     * @return A {@link PageDTO} of {@link PostDTO} for matches, otherwise empty.
+     */
+    public PageDTO<PostDTO> getHomepagePosts(Pageable page);
+
+    /**
+     * Fetch a {@link PageDTO} of {@link PostDTO} for posts from all users, except
+     * those blocked by the authenticated user.
+     * 
+     * @param page The {@link Pageable} containing the pagination parameters.
+     * @return A {@link PageDTO} of {@link PostDTO} for matches, otherwise empty.
+     */
+    public PageDTO<PostDTO> getDiscoverPosts(Pageable page);
 
 }

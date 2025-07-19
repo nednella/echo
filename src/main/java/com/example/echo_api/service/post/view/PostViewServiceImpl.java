@@ -21,7 +21,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * Service implementation for managing read-only {@link Post} data presentation
- * operations associated with singlular post objects.
+ * operations associated with singular and paginated post objects.
  */
 @Service
 public class PostViewServiceImpl extends BasePostService implements PostViewService {
@@ -60,26 +60,6 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
         // TODO: validateNoBlock
 
         Page<PostDTO> query = postRepository.findRepliesById(postId, authenticatedUserId, page);
-        String uri = getCurrentRequestUri();
-
-        return PageMapper.toDTO(query, uri);
-    }
-
-    @Override
-    public PageDTO<PostDTO> getHomepagePosts(Pageable page) {
-        UUID authenticatedUserId = getAuthenticatedUser().getId();
-
-        Page<PostDTO> query = postRepository.findHomepagePosts(authenticatedUserId, page);
-        String uri = getCurrentRequestUri();
-
-        return PageMapper.toDTO(query, uri);
-    }
-
-    @Override
-    public PageDTO<PostDTO> getDiscoverPosts(Pageable page) {
-        UUID authenticatedUserId = getAuthenticatedUser().getId();
-
-        Page<PostDTO> query = postRepository.findDiscoverPosts(authenticatedUserId, page);
         String uri = getCurrentRequestUri();
 
         return PageMapper.toDTO(query, uri);
@@ -132,6 +112,26 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
         // TODO: validateNoBlock
 
         Page<PostDTO> query = postRepository.findPostsMentioningProfileId(authorId, authenticatedUserId, page);
+        String uri = getCurrentRequestUri();
+
+        return PageMapper.toDTO(query, uri);
+    }
+
+    @Override
+    public PageDTO<PostDTO> getHomepagePosts(Pageable page) {
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
+
+        Page<PostDTO> query = postRepository.findHomepagePosts(authenticatedUserId, page);
+        String uri = getCurrentRequestUri();
+
+        return PageMapper.toDTO(query, uri);
+    }
+
+    @Override
+    public PageDTO<PostDTO> getDiscoverPosts(Pageable page) {
+        UUID authenticatedUserId = getAuthenticatedUser().getId();
+
+        Page<PostDTO> query = postRepository.findDiscoverPosts(authenticatedUserId, page);
         String uri = getCurrentRequestUri();
 
         return PageMapper.toDTO(query, uri);
