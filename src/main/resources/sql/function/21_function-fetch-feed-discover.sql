@@ -2,9 +2,7 @@
 /*
  * Function fetches posts that form a users discover page.
  *
- * Root-level posts from any user, so long as they are not actively blocked by the 
- * authenticated user, are fetched and sorted by creation timestamp.
- * 
+ * Root-level posts from any user are fetched and sorted by creation timestamp.
 */
 
 CREATE OR REPLACE FUNCTION fetch_feed_discover(
@@ -42,9 +40,7 @@ AS
             SELECT
                 p.id
             FROM post p
-            LEFT JOIN block b ON p.author_id = b.blocked_id AND b.blocker_id = p_authenticated_user_id
             WHERE p.parent_id IS NULL
-            AND b.blocked_id IS NULL
             ORDER BY p.created_at DESC
             OFFSET p_offset
             LIMIT p_limit

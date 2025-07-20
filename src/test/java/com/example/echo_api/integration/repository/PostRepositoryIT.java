@@ -20,17 +20,17 @@ import org.springframework.test.annotation.DirtiesContext;
 import com.example.echo_api.integration.util.RepositoryTest;
 import com.example.echo_api.persistence.dto.response.post.PostDTO;
 import com.example.echo_api.persistence.model.account.Account;
-import com.example.echo_api.persistence.model.block.Block;
 import com.example.echo_api.persistence.model.post.Post;
 import com.example.echo_api.persistence.model.post.like.PostLike;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.AccountRepository;
-import com.example.echo_api.persistence.repository.BlockRepository;
 import com.example.echo_api.persistence.repository.PostEntityRepository;
 import com.example.echo_api.persistence.repository.PostLikeRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.util.extractor.PostEntityExtractor;
+
+// TODO: finish JDocs
 
 /**
  * Integration test class for {@link PostRepository}.
@@ -47,9 +47,6 @@ class PostRepositoryIT extends RepositoryTest {
     private ProfileRepository profileRepository;
 
     @Autowired
-    private BlockRepository blockRepository;
-
-    @Autowired
     private PostRepository postRepository;
 
     @Autowired
@@ -60,7 +57,6 @@ class PostRepositoryIT extends RepositoryTest {
 
     private Profile self;
     private Profile randomUser;
-    private Profile blockedUser;
 
     private Post postWithReplies;
     private Post postWithEntities;
@@ -96,12 +92,10 @@ class PostRepositoryIT extends RepositoryTest {
     void setup() {
         self = createProfile("self", "password");
         randomUser = createProfile("random_user", "password");
-        blockedUser = createProfile("blocked_user", "password");
 
         // Create root posts (no parent)
         postWithReplies = createPost(null, self.getId(), "This post has some replies.");
         postWithEntities = createPost(null, self.getId(),"Nice #SpringBoot app, github.com/repo");
-        createPost(null, blockedUser.getId(), "A post from a blocked user.");
 
         // create posts to form a conversation
         replyWithOpResponse = createPost(postWithReplies.getId(), randomUser.getId(),"A reply, where @self will reply back!");
@@ -109,8 +103,7 @@ class PostRepositoryIT extends RepositoryTest {
         createPost(postWithReplies.getId(), randomUser.getId(), "A reply with no engagement.");
         createPost(replyWithOpResponse.getId(), self.getId(), "I'm replying back.");
 
-        // persist relevant blocks/likes/entities
-        blockRepository.save(new Block(self.getId(), blockedUser.getId()));
+        // persist relevant likes/entities
         postLikeRepository.save(new PostLike(replyWithOpResponse.getId(), self.getId()));
         postLikeRepository.save(new PostLike(replyWithLike.getId(), self.getId()));
         postEntityRepository.saveAll(PostEntityExtractor.extract(postWithEntities.getId(), postWithEntities.getText()));
@@ -242,17 +235,17 @@ class PostRepositoryIT extends RepositoryTest {
     }
 
     /**
-     * Test {@link PostRepository#findReplyPostsById(UUID, UUID, Pageable)} to
-     * verify that searching for a posts' replies by its {@code id} returns a
-     * {@link Page} of {@link PostDTO}.
+     * Test {@link PostRepository#findRepliesById(UUID, UUID, Pageable)} to verify
+     * that searching for a posts' replies by its {@code id} returns a {@link Page}
+     * of {@link PostDTO}.
      */
     @Test
-    void PostRepository_findReplyPostsById_HasRepliesReturnsPageOfPostDto() {
+    void PostRepository_FindRepliesById_HasRepliesReturnsPageOfPostDto() {
         UUID postId = postWithReplies.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
 
-        Page<PostDTO> replies = postRepository.findReplyPostsById(
+        Page<PostDTO> replies = postRepository.findRepliesById(
             postId,
             authUserId,
             page);
@@ -263,17 +256,17 @@ class PostRepositoryIT extends RepositoryTest {
     }
 
     /**
-     * Test {@link PostRepository#findReplyPostsById(UUID, UUID, Pageable)} to
-     * verify that searching for a posts' replies by its {@code id}, that has no
-     * replies, returns an empty {@link Page}.
+     * Test {@link PostRepository#findRepliesById(UUID, UUID, Pageable)} to verify
+     * that searching for a posts' replies by its {@code id}, that has no replies,
+     * returns an empty {@link Page}.
      */
     @Test
-    void PostRepository_findReplyPostsById_HasNoRepliesReturnsEmptyPage() {
+    void PostRepository_FindRepliesById_HasNoRepliesReturnsEmptyPage() {
         UUID postId = postWithEntities.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
 
-        Page<PostDTO> replies = postRepository.findReplyPostsById(
+        Page<PostDTO> replies = postRepository.findRepliesById(
             postId,
             authUserId,
             page);
@@ -283,20 +276,18 @@ class PostRepositoryIT extends RepositoryTest {
         assertEquals(0, replies.getTotalElements());
     }
 
-    // TODO: findReplyPostsById_BlockedUserRepliesAreNotShown
-
     /**
-     * Test {@link PostRepository#findReplyPostsById(UUID, UUID, Pageable)} to
-     * verify that searching for a posts' replies by its {@code id}, correctly ranks
-     * the reply with an original poster response highest.
+     * Test {@link PostRepository#findRepliesById(UUID, UUID, Pageable)} to verify
+     * that searching for a posts' replies by its {@code id}, correctly ranks the
+     * reply with an original poster response highest.
      */
     @Test
-    void PostRepository_findReplyPostsById_ReplyWithOpResponseIsRankedHighest() {
+    void PostRepository_FindRepliesById_ReplyWithOpResponseIsRankedHighest() {
         UUID postId = postWithReplies.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
 
-        Page<PostDTO> replies = postRepository.findReplyPostsById(
+        Page<PostDTO> replies = postRepository.findRepliesById(
             postId,
             authUserId,
             page);
@@ -308,17 +299,17 @@ class PostRepositoryIT extends RepositoryTest {
     }
 
     /**
-     * Test {@link PostRepository#findReplyPostsById(UUID, UUID, Pageable)} to
-     * verify that searching for a posts' replies by its {@code id}, correctly ranks
-     * the reply with engagement higher than those without any engagement.
+     * Test {@link PostRepository#findRepliesById(UUID, UUID, Pageable)} to verify
+     * that searching for a posts' replies by its {@code id}, correctly ranks the
+     * reply with engagement higher than those without any engagement.
      */
     @Test
-    void PostRepository_findReplyPostsById_ReplyWithEngagementIsRankedHigherThanReplyWithoutEngagement() {
+    void PostRepository_FindRepliesById_ReplyWithEngagementIsRankedHigherThanReplyWithoutEngagement() {
         UUID postId = postWithReplies.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
 
-        Page<PostDTO> replies = postRepository.findReplyPostsById(
+        Page<PostDTO> replies = postRepository.findRepliesById(
             postId,
             authUserId,
             page);
@@ -331,7 +322,7 @@ class PostRepositoryIT extends RepositoryTest {
     }
 
     @Test
-    void PostRepository_findHomepagePosts_RankedByCreatedAtDescending() {
+    void PostRepository_FindHomepagePosts_RankedByCreatedAtDescending() {
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
 
@@ -348,7 +339,7 @@ class PostRepositoryIT extends RepositoryTest {
     }
 
     @Test
-    void PostRepository_findHomepagePosts_NoFollowsReturnsSelfPostsOnly() {
+    void PostRepository_FindHomepagePosts_NoFollowsReturnsSelfPostsOnly() {
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
 
@@ -369,7 +360,7 @@ class PostRepositoryIT extends RepositoryTest {
     }
 
     @Test
-    void PostRepository_findHomepagePosts_NoFollowsAndNoPostsReturnsEmptyPage() {
+    void PostRepository_FindHomepagePosts_NoFollowsAndNoPostsReturnsEmptyPage() {
         UUID authUserId = randomUser.getId(); // randomUser has no root-level posts, only replies
         Pageable page = PageRequest.of(0, 10);
 
@@ -382,7 +373,7 @@ class PostRepositoryIT extends RepositoryTest {
     }
 
     @Test
-    void PostRepository_findDiscoverPosts_RankedByCreatedAtDescending() {
+    void PostRepository_FindDiscoverPosts_RankedByCreatedAtDescending() {
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
 
@@ -399,29 +390,7 @@ class PostRepositoryIT extends RepositoryTest {
     }
 
     @Test
-    void PostRepository_findDiscoverPosts_BlockedUserPostsAreNotShown() {
-        UUID blockedUserId = blockedUser.getId();
-        UUID authUserId = self.getId(); // self has blocked blockedUser
-        Pageable page = PageRequest.of(0, 10);
-
-        Page<PostDTO> query = postRepository.findDiscoverPosts(
-            authUserId,
-            page);
-
-        assertNotNull(query);
-        assertTrue(query.hasContent());
-
-        List<PostDTO> posts = query.getContent();
-
-        // assert no post belongs to blockedUser
-        for (PostDTO post : posts) {
-            UUID authorId = UUID.fromString(post.author().id());
-            assertNotEquals(blockedUserId, authorId);
-        }
-    }
-
-    @Test
-    void PostRepository_findPostsByProfileId_RankedByCreatedAtDescending() {
+    void PostRepository_FindPostsByProfileId_RankedByCreatedAtDescending() {
         UUID profileId = self.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
@@ -440,7 +409,7 @@ class PostRepositoryIT extends RepositoryTest {
     }
 
     @Test
-    void PostRepository_findPostsByProfileId_ContainsOnlyPostsByProfileId() {
+    void PostRepository_FindPostsByProfileId_ContainsOnlyPostsByProfileId() {
         UUID profileId = self.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
@@ -464,12 +433,12 @@ class PostRepositoryIT extends RepositoryTest {
     }
 
     @Test
-    void PostRepository_findReplyPostsByProfileId_RankedByCreatedAtDescending() {
+    void PostRepository_FindRepliesByProfileId_RankedByCreatedAtDescending() {
         UUID profileId = randomUser.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
 
-        Page<PostDTO> query = postRepository.findReplyPostsByProfileId(
+        Page<PostDTO> query = postRepository.findRepliesByProfileId(
             profileId,
             authUserId,
             page);
@@ -483,12 +452,12 @@ class PostRepositoryIT extends RepositoryTest {
     }
 
     @Test
-    void PostRepository_findReplyPostsByProfileId_ContainsOnlyPostsAuthoredByProfileId() {
+    void PostRepository_FindRepliesByProfileId_ContainsOnlyPostsAuthoredByProfileId() {
         UUID profileId = randomUser.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
 
-        Page<PostDTO> query = postRepository.findReplyPostsByProfileId(
+        Page<PostDTO> query = postRepository.findRepliesByProfileId(
             profileId,
             authUserId,
             page);
@@ -506,15 +475,13 @@ class PostRepositoryIT extends RepositoryTest {
         }
     }
 
-    // TODO: findLikedPostsByProfileId_BlockedUserPostsAreNotShown
-
     @Test
-    void PostRepository_findLikedPostsByProfileId_RankedByCreatedAtDescending() {
+    void PostRepository_FindPostsLikedByProfileId_RankedByCreatedAtDescending() {
         UUID profileId = self.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
 
-        Page<PostDTO> query = postRepository.findLikedPostsByProfileId(
+        Page<PostDTO> query = postRepository.findPostsLikedByProfileId(
             profileId,
             authUserId,
             page);
@@ -528,12 +495,12 @@ class PostRepositoryIT extends RepositoryTest {
     }
 
     @Test
-    void PostRepository_findLikedPostsByProfileId_ContainsOnlyPostsLikedByProfileId() {
+    void PostRepository_FindPostsLikedByProfileId_ContainsOnlyPostsLikedByProfileId() {
         UUID profileId = self.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
 
-        Page<PostDTO> query = postRepository.findLikedPostsByProfileId(
+        Page<PostDTO> query = postRepository.findPostsLikedByProfileId(
             profileId,
             authUserId,
             page);
@@ -551,15 +518,13 @@ class PostRepositoryIT extends RepositoryTest {
         }
     }
 
-    // TODO: findMentionedPostsByProfileId_BlockedUserPostsAreNotShown
-
     @Test
-    void PostRepository_findMentionedPostsByProfileId_RankedByCreatedAtDescending() {
+    void PostRepository_FindPostsMentioningProfileId_RankedByCreatedAtDescending() {
         UUID profileId = self.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
 
-        Page<PostDTO> query = postRepository.findMentionedPostsByProfileId(
+        Page<PostDTO> query = postRepository.findPostsMentioningProfileId(
             profileId,
             authUserId,
             page);
@@ -573,13 +538,13 @@ class PostRepositoryIT extends RepositoryTest {
     }
 
     @Test
-    void PostRepository_findMentionedPostsByProfileId_ContainsOnlyPostsMentioningUserWithProfileId() {
+    void PostRepository_FindPostsMentioningProfileId_ContainsOnlyPostsMentioningUserWithProfileId() {
         String username = self.getUsername();
         UUID profileId = self.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
 
-        Page<PostDTO> query = postRepository.findMentionedPostsByProfileId(
+        Page<PostDTO> query = postRepository.findPostsMentioningProfileId(
             profileId,
             authUserId,
             page);

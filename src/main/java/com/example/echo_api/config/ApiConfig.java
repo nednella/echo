@@ -39,7 +39,6 @@ public final class ApiConfig {
         public static final String GET_FOLLOWERS_BY_ID = ROOT + "/{id}/followers";
         public static final String GET_FOLLOWING_BY_ID = ROOT + "/{id}/following";
         public static final String FOLLOW_BY_ID = ROOT + "/{id}/follow";
-        public static final String BLOCK_BY_ID = ROOT + "/{id}/block";
     }
 
     @NoArgsConstructor(access = PRIVATE)
@@ -56,10 +55,10 @@ public final class ApiConfig {
         private static final String ROOT = BASE_URL + "/feed";
         public static final String HOMEPAGE = ROOT + "/homepage";
         public static final String DISCOVER = ROOT + "/discover";
-        public static final String PROFILE_POSTS_BY_ID = ROOT + "/profile/{id}/posts";
-        public static final String PROFILE_REPLIES_BY_ID = ROOT + "/profile/{id}/replies";
-        public static final String PROFILE_LIKES_BY_ID = ROOT + "/profile/{id}/likes";
-        public static final String PROFILE_MENTIONS_BY_ID = ROOT + "/profile/{id}/mentions";
+        public static final String POSTS_BY_PROFILE_ID = ROOT + "/profile/{id}/posts";
+        public static final String REPLIES_BY_PROFILE_ID = ROOT + "/profile/{id}/replies";
+        public static final String LIKES_BY_PROFILE_ID = ROOT + "/profile/{id}/likes";
+        public static final String MENTIONS_OF_PROFILE_ID = ROOT + "/profile/{id}/mentions";
     }
 
 }

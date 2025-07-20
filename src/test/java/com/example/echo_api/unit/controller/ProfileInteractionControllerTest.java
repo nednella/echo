@@ -21,10 +21,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.controller.profile.ProfileInteractionController;
-import com.example.echo_api.exception.custom.conflict.AlreadyBlockingException;
 import com.example.echo_api.exception.custom.conflict.AlreadyFollowingException;
 import com.example.echo_api.exception.custom.conflict.SelfActionException;
-import com.example.echo_api.exception.custom.forbidden.BlockedException;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.service.profile.interaction.ProfileInteractionService;
@@ -147,34 +145,6 @@ class ProfileInteractionControllerTest {
     }
 
     @Test
-    void ProfileInteractionController_Follow_Throw403BlockedException() throws Exception {
-        // api: POST /api/v1/profile/{username}/follow ==> 403 : Blocked
-        String path = ApiConfig.Profile.FOLLOW_BY_ID;
-
-        UUID id = UUID.randomUUID();
-        doThrow(new BlockedException()).when(profileInteractionService).follow(id);
-
-        String response = mockMvc
-            .perform(post(path, id))
-            .andDo(print())
-            .andExpect(status().isForbidden())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
-        ErrorDTO expected = new ErrorDTO(
-            HttpStatus.FORBIDDEN,
-            ErrorMessageConfig.Forbidden.BLOCKED,
-            null,
-            path);
-
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
-
-        assertEquals(expected, actual);
-        verify(profileInteractionService, times(1)).follow(id);
-    }
-
-    @Test
     void ProfileInteractionController_Unfollow_Return204NoContent() throws Exception {
         // api: DELETE /api/v1/profile/{username}/follow ==> 204 : No Content
         String path = ApiConfig.Profile.FOLLOW_BY_ID;
@@ -244,178 +214,6 @@ class ProfileInteractionControllerTest {
 
         assertEquals(expected, actual);
         verify(profileInteractionService, times(1)).unfollow(id);
-    }
-
-    @Test
-    void ProfileInteractionController_Block_Return204NoContent() throws Exception {
-        // api: POST /api/v1/profile/{username}/block ==> 204 : No Content
-        String path = ApiConfig.Profile.BLOCK_BY_ID;
-
-        UUID id = UUID.randomUUID();
-        doNothing().when(profileInteractionService).block(id);
-
-        mockMvc
-            .perform(post(path, id))
-            .andDo(print())
-            .andExpect(status().isNoContent());
-
-        verify(profileInteractionService, times(1)).block(id);
-    }
-
-    @Test
-    void ProfileInteractionController_Block_Throw404ResouceNotFound() throws Exception {
-        // api: POST /api/v1/profile/{username}/block ==> 404 : Resource Not Found
-        String path = ApiConfig.Profile.BLOCK_BY_ID;
-
-        UUID id = UUID.randomUUID();
-        doThrow(new ResourceNotFoundException()).when(profileInteractionService).block(id);
-
-        String response = mockMvc
-            .perform(post(path, id))
-            .andDo(print())
-            .andExpect(status().isNotFound())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
-        ErrorDTO expected = new ErrorDTO(
-            HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
-            path);
-
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
-
-        assertEquals(expected, actual);
-        verify(profileInteractionService, times(1)).block(id);
-    }
-
-    @Test
-    void ProfileInteractionController_Block_Throw409SelfActionException() throws Exception {
-        // api: POST /api/v1/profile/{username}/block ==> 409 : Self Action
-        String path = ApiConfig.Profile.BLOCK_BY_ID;
-
-        UUID id = UUID.randomUUID();
-        doThrow(new SelfActionException()).when(profileInteractionService).block(id);
-
-        String response = mockMvc
-            .perform(post(path, id))
-            .andDo(print())
-            .andExpect(status().isConflict())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
-        ErrorDTO expected = new ErrorDTO(
-            HttpStatus.CONFLICT,
-            ErrorMessageConfig.Conflict.SELF_ACTION,
-            null,
-            path);
-
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
-
-        assertEquals(expected, actual);
-        verify(profileInteractionService, times(1)).block(id);
-    }
-
-    @Test
-    void ProfileInteractionController_Block_Throw409AlreadyBlockingException() throws Exception {
-        // api: POST /api/v1/profile/{username}/block ==> 409 : AlreadyBlocking
-        String path = ApiConfig.Profile.BLOCK_BY_ID;
-
-        UUID id = UUID.randomUUID();
-        doThrow(new AlreadyBlockingException()).when(profileInteractionService).block(id);
-
-        String response = mockMvc
-            .perform(post(path, id))
-            .andDo(print())
-            .andExpect(status().isConflict())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
-        ErrorDTO expected = new ErrorDTO(
-            HttpStatus.CONFLICT,
-            ErrorMessageConfig.Conflict.ALREADY_BLOCKING,
-            null,
-            path);
-
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
-
-        assertEquals(expected, actual);
-        verify(profileInteractionService, times(1)).block(id);
-    }
-
-    @Test
-    void ProfileInteractionController_Unblock_Return204NoContent() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/block ==> 204 : No Content
-        String path = ApiConfig.Profile.BLOCK_BY_ID;
-
-        UUID id = UUID.randomUUID();
-        doNothing().when(profileInteractionService).unblock(id);
-
-        mockMvc
-            .perform(delete(path, id))
-            .andDo(print())
-            .andExpect(status().isNoContent());
-
-        verify(profileInteractionService, times(1)).unblock(id);
-    }
-
-    @Test
-    void ProfileInteractionController_Unblock_Throw404ResouceNotFound() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/block ==> 404 : ResourceNotFound
-        String path = ApiConfig.Profile.BLOCK_BY_ID;
-
-        UUID id = UUID.randomUUID();
-        doThrow(new ResourceNotFoundException()).when(profileInteractionService).unblock(id);
-
-        String response = mockMvc
-            .perform(delete(path, id))
-            .andDo(print())
-            .andExpect(status().isNotFound())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
-        ErrorDTO expected = new ErrorDTO(
-            HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
-            path);
-
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
-
-        assertEquals(expected, actual);
-        verify(profileInteractionService, times(1)).unblock(id);
-    }
-
-    @Test
-    void ProfileInteractionController_Unblock_Throw409SelfActionException() throws Exception {
-        // api: DELETE /api/v1/profile/{username}/block ==> 409 : SelfAction
-        String path = ApiConfig.Profile.BLOCK_BY_ID;
-
-        UUID id = UUID.randomUUID();
-        doThrow(new SelfActionException()).when(profileInteractionService).unblock(id);
-
-        String response = mockMvc
-            .perform(delete(path, id))
-            .andDo(print())
-            .andExpect(status().isConflict())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
-        ErrorDTO expected = new ErrorDTO(
-            HttpStatus.CONFLICT,
-            ErrorMessageConfig.Conflict.SELF_ACTION,
-            null,
-            path);
-
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
-
-        assertEquals(expected, actual);
-        verify(profileInteractionService, times(1)).unblock(id);
     }
 
 }
