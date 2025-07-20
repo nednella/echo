@@ -14,8 +14,6 @@ AS
 '
     SELECT COUNT(*)
     FROM post p
-    LEFT JOIN block b ON p.author_id = b.blocked_id AND b.blocker_id = p_authenticated_user_id
-        WHERE p.parent_id IS NULL
-        AND b.blocked_id IS NULL;
+    WHERE p.parent_id IS NULL;
 '
 LANGUAGE sql;
