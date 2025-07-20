@@ -10,15 +10,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param followedBy Indicates if the requesting profile is followed by the
  *                   requested profile.
  * @param blocking   Indicates if the requesting profile blocks the requested
- *                   profile.
+ *                   profile. // TODO: remove field
  * @param blockedBy  Indicates if the requesting profile is blocked by the
- *                   requested profile.
+ *                   requested profile. // TODO: remove field
  */
 // @formatter:off
 public record ProfileRelationshipDTO(
     boolean following,
     @JsonProperty("followed_by") boolean followedBy,
-    boolean blocking,
-    @JsonProperty("blocked_by") boolean blockedBy
+    boolean blocking, // TODO: remove field
+    @JsonProperty("blocked_by") boolean blockedBy // TODO: remove field
 ) {}
 // @formatter:on
