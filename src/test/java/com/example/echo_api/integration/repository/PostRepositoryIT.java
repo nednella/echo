@@ -20,12 +20,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import com.example.echo_api.integration.util.RepositoryTest;
 import com.example.echo_api.persistence.dto.response.post.PostDTO;
 import com.example.echo_api.persistence.model.account.Account;
-import com.example.echo_api.persistence.model.block.Block;
 import com.example.echo_api.persistence.model.post.Post;
 import com.example.echo_api.persistence.model.post.like.PostLike;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.AccountRepository;
-import com.example.echo_api.persistence.repository.BlockRepository;
 import com.example.echo_api.persistence.repository.PostEntityRepository;
 import com.example.echo_api.persistence.repository.PostLikeRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
@@ -49,9 +47,6 @@ class PostRepositoryIT extends RepositoryTest {
     private ProfileRepository profileRepository;
 
     @Autowired
-    private BlockRepository blockRepository;
-
-    @Autowired
     private PostRepository postRepository;
 
     @Autowired
@@ -62,7 +57,6 @@ class PostRepositoryIT extends RepositoryTest {
 
     private Profile self;
     private Profile randomUser;
-    private Profile blockedUser;
 
     private Post postWithReplies;
     private Post postWithEntities;
@@ -98,12 +92,10 @@ class PostRepositoryIT extends RepositoryTest {
     void setup() {
         self = createProfile("self", "password");
         randomUser = createProfile("random_user", "password");
-        blockedUser = createProfile("blocked_user", "password");
 
         // Create root posts (no parent)
         postWithReplies = createPost(null, self.getId(), "This post has some replies.");
         postWithEntities = createPost(null, self.getId(),"Nice #SpringBoot app, github.com/repo");
-        createPost(null, blockedUser.getId(), "A post from a blocked user.");
 
         // create posts to form a conversation
         replyWithOpResponse = createPost(postWithReplies.getId(), randomUser.getId(),"A reply, where @self will reply back!");
@@ -111,8 +103,7 @@ class PostRepositoryIT extends RepositoryTest {
         createPost(postWithReplies.getId(), randomUser.getId(), "A reply with no engagement.");
         createPost(replyWithOpResponse.getId(), self.getId(), "I'm replying back.");
 
-        // persist relevant blocks/likes/entities
-        blockRepository.save(new Block(self.getId(), blockedUser.getId()));
+        // persist relevant likes/entities
         postLikeRepository.save(new PostLike(replyWithOpResponse.getId(), self.getId()));
         postLikeRepository.save(new PostLike(replyWithLike.getId(), self.getId()));
         postEntityRepository.saveAll(PostEntityExtractor.extract(postWithEntities.getId(), postWithEntities.getText()));
@@ -285,8 +276,6 @@ class PostRepositoryIT extends RepositoryTest {
         assertEquals(0, replies.getTotalElements());
     }
 
-    // TODO: findRepliesById_BlockedUserRepliesAreNotShown
-
     /**
      * Test {@link PostRepository#findRepliesById(UUID, UUID, Pageable)} to verify
      * that searching for a posts' replies by its {@code id}, correctly ranks the
@@ -401,28 +390,6 @@ class PostRepositoryIT extends RepositoryTest {
     }
 
     @Test
-    void PostRepository_FindDiscoverPosts_BlockedUserPostsAreNotShown() {
-        UUID blockedUserId = blockedUser.getId();
-        UUID authUserId = self.getId(); // self has blocked blockedUser
-        Pageable page = PageRequest.of(0, 10);
-
-        Page<PostDTO> query = postRepository.findDiscoverPosts(
-            authUserId,
-            page);
-
-        assertNotNull(query);
-        assertTrue(query.hasContent());
-
-        List<PostDTO> posts = query.getContent();
-
-        // assert no post belongs to blockedUser
-        for (PostDTO post : posts) {
-            UUID authorId = UUID.fromString(post.author().id());
-            assertNotEquals(blockedUserId, authorId);
-        }
-    }
-
-    @Test
     void PostRepository_FindPostsByProfileId_RankedByCreatedAtDescending() {
         UUID profileId = self.getId();
         UUID authUserId = self.getId();
@@ -508,8 +475,6 @@ class PostRepositoryIT extends RepositoryTest {
         }
     }
 
-    // TODO: findPostsLikedByProfileId_BlockedUserPostsAreNotShown
-
     @Test
     void PostRepository_FindPostsLikedByProfileId_RankedByCreatedAtDescending() {
         UUID profileId = self.getId();
@@ -552,8 +517,6 @@ class PostRepositoryIT extends RepositoryTest {
             assertTrue(postLikeRepository.existsByPostIdAndAuthorId(postId, profileId));
         }
     }
-
-    // TODO: findPostsMentioningProfileId_BlockedUserPostsAreNotShown
 
     @Test
     void PostRepository_FindPostsMentioningProfileId_RankedByCreatedAtDescending() {

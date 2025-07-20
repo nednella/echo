@@ -35,7 +35,6 @@ public final class ErrorMessageConfig {
     @NoArgsConstructor(access = PRIVATE)
     public static class Forbidden {
         public static final String ACCESS_DENIED = "You are missing permissions required to perform this action.";
-        public static final String BLOCKED = "This action is blocked due to a user restriction.";
         public static final String RESOURCE_OWNERSHIP_REQUIRED = "Resource ownership is required for performing this action.";
     }
 
@@ -49,7 +48,6 @@ public final class ErrorMessageConfig {
     @NoArgsConstructor(access = PRIVATE)
     public static class Conflict {
         public static final String ALREADY_FOLLOWING = "You are already following this profile.";
-        public static final String ALREADY_BLOCKING = "You are already blocking this profile.";
         public static final String ALREADY_LIKED = "You have already liked this post.";
         public static final String SELF_ACTION = "You cannot perform this action on yourself.";
     }

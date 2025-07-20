@@ -30,7 +30,7 @@ public interface FollowRepository extends ListCrudRepository<Follow, FollowPK> {
      * <p>
      * This action is idempotent.
      * 
-     * @param followerId The id of the profile initiating the block.
+     * @param followerId The id of the profile following.
      * @param followedId The id of the profile being followed.
      * @return The number of follow records deleted (0 or 1).
      */

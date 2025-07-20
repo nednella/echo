@@ -84,8 +84,7 @@ public interface PostViewService {
     public PageDTO<PostDTO> getHomepagePosts(Pageable page);
 
     /**
-     * Fetch a {@link PageDTO} of {@link PostDTO} for posts from all users, except
-     * those blocked by the authenticated user.
+     * Fetch a {@link PageDTO} of {@link PostDTO} for posts from all users.
      * 
      * @param page The {@link Pageable} containing the pagination parameters.
      * @return A {@link PageDTO} of {@link PostDTO} for matches, otherwise empty.

@@ -31,16 +31,4 @@ public class ProfileInteractionController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping(ApiConfig.Profile.BLOCK_BY_ID)
-    public ResponseEntity<Void> blockById(@PathVariable("id") UUID id) {
-        profileInteractionService.block(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping(ApiConfig.Profile.BLOCK_BY_ID)
-    public ResponseEntity<Void> unblockById(@PathVariable("id") UUID id) {
-        profileInteractionService.unblock(id);
-        return ResponseEntity.noContent().build();
-    }
-
 }

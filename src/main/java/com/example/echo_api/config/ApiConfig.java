@@ -39,7 +39,6 @@ public final class ApiConfig {
         public static final String GET_FOLLOWERS_BY_ID = ROOT + "/{id}/followers";
         public static final String GET_FOLLOWING_BY_ID = ROOT + "/{id}/following";
         public static final String FOLLOW_BY_ID = ROOT + "/{id}/follow";
-        public static final String BLOCK_BY_ID = ROOT + "/{id}/block";
     }
 
     @NoArgsConstructor(access = PRIVATE)

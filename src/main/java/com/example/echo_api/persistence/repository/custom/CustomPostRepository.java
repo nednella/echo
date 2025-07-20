@@ -57,8 +57,7 @@ public interface CustomPostRepository {
 
     /**
      * Retrieves a paginated list of {@link PostDTO} for root-level posts from all
-     * profiles, except those blocked by the authenticated user, sorted by newest
-     * first.
+     * profiles.
      * 
      * @param authUserId The id of the authenticated user, required for obtaining
      *                   profile and post relationships.

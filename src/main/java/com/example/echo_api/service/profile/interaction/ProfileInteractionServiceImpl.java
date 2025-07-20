@@ -6,13 +6,9 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.echo_api.exception.custom.conflict.AlreadyBlockingException;
 import com.example.echo_api.exception.custom.conflict.AlreadyFollowingException;
 import com.example.echo_api.exception.custom.conflict.SelfActionException;
-import com.example.echo_api.exception.custom.forbidden.BlockedException;
-import com.example.echo_api.persistence.model.block.Block;
 import com.example.echo_api.persistence.model.follow.Follow;
-import com.example.echo_api.persistence.repository.BlockRepository;
 import com.example.echo_api.persistence.repository.FollowRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.service.profile.BaseProfileService;
@@ -27,18 +23,15 @@ import com.example.echo_api.service.session.SessionService;
 public class ProfileInteractionServiceImpl extends BaseProfileService implements ProfileInteractionService {
 
     private final FollowRepository followRepository;
-    private final BlockRepository blockRepository;
 
     // @formatter:off
     public ProfileInteractionServiceImpl(
         SessionService sessionService,
         ProfileRepository profileRepository,
-        FollowRepository followRepository,
-        BlockRepository blockRepository
+        FollowRepository followRepository
     ) {
         super(sessionService, profileRepository);
         this.followRepository = followRepository;
-        this.blockRepository = blockRepository;
     }
     // @formatter:on
 
@@ -48,7 +41,6 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
         UUID target = getProfileEntityById(id).getId();
 
         validateNoSelfAction(source, target);
-        validateNoBlockBetween(source, target);
         if (followRepository.existsByFollowerIdAndFollowedId(source, target)) {
             throw new AlreadyFollowingException();
         }
@@ -65,29 +57,6 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
         followRepository.deleteByFollowerIdAndFollowedId(source, target);
     }
 
-    @Override
-    public void block(UUID id) {
-        UUID source = getAuthenticatedUser().getId();
-        UUID target = getProfileEntityById(id).getId();
-
-        validateNoSelfAction(source, target);
-        if (blockRepository.existsByBlockerIdAndBlockedId(source, target)) {
-            throw new AlreadyBlockingException();
-        }
-
-        followRepository.deleteAnyFollowIfExistsBetween(source, target);
-        blockRepository.save(new Block(source, target));
-    }
-
-    @Override
-    public void unblock(UUID id) {
-        UUID source = getAuthenticatedUser().getId();
-        UUID target = getProfileEntityById(id).getId();
-
-        validateNoSelfAction(source, target);
-        blockRepository.deleteByBlockerIdAndBlockedId(source, target);
-    }
-
     /**
      * Validate that the action is not being performed on self.
      * 
@@ -98,20 +67,6 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
     private void validateNoSelfAction(UUID source, UUID target) {
         if (Objects.equals(source, target)) {
             throw new SelfActionException();
-        }
-    }
-
-    /**
-     * Validate that the authenticated user has permission to perform the action on
-     * the target user.
-     * 
-     * @param source The source profile id.
-     * @param target The target profile id.
-     * @throws BlockedException
-     */
-    private void validateNoBlockBetween(UUID source, UUID target) {
-        if (blockRepository.existsAnyBlockBetween(source, target)) {
-            throw new BlockedException();
         }
     }
 
