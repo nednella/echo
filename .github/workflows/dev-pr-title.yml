@@ -16,8 +16,11 @@ jobs:
             - name: Validate PR title
               run: |
 
+                  # Disable history expansion to allow '!' in title
+                  set +H
+
                   # Pattern
-                  PATTERN="^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert)([!])?:"
+                  PATTERN="^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert)(!)?:"
 
                   # Check if the PR title matches the expected pattern
                   if [[ ! '${{ github.event.pull_request.title }}' =~ $PATTERN ]]; then
