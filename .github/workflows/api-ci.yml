@@ -1,10 +1,12 @@
-name: CI Pipeline
+name: API CI Pipeline
 
 on:
     pull_request:
         branches:
             - dev
             - main
+        paths:
+            - api/**
 
 jobs:
     build-test:
@@ -39,7 +41,7 @@ jobs:
 
             # Run tests
             - name: Build & Test w/ Gradle Wrapper
-              run: ./gradlew clean build --parallel --scan --stacktrace
+              run: cd api && ./gradlew clean build --parallel --scan --stacktrace
 
             # Upload test results
             - name: Upload Test Results
@@ -47,4 +49,4 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                   name: test-results
-                  path: build/test-results
+                  path: api/build/test-results
