@@ -16,8 +16,11 @@ jobs:
             - name: Validate PR title
               run: |
 
+                  # Disable history expansion to allow '!' in title
+                  set +H
+
                   # Pattern
-                  PATTERN="^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert)([!])?:"
+                  PATTERN="^(\[(\w|\-)+\] )?(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert)(!)?:"
 
                   # Check if the PR title matches the expected pattern
                   if [[ ! '${{ github.event.pull_request.title }}' =~ $PATTERN ]]; then
@@ -26,12 +29,12 @@ jobs:
                   echo "Expected title format:"
                   echo "[optional scope] <type>: <description>"
                   echo ""
-                  echo "Valid types: feat, fix, docs, style, refactor, perf, test, chore, ci, build"
+                  echo "Valid types: feat, fix, docs, style, refactor, perf, test, chore, ci, build, revert"
                   echo "For breaking changes, use: <type>!: <description>"
                   echo ""
                   echo "See: https://www.conventionalcommits.org/en/v1.0.0/ for more details."
                   exit 1
                   fi
 
-                  # Print success message if the title is valid (optional)
+                  # Print success message if the title is valid
                   echo "✅ PR title follows Conventional Commits format."
