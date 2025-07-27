@@ -3,10 +3,12 @@ import { routeTree } from "../routeTree.gen"
 import { useAuth } from "@clerk/clerk-react"
 import { RouterProvider, createRouter } from "@tanstack/react-router"
 
+import AppLoading from "./AppLoading"
+
 const router = createRouter({
     routeTree,
     defaultPreload: false, // TODO: use "intent"
-    scrollRestoration: true,
+    scrollRestoration: true, //  https://tanstack.com/router/latest/docs/framework/react/examples/scroll-restoration
     context: { auth: undefined! }
 })
 
@@ -26,6 +28,8 @@ export default function Wrapper() {
 
 function App() {
     const auth = useAuth()
+
+    if (!auth.isLoaded) return <AppLoading />
 
     return (
         <RouterProvider
