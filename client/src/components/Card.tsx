@@ -8,6 +8,6 @@ interface Props {
 }
 
 export default function Card({ children, className }: Readonly<Props>) {
-    // TODO: bg-colour -> theme primary colour
-    return <div className={twMerge("h-fit w-full rounded-lg bg-neutral-100 p-2 shadow-md", className)}>{children}</div>
+    // TODO: bg-colour/text -> theme
+    return <div className={twMerge("h-fit w-full rounded-lg bg-neutral-100 p-4 shadow-md", className)}>{children}</div>
 }
