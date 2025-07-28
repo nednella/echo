@@ -9,112 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AuthRouteRouteImport } from './routes/_auth/route'
-import { Route as PublicIndexRouteImport } from './routes/_public/index'
-import { Route as PublicAboutRouteImport } from './routes/_public/about'
-import { Route as AuthHomeRouteImport } from './routes/_auth/home'
 
-const AuthRouteRoute = AuthRouteRouteImport.update({
-  id: '/_auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PublicIndexRoute = PublicIndexRouteImport.update({
-  id: '/_public/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PublicAboutRoute = PublicAboutRouteImport.update({
-  id: '/_public/about',
-  path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthHomeRoute = AuthHomeRouteImport.update({
-  id: '/home',
-  path: '/home',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-
-export interface FileRoutesByFullPath {
-  '/home': typeof AuthHomeRoute
-  '/about': typeof PublicAboutRoute
-  '/': typeof PublicIndexRoute
-}
-export interface FileRoutesByTo {
-  '/home': typeof AuthHomeRoute
-  '/about': typeof PublicAboutRoute
-  '/': typeof PublicIndexRoute
-}
+export interface FileRoutesByFullPath {}
+export interface FileRoutesByTo {}
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_auth': typeof AuthRouteRouteWithChildren
-  '/_auth/home': typeof AuthHomeRoute
-  '/_public/about': typeof PublicAboutRoute
-  '/_public/': typeof PublicIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/home' | '/about' | '/'
+  fullPaths: never
   fileRoutesByTo: FileRoutesByTo
-  to: '/home' | '/about' | '/'
-  id: '__root__' | '/_auth' | '/_auth/home' | '/_public/about' | '/_public/'
+  to: never
+  id: '__root__'
   fileRoutesById: FileRoutesById
 }
-export interface RootRouteChildren {
-  AuthRouteRoute: typeof AuthRouteRouteWithChildren
-  PublicAboutRoute: typeof PublicAboutRoute
-  PublicIndexRoute: typeof PublicIndexRoute
-}
+export interface RootRouteChildren {}
 
 declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/_auth': {
-      id: '/_auth'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AuthRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_public/': {
-      id: '/_public/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof PublicIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_public/about': {
-      id: '/_public/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof PublicAboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_auth/home': {
-      id: '/_auth/home'
-      path: '/home'
-      fullPath: '/home'
-      preLoaderRoute: typeof AuthHomeRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-  }
+  interface FileRoutesByPath {}
 }
 
-interface AuthRouteRouteChildren {
-  AuthHomeRoute: typeof AuthHomeRoute
-}
-
-const AuthRouteRouteChildren: AuthRouteRouteChildren = {
-  AuthHomeRoute: AuthHomeRoute,
-}
-
-const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
-  AuthRouteRouteChildren,
-)
-
-const rootRouteChildren: RootRouteChildren = {
-  AuthRouteRoute: AuthRouteRouteWithChildren,
-  PublicAboutRoute: PublicAboutRoute,
-  PublicIndexRoute: PublicIndexRoute,
-}
+const rootRouteChildren: RootRouteChildren = {}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
