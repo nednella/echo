@@ -8,6 +8,7 @@ export default defineConfig({
     plugins: [
         tanstackRouter({
             target: "react",
+            routeToken: "_layout",
             autoCodeSplitting: true
         }),
         react(),
