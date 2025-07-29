@@ -1,3 +1,4 @@
+import { UserButton } from "@clerk/clerk-react"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/(protected)/home")({
@@ -5,5 +6,10 @@ export const Route = createFileRoute("/(protected)/home")({
 })
 
 function RouteComponent() {
-    return <div>Hello "/(protected)/home"!</div>
+    return (
+        <div className="flex h-full items-center justify-center gap-6">
+            Hello "/(protected)/home"!
+            <UserButton />
+        </div>
+    )
 }

@@ -1,3 +1,4 @@
+import { SignUp } from "@clerk/clerk-react"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/(public)/auth/register")({
@@ -5,5 +6,9 @@ export const Route = createFileRoute("/(public)/auth/register")({
 })
 
 function RouteComponent() {
-    return <div>Hello "/(public)/auth/register"!</div>
+    return (
+        <div className="flex h-full items-center justify-center">
+            <SignUp />
+        </div>
+    )
 }

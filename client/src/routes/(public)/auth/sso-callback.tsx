@@ -1,3 +1,4 @@
+import { AuthenticateWithRedirectCallback } from "@clerk/clerk-react"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/(public)/auth/sso-callback")({
@@ -5,5 +6,5 @@ export const Route = createFileRoute("/(public)/auth/sso-callback")({
 })
 
 function RouteComponent() {
-    return <div>Hello "/(public)/auth/sso-callback"!</div>
+    return <AuthenticateWithRedirectCallback />
 }
