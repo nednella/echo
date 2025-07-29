@@ -5,5 +5,5 @@ interface Props {
 }
 
 export default function Separator({ className }: Readonly<Props>) {
-    return <hr className={twMerge("my-4 w-full border-neutral-500", className)} />
+    return <hr className={twMerge("my-4 w-full border-neutral-400", className)} />
 }

@@ -9,5 +9,5 @@ interface Props {
 
 export default function Card({ children, className }: Readonly<Props>) {
     // TODO: bg-colour/text -> theme
-    return <div className={twMerge("h-fit w-full rounded-lg bg-neutral-100 p-4 shadow-md", className)}>{children}</div>
+    return <div className={twMerge("h-fit w-full rounded-lg bg-white p-4 shadow-md", className)}>{children}</div>
 }
