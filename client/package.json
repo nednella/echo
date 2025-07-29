@@ -12,12 +12,18 @@
     "dependencies": {
         "@clerk/clerk-react": "^5.35.3",
         "@tailwindcss/vite": "^4.1.11",
+        "@tanstack/react-form": "^1.15.0",
+        "@tanstack/react-router": "^1.129.8",
+        "@tanstack/react-router-devtools": "^1.129.8",
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
+        "react-icons": "^5.5.0",
+        "tailwind-merge": "^3.3.1",
         "tailwindcss": "^4.1.11"
     },
     "devDependencies": {
         "@eslint/js": "^9.30.1",
+        "@tanstack/router-plugin": "^1.129.8",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "@types/react": "^19.1.8",
         "@types/react-dom": "^19.1.6",
