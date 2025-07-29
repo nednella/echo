@@ -13,6 +13,7 @@ import { Route as publicLayoutRouteImport } from './routes/(public)/_layout'
 import { Route as protectedLayoutRouteImport } from './routes/(protected)/_layout'
 import { Route as publicIndexRouteImport } from './routes/(public)/index'
 import { Route as protectedHomeRouteImport } from './routes/(protected)/home'
+import { Route as onboardingOnboardingRouteImport } from './routes/(onboarding)/onboarding'
 import { Route as publicAuthLayoutRouteImport } from './routes/(public)/auth/_layout'
 import { Route as publicAuthSsoCallbackRouteImport } from './routes/(public)/auth/sso-callback'
 import { Route as publicAuthRegisterRouteImport } from './routes/(public)/auth/register'
@@ -35,6 +36,11 @@ const protectedHomeRoute = protectedHomeRouteImport.update({
   id: '/home',
   path: '/home',
   getParentRoute: () => protectedLayoutRoute,
+} as any)
+const onboardingOnboardingRoute = onboardingOnboardingRouteImport.update({
+  id: '/(onboarding)/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const publicAuthLayoutRoute = publicAuthLayoutRouteImport.update({
   id: '/auth',
@@ -60,6 +66,7 @@ const publicAuthLoginRoute = publicAuthLoginRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof publicIndexRoute
   '/auth': typeof publicAuthLayoutRouteWithChildren
+  '/onboarding': typeof onboardingOnboardingRoute
   '/home': typeof protectedHomeRoute
   '/auth/login': typeof publicAuthLoginRoute
   '/auth/register': typeof publicAuthRegisterRoute
@@ -68,6 +75,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof publicIndexRoute
   '/auth': typeof publicAuthLayoutRouteWithChildren
+  '/onboarding': typeof onboardingOnboardingRoute
   '/home': typeof protectedHomeRoute
   '/auth/login': typeof publicAuthLoginRoute
   '/auth/register': typeof publicAuthRegisterRoute
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/(protected)': typeof protectedLayoutRouteWithChildren
   '/(public)': typeof publicLayoutRouteWithChildren
   '/(public)/auth': typeof publicAuthLayoutRouteWithChildren
+  '/(onboarding)/onboarding': typeof onboardingOnboardingRoute
   '/(protected)/home': typeof protectedHomeRoute
   '/(public)/': typeof publicIndexRoute
   '/(public)/auth/login': typeof publicAuthLoginRoute
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/onboarding'
     | '/home'
     | '/auth/login'
     | '/auth/register'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/onboarding'
     | '/home'
     | '/auth/login'
     | '/auth/register'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/(protected)'
     | '/(public)'
     | '/(public)/auth'
+    | '/(onboarding)/onboarding'
     | '/(protected)/home'
     | '/(public)/'
     | '/(public)/auth/login'
@@ -116,6 +128,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   protectedLayoutRoute: typeof protectedLayoutRouteWithChildren
   publicLayoutRoute: typeof publicLayoutRouteWithChildren
+  onboardingOnboardingRoute: typeof onboardingOnboardingRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -147,6 +160,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/home'
       preLoaderRoute: typeof protectedHomeRouteImport
       parentRoute: typeof protectedLayoutRoute
+    }
+    '/(onboarding)/onboarding': {
+      id: '/(onboarding)/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof onboardingOnboardingRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/(public)/auth': {
       id: '/(public)/auth'
@@ -223,6 +243,7 @@ const publicLayoutRouteWithChildren = publicLayoutRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   protectedLayoutRoute: protectedLayoutRouteWithChildren,
   publicLayoutRoute: publicLayoutRouteWithChildren,
+  onboardingOnboardingRoute: onboardingOnboardingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

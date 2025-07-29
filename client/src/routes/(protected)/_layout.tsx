@@ -13,6 +13,14 @@ export const Route = createFileRoute("/(protected)")({
                 }
             })
         }
+
+        // Redirect to onboarding if onboarding is not completed
+        if (!context.auth.sessionClaims?.metadata.onboardingComplete) {
+            throw redirect({
+                to: "/onboarding",
+                replace: true
+            })
+        }
     },
     component: Layout
 })
