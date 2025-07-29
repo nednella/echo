@@ -3,7 +3,15 @@ import { createFileRoute, redirect } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/(onboarding)/onboarding")({
     beforeLoad({ context }) {
-        // redirect user if onboardingComplete TRUE
+        // Redirect to login if user is not authenticated
+        if (context.auth.isSignedIn === false) {
+            throw redirect({
+                to: "/auth/login",
+                replace: true
+            })
+        }
+
+        // Redirect to home if onboarding is completed
         if (context.auth.sessionClaims?.metadata.onboardingComplete === true) {
             throw redirect({
                 to: "/home",
