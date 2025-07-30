@@ -10,3 +10,5 @@ CREATE TABLE
         transformed_url    VARCHAR(255) NOT NULL,
         created_at         TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
     );
+
+-- TODO: delete and replace w/ frontend uploads via signed urls. only store urls in db
