@@ -8,7 +8,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.image.Image;
-import com.example.echo_api.validation.account.annotations.Username;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,7 +32,6 @@ public class Profile {
     @Column(unique = true, nullable = false)
     private UUID id;
 
-    @Username
     @Column(unique = true, nullable = false)
     private String username;
 
