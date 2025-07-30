@@ -13,9 +13,5 @@ CREATE UNIQUE INDEX
         ON "user"(LOWER(clerk_id));
 
 CREATE UNIQUE INDEX
-    IF NOT EXISTS idx_user_email
-        ON "user"(LOWER(email));
-
-CREATE UNIQUE INDEX
     IF NOT EXISTS idx_user_username
         ON "user"(LOWER(username));
