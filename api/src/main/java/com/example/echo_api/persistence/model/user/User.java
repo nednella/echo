@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
  * Entity class representing a user in the system.
  */
 @Entity
-@Table
+@Table(name = "\"user\"")
 @Getter
 @NoArgsConstructor
 public class User {
