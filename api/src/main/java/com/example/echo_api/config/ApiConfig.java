@@ -16,6 +16,13 @@ public final class ApiConfig {
     @NoArgsConstructor(access = PRIVATE)
     public static final class Auth {
         private static final String ROOT = BASE_URL + "/auth";
+        public static final String ONBOARDING = ROOT + "/onboarding";
+    }
+
+    @NoArgsConstructor(access = PRIVATE)
+    public static final class Webhook {
+        private static final String ROOT = BASE_URL + "/webhooks";
+        public static final String CLERK_USER_UPDATE = ROOT + "/clerk/user";
     }
 
     @NoArgsConstructor(access = PRIVATE)
