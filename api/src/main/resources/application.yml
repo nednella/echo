@@ -2,6 +2,13 @@ spring:
     application:
         name: echo-api
 
+    security:
+        oauth2:
+            resourceserver:
+                jwt:
+                    issuer-uri: ${JWT_ISSUER_URI}
+                    jwk-set-uri: ${JWT_JWK_SET_URI}
+
     config:
         import: optional:file:.env[.properties]
 
