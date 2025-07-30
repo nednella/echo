@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.image.Image;
 
 import jakarta.persistence.Column;
@@ -20,7 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Entity class representing an {@link Account} profile in the system.
+ * Entity class representing a profile in the system.
  */
 @Entity
 @Table
