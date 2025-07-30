@@ -6,20 +6,17 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.example.echo_api.persistence.model.image.Image;
+import com.example.echo_api.persistence.model.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Entity class representing a profile in the system.
+ * Entity class representing a {@link User} profile in the system.
  */
 @Entity
 @Table
@@ -28,7 +25,6 @@ import lombok.NoArgsConstructor;
 public class Profile {
 
     @Id
-    @Column(unique = true, nullable = false)
     private UUID id;
 
     @Column(unique = true, nullable = false)
@@ -43,13 +39,11 @@ public class Profile {
     @Column(length = 30)
     private String location;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "avatar_id")
-    private Image avatar;
+    @Column(name = "avatar_image_url")
+    private String avatarImageUrl;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "banner_id")
-    private Image banner;
+    @Column(name = "banner_image_url")
+    private String bannerImageUrl;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -80,12 +74,12 @@ public class Profile {
         this.location = location;
     }
 
-    public void setAvatar(Image avatar) {
-        this.avatar = avatar;
+    public void setAvatarUrl(String imageUrl) {
+        this.avatarImageUrl = imageUrl;
     }
 
-    public void setBanner(Image banner) {
-        this.banner = banner;
+    public void setBannerUrl(String imageUrl) {
+        this.bannerImageUrl = imageUrl;
     }
 
 }
