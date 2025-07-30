@@ -13,7 +13,7 @@ public class RegexConfig {
      * <li>Contains between 3 and 15 word characters
      * </ul>
      */
-    public static final String USERNAME = "^\\w{3,15}$";
+    // public static final String USERNAME = "^\\w{3,15}$";
 
     /**
      * Password regex pattern
@@ -24,7 +24,7 @@ public class RegexConfig {
      * <li>Contain at least 6 non-whitespace characters
      * </ul>
      */
-    public static final String PASSWORD = "^(?=.*[a-zA-Z])(?=.*\\d)[\\S]{6,}$";
+    // public static final String PASSWORD = "^(?=.*[a-zA-Z])(?=.*\\d)[\\S]{6,}$";
 
     /**
      * Username mention regex pattern

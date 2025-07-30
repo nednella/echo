@@ -11,13 +11,6 @@ import lombok.NoArgsConstructor;
 public class ConstraintsConfig {
 
     @NoArgsConstructor(access = PRIVATE)
-    public static class Account {
-        public static final int USERNAME_MIN_LENGTH = 3;
-        public static final int USERNAME_MAX_LENGTH = 15;
-        public static final int PASSWORD_MIN_LENGTH = 6;
-    }
-
-    @NoArgsConstructor(access = PRIVATE)
     public static class Profile {
         public static final int NAME_MAX_LENGTH = 50;
         public static final int BIO_MAX_LENGTH = 160;

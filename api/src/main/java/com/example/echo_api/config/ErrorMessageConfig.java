@@ -15,20 +15,12 @@ public final class ErrorMessageConfig {
     public static class BadRequest {
         // Validation
         public static final String INVALID_REQUEST = "Invalid request.";
-
-        // Authentication
-        public static final String USERNAME_OR_PASSWORD_INCORRECT = "Username or password is incorrect.";
-
-        // Account
-        public static final String USERNAME_ARLEADY_EXISTS = "Username already exists.";
-        public static final String INCORRECT_CURRENT_PASSWORD = "Incorrect current password.";
     }
 
     /* 401 */
     @NoArgsConstructor(access = PRIVATE)
     public static class Unauthorised {
         public static final String UNAUTHORISED_REQUEST = "Unauthorised request.";
-        public static final String ACCOUNT_STATUS = "Account status is abnormal.";
     }
 
     /* 403 */
