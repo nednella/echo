@@ -40,32 +40,32 @@ public class ProfileViewServiceImpl extends BaseProfileService implements Profil
 
     @Override
     public ProfileDTO getMe() {
-        UUID authenticatedUserId = getAuthenticatedUser().getId();
+        UUID authenticatedUserId = getAuthenticatedUserId();
 
         return profileRepository.findProfileDtoById(authenticatedUserId, authenticatedUserId)
-            .orElseThrow(ResourceNotFoundException::new);
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
     public ProfileDTO getById(UUID id) throws ResourceNotFoundException {
-        UUID authenticatedUserId = getAuthenticatedUser().getId();
+        UUID authenticatedUserId = getAuthenticatedUserId();
 
         return profileRepository.findProfileDtoById(id, authenticatedUserId)
-            .orElseThrow(ResourceNotFoundException::new);
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
     public ProfileDTO getByUsername(String username) throws ResourceNotFoundException {
-        UUID authenticatedUserId = getAuthenticatedUser().getId();
+        UUID authenticatedUserId = getAuthenticatedUserId();
 
         return profileRepository.findProfileDtoByUsername(username, authenticatedUserId)
-            .orElseThrow(ResourceNotFoundException::new);
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
     public PageDTO<SimplifiedProfileDTO> getFollowers(UUID id, Pageable page) throws ResourceNotFoundException {
         UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
-        UUID authenticatedUserId = getAuthenticatedUser().getId();
+        UUID authenticatedUserId = getAuthenticatedUserId();
 
         Page<SimplifiedProfileDTO> query = profileRepository.findFollowerDtosById(profileId, authenticatedUserId, page);
         String uri = getCurrentRequestUri();
@@ -76,10 +76,10 @@ public class ProfileViewServiceImpl extends BaseProfileService implements Profil
     @Override
     public PageDTO<SimplifiedProfileDTO> getFollowing(UUID id, Pageable page) throws ResourceNotFoundException {
         UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
-        UUID authenticatedUserId = getAuthenticatedUser().getId();
+        UUID authenticatedUserId = getAuthenticatedUserId();
 
         Page<SimplifiedProfileDTO> query = profileRepository.findFollowingDtosById(profileId, authenticatedUserId,
-            page);
+                page);
         String uri = getCurrentRequestUri();
 
         return PageMapper.toDTO(query, uri);

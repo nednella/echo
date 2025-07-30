@@ -44,16 +44,16 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
 
     @Override
     public PostDTO getPostById(UUID id) throws ResourceNotFoundException {
-        UUID authenticatedUserId = getAuthenticatedUser().getId();
+        UUID authenticatedUserId = getAuthenticatedUserId();
 
         return postRepository.findPostDtoById(id, authenticatedUserId)
-            .orElseThrow(ResourceNotFoundException::new);
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
     public PageDTO<PostDTO> getRepliesById(UUID id, Pageable page) throws ResourceNotFoundException {
         UUID postId = getPostEntityById(id).getId(); // validate existence of id
-        UUID authenticatedUserId = getAuthenticatedUser().getId();
+        UUID authenticatedUserId = getAuthenticatedUserId();
 
         Page<PostDTO> query = postRepository.findRepliesById(postId, authenticatedUserId, page);
         String uri = getCurrentRequestUri();
@@ -64,7 +64,7 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
     @Override
     public PageDTO<PostDTO> getPostsByAuthorId(UUID id, Pageable page) {
         UUID authorId = getProfileEntityById(id).getId(); // validate existence of author
-        UUID authenticatedUserId = getAuthenticatedUser().getId();
+        UUID authenticatedUserId = getAuthenticatedUserId();
 
         Page<PostDTO> query = postRepository.findPostsByProfileId(authorId, authenticatedUserId, page);
         String uri = getCurrentRequestUri();
@@ -75,7 +75,7 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
     @Override
     public PageDTO<PostDTO> getRepliesByAuthorId(UUID id, Pageable page) {
         UUID authorId = getProfileEntityById(id).getId(); // validate existence of author
-        UUID authenticatedUserId = getAuthenticatedUser().getId();
+        UUID authenticatedUserId = getAuthenticatedUserId();
 
         Page<PostDTO> query = postRepository.findRepliesByProfileId(authorId, authenticatedUserId, page);
         String uri = getCurrentRequestUri();
@@ -86,7 +86,7 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
     @Override
     public PageDTO<PostDTO> getLikesByAuthorId(UUID id, Pageable page) {
         UUID authorId = getProfileEntityById(id).getId(); // validate existence of author
-        UUID authenticatedUserId = getAuthenticatedUser().getId();
+        UUID authenticatedUserId = getAuthenticatedUserId();
 
         Page<PostDTO> query = postRepository.findPostsLikedByProfileId(authorId, authenticatedUserId, page);
         String uri = getCurrentRequestUri();
@@ -97,7 +97,7 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
     @Override
     public PageDTO<PostDTO> getMentionsOfAuthorId(UUID id, Pageable page) {
         UUID authorId = getProfileEntityById(id).getId(); // validate existence of author
-        UUID authenticatedUserId = getAuthenticatedUser().getId();
+        UUID authenticatedUserId = getAuthenticatedUserId();
 
         Page<PostDTO> query = postRepository.findPostsMentioningProfileId(authorId, authenticatedUserId, page);
         String uri = getCurrentRequestUri();
@@ -107,7 +107,7 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
 
     @Override
     public PageDTO<PostDTO> getHomepagePosts(Pageable page) {
-        UUID authenticatedUserId = getAuthenticatedUser().getId();
+        UUID authenticatedUserId = getAuthenticatedUserId();
 
         Page<PostDTO> query = postRepository.findHomepagePosts(authenticatedUserId, page);
         String uri = getCurrentRequestUri();
@@ -117,7 +117,7 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
 
     @Override
     public PageDTO<PostDTO> getDiscoverPosts(Pageable page) {
-        UUID authenticatedUserId = getAuthenticatedUser().getId();
+        UUID authenticatedUserId = getAuthenticatedUserId();
 
         Page<PostDTO> query = postRepository.findDiscoverPosts(authenticatedUserId, page);
         String uri = getCurrentRequestUri();
@@ -135,7 +135,7 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
      */
     private Profile getProfileEntityById(UUID id) throws ResourceNotFoundException {
         return profileRepository.findById(id)
-            .orElseThrow(ResourceNotFoundException::new);
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     /**

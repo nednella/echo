@@ -37,8 +37,8 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
 
     @Override
     public void follow(UUID id) {
-        UUID source = getAuthenticatedUser().getId();
-        UUID target = getProfileEntityById(id).getId();
+        UUID target = getProfileEntityById(id).getId(); // validate existence of id
+        UUID source = getAuthenticatedUserId();
 
         validateNoSelfAction(source, target);
         if (followRepository.existsByFollowerIdAndFollowedId(source, target)) {
@@ -48,9 +48,9 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
         followRepository.save(new Follow(source, target));
     }
 
-    @Override
+    @Override // TODO: refactor to idempotent
     public void unfollow(UUID id) {
-        UUID source = getAuthenticatedUser().getId();
+        UUID source = getAuthenticatedUserId();
         UUID target = getProfileEntityById(id).getId();
 
         validateNoSelfAction(source, target);
