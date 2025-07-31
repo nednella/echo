@@ -64,8 +64,8 @@ public class ProfileViewServiceImpl extends BaseProfileService implements Profil
 
     @Override
     public PageDTO<SimplifiedProfileDTO> getFollowers(UUID id, Pageable page) throws ResourceNotFoundException {
-        UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
         UUID authenticatedUserId = getAuthenticatedUserId();
+        UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
 
         Page<SimplifiedProfileDTO> query = profileRepository.findFollowerDtosById(profileId, authenticatedUserId, page);
         String uri = getCurrentRequestUri();
@@ -75,8 +75,8 @@ public class ProfileViewServiceImpl extends BaseProfileService implements Profil
 
     @Override
     public PageDTO<SimplifiedProfileDTO> getFollowing(UUID id, Pageable page) throws ResourceNotFoundException {
-        UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
         UUID authenticatedUserId = getAuthenticatedUserId();
+        UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
 
         Page<SimplifiedProfileDTO> query = profileRepository.findFollowingDtosById(profileId, authenticatedUserId,
                 page);

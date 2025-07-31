@@ -21,7 +21,7 @@ public class BasePostService {
     protected final PostRepository postRepository;
 
     protected UUID getAuthenticatedUserId() {
-        return UUID.randomUUID(); // TODO: TEMP FIX
+        return sessionService.getAuthenticatedUserId();
     }
 
     /**

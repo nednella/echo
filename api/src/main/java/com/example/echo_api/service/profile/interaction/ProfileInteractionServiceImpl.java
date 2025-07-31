@@ -37,8 +37,8 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
 
     @Override
     public void follow(UUID id) {
-        UUID target = getProfileEntityById(id).getId(); // validate existence of id
         UUID source = getAuthenticatedUserId();
+        UUID target = getProfileEntityById(id).getId(); // validate existence of id
 
         validateNoSelfAction(source, target);
         if (followRepository.existsByFollowerIdAndFollowedId(source, target)) {

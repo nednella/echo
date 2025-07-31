@@ -21,7 +21,7 @@ public abstract class BaseProfileService {
     protected final ProfileRepository profileRepository;
 
     protected UUID getAuthenticatedUserId() {
-        return UUID.randomUUID(); // TODO: TEMP FIX
+        return sessionService.getAuthenticatedUserId();
     }
 
     /**
