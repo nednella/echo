@@ -29,7 +29,7 @@ public class User {
 
     private String username;
 
-    private boolean enabled;
+    private boolean enabled = true;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
