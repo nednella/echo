@@ -1,17 +1,17 @@
 spring:
-    sql:
-        init:
-            mode: always
-
+    docker:
+        compose:
+            lifecycle-management: start-only
+    
     datasource:
         name: echo
         url: jdbc:postgresql://localhost:5432/echo
         username: admin
         password: pw123
 
-    docker:
-        compose:
-            lifecycle-management: start-only
+    sql:
+        init:
+            mode: always
 
     devtools:
         restart:
