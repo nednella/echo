@@ -15,6 +15,10 @@ public final class ErrorMessageConfig {
     public static class BadRequest {
         // Validation
         public static final String INVALID_REQUEST = "Invalid request.";
+
+        // Authentication
+        public static final String ONBOARDING_COMPLETED = "User has already completed the onboarding process.";
+        public static final String ONBOARDING_NOT_COMPLETED = "User has not completed the onboarding process.";
     }
 
     /* 401 */
