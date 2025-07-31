@@ -22,4 +22,12 @@ public interface UserRepository extends ListCrudRepository<User, UUID> {
     @Query("SELECT u.id FROM User u WHERE u.clerkId = :clerkId")
     Optional<UUID> findIdByClerkId(String clerkId);
 
+    /**
+     * Check if a {@link User} exists by {@code clerkId}.
+     * 
+     * @param clerkId The clerk ID to search for.
+     * @return True if exists, else false.
+     */
+    boolean existsByClerkId(String clerkId);
+
 }
