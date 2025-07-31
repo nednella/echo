@@ -48,6 +48,7 @@ public final class ErrorMessageConfig {
     @NoArgsConstructor(access = PRIVATE)
     public static class InternalServerError {
         public static final String INTERNAL_SERVER_ERROR = "An unexpected error occurred.";
+        public static final String CLERK_SDK_ERROR = "An error occurred whilst interacting with the Clerk API.";
         public static final String CLOUDINARY_SDK_ERROR = "An error occurred whilst interacting with the Cloudinary API.";
         public static final String TWITTER_TEXT_ENUM_CONVERSION = "Failed to convert TwitterText entity type.";
     }
