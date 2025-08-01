@@ -18,7 +18,6 @@ public final class ErrorMessageConfig {
 
         // Authentication
         public static final String ONBOARDING_COMPLETED = "User has already completed the onboarding process.";
-        public static final String ONBOARDING_NOT_COMPLETED = "User has not completed the onboarding process.";
     }
 
     /* 401 */
@@ -30,6 +29,9 @@ public final class ErrorMessageConfig {
     /* 403 */
     @NoArgsConstructor(access = PRIVATE)
     public static class Forbidden {
+        public static final String ONBOARDING_NOT_COMPLETED = "User has not completed the onboarding process.";
+        public static final String ONBOARDING_STATUS_MALFORMED = "User onboarding status is malformed. Contact support for assistance.";
+        public static final String ECHO_ID_MISSING_OR_MALFORMED = "User ID is missing or malformed. Contact support for assistance.";
         public static final String ACCESS_DENIED = "You are missing permissions required to perform this action.";
         public static final String RESOURCE_OWNERSHIP_REQUIRED = "Resource ownership is required for performing this action.";
     }
