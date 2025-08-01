@@ -23,7 +23,6 @@ public final class ErrorMessageConfig {
     /* 401 */
     @NoArgsConstructor(access = PRIVATE)
     public static class Unauthorised {
-        public static final String UNAUTHORISED_REQUEST = "Unauthorised request.";
         public static final String MISSING_AUTHENTICATION = "Authentication required.";
         public static final String INVALID_BEARER_TOKEN = "Invalid bearer token.";
     }
