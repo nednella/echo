@@ -13,11 +13,19 @@ import lombok.Setter;
 @ConfigurationProperties(prefix = "clerk")
 public class ClerkConfig {
 
+    public static final String ECHO_ID = "echo_id";
+    public static final String METADATA = "metadata";
+    public static final String ONBOARDING_COMPLETE_KEY = "onboardingComplete";
+    public static final boolean ONBOARDING_COMPLETE_VALUE = true;
+
     private String secretKey;
 
     @Bean
     Clerk clerk() {
-        return Clerk.builder().bearerAuth(secretKey).build();
+        return Clerk
+            .builder()
+            .bearerAuth(secretKey)
+            .build();
     }
 
 }

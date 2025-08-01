@@ -6,6 +6,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
+import com.example.echo_api.config.ClerkConfig;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -15,7 +17,7 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public UUID getAuthenticatedUserId() {
         Jwt token = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return UUID.fromString(token.getClaim("echo_id"));
+        return UUID.fromString(token.getClaim(ClerkConfig.ECHO_ID));
     }
 
     @Override

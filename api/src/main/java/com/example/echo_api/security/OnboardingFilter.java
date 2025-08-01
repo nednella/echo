@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.example.echo_api.config.ClerkConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
 
 import jakarta.servlet.FilterChain;
@@ -28,8 +29,8 @@ import jakarta.servlet.http.HttpServletResponse;
  * 
  * <p>
  * Since developers cannot directly interact with Clerk's user table, the
- * onboarding status is used as a flag to indicate whether the Clerk user
- * has successfully been synced to a local user in the APIs database.
+ * onboarding status is used as a flag to indicate whether the Clerk user has
+ * successfully been synced to a local user in the APIs database.
  * 
  * <p>
  * For more information, refer to:
@@ -40,10 +41,6 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class OnboardingFilter extends OncePerRequestFilter {
 
-    private static final String ECHO_ID = "echo_id";
-    private static final String METADATA = "metadata";
-    private static final String ONBOARDING_COMPLETE = "onboardingComplete";
-
     @Override // @formatter:off
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException
@@ -52,8 +49,8 @@ public class OnboardingFilter extends OncePerRequestFilter {
         Jwt jwt = (Jwt) authentication.getPrincipal();
 
         // Validate onboarding metadata
-        Map<String, Object> metadata = jwt.getClaimAsMap(METADATA);
-        Object onboardingComplete = metadata.getOrDefault(ONBOARDING_COMPLETE, false);
+        Map<String, Object> metadata = jwt.getClaimAsMap(ClerkConfig.METADATA);
+        Object onboardingComplete = metadata.getOrDefault(ClerkConfig.ONBOARDING_COMPLETE_KEY, false);
 
         if (!(onboardingComplete instanceof Boolean)) {
             throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ONBOARDING_STATUS_MALFORMED);
@@ -64,7 +61,7 @@ public class OnboardingFilter extends OncePerRequestFilter {
         }
 
         // Validate Echo ID
-        String id = jwt.getClaimAsString(ECHO_ID);
+        String id = jwt.getClaimAsString(ClerkConfig.ECHO_ID);
 
         if (!isValidUUID(id)) {
             throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ECHO_ID_MISSING_OR_MALFORMED);
