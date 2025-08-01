@@ -8,8 +8,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Represents a simplified response format for a user profile, to be returned to
  * the client alongside larger entities, such as posts and comments.
  *
- * @param id           The id of the account associated to the profile
- * @param username     The username of the account associated to the profile.
+ * @param id           The id of the user associated to the profile
+ * @param username     The username of the user associated to the profile.
  * @param name         The profile name.
  * @param avatarUrl    The URL of the profile avatar image.
  * @param relationship The profile relationship between the requesting and the

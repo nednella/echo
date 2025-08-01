@@ -6,11 +6,11 @@ import com.example.echo_api.config.ValidationMessageConfig;
 import jakarta.validation.constraints.Size;
 
 /**
- * Represents a request to update the authenticated account profile information.
+ * Represents a request to update the authenticated user's profile information.
  * 
- * @param name     The name for the account profile.
- * @param bio      The bio for the account profile.
- * @param location The location for the account profile.
+ * @param name     The name for the profile.
+ * @param bio      The bio for the profile.
+ * @param location The location for the profile.
  */
 // @formatter:off
 public record UpdateInformationDTO(
