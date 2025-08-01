@@ -2,6 +2,10 @@ package com.example.echo_api.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,6 +19,7 @@ import com.example.echo_api.exception.custom.internalserver.InternalServerExcept
 import com.example.echo_api.exception.custom.notfound.NotFoundException;
 import com.example.echo_api.exception.custom.unauthorised.UnauthorisedException;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
+import com.example.echo_api.security.OnboardingFilter;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -29,15 +34,86 @@ import lombok.extern.slf4j.Slf4j;
  * codes (401, 403, 404, 500) across all controllers.
  * 
  * <p>
- * Methods also include Jakarta validation exception handlers.
- * 
- * <p>
- * Methods also include {@link UsernameException} and {@link PasswordException}
- * abstract class handlers.
+ * Methods also include Spring Security & Jakarta validation exception handlers.
  */
 @Slf4j
 @ControllerAdvice
 public class GlobalControllerAdvice extends AbstractControllerAdvice {
+    /**
+     * Handles {@link AuthenticationException} subclass
+     * {@link InsufficientAuthenticationException}, related to Spring Security for
+     * cases when an authentication is rejected because the credentials are not
+     * sufficiently trusted.
+     * 
+     * <p>
+     * For more information, refer to:
+     * <ul>
+     * <li>https://docs.spring.io/spring-security/reference/api/java/org/springframework/security/authentication/InsufficientAuthenticationException.html
+     * </ul>
+     */
+    @ExceptionHandler(InsufficientAuthenticationException.class)
+    ResponseEntity<ErrorDTO> handleInsufficientAuthenticationException(HttpServletRequest request,
+        AuthenticationException ex) {
+        log.debug("Handling exception: {}", ex.getMessage());
+
+        return createExceptionHandler(
+            request,
+            HttpStatus.UNAUTHORIZED,
+            ErrorMessageConfig.Unauthorised.MISSING_AUTHENTICATION,
+            null);
+    }
+
+    /**
+     * Handles {@link AuthenticationException} subclass
+     * {@link InvalidBearerTokenException}, related to Spring Security for cases
+     * when the provided bearer token is invalid.
+     * 
+     * <p>
+     * For more information, refer to:
+     * <ul>
+     * <li>https://docs.spring.io/spring-security/reference/api/java/org/springframework/security/oauth2/core/OAuth2AuthenticationException.html
+     * <li>https://docs.spring.io/spring-security/reference/api/java/org/springframework/security/oauth2/server/resource/InvalidBearerTokenException.html
+     * </ul>
+     */
+    @ExceptionHandler(InvalidBearerTokenException.class)
+    ResponseEntity<ErrorDTO> handleInvalidBearerTokenException(HttpServletRequest request,
+        AuthenticationException ex) {
+        log.debug("Handling exception: {}", ex.getMessage());
+
+        return createExceptionHandler(
+            request,
+            HttpStatus.UNAUTHORIZED,
+            ErrorMessageConfig.Unauthorised.INVALID_BEARER_TOKEN,
+            null);
+    }
+
+    /**
+     * Handles {@link AccessDeniedException} related to Spring Security for cases
+     * when the authenticated request is missing permissions required for the
+     * requested resource.
+     * 
+     * <p>
+     * This also includes cases when the user has not completed the local onboarding
+     * process, and thus cannot access the API.
+     * 
+     * <p>
+     * For more information, refer to:
+     * <ul>
+     * <li>https://docs.spring.io/spring-security/site/docs/4.1.0.RC2/apidocs/org/springframework/security/access/AccessDeniedException.html
+     * </ul>
+     * 
+     * @see OnboardingFilter
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    ResponseEntity<ErrorDTO> handleAccessDeniedException(HttpServletRequest request, AccessDeniedException ex) {
+        log.debug("Handling exception: {}", ex.getMessage());
+
+        return createExceptionHandler(
+            request,
+            HttpStatus.FORBIDDEN,
+            ex.getMessage(),
+            null);
+    }
 
     /**
      * Handles Jakarta {@link ConstraintViolationException} for validation errors.
@@ -102,6 +178,7 @@ public class GlobalControllerAdvice extends AbstractControllerAdvice {
     })
     ResponseEntity<ErrorDTO> handleApplicationException(HttpServletRequest request, ApplicationException ex) {
         log.debug("Handling exception: {}", ex.getMessage());
+
         return createExceptionHandler(
             request,
             ex.getHttpStatus(),
@@ -113,8 +190,8 @@ public class GlobalControllerAdvice extends AbstractControllerAdvice {
      * Handles any uncaught exceptions as a 500 Internal Server Error.
      */
     @ExceptionHandler({ Exception.class })
-    ResponseEntity<ErrorDTO> handleGenericException(HttpServletRequest request, Exception ex) {
-        log.debug("Handling exception: {}", ex.getMessage());
+    ResponseEntity<ErrorDTO> handleUncaughtException(HttpServletRequest request, Exception ex) {
+        log.debug("Handling uncaught exception: {}", ex.getMessage());
 
         return createExceptionHandler(request,
             HttpStatus.INTERNAL_SERVER_ERROR,
