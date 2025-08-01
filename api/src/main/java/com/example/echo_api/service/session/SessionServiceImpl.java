@@ -10,6 +10,10 @@ import com.example.echo_api.config.ClerkConfig;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Service implementation for obtaining user information from the authentication
+ * object for the authenticated user.
+ */
 @Service
 @RequiredArgsConstructor
 public class SessionServiceImpl implements SessionService {

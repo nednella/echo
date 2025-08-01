@@ -14,6 +14,11 @@ import com.example.echo_api.exception.custom.internalserver.ClerkException;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Service implementation for interacting with the {@link Clerk} SDK.
+ * 
+ * @see https://github.com/clerk/clerk-sdk-java
+ */
 @Service
 @RequiredArgsConstructor
 public class ClerkServiceImpl implements ClerkService {

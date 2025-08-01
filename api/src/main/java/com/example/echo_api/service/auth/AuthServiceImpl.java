@@ -3,7 +3,9 @@ package com.example.echo_api.service.auth;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.clerk.backend_api.Clerk;
 import com.example.echo_api.exception.custom.badrequest.OnboardingCompleteException;
+import com.example.echo_api.exception.custom.internalserver.ClerkException;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.persistence.repository.ProfileRepository;
@@ -13,6 +15,10 @@ import com.example.echo_api.service.session.SessionService;
 
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Service implementation for managing {@link User} synchronisation between
+ * Clerk and the local application.
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -25,7 +31,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public User onboard() {
+    public User onboard() throws ClerkException, OnboardingCompleteException {
         String clerkId = sessionService.getAuthenticatedUserClerkId();
         validateOnboardingNotComplete(clerkId);
 
@@ -46,7 +52,16 @@ public class AuthServiceImpl implements AuthService {
         return user;
     }
 
-    private void validateOnboardingNotComplete(String clerkId) {
+    /**
+     * Validate that the authenticated user's Clerk ID does not already have a
+     * synchronised {@link User} in the database.
+     * 
+     * @param clerkId The {@link Clerk} user ID to validate.
+     * @throws OnboardingCompleteException If the authenticated user's Clerk ID
+     *                                     already has a synchronised {@link User}
+     *                                     object in the database.
+     */
+    private void validateOnboardingNotComplete(String clerkId) throws OnboardingCompleteException {
         if (userRepository.existsByClerkId(clerkId)) {
             throw new OnboardingCompleteException();
         }
