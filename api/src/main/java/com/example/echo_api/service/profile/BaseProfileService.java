@@ -44,7 +44,7 @@ public abstract class BaseProfileService {
      */
     protected Profile getProfileEntityById(UUID id) throws ResourceNotFoundException {
         return profileRepository.findById(id)
-                .orElseThrow(ResourceNotFoundException::new);
+            .orElseThrow(ResourceNotFoundException::new);
     }
 
     /**
@@ -57,7 +57,7 @@ public abstract class BaseProfileService {
      */
     protected Profile getProfileEntityByUsername(String username) throws ResourceNotFoundException {
         return profileRepository.findByUsername(username)
-                .orElseThrow(ResourceNotFoundException::new);
+            .orElseThrow(ResourceNotFoundException::new);
     }
 
 }

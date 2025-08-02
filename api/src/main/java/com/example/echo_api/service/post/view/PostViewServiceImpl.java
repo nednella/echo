@@ -47,7 +47,7 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
         UUID authenticatedUserId = getAuthenticatedUserId();
 
         return postRepository.findPostDtoById(id, authenticatedUserId)
-                .orElseThrow(ResourceNotFoundException::new);
+            .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
@@ -135,7 +135,7 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
      */
     private Profile getProfileEntityById(UUID id) throws ResourceNotFoundException {
         return profileRepository.findById(id)
-                .orElseThrow(ResourceNotFoundException::new);
+            .orElseThrow(ResourceNotFoundException::new);
     }
 
     /**

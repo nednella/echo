@@ -34,7 +34,7 @@ public class BasePostService {
      */
     protected Post getPostEntityById(UUID id) {
         return postRepository.findById(id)
-                .orElseThrow(ResourceNotFoundException::new);
+            .orElseThrow(ResourceNotFoundException::new);
     }
 
 }
