@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ClerkConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
 
@@ -45,6 +46,12 @@ public class OnboardingFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException
     {
+        // Bypass filter when sending HTTP request to onboarding endpoint
+        if (request.getRequestURI().equals(ApiConfig.Auth.ONBOARDING)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Jwt jwt = (Jwt) authentication.getPrincipal();
 
