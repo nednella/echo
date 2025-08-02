@@ -14,23 +14,23 @@ CREATE OR REPLACE FUNCTION fetch_profile(
     p_authenticated_user_id UUID
 )
 RETURNS TABLE (
-    is_self            BOOLEAN,
-    id                 UUID,
-    username           VARCHAR(15),
-    name               VARCHAR(50),
-    bio                VARCHAR(160),
-    location           VARCHAR(30),
-    avatar_url         VARCHAR(255),
-    banner_url         VARCHAR(255),
-    created_at         TIMESTAMPTZ,
-    followers_count    BIGINT,
-    following_count    BIGINT,
-    post_count         BIGINT,
-    media_count        BIGINT,
-    rel_following      BOOLEAN,
-    rel_followed_by    BOOLEAN,
-    rel_blocking       BOOLEAN,
-    rel_blocked_by     BOOLEAN
+    is_self             BOOLEAN,
+    id                  UUID,
+    username            VARCHAR(15),
+    name                VARCHAR(50),
+    bio                 VARCHAR(160),
+    location            VARCHAR(30),
+    avatar_image_url    VARCHAR(255),
+    banner_image_url    VARCHAR(255),
+    created_at          TIMESTAMPTZ,
+    followers_count     BIGINT,
+    following_count     BIGINT,
+    post_count          BIGINT,
+    media_count         BIGINT,
+    rel_following       BOOLEAN,
+    rel_followed_by     BOOLEAN,
+    rel_blocking        BOOLEAN,
+    rel_blocked_by      BOOLEAN
 )
 AS
 '
@@ -44,12 +44,10 @@ AS
                 p.name,
                 p.bio,
                 p.location,
-                avatar.transformed_url AS avatar_url,
-                banner.transformed_url AS banner_url,
+                p.avatar_image_url,
+                p.banner_image_url,
                 p.created_at
             FROM profile p
-            LEFT JOIN image avatar ON p.avatar_id = avatar.id
-            LEFT JOIN image banner ON p.banner_id = banner.id
             WHERE (p_profile_id IS NOT NULL AND p.id = p_profile_id)
                OR (p_username IS NOT NULL AND p.username = p_username)
         ),
@@ -100,8 +98,8 @@ AS
             pd.name,
             pd.bio,
             pd.location,
-            pd.avatar_url,
-            pd.banner_url,
+            pd.avatar_image_url,
+            pd.banner_image_url,
             pd.created_at,
             m.followers_count,
             m.following_count,

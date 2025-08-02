@@ -13,15 +13,15 @@ CREATE OR REPLACE FUNCTION fetch_profile_following(
     p_limit INTEGER
 )
 RETURNS TABLE (
-    is_self            BOOLEAN,
-    id                 UUID,
-    username           VARCHAR(15),
-    name               VARCHAR(50),
-    avatar_url         VARCHAR(255),
-    rel_following      BOOLEAN,
-    rel_followed_by    BOOLEAN,
-    rel_blocking       BOOLEAN,
-    rel_blocked_by     BOOLEAN
+    is_self             BOOLEAN,
+    id                  UUID,
+    username            VARCHAR(15),
+    name                VARCHAR(50),
+    avatar_image_url    VARCHAR(255),
+    rel_following       BOOLEAN,
+    rel_followed_by     BOOLEAN,
+    rel_blocking        BOOLEAN,
+    rel_blocked_by      BOOLEAN
 )
 AS
 '
@@ -32,7 +32,7 @@ AS
             sp.id,
             sp.username,
             sp.name,
-            sp.avatar_url,
+            sp.avatar_image_url,
             sp.rel_following,
             sp.rel_followed_by,
             sp.rel_blocking,
