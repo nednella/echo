@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -20,24 +21,23 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Custom {@link OncePerRequestFilter} class to be consumed as part of the
- * Spring Security filter chain.
+ * Custom {@link OncePerRequestFilter} for Spring Security to check the
+ * onboarding status of an authenticated user when requested a protected
+ * resource.
  * 
  * <p>
- * The filter is responsible for checking the onboarding status of an
- * authenticated user based on Clerk's JWT metadata found on their authenticated
- * token.
- * 
- * <p>
- * Since developers cannot directly interact with Clerk's user table, the
- * onboarding status is used as a flag to indicate whether the Clerk user has
- * successfully been synced to a local user in the APIs database.
+ * Since developers cannot directly interact with Clerk's user table to
+ * synchronise databases, an onboarding status flag is appended to the JWT
+ * metadata claim. The flag is used to indicate whether the Clerk authenticated
+ * user has been synced to the local database.
  * 
  * <p>
  * For more information, refer to:
  * <ul>
+ * <li>https://clerk.com/docs/webhooks/sync-data
  * <li>https://clerk.com/docs/users/metadata
  * <li>https://clerk.com/docs/references/nextjs/add-onboarding-flow
+ * <li>https://docs.spring.io/spring-security/reference/servlet/authentication/anonymous.html
  * </ul>
  */
 public class OnboardingFilter extends OncePerRequestFilter {
@@ -46,31 +46,34 @@ public class OnboardingFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException
     {
-        // Bypass filter when sending HTTP request to onboarding endpoint
-        if (request.getRequestURI().equals(ApiConfig.Auth.ONBOARDING)) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // Bypass filter when requesting a public endpoint or the onboarding endpoint
+        boolean publicEndpoint = authentication instanceof AnonymousAuthenticationToken;
+        boolean onboardingEndpoint = request.getRequestURI().equals(ApiConfig.Auth.ONBOARDING);
+
+        if (publicEndpoint || onboardingEndpoint) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Jwt jwt = (Jwt) authentication.getPrincipal();
 
         // Validate onboarding metadata
         Map<String, Object> metadata = jwt.getClaimAsMap(ClerkConfig.METADATA);
         Object onboardingComplete = metadata.getOrDefault(ClerkConfig.ONBOARDING_COMPLETE_KEY, false);
-
+        
         if (!(onboardingComplete instanceof Boolean)) {
             throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ONBOARDING_STATUS_MALFORMED);
         }
-
         if (!(boolean) onboardingComplete) {
             throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ONBOARDING_NOT_COMPLETED);
         }
-
+        
         // Validate Echo ID
-        String id = jwt.getClaimAsString(ClerkConfig.ECHO_ID);
+        String echoId = jwt.getClaimAsString(ClerkConfig.ECHO_ID);
 
-        if (!isValidUUID(id)) {
+        if (!isValidUUID(echoId)) {
             throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ECHO_ID_MISSING_OR_MALFORMED);
         }
 
