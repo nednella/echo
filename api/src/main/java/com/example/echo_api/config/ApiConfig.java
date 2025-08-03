@@ -25,7 +25,7 @@ public final class ApiConfig {
     public static final class Webhook {
 
         private static final String ROOT = BASE_URL + "/webhooks";
-        public static final String CLERK_USER_UPDATE = ROOT + "/clerk/user";
+        public static final String CLERK_USER_EVENT = ROOT + "/clerk-user";
 
     }
 

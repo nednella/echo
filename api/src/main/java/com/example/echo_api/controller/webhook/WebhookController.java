@@ -14,7 +14,7 @@ public class WebhookController {
 
     private final WebhookService webhookService;
 
-    @PostMapping(ApiConfig.Webhook.CLERK_USER_UPDATE)
+    @PostMapping(ApiConfig.Webhook.CLERK_USER_EVENT)
     public void clerkUserUpdate() {
 
     }
