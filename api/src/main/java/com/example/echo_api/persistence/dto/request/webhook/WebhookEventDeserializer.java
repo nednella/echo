@@ -23,10 +23,10 @@ public class WebhookEventDeserializer extends JsonDeserializer<WebhookEvent> {
         JsonNode dataNode = node.get(DATA_FIELD);
         JsonNode typeNode = node.get(TYPE_FIELD);
         if (dataNode == null) {
-            throw new IllegalArgumentException("Missing \"" + DATA_FIELD + "\" field in JSON payload.");
+            throw new IllegalArgumentException("Missing \"" + DATA_FIELD + "\" field in JSON payload");
         }
         if (typeNode == null) {
-            throw new IllegalArgumentException("Missing \"" + TYPE_FIELD + "\" field in JSON payload.");
+            throw new IllegalArgumentException("Missing \"" + TYPE_FIELD + "\" field in JSON payload");
         }
 
         WebhookEventType type = ctx.readTreeAsValue(typeNode, WebhookEventType.class);
