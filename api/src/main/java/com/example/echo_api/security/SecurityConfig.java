@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests(req -> req
-                .requestMatchers(HttpMethod.POST, ApiConfig.Webhook.CLERK_USER_EVENT).permitAll()
+                .requestMatchers(HttpMethod.POST, ApiConfig.Webhook.CLERK_EVENT).permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth -> oauth
