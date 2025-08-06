@@ -5,7 +5,7 @@ import org.springframework.http.HttpHeaders;
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
 import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
-import com.example.echo_api.persistence.dto.request.webhook.WebhookEvent;
+import com.example.echo_api.persistence.dto.request.webhook.clerk.ClerkWebhookEvent;
 
 public interface WebhookService {
 
@@ -26,13 +26,13 @@ public interface WebhookService {
 
     /**
      * Deserializes a webhook JSON payload string into an appropriate
-     * {@link WebhookEvent} based on its type information.
+     * {@link ClerkWebhookEvent} based on its type information.
      * 
      * @param payload The JSON payload string to deserialize.
-     * @return The mapped {@link WebhookEvent}.
+     * @return The mapped {@link ClerkWebhookEvent}.
      * @throws DeserializationException If there was an issue when deserializing the
      *                                  JSON payload for whatever reason.
      */
-    public WebhookEvent deserializePayload(String payload);
+    public ClerkWebhookEvent deserializePayload(String payload);
 
 }

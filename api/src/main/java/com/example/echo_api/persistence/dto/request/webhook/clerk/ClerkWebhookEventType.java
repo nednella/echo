@@ -1,22 +1,22 @@
-package com.example.echo_api.persistence.dto.request.webhook;
+package com.example.echo_api.persistence.dto.request.webhook.clerk;
 
-public enum WebhookEventType {
+public enum ClerkWebhookEventType {
 
     USER_CREATED,
     USER_UPDATED,
     USER_DELETED;
 
     /**
-     * Convert a string to a {@link WebhookEventType} enum value.
+     * Convert a string to a {@link ClerkWebhookEventType} enum value.
      * 
      * @param str The string to convert.
-     * @return The matching {@link WebhookEventType} enum value.
+     * @return The matching {@link ClerkWebhookEventType} enum value.
      * @throws IllegalArgumentException If the input is null or does not match any
      *                                  supported event type.
      */
-    public static WebhookEventType fromString(String str) throws IllegalArgumentException {
+    public static ClerkWebhookEventType fromString(String str) throws IllegalArgumentException {
         try {
-            return WebhookEventType.valueOf(normaliseString(str));
+            return ClerkWebhookEventType.valueOf(normaliseString(str));
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Unsupported event type: " + str);
         }

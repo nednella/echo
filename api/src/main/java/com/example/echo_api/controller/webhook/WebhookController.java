@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.echo_api.config.ApiConfig;
-import com.example.echo_api.persistence.dto.request.webhook.WebhookEvent;
+import com.example.echo_api.persistence.dto.request.webhook.clerk.ClerkWebhookEvent;
 import com.example.echo_api.service.webhook.WebhookService;
 
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class WebhookController {
     @PostMapping(ApiConfig.Webhook.CLERK_EVENT)
     public ResponseEntity<Void> clerkEvent(@RequestHeader HttpHeaders headers, @RequestBody String payload) {
         webhookService.verify(headers, payload);
-        WebhookEvent event = webhookService.deserializePayload(payload);
+        ClerkWebhookEvent event = webhookService.deserializePayload(payload);
         return ResponseEntity.noContent().build();
     }
 

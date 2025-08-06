@@ -1,36 +1,37 @@
-package com.example.echo_api.persistence.dto.request.webhook;
+package com.example.echo_api.persistence.dto.request.webhook.clerk;
 
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
-import com.example.echo_api.persistence.dto.request.webhook.data.UserCreated;
-import com.example.echo_api.persistence.dto.request.webhook.data.UserDeleted;
-import com.example.echo_api.persistence.dto.request.webhook.data.UserUpdated;
+import com.example.echo_api.persistence.dto.request.webhook.clerk.data.UserCreated;
+import com.example.echo_api.persistence.dto.request.webhook.clerk.data.UserDeleted;
+import com.example.echo_api.persistence.dto.request.webhook.clerk.data.UserUpdated;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * Deserializes a JSON webhook payload into a {@link WebhookEvent} object.
+ * Deserializes a JSON webhook payload into a {@link ClerkWebhookEvent} object.
  * 
  * <p>
- * The webhook {@code type} field is extracted into a {@link WebhookEventType}
- * enum if the type is supported, and used to extract the {@code data} field
- * into the appropriate {@link WebhookEventData} subclass based on that enum.
+ * The webhook {@code type} field is extracted into a
+ * {@link ClerkWebhookEventType} enum if the type is supported, and used to
+ * extract the {@code data} field into the appropriate
+ * {@link ClerkWebhookEventData} subclass based on that enum.
  */
-public class WebhookEventDeserializer extends JsonDeserializer<WebhookEvent> {
+public class ClerkWebhookEventDeserializer extends JsonDeserializer<ClerkWebhookEvent> {
 
     private static final String DATA_FIELD = "data";
     private static final String TYPE_FIELD = "type";
 
     @Override
-    public WebhookEvent deserialize(JsonParser p, DeserializationContext ctx) throws DeserializationException {
+    public ClerkWebhookEvent deserialize(JsonParser p, DeserializationContext ctx) throws DeserializationException {
         try {
             JsonNode root = p.readValueAsTree();
             JsonNode typeNode = getChildNode(root, TYPE_FIELD);
             JsonNode dataNode = getChildNode(root, DATA_FIELD);
-            WebhookEventType type = WebhookEventType.fromString(typeNode.asText());
-            WebhookEventData data = ctx.readTreeAsValue(dataNode, resolveWebhookEventDataType(type));
-            return new WebhookEvent(data, type);
+            ClerkWebhookEventType type = ClerkWebhookEventType.fromString(typeNode.asText());
+            ClerkWebhookEventData data = ctx.readTreeAsValue(dataNode, resolveWebhookEventDataType(type));
+            return new ClerkWebhookEvent(data, type);
         } catch (Exception ex) {
             throw new DeserializationException(ex.getMessage());
         }
@@ -54,15 +55,15 @@ public class WebhookEventDeserializer extends JsonDeserializer<WebhookEvent> {
     }
 
     /**
-     * Resolves the expected {@link WebhookEventData} subclass based on the provided
-     * {@link WebhookEventType}.
+     * Resolves the expected {@link ClerkWebhookEventData} subclass based on the
+     * provided {@link ClerkWebhookEventType}.
      * 
-     * @param type The {@link WebhookEventType} to map to a data class.
-     * @return The {@link Class} of the corresponding {@link WebhookEventData}
+     * @param type The {@link ClerkWebhookEventType} to map to a data class.
+     * @return The {@link Class} of the corresponding {@link ClerkWebhookEventData}
      *         subclass.
      * @throws IllegalArgumentException If the event type is not supported.
      */
-    private Class<? extends WebhookEventData> resolveWebhookEventDataType(WebhookEventType type)
+    private Class<? extends ClerkWebhookEventData> resolveWebhookEventDataType(ClerkWebhookEventType type)
         throws IllegalArgumentException {
         return switch (type) {
             case USER_CREATED -> UserCreated.class;

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import com.clerk.backend_api.Clerk;
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
 import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
-import com.example.echo_api.persistence.dto.request.webhook.WebhookEvent;
+import com.example.echo_api.persistence.dto.request.webhook.clerk.ClerkWebhookEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.svix.Webhook;
 
@@ -33,9 +33,9 @@ public class WebhookServiceImpl implements WebhookService {
     }
 
     @Override
-    public WebhookEvent deserializePayload(String payload) {
+    public ClerkWebhookEvent deserializePayload(String payload) {
         try {
-            return mapper.readValue(payload, WebhookEvent.class);
+            return mapper.readValue(payload, ClerkWebhookEvent.class);
         } catch (Exception ex) {
             throw new DeserializationException(ex.getMessage());
         }
