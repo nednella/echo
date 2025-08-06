@@ -15,7 +15,7 @@ public interface UserRepository extends ListCrudRepository<User, UUID> {
     /**
      * Find a user {@link UUID} by {@code clerkId}.
      * 
-     * @param clerkId The clerk id to search for.
+     * @param clerkId The {@code clerkId} to search for.
      * @return An {@link Optional} containing the user's {@link UUID} if found,
      *         otherwise empty.
      */
@@ -25,7 +25,7 @@ public interface UserRepository extends ListCrudRepository<User, UUID> {
     /**
      * Check if a {@link User} exists by {@code clerkId}.
      * 
-     * @param clerkId The clerk ID to search for.
+     * @param clerkId The {@code clerkId} to search for.
      * @return True if exists, else false.
      */
     boolean existsByClerkId(String clerkId);
