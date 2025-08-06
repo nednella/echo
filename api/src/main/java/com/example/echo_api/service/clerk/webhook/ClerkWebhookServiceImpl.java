@@ -1,4 +1,4 @@
-package com.example.echo_api.service.webhook;
+package com.example.echo_api.service.clerk.webhook;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
-public class WebhookServiceImpl implements WebhookService {
+public class ClerkWebhookServiceImpl implements ClerkWebhookService {
 
     private final Webhook svixWebhook;
     private final ObjectMapper mapper;

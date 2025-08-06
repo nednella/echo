@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.persistence.dto.request.webhook.clerk.ClerkWebhookEvent;
-import com.example.echo_api.service.webhook.WebhookService;
+import com.example.echo_api.service.clerk.webhook.ClerkWebhookService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,12 +17,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WebhookController {
 
-    private final WebhookService webhookService;
+    private final ClerkWebhookService clerkWebhookService;
 
     @PostMapping(ApiConfig.Webhook.CLERK_EVENT)
     public ResponseEntity<Void> clerkEvent(@RequestHeader HttpHeaders headers, @RequestBody String payload) {
-        webhookService.verify(headers, payload);
-        ClerkWebhookEvent event = webhookService.deserializePayload(payload);
+        clerkWebhookService.verify(headers, payload);
+        ClerkWebhookEvent event = clerkWebhookService.deserializePayload(payload);
         return ResponseEntity.noContent().build();
     }
 

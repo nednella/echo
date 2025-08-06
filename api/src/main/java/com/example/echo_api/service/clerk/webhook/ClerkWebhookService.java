@@ -1,4 +1,4 @@
-package com.example.echo_api.service.webhook;
+package com.example.echo_api.service.clerk.webhook;
 
 import org.springframework.http.HttpHeaders;
 
@@ -7,7 +7,7 @@ import com.example.echo_api.exception.custom.badrequest.DeserializationException
 import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
 import com.example.echo_api.persistence.dto.request.webhook.clerk.ClerkWebhookEvent;
 
-public interface WebhookService {
+public interface ClerkWebhookService {
 
     /**
      * Verify the authenticity of a Clerk webhook received at a
