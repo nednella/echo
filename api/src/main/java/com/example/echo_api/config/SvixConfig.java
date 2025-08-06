@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @Configuration
 @ConfigurationProperties(prefix = "clerk.webhook")
-public class WebhookConfig {
+public class SvixConfig {
 
     private String signingSecret;
 
