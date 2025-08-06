@@ -28,6 +28,7 @@ public final class ErrorMessageConfig {
 
         public static final String MISSING_AUTHENTICATION = "Authentication required";
         public static final String INVALID_BEARER_TOKEN = "Invalid bearer token";
+        public static final String INVALID_WEBHOOK_SIGNATURE = "Invalid webhook signature";
 
     }
 

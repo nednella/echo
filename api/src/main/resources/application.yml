@@ -33,6 +33,8 @@ spring:
 
 clerk:
     secret-key: ${CLERK_SECRET_KEY}
+    webhook:
+        signing-secret: ${CLERK_WEBHOOK_SIGNING_SECRET}
 
 cloudinary:
     cloud-name: ${CLOUDINARY_NAME}
