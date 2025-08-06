@@ -1,4 +1,4 @@
-package com.example.echo_api.service.clerk;
+package com.example.echo_api.service.clerk.sdk;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
-public class ClerkServiceImpl implements ClerkService {
+public class ClerkSdkServiceImpl implements ClerkSdkService {
 
     private static final String GET_USER_EXCEPTION_MSG = "Failed to retrieve user data. Try again and contact support if this persists.";
     private static final String SET_EXTERNAL_ID_EXCEPTION_MSG = "Failed to update external ID. Try again and contact support if this persists.";

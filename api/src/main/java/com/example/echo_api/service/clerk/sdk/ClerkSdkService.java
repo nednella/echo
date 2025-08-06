@@ -1,9 +1,9 @@
-package com.example.echo_api.service.clerk;
+package com.example.echo_api.service.clerk.sdk;
 
 import com.clerk.backend_api.models.components.User;
 import com.example.echo_api.exception.custom.internalserver.ClerkException;
 
-public interface ClerkService {
+public interface ClerkSdkService {
 
     /**
      * Retrieves a user from Clerk based on their Clerk user ID.

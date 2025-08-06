@@ -10,7 +10,7 @@ import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.persistence.repository.UserRepository;
-import com.example.echo_api.service.clerk.ClerkService;
+import com.example.echo_api.service.clerk.sdk.ClerkSdkService;
 import com.example.echo_api.service.session.SessionService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthServiceImpl implements AuthService {
 
     private final SessionService sessionService;
-    private final ClerkService clerkService;
+    private final ClerkSdkService clerkSdkService;
 
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
@@ -35,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
         String clerkId = sessionService.getAuthenticatedUserClerkId();
         validateOnboardingNotComplete(clerkId);
 
-        var clerkUser = clerkService.getUser(clerkId);
+        var clerkUser = clerkSdkService.getUser(clerkId);
         String username = clerkUser.username().get();
         String imageUrl = clerkUser.imageUrl().orElse(null);
 
@@ -46,8 +46,8 @@ public class AuthServiceImpl implements AuthService {
         profile.setAvatarUrl(imageUrl);
         profileRepository.save(profile);
 
-        clerkService.setExternalId(clerkId, user.getId().toString());
-        clerkService.completeOnboarding(clerkId);
+        clerkSdkService.setExternalId(clerkId, user.getId().toString());
+        clerkSdkService.completeOnboarding(clerkId);
 
         return user;
     }
