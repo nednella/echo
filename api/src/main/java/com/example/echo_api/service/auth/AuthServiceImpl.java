@@ -42,8 +42,7 @@ public class AuthServiceImpl implements AuthService {
         User user = User.fromClerk(clerkId, username);
         userRepository.save(user);
 
-        Profile profile = new Profile(user.getId(), user.getUsername());
-        profile.setAvatarUrl(imageUrl);
+        Profile profile = Profile.forUser(user.getId(), user.getUsername(), imageUrl);
         profileRepository.save(profile);
 
         clerkSdkService.setExternalId(clerkId, user.getId().toString());
