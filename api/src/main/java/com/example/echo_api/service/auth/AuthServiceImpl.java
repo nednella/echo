@@ -39,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
         String username = clerkUser.username().get();
         String imageUrl = clerkUser.imageUrl().orElse(null);
 
-        User user = new User(clerkId, username);
+        User user = User.fromClerk(clerkId, username);
         userRepository.save(user);
 
         Profile profile = new Profile(user.getId(), user.getUsername());
