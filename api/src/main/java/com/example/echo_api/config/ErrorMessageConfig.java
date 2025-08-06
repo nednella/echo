@@ -19,6 +19,7 @@ public final class ErrorMessageConfig {
 
         // Authentication
         public static final String ONBOARDING_COMPLETED = "User has already completed the onboarding process";
+        public static final String CLERK_ID_ALREADY_EXISTS = "Clerk user ID already exists in the local system";
 
     }
 
