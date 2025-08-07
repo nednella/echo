@@ -34,9 +34,6 @@ public class Profile {
     @Column(unique = true, nullable = false)
     private String username;
 
-    @Column(name = "image_url")
-    private String imageUrl;
-
     @Column(length = 50)
     private String name;
 
@@ -45,6 +42,12 @@ public class Profile {
 
     @Column(length = 30)
     private String location;
+
+    @Column(name = "avatar_image_url")
+    private String avatarImageUrl;
+
+    @Column(name = "banner_image_url")
+    private String bannerImageUrl;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -64,7 +67,7 @@ public class Profile {
     /**
      * Factory method to create a new {@link Profile} during onboarding.
      * 
-     * @param userId   The UUID shared with the User entity
+     * @param id       The UUID of the {@link User}
      * @param username The username from Clerk
      * @param imageUrl The optional profile image URL from Clerk
      * @return New Profile instance
@@ -74,15 +77,11 @@ public class Profile {
         return Profile.builder()
             .id(Objects.requireNonNull(id))
             .username(Objects.requireNonNull(username))
-            .imageUrl(imageUrl)
+            .avatarImageUrl(imageUrl)
             .build();
     }
 
     // ---- setters ----
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
 
     public void setName(String name) {
         this.name = name;
@@ -94,6 +93,14 @@ public class Profile {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public void setAvatarImageUrl(String imageUrl) {
+        this.avatarImageUrl = imageUrl;
+    }
+
+    public void setBannerImageUrl(String imageUrl) {
+        this.bannerImageUrl = imageUrl;
     }
 
 }
