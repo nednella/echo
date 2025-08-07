@@ -37,8 +37,9 @@ public class User {
     private String username;
 
     @Builder.Default
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private boolean enabled = true;
+    private UserStatus status = UserStatus.ACTIVE;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -72,8 +73,8 @@ public class User {
         this.username = username;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    public void setStatus(UserStatus status) {
+        this.status = status;
     }
 
     // ---- equals & hashcode ----
