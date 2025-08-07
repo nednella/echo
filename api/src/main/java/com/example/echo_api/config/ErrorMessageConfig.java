@@ -41,7 +41,6 @@ public final class ErrorMessageConfig {
         public static final String METADATA_MISSING = "Token metadata is missing, contact support for assistance";
         public static final String ONBOARDING_NOT_COMPLETED = "User has not completed the onboarding process";
         public static final String ECHO_ID_MISSING_OR_MALFORMED = "Echo ID is missing or malformed, contact support for assistance";
-
         public static final String ACCESS_DENIED = "You are missing permissions required to perform this action";
         public static final String RESOURCE_OWNERSHIP_REQUIRED = "Resource ownership is required for performing this action";
 
