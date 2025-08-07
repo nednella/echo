@@ -1,7 +1,6 @@
 package com.example.echo_api.persistence.dto.request.webhook.clerk;
 
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
-import com.example.echo_api.persistence.dto.request.webhook.clerk.data.UserCreated;
 import com.example.echo_api.persistence.dto.request.webhook.clerk.data.UserDeleted;
 import com.example.echo_api.persistence.dto.request.webhook.clerk.data.UserUpdated;
 import com.fasterxml.jackson.core.JsonParser;
@@ -66,7 +65,6 @@ public class ClerkWebhookEventDeserializer extends JsonDeserializer<ClerkWebhook
     private Class<? extends ClerkWebhookEventData> resolveWebhookEventDataType(ClerkWebhookEventType type)
         throws IllegalArgumentException {
         return switch (type) {
-            case USER_CREATED -> UserCreated.class;
             case USER_UPDATED -> UserUpdated.class;
             case USER_DELETED -> UserDeleted.class;
             default -> throw new IllegalArgumentException("Unsupported data type for event type: " + type);
