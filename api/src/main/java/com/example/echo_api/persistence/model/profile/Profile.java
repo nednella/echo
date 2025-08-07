@@ -59,11 +59,6 @@ public class Profile {
 
     // ---- factory methods ----
 
-    public Profile(UUID id, String username) {
-        this.id = id;
-        this.username = username;
-    }
-
     /**
      * Factory method to create a new {@link Profile} during onboarding.
      * 
