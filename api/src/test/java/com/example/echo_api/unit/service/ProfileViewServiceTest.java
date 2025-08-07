@@ -26,9 +26,9 @@ import com.example.echo_api.persistence.mapper.PageMapper;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
+import com.example.echo_api.service.auth.session.SessionService;
 import com.example.echo_api.service.profile.view.ProfileViewService;
 import com.example.echo_api.service.profile.view.ProfileViewServiceImpl;
-import com.example.echo_api.service.session.SessionService;
 import com.example.echo_api.util.pagination.OffsetLimitRequest;
 
 import jakarta.servlet.http.HttpServletRequest;

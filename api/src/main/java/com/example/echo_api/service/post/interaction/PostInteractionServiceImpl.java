@@ -10,8 +10,8 @@ import com.example.echo_api.persistence.model.post.Post;
 import com.example.echo_api.persistence.model.post.like.PostLike;
 import com.example.echo_api.persistence.repository.PostLikeRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
+import com.example.echo_api.service.auth.session.SessionService;
 import com.example.echo_api.service.post.BasePostService;
-import com.example.echo_api.service.session.SessionService;
 
 /**
  * Service implementation for managing CRUD operations between {@link Profile}

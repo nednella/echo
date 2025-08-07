@@ -20,7 +20,7 @@ import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.service.account.AccountService;
 import com.example.echo_api.service.auth.onboarding.OnboardingService;
 import com.example.echo_api.service.auth.onboarding.OnboardingServiceImpl;
-import com.example.echo_api.service.session.SessionService;
+import com.example.echo_api.service.auth.session.SessionService;
 
 /**
  * Unit test class for {@link OnboardingService}.

@@ -5,8 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.echo_api.exception.custom.badrequest.OnboardingCompleteException;
 import com.example.echo_api.persistence.model.user.User;
+import com.example.echo_api.service.auth.session.SessionService;
 import com.example.echo_api.service.clerk.sdk.ClerkSdkService;
-import com.example.echo_api.service.session.SessionService;
 import com.example.echo_api.service.user.UserService;
 
 import lombok.RequiredArgsConstructor;

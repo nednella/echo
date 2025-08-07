@@ -20,7 +20,7 @@ import com.example.echo_api.persistence.repository.AccountRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.service.account.AccountService;
 import com.example.echo_api.service.account.AccountServiceImpl;
-import com.example.echo_api.service.session.SessionService;
+import com.example.echo_api.service.auth.session.SessionService;
 
 /**
  * Unit test class for {@link AccountService}.

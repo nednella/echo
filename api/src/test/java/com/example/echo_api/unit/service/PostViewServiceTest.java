@@ -30,9 +30,9 @@ import com.example.echo_api.persistence.model.post.Post;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.PostRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
+import com.example.echo_api.service.auth.session.SessionService;
 import com.example.echo_api.service.post.view.PostViewService;
 import com.example.echo_api.service.post.view.PostViewServiceImpl;
-import com.example.echo_api.service.session.SessionService;
 import com.example.echo_api.util.pagination.OffsetLimitRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
