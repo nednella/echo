@@ -1,11 +1,11 @@
-package com.example.echo_api.service.auth;
+package com.example.echo_api.service.auth.onboarding;
 
 import com.clerk.backend_api.Clerk;
 import com.example.echo_api.exception.custom.badrequest.OnboardingCompleteException;
 import com.example.echo_api.exception.custom.internalserver.ClerkException;
 import com.example.echo_api.persistence.model.user.User;
 
-public interface AuthService {
+public interface OnboardingService {
 
     /**
      * Onboards an authenticated Clerk user by creating a local user and profile.

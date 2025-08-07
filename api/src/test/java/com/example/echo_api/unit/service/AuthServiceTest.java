@@ -18,12 +18,12 @@ import com.example.echo_api.persistence.dto.request.auth.LoginDTO;
 import com.example.echo_api.persistence.dto.request.auth.SignupDTO;
 import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.service.account.AccountService;
-import com.example.echo_api.service.auth.AuthService;
-import com.example.echo_api.service.auth.AuthServiceImpl;
+import com.example.echo_api.service.auth.onboarding.OnboardingService;
+import com.example.echo_api.service.auth.onboarding.OnboardingServiceImpl;
 import com.example.echo_api.service.session.SessionService;
 
 /**
- * Unit test class for {@link AuthService}.
+ * Unit test class for {@link OnboardingService}.
  */
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -35,7 +35,7 @@ class AuthServiceTest {
     private SessionService sessionSerivce;
 
     @InjectMocks
-    private AuthServiceImpl authService;
+    private OnboardingServiceImpl authService;
 
     private static Account account;
 
@@ -49,8 +49,8 @@ class AuthServiceTest {
     }
 
     /**
-     * This test ensures that the {@link AuthService#login(String, String)} method
-     * does not throw any exceptions.
+     * This test ensures that the {@link OnboardingService#login(String, String)}
+     * method does not throw any exceptions.
      */
     @Test
     void AuthService_Login_ReturnVoid() {
@@ -67,7 +67,7 @@ class AuthServiceTest {
     }
 
     /**
-     * This test ensures that {@link AuthService#login(String, String)} method
+     * This test ensures that {@link OnboardingService#login(String, String)} method
      * throws {@link DisabledException}.
      */
     @Test
@@ -85,7 +85,7 @@ class AuthServiceTest {
     }
 
     /**
-     * This test ensures that {@link AuthService#login(String, String)} method
+     * This test ensures that {@link OnboardingService#login(String, String)} method
      * throws {@link LockedException}.
      */
     @Test
@@ -103,7 +103,7 @@ class AuthServiceTest {
     }
 
     /**
-     * This test ensures that {@link AuthService#login(String, String)} method
+     * This test ensures that {@link OnboardingService#login(String, String)} method
      * throws {@link BadCredentialsException}.
      */
     @Test
@@ -121,8 +121,8 @@ class AuthServiceTest {
     }
 
     /**
-     * This test ensures that {@link AuthService#signup(String, String)} method does
-     * not throw any exceptions.
+     * This test ensures that {@link OnboardingService#signup(String, String)}
+     * method does not throw any exceptions.
      */
     @Test
     void AuthService_Signup_ReturnVoid() {
@@ -141,8 +141,8 @@ class AuthServiceTest {
     }
 
     /**
-     * This test ensures that {@link AuthService#signup(String, String)} method
-     * throws {@link UsernameAlreadyExistsException}.
+     * This test ensures that {@link OnboardingService#signup(String, String)}
+     * method throws {@link UsernameAlreadyExistsException}.
      */
     @Test
     void AuthService_Signup_ThrowUsernameAlreadyExists() {
@@ -159,8 +159,8 @@ class AuthServiceTest {
     }
 
     /**
-     * This test ensures that {@link AuthService#signup(String, String)} method
-     * throws {@link DisabledException}.
+     * This test ensures that {@link OnboardingService#signup(String, String)}
+     * method throws {@link DisabledException}.
      */
     @Test
     void AuthService_Signup_ThrowDisabledException() {
@@ -179,8 +179,8 @@ class AuthServiceTest {
     }
 
     /**
-     * This test ensures that {@link AuthService#signup(String, String)} method
-     * throws {@link LockedException}.
+     * This test ensures that {@link OnboardingService#signup(String, String)}
+     * method throws {@link LockedException}.
      */
     @Test
     void AuthService_Signup_ThrowLockedException() {
@@ -199,8 +199,8 @@ class AuthServiceTest {
     }
 
     /**
-     * This test ensures that {@link AuthService#signup(String, String)} method
-     * throws {@link BadCredentialsException}.
+     * This test ensures that {@link OnboardingService#signup(String, String)}
+     * method throws {@link BadCredentialsException}.
      */
     @Test
     void AuthService_Signup_ThrowBadCredentialsException() {

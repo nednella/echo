@@ -1,4 +1,4 @@
-package com.example.echo_api.service.auth;
+package com.example.echo_api.service.auth.onboarding;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService {
+public class OnboardingServiceImpl implements OnboardingService {
 
     private final UserService userService;
     private final SessionService sessionService;

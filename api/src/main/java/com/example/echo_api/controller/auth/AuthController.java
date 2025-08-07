@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.echo_api.config.ApiConfig;
-import com.example.echo_api.service.auth.AuthService;
+import com.example.echo_api.service.auth.onboarding.OnboardingService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,11 +14,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthService authService;
+    private final OnboardingService onboardingService;
 
     @GetMapping(ApiConfig.Auth.ONBOARDING)
     public ResponseEntity<Void> onboarding() {
-        authService.onboard();
+        onboardingService.onboard();
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

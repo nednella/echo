@@ -27,7 +27,7 @@ import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.dto.request.auth.LoginDTO;
 import com.example.echo_api.persistence.dto.request.auth.SignupDTO;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
-import com.example.echo_api.service.auth.AuthService;
+import com.example.echo_api.service.auth.onboarding.OnboardingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -41,7 +41,7 @@ class AuthControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private AuthService authService;
+    private OnboardingService authService;
 
     @Autowired
     private ObjectMapper objectMapper;
