@@ -4,7 +4,8 @@ import com.example.echo_api.config.ErrorMessageConfig;
 
 /**
  * Thrown if a HTTP request is rejected because the onboarding attempt fails due
- * to a user already existing with the specified Clerk ID.
+ * to the user's session token containing {@code onboardingComplete} metadata
+ * equal to {@code true}.
  */
 public class OnboardingCompleteException extends BadRequestException {
 
@@ -14,4 +15,5 @@ public class OnboardingCompleteException extends BadRequestException {
     public OnboardingCompleteException() {
         super(ErrorMessageConfig.BadRequest.ONBOARDING_COMPLETED);
     }
+
 }
