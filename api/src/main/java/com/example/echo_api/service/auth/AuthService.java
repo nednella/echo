@@ -15,13 +15,13 @@ public interface AuthService {
      * {@code external_id} and {@code metadata} via the {@link Clerk} SDK after
      * persisting a local reference.
      * 
-     * @return The persisted {@link User} object.
-     * @throws ClerkException              If any interaction with the {@link Clerk}
-     *                                     SDK fails for whatever reason.
+     * 
      * @throws OnboardingCompleteException If the authenticated user's Clerk ID
      *                                     already has a synchronised {@link User}
-     *                                     object in the database.
+     *                                     object in the database
+     * @throws ClerkException              If any interaction with the {@link Clerk}
+     *                                     SDK fails for whatever reason
      */
-    public User onboard() throws ClerkException, OnboardingCompleteException;
+    public void onboard();
 
 }
