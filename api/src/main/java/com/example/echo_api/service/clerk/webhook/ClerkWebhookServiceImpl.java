@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 /**
  * Service implementation for acting upon received asynchronous {@link Clerk}
- * webhook notifications to ensure database synchronisation.
+ * webhook notifications to maintain local database synchronisation.
  */
 @Service
 @RequiredArgsConstructor
@@ -41,6 +41,13 @@ public class ClerkWebhookServiceImpl implements ClerkWebhookService {
         }
     }
 
+    /**
+     * Helper method to convert Spring HttpHeaders into Java HttpHeaders to satisfy
+     * the webhook verification method.
+     * 
+     * @param headers {@link org.springframework.http.HttpHeaders}
+     * @return {@link java.net.http.HttpHeaders}
+     */
     private java.net.http.HttpHeaders convertHeaders(HttpHeaders headers) {
         return java.net.http.HttpHeaders.of(headers, (t, v) -> true);
     }
