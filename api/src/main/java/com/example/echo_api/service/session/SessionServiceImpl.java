@@ -1,5 +1,6 @@
 package com.example.echo_api.service.session;
 
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,6 +29,14 @@ public class SessionServiceImpl implements SessionService {
     public String getAuthenticatedUserClerkId() {
         Jwt token = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return token.getSubject();
+    }
+
+    @Override
+    public boolean isAuthenticatedUserOnboardingComplete() {
+        Jwt token = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Map<String, Object> metadata = token.getClaimAsMap(ClerkConfig.METADATA);
+
+        return Boolean.TRUE.equals(metadata.get(ClerkConfig.ONBOARDING_COMPLETE_KEY));
     }
 
 }
