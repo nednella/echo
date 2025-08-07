@@ -27,9 +27,16 @@ import jakarta.servlet.http.HttpServletResponse;
  * 
  * <p>
  * Since developers cannot directly interact with Clerk's user table to
- * synchronise databases, an onboarding status flag is appended to the JWT
- * metadata claim. The flag is used to indicate whether the Clerk authenticated
- * user has been synced to the local database.
+ * synchronise databases, an onboarding flow is used to guarantee a local
+ * reference to the Clerk user before allowing access to the application.
+ * 
+ * <p>
+ * The filter validates two critical JWT claims before allowing access to
+ * protected resources:
+ * <ol>
+ * <li>Onboarding completion status (via Clerk metadata)
+ * <li>Valid Echo ID (UUID format)
+ * </ol>
  * 
  * <p>
  * For more information, refer to:
@@ -46,41 +53,89 @@ public class OnboardingFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException
     {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // Bypass filter when requesting a public endpoint or the onboarding endpoint
-        boolean publicEndpoint = authentication instanceof AnonymousAuthenticationToken;
-        boolean onboardingEndpoint = request.getRequestURI().equals(ApiConfig.Auth.ONBOARDING);
-
-        if (publicEndpoint || onboardingEndpoint) {
+        if (shouldNotFilter(request)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = validateAuthenticationPrincipal(authentication);
+        validateOnboardingStatus(jwt);
+        validateEchoId(jwt);
 
-        // Validate onboarding metadata
-        Map<String, Object> metadata = jwt.getClaimAsMap(ClerkConfig.METADATA);
-        Object onboardingComplete = metadata.getOrDefault(ClerkConfig.ONBOARDING_COMPLETE_KEY, false);
-        
-        if (!(onboardingComplete instanceof Boolean)) {
-            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ONBOARDING_STATUS_MALFORMED);
-        }
-        if (!(boolean) onboardingComplete) {
-            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ONBOARDING_NOT_COMPLETED);
-        }
-        
-        // Validate Echo ID
-        String echoId = jwt.getClaimAsString(ClerkConfig.ECHO_ID);
-
-        if (!isValidUUID(echoId)) {
-            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ECHO_ID_MISSING_OR_MALFORMED);
-        }
-
-        // Success
         filterChain.doFilter(request, response);
     } // @formatter:on
 
+    /**
+     * Determine if the current request should bypass onboarding validation.
+     * 
+     * @param request The current HTTP request
+     * @return True if the request is to a public or onboarding endpoint, false
+     *         otherwise
+     */
+    @Override
+    public boolean shouldNotFilter(HttpServletRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean isPublicEndpoint = authentication instanceof AnonymousAuthenticationToken;
+        boolean isOnboardingEndpoint = request.getRequestURI().equals(ApiConfig.Auth.ONBOARDING);
+
+        return isPublicEndpoint || isOnboardingEndpoint;
+    }
+
+    /**
+     * Validate that the authentication principal is a JWT.
+     * 
+     * @param authentication The Spring Security authentication object
+     * @return The validated JWT
+     * @throws AccessDeniedException If the principal is not a JWT
+     */
+    private Jwt validateAuthenticationPrincipal(Authentication authentication) {
+        if (!(authentication.getPrincipal() instanceof Jwt)) {
+            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.INVALID_AUTH_PRINCIPAL);
+        }
+
+        return (Jwt) authentication.getPrincipal();
+    }
+
+    /**
+     * Validate the onboarding completion status from JWT metadata.
+     * 
+     * @param jwt The authenticated JWT
+     * @throws AccessDeniedException If metadata is missing or onboarding is
+     *                               incomplete
+     */
+    private void validateOnboardingStatus(Jwt jwt) {
+        Map<String, Object> metadata = jwt.getClaimAsMap(ClerkConfig.METADATA);
+        if (metadata == null) {
+            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.METADATA_MISSING);
+        }
+
+        Object onboardingComplete = metadata.get(ClerkConfig.ONBOARDING_COMPLETE_KEY);
+        if (!Boolean.TRUE.equals(onboardingComplete)) {
+            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ONBOARDING_NOT_COMPLETED);
+        }
+    }
+
+    /**
+     * Validate the Echo ID claim exists and is a valid UUID.
+     * 
+     * @param jwt The authenticated JWT
+     * @throws AccessDeniedException If Echo ID is missing or malformed
+     */
+    private void validateEchoId(Jwt jwt) {
+        String echoId = jwt.getClaimAsString(ClerkConfig.ECHO_ID);
+        if (echoId == null || !isValidUUID(echoId)) {
+            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ECHO_ID_MISSING_OR_MALFORMED);
+        }
+    }
+
+    /**
+     * Check if a string is a valid UUID.
+     * 
+     * @param id The string to validate
+     * @return True if the string is a valid UUID, false otherwise
+     */
     private boolean isValidUUID(String id) {
         try {
             UUID.fromString(id);
