@@ -66,7 +66,7 @@ public class Profile {
      * 
      * @param userId   The UUID shared with the User entity
      * @param username The username from Clerk
-     * @param imageUrl Profile image URL from Clerk
+     * @param imageUrl The optional profile image URL from Clerk
      * @return New Profile instance
      * @throws NullPointerException If {@code id} or {@code username} is null
      */
