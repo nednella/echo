@@ -1,4 +1,4 @@
-package com.example.echo_api.unit.controller;
+package com.example.echo_api.unit.controller.profile;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;

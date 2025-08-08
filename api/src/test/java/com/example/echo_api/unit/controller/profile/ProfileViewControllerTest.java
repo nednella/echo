@@ -1,4 +1,4 @@
-package com.example.echo_api.unit.controller;
+package com.example.echo_api.unit.controller.profile;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -207,8 +207,7 @@ class ProfileViewControllerTest {
             .getContentAsString();
 
         PageDTO<SimplifiedProfileDTO> actual = objectMapper.readValue(response,
-            new TypeReference<PageDTO<SimplifiedProfileDTO>>() {
-            });
+            new TypeReference<PageDTO<SimplifiedProfileDTO>>() {});
 
         assertEquals(expected, actual);
         assertEquals(1, actual.total());
@@ -241,8 +240,7 @@ class ProfileViewControllerTest {
             .getResponse()
             .getContentAsString();
 
-        PageDTO<ProfileDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<ProfileDTO>>() {
-        });
+        PageDTO<ProfileDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<ProfileDTO>>() {});
 
         assertEquals(expected, actual);
         assertEquals(0, actual.total());
@@ -370,8 +368,7 @@ class ProfileViewControllerTest {
             .getContentAsString();
 
         PageDTO<SimplifiedProfileDTO> actual = objectMapper.readValue(response,
-            new TypeReference<PageDTO<SimplifiedProfileDTO>>() {
-            });
+            new TypeReference<PageDTO<SimplifiedProfileDTO>>() {});
 
         assertEquals(expected, actual);
         assertEquals(1, actual.total());
@@ -404,8 +401,7 @@ class ProfileViewControllerTest {
             .getResponse()
             .getContentAsString();
 
-        PageDTO<ProfileDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<ProfileDTO>>() {
-        });
+        PageDTO<ProfileDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<ProfileDTO>>() {});
 
         assertEquals(expected, actual);
         assertEquals(0, actual.total());

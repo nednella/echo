@@ -1,4 +1,4 @@
-package com.example.echo_api.integration.controller;
+package com.example.echo_api.integration.controller.post;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.*;

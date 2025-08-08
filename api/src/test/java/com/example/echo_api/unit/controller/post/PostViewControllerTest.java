@@ -1,4 +1,4 @@
-package com.example.echo_api.unit.controller;
+package com.example.echo_api.unit.controller.post;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -150,8 +150,7 @@ class PostViewControllerTest {
             .getResponse()
             .getContentAsString();
 
-        PageDTO<PostDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<PostDTO>>() {
-        });
+        PageDTO<PostDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<PostDTO>>() {});
 
         assertEquals(expected, actual);
         verify(postViewService, times(1)).getRepliesById(eq(id), any(Pageable.class));
@@ -274,8 +273,7 @@ class PostViewControllerTest {
             .getResponse()
             .getContentAsString();
 
-        PageDTO<PostDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<PostDTO>>() {
-        });
+        PageDTO<PostDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<PostDTO>>() {});
 
         assertEquals(expected, actual);
         verify(postViewService, times(1)).getHomepagePosts(any(Pageable.class));
@@ -363,8 +361,7 @@ class PostViewControllerTest {
             .getResponse()
             .getContentAsString();
 
-        PageDTO<PostDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<PostDTO>>() {
-        });
+        PageDTO<PostDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<PostDTO>>() {});
 
         assertEquals(expected, actual);
         verify(postViewService, times(1)).getDiscoverPosts(any(Pageable.class));
@@ -453,8 +450,7 @@ class PostViewControllerTest {
             .getResponse()
             .getContentAsString();
 
-        PageDTO<PostDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<PostDTO>>() {
-        });
+        PageDTO<PostDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<PostDTO>>() {});
 
         assertEquals(expected, actual);
         verify(postViewService, times(1)).getPostsByAuthorId(eq(id), any(Pageable.class));
@@ -578,8 +574,7 @@ class PostViewControllerTest {
             .getResponse()
             .getContentAsString();
 
-        PageDTO<PostDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<PostDTO>>() {
-        });
+        PageDTO<PostDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<PostDTO>>() {});
 
         assertEquals(expected, actual);
         verify(postViewService, times(1)).getRepliesByAuthorId(eq(id), any(Pageable.class));
@@ -703,8 +698,7 @@ class PostViewControllerTest {
             .getResponse()
             .getContentAsString();
 
-        PageDTO<PostDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<PostDTO>>() {
-        });
+        PageDTO<PostDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<PostDTO>>() {});
 
         assertEquals(expected, actual);
         verify(postViewService, times(1)).getLikesByAuthorId(eq(id), any(Pageable.class));
@@ -828,8 +822,7 @@ class PostViewControllerTest {
             .getResponse()
             .getContentAsString();
 
-        PageDTO<PostDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<PostDTO>>() {
-        });
+        PageDTO<PostDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<PostDTO>>() {});
 
         assertEquals(expected, actual);
         verify(postViewService, times(1)).getMentionsOfAuthorId(eq(id), any(Pageable.class));

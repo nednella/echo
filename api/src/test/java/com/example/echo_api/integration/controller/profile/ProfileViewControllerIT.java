@@ -1,4 +1,4 @@
-package com.example.echo_api.integration.controller;
+package com.example.echo_api.integration.controller.profile;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.*;
@@ -98,8 +98,7 @@ class ProfileViewControllerIT extends IntegrationTest {
         assertNull(response1.getBody());
 
         // get followers of target user
-        ParameterizedTypeReference<PageDTO<ProfileDTO>> typeRef = new ParameterizedTypeReference<PageDTO<ProfileDTO>>() {
-        };
+        ParameterizedTypeReference<PageDTO<ProfileDTO>> typeRef = new ParameterizedTypeReference<PageDTO<ProfileDTO>>() {};
         ResponseEntity<PageDTO<ProfileDTO>> response2 = restTemplate.exchange(getFollowersPath, GET, null, typeRef, id);
 
         // assert response
@@ -121,8 +120,7 @@ class ProfileViewControllerIT extends IntegrationTest {
         String path = ApiConfig.Profile.GET_FOLLOWERS_BY_ID;
         UUID id = otherUser.getId();
 
-        ParameterizedTypeReference<PageDTO<ProfileDTO>> typeRef = new ParameterizedTypeReference<PageDTO<ProfileDTO>>() {
-        };
+        ParameterizedTypeReference<PageDTO<ProfileDTO>> typeRef = new ParameterizedTypeReference<PageDTO<ProfileDTO>>() {};
         ResponseEntity<PageDTO<ProfileDTO>> response = restTemplate.exchange(path, GET, null, typeRef, id);
 
         // assert response
@@ -177,8 +175,7 @@ class ProfileViewControllerIT extends IntegrationTest {
         assertNull(response1.getBody());
 
         // get following of existing user
-        ParameterizedTypeReference<PageDTO<ProfileDTO>> typeRef = new ParameterizedTypeReference<PageDTO<ProfileDTO>>() {
-        };
+        ParameterizedTypeReference<PageDTO<ProfileDTO>> typeRef = new ParameterizedTypeReference<PageDTO<ProfileDTO>>() {};
         ResponseEntity<PageDTO<ProfileDTO>> response2 = restTemplate.exchange(getFollowingPath, GET, null, typeRef,
             getFollowingId);
 
@@ -201,8 +198,7 @@ class ProfileViewControllerIT extends IntegrationTest {
         String path = ApiConfig.Profile.GET_FOLLOWING_BY_ID;
         UUID id = otherUser.getId();
 
-        ParameterizedTypeReference<PageDTO<ProfileDTO>> typeRef = new ParameterizedTypeReference<PageDTO<ProfileDTO>>() {
-        };
+        ParameterizedTypeReference<PageDTO<ProfileDTO>> typeRef = new ParameterizedTypeReference<PageDTO<ProfileDTO>>() {};
         ResponseEntity<PageDTO<ProfileDTO>> response = restTemplate.exchange(path, GET, null, typeRef, id);
 
         // assert response

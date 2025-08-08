@@ -1,4 +1,4 @@
-package com.example.echo_api.unit.service;
+package com.example.echo_api.unit.service.profile;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
