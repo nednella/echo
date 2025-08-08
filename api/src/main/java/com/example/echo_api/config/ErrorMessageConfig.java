@@ -37,10 +37,10 @@ public final class ErrorMessageConfig {
     @NoArgsConstructor(access = PRIVATE)
     public static class Forbidden {
 
-        public static final String INVALID_AUTH_PRINCIPAL = "Missing or invalid authentication principal, contact support for assistance";
-        public static final String METADATA_MISSING = "Token metadata is missing, contact support for assistance";
+        public static final String INVALID_AUTH_PRINCIPAL = "Missing or invalid authentication principal";
+        public static final String ONBOARDED_CLAIM_MISSING_OR_MALFORMED = "'onboarded' claim is missing or malformed";
+        public static final String ECHO_ID_CLAIM_MISSING_OR_MALFORMED = "'echo_id' claim is missing or malformed";
         public static final String ONBOARDING_NOT_COMPLETED = "User has not completed the onboarding process";
-        public static final String ECHO_ID_MISSING_OR_MALFORMED = "Echo ID is missing or malformed, contact support for assistance";
         public static final String ACCESS_DENIED = "You are missing permissions required to perform this action";
         public static final String RESOURCE_OWNERSHIP_REQUIRED = "Resource ownership is required for performing this action";
 

@@ -53,7 +53,7 @@ public class ClerkSdkServiceImpl implements ClerkSdkService {
     @Override
     public void completeOnboarding(String clerkUserId) throws ClerkException {
         Map<String, Object> metadata = new HashMap<>();
-        metadata.put(ClerkConfig.ONBOARDING_COMPLETE_KEY, ClerkConfig.ONBOARDING_COMPLETE_VALUE);
+        metadata.put(ClerkConfig.ONBOARDING_COMPLETE_METADATA_KEY, ClerkConfig.ONBOARDING_COMPLETE_METADATA_VALUE);
 
         try {
             clerk.users().update(

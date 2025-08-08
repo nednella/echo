@@ -1,7 +1,6 @@
 package com.example.echo_api.security;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.security.access.AccessDeniedException;
@@ -34,7 +33,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * The filter validates two critical JWT claims before allowing access to
  * protected resources:
  * <ol>
- * <li>Onboarding completion status (via Clerk metadata)
+ * <li>Onboarding completion status
  * <li>Valid Echo ID (UUID format)
  * </ol>
  * 
@@ -99,34 +98,34 @@ public class OnboardingFilter extends OncePerRequestFilter {
     }
 
     /**
-     * Validate the onboarding completion status from JWT metadata.
+     * Validate that the {@code onboarded} claim on the JWT indicates the onboarding
+     * process has been completed.
      * 
      * @param jwt The authenticated JWT
-     * @throws AccessDeniedException If metadata is missing or onboarding is
-     *                               incomplete
+     * @throws AccessDeniedException If the {@code onboarded} claim is missing,
+     *                               malformed, or false
      */
     private void validateOnboardingStatus(Jwt jwt) {
-        Map<String, Object> metadata = jwt.getClaimAsMap(ClerkConfig.METADATA);
-        if (metadata == null) {
-            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.METADATA_MISSING);
+        Object onboarded = jwt.getClaim(ClerkConfig.JWT_ONBOARDED_CLAIM);
+        if (!(onboarded instanceof Boolean)) {
+            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ONBOARDED_CLAIM_MISSING_OR_MALFORMED);
         }
-
-        Object onboardingComplete = metadata.get(ClerkConfig.ONBOARDING_COMPLETE_KEY);
-        if (!Boolean.TRUE.equals(onboardingComplete)) {
+        if (!Boolean.TRUE.equals(onboarded)) {
             throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ONBOARDING_NOT_COMPLETED);
         }
     }
 
     /**
-     * Validate the Echo ID claim exists and is a valid UUID.
+     * Validate that the {@code echo_id} claim on the JWT is a valid UUID.
      * 
      * @param jwt The authenticated JWT
-     * @throws AccessDeniedException If Echo ID is missing or malformed
+     * @throws AccessDeniedException If the {@code echo_id} claim is missing or
+     *                               malformed
      */
     private void validateEchoId(Jwt jwt) {
-        String echoId = jwt.getClaimAsString(ClerkConfig.ECHO_ID);
+        String echoId = jwt.getClaimAsString(ClerkConfig.JWT_ECHO_ID_CLAIM);
         if (echoId == null || !isValidUUID(echoId)) {
-            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ECHO_ID_MISSING_OR_MALFORMED);
+            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ECHO_ID_CLAIM_MISSING_OR_MALFORMED);
         }
     }
 

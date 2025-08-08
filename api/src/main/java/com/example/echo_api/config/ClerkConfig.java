@@ -11,12 +11,9 @@ import lombok.Setter;
 /**
  * Config class for Clerk authentication integration.
  * 
- * <p>
- * Centralises Clerk-related configuration including:
- * 
  * <ul>
  * <li>Clerk JWT claim constants
- * <li>Expected onboarding metadata K/V pair
+ * <li>Clerk user public metadata onboarding status K/V pair
  * <li>Clerk SDK instance configuration
  * </ul>
  */
@@ -25,10 +22,11 @@ import lombok.Setter;
 @ConfigurationProperties(prefix = "clerk")
 public class ClerkConfig {
 
-    public static final String ECHO_ID = "echo_id";
-    public static final String METADATA = "metadata";
-    public static final String ONBOARDING_COMPLETE_KEY = "onboardingComplete";
-    public static final boolean ONBOARDING_COMPLETE_VALUE = true;
+    public static final String JWT_ECHO_ID_CLAIM = "echo_id";
+    public static final String JWT_ONBOARDED_CLAIM = "onboarded";
+
+    public static final String ONBOARDING_COMPLETE_METADATA_KEY = "onboardingComplete";
+    public static final boolean ONBOARDING_COMPLETE_METADATA_VALUE = true;
 
     private String secretKey;
 
