@@ -7,6 +7,9 @@ import com.clerk.backend_api.Clerk;
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
 import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
 import com.example.echo_api.persistence.dto.request.webhook.clerk.ClerkWebhookEvent;
+import com.example.echo_api.persistence.dto.request.webhook.clerk.data.UserDeleted;
+import com.example.echo_api.persistence.dto.request.webhook.clerk.data.UserUpdated;
+import com.example.echo_api.service.user.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.svix.Webhook;
 
@@ -19,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ClerkWebhookServiceImpl implements ClerkWebhookService {
+
+    private final UserService userService;
 
     private final Webhook svixWebhook;
     private final ObjectMapper mapper;
@@ -38,6 +43,18 @@ public class ClerkWebhookServiceImpl implements ClerkWebhookService {
             return mapper.readValue(payload, ClerkWebhookEvent.class);
         } catch (Exception ex) {
             throw new DeserializationException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public void handleClerkWebhookEvent(ClerkWebhookEvent event) {
+        switch (event.type()) {
+            case USER_UPDATED:
+                userService.handleClerkUserUpdated((UserUpdated) event.data());
+                break;
+            case USER_DELETED:
+                userService.handleClerkUserDeleted((UserDeleted) event.data());
+                break;
         }
     }
 
