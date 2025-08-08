@@ -5,8 +5,8 @@ import static lombok.AccessLevel.PRIVATE;
 import lombok.NoArgsConstructor;
 
 /**
- * This class contains the path constants used throughout the application. It
- * defines the base URL for the API, along with all relevant endpoints.
+ * Config class for defining API endpoint path constants used throughout the
+ * controller package.
  */
 @NoArgsConstructor(access = PRIVATE)
 public final class ApiConfig {

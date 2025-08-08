@@ -8,6 +8,18 @@ import com.clerk.backend_api.Clerk;
 
 import lombok.Setter;
 
+/**
+ * Config class for Clerk authentication integration.
+ * 
+ * <p>
+ * Centralises Clerk-related configuration including:
+ * 
+ * <ul>
+ * <li>Clerk JWT claim constants
+ * <li>Expected onboarding metadata K/V pair
+ * <li>Clerk SDK instance configuration
+ * </ul>
+ */
 @Setter
 @Configuration
 @ConfigurationProperties(prefix = "clerk")
@@ -20,6 +32,11 @@ public class ClerkConfig {
 
     private String secretKey;
 
+    /**
+     * Create an instance of the Clerk SDK using the supplied {@code secretKey}.
+     * 
+     * @return Clerk SDK instance
+     */
     @Bean
     Clerk clerk() {
         return Clerk
