@@ -23,7 +23,6 @@ import com.example.echo_api.persistence.dto.response.profile.ProfileMetricsDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
 import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
 import com.example.echo_api.persistence.mapper.PageMapper;
-import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.service.auth.session.SessionService;
@@ -51,15 +50,15 @@ class ProfileViewServiceTest {
     @Mock
     private HttpServletRequest httpServletRequest;
 
-    private static Account authenticatedUser;
+    private static UUID authenticatedUserId;
 
     @BeforeAll
     static void setup() {
-        authenticatedUser = new Account("user", "password");
+        authenticatedUserId = UUID.randomUUID();
     }
 
     private Profile createProfile(UUID id, String username) {
-        return new Profile(id, username);
+        return Profile.forTest(id, username);
     }
 
     private ProfileDTO createProfileDto(UUID id, String username) {
@@ -79,10 +78,10 @@ class ProfileViewServiceTest {
     @Test
     void ProfileViewService_GetMe_ReturnProfileDto() {
         // arrange
-        ProfileDTO expected = createProfileDto(UUID.randomUUID(), authenticatedUser.getUsername());
+        ProfileDTO expected = createProfileDto(UUID.randomUUID(), "username");
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findProfileDtoById(authenticatedUser.getId(), authenticatedUser.getId()))
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
+        when(profileRepository.findProfileDtoById(authenticatedUserId, authenticatedUserId))
             .thenReturn(Optional.of(expected));
 
         // act
@@ -90,21 +89,21 @@ class ProfileViewServiceTest {
 
         // assert
         assertEquals(expected, actual);
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findProfileDtoById(authenticatedUser.getId(), authenticatedUser.getId());
+        verify(sessionService).getAuthenticatedUserId();
+        verify(profileRepository).findProfileDtoById(authenticatedUserId, authenticatedUserId);
     }
 
     @Test
     void ProfileViewService_GetMe_ThrowResourceNotFound() {
         // arrange
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findProfileDtoById(authenticatedUser.getId(), authenticatedUser.getId()))
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
+        when(profileRepository.findProfileDtoById(authenticatedUserId, authenticatedUserId))
             .thenReturn(Optional.empty());
 
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> profileViewService.getMe());
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findProfileDtoById(authenticatedUser.getId(), authenticatedUser.getId());
+        verify(sessionService).getAuthenticatedUserId();
+        verify(profileRepository).findProfileDtoById(authenticatedUserId, authenticatedUserId);
     }
 
     @Test
@@ -113,8 +112,8 @@ class ProfileViewServiceTest {
         UUID id = UUID.randomUUID();
         ProfileDTO expected = createProfileDto(id, "test");
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findProfileDtoById(id, authenticatedUser.getId()))
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
+        when(profileRepository.findProfileDtoById(id, authenticatedUserId))
             .thenReturn(Optional.of(expected));
 
         // act
@@ -122,8 +121,8 @@ class ProfileViewServiceTest {
 
         // assert
         assertEquals(expected, actual);
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findProfileDtoById(id, authenticatedUser.getId());
+        verify(sessionService).getAuthenticatedUserId();
+        verify(profileRepository).findProfileDtoById(id, authenticatedUserId);
     }
 
     @Test
@@ -131,14 +130,14 @@ class ProfileViewServiceTest {
         // arrange
         UUID id = UUID.randomUUID();
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findProfileDtoById(id, authenticatedUser.getId()))
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
+        when(profileRepository.findProfileDtoById(id, authenticatedUserId))
             .thenReturn(Optional.empty());
 
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> profileViewService.getById(id));
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findProfileDtoById(id, authenticatedUser.getId());
+        verify(sessionService).getAuthenticatedUserId();
+        verify(profileRepository).findProfileDtoById(id, authenticatedUserId);
 
     }
 
@@ -148,8 +147,8 @@ class ProfileViewServiceTest {
         String username = "test";
         ProfileDTO expected = createProfileDto(UUID.randomUUID(), username);
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findProfileDtoByUsername(username, authenticatedUser.getId()))
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
+        when(profileRepository.findProfileDtoByUsername(username, authenticatedUserId))
             .thenReturn(Optional.of(expected));
 
         // act
@@ -157,8 +156,8 @@ class ProfileViewServiceTest {
 
         // assert
         assertEquals(expected, actual);
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findProfileDtoByUsername(username, authenticatedUser.getId());
+        verify(sessionService).getAuthenticatedUserId();
+        verify(profileRepository).findProfileDtoByUsername(username, authenticatedUserId);
     }
 
     @Test
@@ -166,14 +165,14 @@ class ProfileViewServiceTest {
         // arrange
         String username = "test";
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findProfileDtoByUsername(username, authenticatedUser.getId()))
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
+        when(profileRepository.findProfileDtoByUsername(username, authenticatedUserId))
             .thenReturn(Optional.empty());
 
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> profileViewService.getByUsername(username));
-        verify(sessionService, times(1)).getAuthenticatedUser();
-        verify(profileRepository, times(1)).findProfileDtoByUsername(username, authenticatedUser.getId());
+        verify(sessionService).getAuthenticatedUserId();
+        verify(profileRepository).findProfileDtoByUsername(username, authenticatedUserId);
 
     }
 
@@ -191,8 +190,8 @@ class ProfileViewServiceTest {
         PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(followersDto, uri);
 
         when(profileRepository.findById(id)).thenReturn(Optional.of(profile));
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findFollowerDtosById(profile.getId(), authenticatedUser.getId(), page))
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
+        when(profileRepository.findFollowerDtosById(profile.getId(), authenticatedUserId, page))
             .thenReturn(followersDto);
         when(httpServletRequest.getRequestURI()).thenReturn(uri);
 
@@ -202,7 +201,7 @@ class ProfileViewServiceTest {
         // assert
         assertTrue(actual.items().isEmpty());
         assertEquals(expected, actual);
-        verify(profileRepository, times(1)).findFollowerDtosById(profile.getId(), authenticatedUser.getId(), page);
+        verify(profileRepository).findFollowerDtosById(profile.getId(), authenticatedUserId, page);
     }
 
     @Test
@@ -234,8 +233,8 @@ class ProfileViewServiceTest {
         PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(followingDto, uri);
 
         when(profileRepository.findById(id)).thenReturn(Optional.of(profile));
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(profileRepository.findFollowingDtosById(profile.getId(), authenticatedUser.getId(), page))
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
+        when(profileRepository.findFollowingDtosById(profile.getId(), authenticatedUserId, page))
             .thenReturn(followingDto);
         when(httpServletRequest.getRequestURI()).thenReturn(uri);
 
@@ -245,7 +244,7 @@ class ProfileViewServiceTest {
         // assert
         assertTrue(actual.items().isEmpty());
         assertEquals(expected, actual);
-        verify(profileRepository, times(1)).findFollowingDtosById(profile.getId(), authenticatedUser.getId(), page);
+        verify(profileRepository).findFollowingDtosById(profile.getId(), authenticatedUserId, page);
     }
 
     @Test

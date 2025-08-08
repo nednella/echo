@@ -21,7 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.example.echo_api.exception.custom.badrequest.InvalidParentIdException;
 import com.example.echo_api.exception.custom.forbidden.ResourceOwnershipException;
 import com.example.echo_api.persistence.dto.request.post.CreatePostDTO;
-import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.post.Post;
 import com.example.echo_api.persistence.model.post.entity.PostEntity;
 import com.example.echo_api.persistence.model.post.entity.PostEntityType;
@@ -52,11 +51,11 @@ class PostManagementServiceTest {
     @Captor
     private ArgumentCaptor<List<PostEntity>> postEntityCaptor;
 
-    private static Account authenticatedUser;
+    private static UUID authenticatedUserId;
 
     @BeforeAll
     static void setup() {
-        authenticatedUser = new Account(UUID.randomUUID(), "username", "password");
+        authenticatedUserId = UUID.randomUUID();
     }
 
     @Test
@@ -69,10 +68,10 @@ class PostManagementServiceTest {
         var post = new Post(
             UUID.randomUUID(),
             request.parentId(),
-            authenticatedUser.getId(),
+            authenticatedUserId,
             request.text());
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.existsById(request.parentId())).thenReturn(true);
         when(postRepository.save(any(Post.class))).thenReturn(post);
 
@@ -92,14 +91,14 @@ class PostManagementServiceTest {
         var post = new Post(
             UUID.randomUUID(),
             request.parentId(),
-            authenticatedUser.getId(),
+            authenticatedUserId,
             request.text());
 
         List<PostEntity> entities = List.of(
             new PostEntity(post.getId(), PostEntityType.MENTION, 17, 31, "Valid_Mention"),
             new PostEntity(post.getId(), PostEntityType.HASHTAG, 38, 51, "ValidHashtag"));
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.existsById(request.parentId())).thenReturn(true);
         when(postRepository.save(any(Post.class))).thenReturn(post);
 
@@ -121,7 +120,7 @@ class PostManagementServiceTest {
             "Test post.");
 
         // arrange
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.existsById(request.parentId())).thenReturn(false);
 
         // act & assert
@@ -140,10 +139,10 @@ class PostManagementServiceTest {
         var post = new Post(
             UUID.randomUUID(),
             request.parentId(),
-            authenticatedUser.getId(),
+            authenticatedUserId,
             request.text());
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.existsById(request.parentId())).thenReturn(true);
         when(postRepository.save(any(Post.class))).thenReturn(post);
 
@@ -157,9 +156,9 @@ class PostManagementServiceTest {
     void PostManagementService_Delete_ReturnVoid() {
         // arrange
         var id = UUID.randomUUID();
-        var post = new Post(authenticatedUser.getId(), "Test post."); // post belonging to authenticatedUser
+        var post = new Post(authenticatedUserId, "Test post."); // post belonging to authenticatedUser
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.findById(id)).thenReturn(Optional.of(post));
 
         // act & assert
@@ -173,7 +172,7 @@ class PostManagementServiceTest {
         var id = UUID.randomUUID();
         var post = new Post(UUID.randomUUID(), "Test post."); // post belonging to another user
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.findById(id)).thenReturn(Optional.of(post));
 
         // act & assert

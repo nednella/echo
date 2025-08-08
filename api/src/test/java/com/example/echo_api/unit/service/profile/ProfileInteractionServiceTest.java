@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.example.echo_api.exception.custom.conflict.AlreadyFollowingException;
 import com.example.echo_api.exception.custom.conflict.SelfActionException;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
-import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.follow.Follow;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.FollowRepository;
@@ -43,15 +42,15 @@ class ProfileInteractionServiceTest {
     @Mock
     private FollowRepository followRepository;
 
-    private static Account authenticatedUser;
+    private static UUID authenticatedUserId;
     private static Profile authenticatedUserProfile;
     private static Profile target;
 
     @BeforeAll
     static void setup() {
-        authenticatedUser = new Account("user", "password");
-        authenticatedUserProfile = new Profile(null, "source");
-        target = new Profile(UUID.randomUUID(), "target");
+        authenticatedUserId = UUID.randomUUID();
+        authenticatedUserProfile = Profile.forTest(authenticatedUserId, "test");
+        target = Profile.forTest(UUID.randomUUID(), "target");
     }
 
     /**
@@ -63,7 +62,7 @@ class ProfileInteractionServiceTest {
         // arrange
         UUID id = target.getId();
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(profileRepository.findById(id)).thenReturn(Optional.of(target));
 
         // act & assert
@@ -80,7 +79,7 @@ class ProfileInteractionServiceTest {
         // arrange
         UUID id = UUID.randomUUID();
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(profileRepository.findById(id)).thenReturn(Optional.empty());
 
         // act & assert
@@ -98,7 +97,7 @@ class ProfileInteractionServiceTest {
         // arrange
         UUID id = target.getId();
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(profileRepository.findById(id)).thenReturn(Optional.of(authenticatedUserProfile));
 
         // act & assert
@@ -117,8 +116,8 @@ class ProfileInteractionServiceTest {
         UUID id = target.getId();
 
         when(profileRepository.findById(id)).thenReturn(Optional.of(target));
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(followRepository.existsByFollowerIdAndFollowedId(authenticatedUser.getId(), id)).thenReturn(true);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
+        when(followRepository.existsByFollowerIdAndFollowedId(authenticatedUserId, id)).thenReturn(true);
 
         // act & assert
         assertThrows(AlreadyFollowingException.class, () -> profileInteractionService.follow(id));
@@ -134,12 +133,12 @@ class ProfileInteractionServiceTest {
         // arrange
         UUID id = target.getId();
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(profileRepository.findById(id)).thenReturn(Optional.of(target));
 
         // act & assert
         assertDoesNotThrow(() -> profileInteractionService.unfollow(id));
-        verify(followRepository, times(1)).deleteByFollowerIdAndFollowedId(authenticatedUser.getId(), id);
+        verify(followRepository, times(1)).deleteByFollowerIdAndFollowedId(authenticatedUserId, id);
     }
 
     /**
@@ -151,12 +150,12 @@ class ProfileInteractionServiceTest {
         // arrange
         UUID id = UUID.randomUUID();
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(profileRepository.findById(id)).thenReturn(Optional.empty());
 
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> profileInteractionService.unfollow(id));
-        verify(followRepository, times(0)).deleteByFollowerIdAndFollowedId(authenticatedUser.getId(), id);
+        verify(followRepository, times(0)).deleteByFollowerIdAndFollowedId(authenticatedUserId, id);
     }
 
     /**
@@ -169,12 +168,12 @@ class ProfileInteractionServiceTest {
         // arrange
         UUID id = target.getId();
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(profileRepository.findById(id)).thenReturn(Optional.of(authenticatedUserProfile));
 
         // act & assert
         assertThrows(SelfActionException.class, () -> profileInteractionService.unfollow(id));
-        verify(followRepository, times(0)).deleteByFollowerIdAndFollowedId(authenticatedUser.getId(), id);
+        verify(followRepository, times(0)).deleteByFollowerIdAndFollowedId(authenticatedUserId, id);
     }
 
 }

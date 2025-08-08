@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.echo_api.exception.custom.conflict.AlreadyLikedException;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
-import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.post.Post;
 import com.example.echo_api.persistence.repository.PostLikeRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
@@ -41,12 +40,12 @@ class PostInteractionServiceTest {
     @Mock
     private PostLikeRepository likeRepository;
 
-    private static Account authenticatedUser;
+    private static UUID authenticatedUserId;
     private static Post post;
 
     @BeforeAll
     static void setup() {
-        authenticatedUser = new Account("user", "password");
+        authenticatedUserId = UUID.randomUUID();
         post = new Post(UUID.randomUUID(), "Test post.");
     }
 
@@ -55,14 +54,14 @@ class PostInteractionServiceTest {
         // arrange
         UUID id = post.getId();
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.findById(id)).thenReturn(Optional.of(post));
-        when(likeRepository.existsByPostIdAndAuthorId(id, authenticatedUser.getId())).thenReturn(false);
+        when(likeRepository.existsByPostIdAndAuthorId(id, authenticatedUserId)).thenReturn(false);
 
         // act & assert
         assertDoesNotThrow(() -> postInteractionService.like(id));
         verify(postRepository, times(1)).findById(id);
-        verify(likeRepository, times(1)).existsByPostIdAndAuthorId(id, authenticatedUser.getId());
+        verify(likeRepository, times(1)).existsByPostIdAndAuthorId(id, authenticatedUserId);
     }
 
     @Test
@@ -70,13 +69,13 @@ class PostInteractionServiceTest {
         // arrange
         UUID id = post.getId();
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.findById(id)).thenReturn(Optional.empty());
 
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> postInteractionService.like(id));
         verify(postRepository, times(1)).findById(id);
-        verify(likeRepository, times(0)).existsByPostIdAndAuthorId(id, authenticatedUser.getId());
+        verify(likeRepository, times(0)).existsByPostIdAndAuthorId(id, authenticatedUserId);
     }
 
     @Test
@@ -84,14 +83,14 @@ class PostInteractionServiceTest {
         // arrange
         UUID id = post.getId();
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.findById(id)).thenReturn(Optional.of(post));
-        when(likeRepository.existsByPostIdAndAuthorId(id, authenticatedUser.getId())).thenReturn(true);
+        when(likeRepository.existsByPostIdAndAuthorId(id, authenticatedUserId)).thenReturn(true);
 
         // act & assert
         assertThrows(AlreadyLikedException.class, () -> postInteractionService.like(id));
         verify(postRepository, times(1)).findById(id);
-        verify(likeRepository, times(1)).existsByPostIdAndAuthorId(id, authenticatedUser.getId());
+        verify(likeRepository, times(1)).existsByPostIdAndAuthorId(id, authenticatedUserId);
     }
 
     @Test
@@ -99,7 +98,7 @@ class PostInteractionServiceTest {
         // arrange
         UUID id = post.getId();
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
 
         // act & assert
         assertDoesNotThrow(() -> postInteractionService.unlike(id));

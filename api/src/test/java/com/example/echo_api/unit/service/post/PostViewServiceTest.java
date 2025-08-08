@@ -25,7 +25,6 @@ import com.example.echo_api.persistence.dto.response.post.PostMetricsDTO;
 import com.example.echo_api.persistence.dto.response.post.PostRelationshipDTO;
 import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
 import com.example.echo_api.persistence.mapper.PageMapper;
-import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.post.Post;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.PostRepository;
@@ -58,11 +57,11 @@ class PostViewServiceTest {
     @Mock
     private HttpServletRequest httpServletRequest;
 
-    private static Account authenticatedUser;
+    private static UUID authenticatedUserId;
 
     @BeforeAll
     static void setup() {
-        authenticatedUser = new Account(UUID.randomUUID(), "username", "password");
+        authenticatedUserId = UUID.randomUUID();
     }
 
     private PostDTO createPostDto(UUID id, String text) {
@@ -84,7 +83,7 @@ class PostViewServiceTest {
     }
 
     private Profile createProfileEntity(UUID id, String username) {
-        return new Profile(id, username);
+        return Profile.forTest(id, username);
     }
 
     @Test
@@ -93,15 +92,15 @@ class PostViewServiceTest {
         UUID id = UUID.randomUUID();
         PostDTO expected = createPostDto(id, "Test post.");
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(postRepository.findPostDtoById(id, authenticatedUser.getId())).thenReturn(Optional.of(expected));
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
+        when(postRepository.findPostDtoById(id, authenticatedUserId)).thenReturn(Optional.of(expected));
 
         // act
         PostDTO actual = postViewService.getPostById(id);
 
         // assert
         assertEquals(expected, actual);
-        verify(postRepository, times(1)).findPostDtoById(id, authenticatedUser.getId());
+        verify(postRepository, times(1)).findPostDtoById(id, authenticatedUserId);
     }
 
     @Test
@@ -109,12 +108,12 @@ class PostViewServiceTest {
         // arrange
         UUID id = UUID.randomUUID();
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(postRepository.findPostDtoById(id, authenticatedUser.getId())).thenReturn(Optional.empty());
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
+        when(postRepository.findPostDtoById(id, authenticatedUserId)).thenReturn(Optional.empty());
 
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> postViewService.getPostById(id));
-        verify(postRepository, times(1)).findPostDtoById(id, authenticatedUser.getId());
+        verify(postRepository, times(1)).findPostDtoById(id, authenticatedUserId);
     }
 
     @Test
@@ -131,8 +130,8 @@ class PostViewServiceTest {
         PageDTO<PostDTO> expected = PageMapper.toDTO(repliesDto, uri);
 
         when(postRepository.findById(id)).thenReturn(Optional.of(post));
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(postRepository.findRepliesById(post.getId(), authenticatedUser.getId(), page)).thenReturn(repliesDto);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
+        when(postRepository.findRepliesById(post.getId(), authenticatedUserId, page)).thenReturn(repliesDto);
         when(httpServletRequest.getRequestURI()).thenReturn(uri);
 
         // act
@@ -141,7 +140,7 @@ class PostViewServiceTest {
         // assert
         assertEquals(expected, actual);
         verify(postRepository, times(1)).findById(id);
-        verify(postRepository, times(1)).findRepliesById(post.getId(), authenticatedUser.getId(), page);
+        verify(postRepository, times(1)).findRepliesById(post.getId(), authenticatedUserId, page);
     }
 
     @Test
@@ -158,7 +157,7 @@ class PostViewServiceTest {
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> postViewService.getRepliesById(id, page));
         verify(postRepository, times(1)).findById(id);
-        verify(postRepository, times(0)).findRepliesById(any(UUID.class), eq(authenticatedUser.getId()), eq(page));
+        verify(postRepository, times(0)).findRepliesById(any(UUID.class), eq(authenticatedUserId), eq(page));
     }
 
     @Test
@@ -171,15 +170,15 @@ class PostViewServiceTest {
         Page<PostDTO> posts = new PageImpl<>(List.of(createPostDto(UUID.randomUUID(), "Test post.")), page, 1);
         PageDTO<PostDTO> expected = PageMapper.toDTO(posts, uri);
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(postRepository.findHomepagePosts(authenticatedUser.getId(), page)).thenReturn(posts);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
+        when(postRepository.findHomepagePosts(authenticatedUserId, page)).thenReturn(posts);
 
         // act
         PageDTO<PostDTO> actual = postViewService.getHomepagePosts(page);
 
         // assert
         assertEquals(expected, actual);
-        verify(postRepository, times(1)).findHomepagePosts(authenticatedUser.getId(), page);
+        verify(postRepository, times(1)).findHomepagePosts(authenticatedUserId, page);
     }
 
     @Test
@@ -192,15 +191,15 @@ class PostViewServiceTest {
         Page<PostDTO> posts = new PageImpl<>(List.of(createPostDto(UUID.randomUUID(), "Test post.")), page, 1);
         PageDTO<PostDTO> expected = PageMapper.toDTO(posts, uri);
 
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(postRepository.findDiscoverPosts(authenticatedUser.getId(), page)).thenReturn(posts);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
+        when(postRepository.findDiscoverPosts(authenticatedUserId, page)).thenReturn(posts);
 
         // act
         PageDTO<PostDTO> actual = postViewService.getDiscoverPosts(page);
 
         // assert
         assertEquals(expected, actual);
-        verify(postRepository, times(1)).findDiscoverPosts(authenticatedUser.getId(), page);
+        verify(postRepository, times(1)).findDiscoverPosts(authenticatedUserId, page);
     }
 
     @Test
@@ -217,8 +216,8 @@ class PostViewServiceTest {
         PageDTO<PostDTO> expected = PageMapper.toDTO(posts, uri);
 
         when(profileRepository.findById(id)).thenReturn(Optional.of(profile));
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(postRepository.findPostsByProfileId(profile.getId(), authenticatedUser.getId(), page)).thenReturn(posts);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
+        when(postRepository.findPostsByProfileId(profile.getId(), authenticatedUserId, page)).thenReturn(posts);
 
         // act
         PageDTO<PostDTO> actual = postViewService.getPostsByAuthorId(id, page);
@@ -226,7 +225,7 @@ class PostViewServiceTest {
         // assert
         assertEquals(expected, actual);
         verify(profileRepository, times(1)).findById(id);
-        verify(postRepository, times(1)).findPostsByProfileId(profile.getId(), authenticatedUser.getId(), page);
+        verify(postRepository, times(1)).findPostsByProfileId(profile.getId(), authenticatedUserId, page);
     }
 
     @Test
@@ -243,7 +242,7 @@ class PostViewServiceTest {
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> postViewService.getPostsByAuthorId(id, page));
         verify(profileRepository, times(1)).findById(id);
-        verify(postRepository, times(0)).findPostsByProfileId(any(UUID.class), eq(authenticatedUser.getId()), eq(page));
+        verify(postRepository, times(0)).findPostsByProfileId(any(UUID.class), eq(authenticatedUserId), eq(page));
     }
 
     @Test
@@ -260,8 +259,8 @@ class PostViewServiceTest {
         PageDTO<PostDTO> expected = PageMapper.toDTO(posts, uri);
 
         when(profileRepository.findById(profileId)).thenReturn(Optional.of(profile));
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(postRepository.findRepliesByProfileId(profileId, authenticatedUser.getId(), page)).thenReturn(posts);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
+        when(postRepository.findRepliesByProfileId(profileId, authenticatedUserId, page)).thenReturn(posts);
 
         // act
         PageDTO<PostDTO> actual = postViewService.getRepliesByAuthorId(profileId, page);
@@ -269,7 +268,7 @@ class PostViewServiceTest {
         // assert
         assertEquals(expected, actual);
         verify(profileRepository, times(1)).findById(profileId);
-        verify(postRepository, times(1)).findRepliesByProfileId(profile.getId(), authenticatedUser.getId(), page);
+        verify(postRepository, times(1)).findRepliesByProfileId(profile.getId(), authenticatedUserId, page);
     }
 
     @Test
@@ -286,7 +285,7 @@ class PostViewServiceTest {
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> postViewService.getRepliesByAuthorId(profileId, page));
         verify(profileRepository, times(1)).findById(profileId);
-        verify(postRepository, times(0)).findRepliesByProfileId(any(UUID.class), eq(authenticatedUser.getId()),
+        verify(postRepository, times(0)).findRepliesByProfileId(any(UUID.class), eq(authenticatedUserId),
             eq(page));
     }
 
@@ -304,8 +303,8 @@ class PostViewServiceTest {
         PageDTO<PostDTO> expected = PageMapper.toDTO(posts, uri);
 
         when(profileRepository.findById(profileId)).thenReturn(Optional.of(profile));
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(postRepository.findPostsLikedByProfileId(profileId, authenticatedUser.getId(), page)).thenReturn(posts);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
+        when(postRepository.findPostsLikedByProfileId(profileId, authenticatedUserId, page)).thenReturn(posts);
 
         // act
         PageDTO<PostDTO> actual = postViewService.getLikesByAuthorId(profileId, page);
@@ -313,7 +312,7 @@ class PostViewServiceTest {
         // assert
         assertEquals(expected, actual);
         verify(profileRepository, times(1)).findById(profileId);
-        verify(postRepository, times(1)).findPostsLikedByProfileId(profile.getId(), authenticatedUser.getId(), page);
+        verify(postRepository, times(1)).findPostsLikedByProfileId(profile.getId(), authenticatedUserId, page);
     }
 
     @Test
@@ -330,7 +329,7 @@ class PostViewServiceTest {
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> postViewService.getLikesByAuthorId(profileId, page));
         verify(profileRepository, times(1)).findById(profileId);
-        verify(postRepository, times(0)).findPostsLikedByProfileId(any(UUID.class), eq(authenticatedUser.getId()),
+        verify(postRepository, times(0)).findPostsLikedByProfileId(any(UUID.class), eq(authenticatedUserId),
             eq(page));
     }
 
@@ -348,8 +347,8 @@ class PostViewServiceTest {
         PageDTO<PostDTO> expected = PageMapper.toDTO(posts, uri);
 
         when(profileRepository.findById(profileId)).thenReturn(Optional.of(profile));
-        when(sessionService.getAuthenticatedUser()).thenReturn(authenticatedUser);
-        when(postRepository.findPostsMentioningProfileId(profileId, authenticatedUser.getId(), page)).thenReturn(posts);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
+        when(postRepository.findPostsMentioningProfileId(profileId, authenticatedUserId, page)).thenReturn(posts);
 
         // act
         PageDTO<PostDTO> actual = postViewService.getMentionsOfAuthorId(profileId, page);
@@ -357,7 +356,7 @@ class PostViewServiceTest {
         // assert
         assertEquals(expected, actual);
         verify(profileRepository, times(1)).findById(profileId);
-        verify(postRepository, times(1)).findPostsMentioningProfileId(profile.getId(), authenticatedUser.getId(), page);
+        verify(postRepository, times(1)).findPostsMentioningProfileId(profile.getId(), authenticatedUserId, page);
     }
 
     @Test
@@ -374,7 +373,7 @@ class PostViewServiceTest {
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> postViewService.getMentionsOfAuthorId(profileId, page));
         verify(profileRepository, times(1)).findById(profileId);
-        verify(postRepository, times(0)).findPostsMentioningProfileId(any(UUID.class), eq(authenticatedUser.getId()),
+        verify(postRepository, times(0)).findPostsMentioningProfileId(any(UUID.class), eq(authenticatedUserId),
             eq(page));
     }
 
