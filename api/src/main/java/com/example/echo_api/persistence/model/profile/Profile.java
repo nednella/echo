@@ -62,17 +62,33 @@ public class Profile {
     /**
      * Factory method to create a new {@link Profile} during onboarding.
      * 
-     * @param id       The UUID of the {@link User}
+     * @param id       The UUID of the matching {@link User} entity
      * @param username The username from Clerk
      * @param imageUrl The optional profile image URL from Clerk
      * @return New Profile instance
      * @throws NullPointerException If {@code id} or {@code username} is null
      */
-    public static Profile forUser(UUID id, String username, String imageUrl) {
+    public static Profile fromClerk(UUID id, String username, String imageUrl) {
         return Profile.builder()
             .id(Objects.requireNonNull(id))
             .username(Objects.requireNonNull(username))
             .avatarImageUrl(imageUrl)
+            .build();
+    }
+
+    /**
+     * Factory method to create a new {@link Profile} for <b>unit/integration
+     * testing only</b>.
+     * 
+     * @param id       The placeholder UUID
+     * @param username The placeholder unique Clerk username
+     * @return New Profile instance
+     * @throws NullPointerException if any parameter is null
+     */
+    public static Profile forTest(UUID id, String username) {
+        return Profile.builder()
+            .id(Objects.requireNonNull(id))
+            .username(Objects.requireNonNull(username))
             .build();
     }
 

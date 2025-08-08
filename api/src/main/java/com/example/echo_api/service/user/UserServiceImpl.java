@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
         User user = User.fromClerk(clerkId, username);
         userRepository.save(user);
 
-        Profile profile = Profile.forUser(user.getId(), user.getUsername(), imageUrl);
+        Profile profile = Profile.fromClerk(user.getId(), user.getUsername(), imageUrl);
         profileRepository.save(profile);
 
         return user;
