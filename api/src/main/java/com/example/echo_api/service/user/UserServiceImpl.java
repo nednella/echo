@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = User.fromClerk(clerkId, username);
-        userRepository.save(user);
+        user = userRepository.save(user);
 
         Profile profile = Profile.fromClerk(user.getId(), user.getUsername(), imageUrl);
         profileRepository.save(profile);
@@ -56,8 +56,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void handleClerkUserDeleted(UserDeleted data) {
-        userRepository.deleteByClerkId(data.id());
+    public int handleClerkUserDeleted(UserDeleted data) {
+        return userRepository.deleteByClerkId(data.id());
     }
 
     /**

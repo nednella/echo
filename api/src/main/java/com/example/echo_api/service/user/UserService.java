@@ -40,6 +40,6 @@ public interface UserService {
      * @param data The {@link UserDeleted} event payload containing the Clerk ID of
      *             the deleted user
      */
-    public void handleClerkUserDeleted(UserDeleted data);
+    public int handleClerkUserDeleted(UserDeleted data);
 
 }
