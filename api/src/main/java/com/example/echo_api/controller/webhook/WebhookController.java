@@ -20,7 +20,8 @@ public class WebhookController {
 
     @PostMapping(ApiConfig.Webhook.CLERK_EVENT)
     public ResponseEntity<Void> clerkEvent(@RequestHeader HttpHeaders headers, @RequestBody String payload) {
-        clerkWebhookService.handleWebhook(headers, payload);
+        clerkWebhookService.verify(headers, payload);
+        clerkWebhookService.handleWebhook(payload);
         return ResponseEntity.noContent().build();
     }
 
