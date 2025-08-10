@@ -11,6 +11,7 @@ import com.example.echo_api.persistence.dto.request.webhook.clerk.ClerkWebhookEv
 import com.example.echo_api.persistence.dto.request.webhook.clerk.data.UserDeleted;
 import com.example.echo_api.persistence.dto.request.webhook.clerk.data.UserUpdated;
 import com.example.echo_api.service.user.UserService;
+import com.example.echo_api.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.svix.Webhook;
 
@@ -32,7 +33,7 @@ public class ClerkWebhookServiceImpl implements ClerkWebhookService {
     @Override
     public void verify(HttpHeaders headers, String payload) {
         try {
-            svixWebhook.verify(payload, convertHeaders(headers));
+            svixWebhook.verify(payload, Utils.convertHeaders(headers));
         } catch (Exception ex) {
             throw new WebhookVerificationException();
         }
@@ -72,17 +73,6 @@ public class ClerkWebhookServiceImpl implements ClerkWebhookService {
             case USER_UPDATED -> userService.handleClerkUserUpdated((UserUpdated) event.data());
             case USER_DELETED -> userService.handleClerkUserDeleted((UserDeleted) event.data());
         }
-    }
-
-    /**
-     * Helper method to convert Spring HttpHeaders into Java HttpHeaders to satisfy
-     * the webhook verification method.
-     * 
-     * @param headers {@link org.springframework.http.HttpHeaders}
-     * @return {@link java.net.http.HttpHeaders}
-     */
-    java.net.http.HttpHeaders convertHeaders(HttpHeaders headers) {
-        return java.net.http.HttpHeaders.of(headers, (t, v) -> true);
     }
 
 }
