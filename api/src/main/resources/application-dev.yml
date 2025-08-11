@@ -26,5 +26,6 @@ logging:
     level:
         org:
             springframework:
+                security: TRACE
                 jdbc:
                     core: DEBUG
