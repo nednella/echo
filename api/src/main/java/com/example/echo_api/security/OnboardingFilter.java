@@ -30,8 +30,8 @@ import jakarta.servlet.http.HttpServletResponse;
  * reference to the Clerk user before allowing access to the application.
  * 
  * <p>
- * The filter validates two critical JWT claims before allowing access to
- * protected resources:
+ * The filter validates two JWT claims before allowing access to protected
+ * resources:
  * <ol>
  * <li>Onboarding completion status
  * <li>Valid Echo ID (UUID format)
