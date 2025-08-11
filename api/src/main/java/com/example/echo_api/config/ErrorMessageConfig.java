@@ -27,8 +27,8 @@ public final class ErrorMessageConfig {
     @NoArgsConstructor(access = PRIVATE)
     public static class Unauthorised {
 
-        public static final String MISSING_AUTHENTICATION = "Authentication required";
-        public static final String INVALID_BEARER_TOKEN = "Invalid bearer token";
+        public static final String MISSING_AUTHENTICATION = "Authentication token required";
+        public static final String INVALID_AUTH_TOKEN = "Authentication token invalid";
         public static final String INVALID_WEBHOOK_SIGNATURE = "Invalid webhook signature";
 
     }

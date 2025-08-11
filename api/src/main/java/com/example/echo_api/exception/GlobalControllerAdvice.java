@@ -39,6 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @ControllerAdvice
 public class GlobalControllerAdvice extends AbstractControllerAdvice {
+
     /**
      * Handles {@link AuthenticationException} subclass
      * {@link InsufficientAuthenticationException}, related to Spring Security for
@@ -83,7 +84,7 @@ public class GlobalControllerAdvice extends AbstractControllerAdvice {
         return createExceptionHandler(
             request,
             HttpStatus.UNAUTHORIZED,
-            ErrorMessageConfig.Unauthorised.INVALID_BEARER_TOKEN,
+            ErrorMessageConfig.Unauthorised.INVALID_AUTH_TOKEN,
             null);
     }
 
@@ -169,12 +170,12 @@ public class GlobalControllerAdvice extends AbstractControllerAdvice {
      * Handles custom {@link ApplicationException} subclasses for HTTP errors.
      */
     @ExceptionHandler({
-            BadRequestException.class,
-            UnauthorisedException.class,
-            ForbiddenException.class,
-            NotFoundException.class,
-            ConflictException.class,
-            InternalServerException.class
+        BadRequestException.class,
+        UnauthorisedException.class,
+        ForbiddenException.class,
+        NotFoundException.class,
+        ConflictException.class,
+        InternalServerException.class
     })
     ResponseEntity<ErrorDTO> handleApplicationException(HttpServletRequest request, ApplicationException ex) {
         log.debug("Handling exception: {}", ex.getMessage());
