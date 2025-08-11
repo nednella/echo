@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests(req -> req
+                .requestMatchers("/public").permitAll()
                 .requestMatchers(HttpMethod.POST, ApiConfig.Webhook.CLERK_EVENT).permitAll()
                 .anyRequest().authenticated()
             )

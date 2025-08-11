@@ -1,15 +1,13 @@
 package com.example.echo_api.controller;
 
-import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.security.oauth2.jwt.Jwt;
+import com.example.echo_api.service.auth.session.SessionService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,24 +15,22 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Controller {
 
-    private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder
-            .getContextHolderStrategy();
+    private final SessionService sessionService;
 
     @GetMapping("/public")
     public ResponseEntity<String> publicMthd() {
         return ResponseEntity.ok("This is a public endpoint.");
     }
 
+    @PostMapping("/public")
+    public ResponseEntity<String> publicMthdPost() {
+        return ResponseEntity.ok("This is a public endpoint.");
+    }
+
     @GetMapping("/private")
     public ResponseEntity<String> privateMthd() {
-        Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            System.out.println("No auth!");
-        }
-
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-
-        return ResponseEntity.ok("This is a secure endpoint, hello " + jwt.getSubject());
+        UUID id = sessionService.getAuthenticatedUserId();
+        return ResponseEntity.ok("This is a secure endpoint, hello " + id.toString());
     }
 
 }
