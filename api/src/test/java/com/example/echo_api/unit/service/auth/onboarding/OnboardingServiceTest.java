@@ -55,7 +55,7 @@ class OnboardingServiceTest {
         UUID userId = UUID.randomUUID();
         User user = User.forTest(userId, clerkId, username);
 
-        when(sessionService.isAuthenticatedUserOnboardingComplete()).thenReturn(false);
+        when(sessionService.isAuthenticatedUserOnboarded()).thenReturn(false);
         when(sessionService.getAuthenticatedUserClerkId()).thenReturn(clerkId);
         when(clerkSdkService.getUser(clerkId)).thenReturn(clerkUser);
         when(userService.createUserWithProfile(clerkId, username, imageUrl)).thenReturn(user);
@@ -66,7 +66,7 @@ class OnboardingServiceTest {
         assertDoesNotThrow(() -> onboardingService.onboard());
 
         // assert
-        verify(sessionService).isAuthenticatedUserOnboardingComplete();
+        verify(sessionService).isAuthenticatedUserOnboarded();
         verify(sessionService).getAuthenticatedUserClerkId();
         verify(clerkSdkService).getUser(clerkId);
         verify(userService).createUserWithProfile(clerkId, username, imageUrl);
@@ -77,7 +77,7 @@ class OnboardingServiceTest {
     @Test
     void onboard_ThrowsWhenUserAlreadyOnboarded() {
         // arrange
-        when(sessionService.isAuthenticatedUserOnboardingComplete()).thenReturn(true);
+        when(sessionService.isAuthenticatedUserOnboarded()).thenReturn(true);
 
         // act & assert
         assertThrows(OnboardingCompleteException.class, () -> onboardingService.onboard());
@@ -91,7 +91,7 @@ class OnboardingServiceTest {
         String imageUrl = "imageUrl";
         var clerkUser = createClerkUser(clerkId, username, imageUrl);
 
-        when(sessionService.isAuthenticatedUserOnboardingComplete()).thenReturn(false);
+        when(sessionService.isAuthenticatedUserOnboarded()).thenReturn(false);
         when(sessionService.getAuthenticatedUserClerkId()).thenReturn(clerkId);
         when(clerkSdkService.getUser(clerkId)).thenReturn(clerkUser);
         when(userService.createUserWithProfile(clerkId, username, imageUrl))
@@ -106,7 +106,7 @@ class OnboardingServiceTest {
         // arrange
         String clerkId = "user_someRandomStringThatIsUniqueApparently";
 
-        when(sessionService.isAuthenticatedUserOnboardingComplete()).thenReturn(false);
+        when(sessionService.isAuthenticatedUserOnboarded()).thenReturn(false);
         when(sessionService.getAuthenticatedUserClerkId()).thenReturn(clerkId);
         when(clerkSdkService.getUser(clerkId)).thenThrow(ClerkException.class);
 

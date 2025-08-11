@@ -48,7 +48,7 @@ public class OnboardingServiceImpl implements OnboardingService {
      *                                     local system.
      */
     private void validateOnboardingNotComplete() throws OnboardingCompleteException {
-        if (sessionService.isAuthenticatedUserOnboardingComplete()) {
+        if (sessionService.isAuthenticatedUserOnboarded()) {
             throw new OnboardingCompleteException();
         }
     }

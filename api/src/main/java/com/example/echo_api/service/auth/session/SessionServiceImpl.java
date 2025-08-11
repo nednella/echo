@@ -31,7 +31,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public boolean isAuthenticatedUserOnboardingComplete() {
+    public boolean isAuthenticatedUserOnboarded() {
         Jwt token = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return Boolean.TRUE.equals(token.getClaim(ClerkConfig.JWT_ONBOARDED_CLAIM));
     }

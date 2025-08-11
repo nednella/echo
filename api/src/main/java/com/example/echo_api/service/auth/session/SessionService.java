@@ -2,6 +2,8 @@ package com.example.echo_api.service.auth.session;
 
 import java.util.UUID;
 
+import com.example.echo_api.security.OnboardingFilter;
+
 public interface SessionService {
 
     /**
@@ -37,6 +39,6 @@ public interface SessionService {
      * 
      * @return A boolean representing the {@code onboarded} claim
      */
-    public boolean isAuthenticatedUserOnboardingComplete();
+    public boolean isAuthenticatedUserOnboarded();
 
 }

@@ -85,7 +85,7 @@ class SessionServiceTest {
 
     @ParameterizedTest
     @ValueSource(booleans = { true, false })
-    void isAuthenticatedUserOnboardingComplete_ReturnsBoolean(boolean value) {
+    void isAuthenticatedUserOnboarded_ReturnsBoolean(boolean value) {
         // arrange
         boolean expected = true;
 
@@ -93,7 +93,7 @@ class SessionServiceTest {
         when(mockJwt.getClaim(ClerkConfig.JWT_ONBOARDED_CLAIM)).thenReturn(expected);
 
         // act
-        boolean actual = sessionService.isAuthenticatedUserOnboardingComplete();
+        boolean actual = sessionService.isAuthenticatedUserOnboarded();
 
         // assert
         assertEquals(expected, actual);
@@ -108,7 +108,7 @@ class SessionServiceTest {
             () -> assertThrows(ClassCastException.class,
                 () -> sessionService.getAuthenticatedUserClerkId()),
             () -> assertThrows(ClassCastException.class,
-                () -> sessionService.isAuthenticatedUserOnboardingComplete()));
+                () -> sessionService.isAuthenticatedUserOnboarded()));
     }
 
     @Test
@@ -119,7 +119,7 @@ class SessionServiceTest {
             () -> assertThrows(NullPointerException.class,
                 () -> sessionService.getAuthenticatedUserClerkId()),
             () -> assertThrows(NullPointerException.class,
-                () -> sessionService.isAuthenticatedUserOnboardingComplete()));
+                () -> sessionService.isAuthenticatedUserOnboarded()));
     }
 
 }
