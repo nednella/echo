@@ -14,18 +14,11 @@ public final class ApiConfig {
     private static final String BASE_URL = "/api/v1";
 
     @NoArgsConstructor(access = PRIVATE)
-    public static final class Auth {
+    public static final class Clerk {
 
-        private static final String ROOT = BASE_URL + "/auth";
+        private static final String ROOT = BASE_URL + "/clerk";
         public static final String ONBOARDING = ROOT + "/onboarding";
-
-    }
-
-    @NoArgsConstructor(access = PRIVATE)
-    public static final class Webhook {
-
-        private static final String ROOT = BASE_URL + "/webhooks";
-        public static final String CLERK_EVENT = ROOT + "/clerk";
+        public static final String WEBHOOK = ROOT + "/webhook"; // PUBLIC ENDPOINT
 
     }
 

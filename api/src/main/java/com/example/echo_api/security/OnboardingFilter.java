@@ -77,7 +77,7 @@ public class OnboardingFilter extends OncePerRequestFilter {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         boolean isPublicEndpoint = authentication instanceof AnonymousAuthenticationToken;
-        boolean isOnboardingEndpoint = request.getRequestURI().equals(ApiConfig.Auth.ONBOARDING);
+        boolean isOnboardingEndpoint = request.getRequestURI().equals(ApiConfig.Clerk.ONBOARDING);
 
         return isPublicEndpoint || isOnboardingEndpoint;
     }

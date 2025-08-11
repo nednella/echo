@@ -29,7 +29,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ClerkConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
-import com.example.echo_api.security.OnboardingFilter;
+import com.example.echo_api.security.ClerkOnboardingFilter;
 
 import jakarta.servlet.FilterChain;
 
@@ -43,7 +43,7 @@ class OnboardingFilterTest {
     private Authentication authentication;
 
     @InjectMocks
-    private OnboardingFilter onboardingFilter;
+    private ClerkOnboardingFilter onboardingFilter;
 
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
@@ -113,7 +113,7 @@ class OnboardingFilterTest {
     @Test
     void DoFilterInternal_BypassesFilterForOnboardingEndpoint() throws Exception {
         // arrange
-        request.setRequestURI(ApiConfig.Auth.ONBOARDING);
+        request.setRequestURI(ApiConfig.Clerk.ONBOARDING);
 
         // act
         onboardingFilter.doFilter(request, response, filterChain);

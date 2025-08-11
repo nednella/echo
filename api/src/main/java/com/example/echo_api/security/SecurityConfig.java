@@ -33,7 +33,7 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(req -> req
                 .requestMatchers("/public").permitAll()
-                .requestMatchers(HttpMethod.POST, ApiConfig.Webhook.CLERK_EVENT).permitAll()
+                .requestMatchers(HttpMethod.POST, ApiConfig.Clerk.WEBHOOK).permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth -> oauth
