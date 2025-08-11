@@ -34,7 +34,7 @@ import com.example.echo_api.security.ClerkOnboardingFilter;
 import jakarta.servlet.FilterChain;
 
 @ExtendWith(MockitoExtension.class)
-class OnboardingFilterTest {
+class ClerkOnboardingFilterTest {
 
     @Mock
     private FilterChain filterChain;
@@ -80,7 +80,7 @@ class OnboardingFilterTest {
     }
 
     @Test
-    void DoFilterInternal_AllowsOnboardedUser() throws Exception {
+    void doFilterInternal_AllowsOnboardedUser() throws Exception {
         // arrange
         Object onboarded = true;
         String echoId = UUID.randomUUID().toString();
@@ -99,7 +99,7 @@ class OnboardingFilterTest {
     }
 
     @Test
-    void DoFilterInternal_BypassesFilterForPublicEndpoint() throws Exception {
+    void doFilterInternal_BypassesFilterForPublicEndpoint() throws Exception {
         // arrange
         mockAnonymousAuthentication();
 
@@ -111,7 +111,7 @@ class OnboardingFilterTest {
     }
 
     @Test
-    void DoFilterInternal_BypassesFilterForOnboardingEndpoint() throws Exception {
+    void doFilterInternal_BypassesFilterForOnboardingEndpoint() throws Exception {
         // arrange
         request.setRequestURI(ApiConfig.Clerk.ONBOARDING);
 
@@ -123,7 +123,7 @@ class OnboardingFilterTest {
     }
 
     @Test
-    void DoFilterInternal_ThrowsWhenAuthenticationPrincipalNotJwt() throws Exception {
+    void doFilterInternal_ThrowsWhenAuthenticationPrincipalNotJwt() throws Exception {
         // arrange
         mockUserDetails();
 
@@ -136,7 +136,7 @@ class OnboardingFilterTest {
     }
 
     @Test
-    void DoFilterInternal_ThrowsWhenOnboardedClaimIsMissing() throws Exception {
+    void doFilterInternal_ThrowsWhenOnboardedClaimIsMissing() throws Exception {
         // arrange
         Boolean onboarded = null;
         Jwt jwt = mockJwt();
@@ -151,7 +151,7 @@ class OnboardingFilterTest {
     }
 
     @Test
-    void DoFilterInternal_ThrowsWhenUserNotOnboarded() throws Exception {
+    void doFilterInternal_ThrowsWhenUserNotOnboarded() throws Exception {
         // arrange
         Boolean onboarded = false;
         Jwt jwt = mockJwt();
@@ -169,7 +169,7 @@ class OnboardingFilterTest {
     @NullSource
     @EmptySource
     @ValueSource(strings = { "invalid_UUID_string" })
-    void DoFilterInternal_ThrowsWhenEchoIdClaimIsMissingOrInvalidUUID(String value) throws Exception {
+    void doFilterInternal_ThrowsWhenEchoIdClaimIsMissingOrInvalidUUID(String value) throws Exception {
         // arrange
         Boolean onboarded = true;
         Jwt jwt = mockJwt();

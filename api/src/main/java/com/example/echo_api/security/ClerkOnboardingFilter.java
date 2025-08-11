@@ -46,7 +46,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * <li>https://docs.spring.io/spring-security/reference/servlet/authentication/anonymous.html
  * </ul>
  */
-public class OnboardingFilter extends OncePerRequestFilter {
+public class ClerkOnboardingFilter extends OncePerRequestFilter {
 
     @Override // @formatter:off
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

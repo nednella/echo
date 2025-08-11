@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .accessDeniedHandler(accessDeniedHandler)
                 .authenticationEntryPoint(authenticationEntryPoint)
             )
-            .addFilterBefore(new OnboardingFilter(), AuthorizationFilter.class);
+            .addFilterBefore(new ClerkOnboardingFilter(), AuthorizationFilter.class);
 
         return http.build();
     } // @formatter:on 

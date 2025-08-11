@@ -2,7 +2,7 @@ package com.example.echo_api.service.auth.session;
 
 import java.util.UUID;
 
-import com.example.echo_api.security.OnboardingFilter;
+import com.example.echo_api.security.ClerkOnboardingFilter;
 
 public interface SessionService {
 
@@ -12,7 +12,7 @@ public interface SessionService {
      * 
      * <p>
      * Note that the {@code echo_id} claim will always be present, otherwise any
-     * authenticated request would fail at the {@link OnboardingFilter}.
+     * authenticated request would fail at the {@link ClerkOnboardingFilter}.
      * 
      * @return The UUID of the authenticated user
      */
@@ -35,7 +35,7 @@ public interface SessionService {
      * 
      * <p>
      * Note that the {@code onboarded} claim will always be present, otherwise any
-     * authenticated request would fail at the {@link OnboardingFilter}.
+     * authenticated request would fail at the {@link ClerkOnboardingFilter}.
      * 
      * @return A boolean representing the {@code onboarded} claim
      */

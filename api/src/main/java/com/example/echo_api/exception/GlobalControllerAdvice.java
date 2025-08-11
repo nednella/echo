@@ -19,7 +19,7 @@ import com.example.echo_api.exception.custom.internalserver.InternalServerExcept
 import com.example.echo_api.exception.custom.notfound.NotFoundException;
 import com.example.echo_api.exception.custom.unauthorised.UnauthorisedException;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
-import com.example.echo_api.security.OnboardingFilter;
+import com.example.echo_api.security.ClerkOnboardingFilter;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -103,7 +103,7 @@ public class GlobalControllerAdvice extends AbstractControllerAdvice {
      * <li>https://docs.spring.io/spring-security/site/docs/4.1.0.RC2/apidocs/org/springframework/security/access/AccessDeniedException.html
      * </ul>
      * 
-     * @see OnboardingFilter
+     * @see ClerkOnboardingFilter
      */
     @ExceptionHandler(AccessDeniedException.class)
     ResponseEntity<ErrorDTO> handleAccessDeniedException(HttpServletRequest request, AccessDeniedException ex) {
