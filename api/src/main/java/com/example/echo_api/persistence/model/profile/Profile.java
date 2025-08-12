@@ -1,13 +1,13 @@
 package com.example.echo_api.persistence.model.profile;
 
 import java.time.Instant;
-import java.util.Objects;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.example.echo_api.persistence.model.user.User;
+import com.example.echo_api.util.Utils;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Entity class representing a {@link User} profile in the system.
+ * Entity class representing a {@link User} profile in the local application.
  */
 @Entity
 @Table
@@ -34,6 +34,9 @@ public class Profile {
     @Column(unique = true, nullable = false)
     private String username;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Column(length = 50)
     private String name;
 
@@ -42,12 +45,6 @@ public class Profile {
 
     @Column(length = 30)
     private String location;
-
-    @Column(name = "avatar_image_url")
-    private String avatarImageUrl;
-
-    @Column(name = "banner_image_url")
-    private String bannerImageUrl;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -60,39 +57,33 @@ public class Profile {
     // ---- factory methods ----
 
     /**
-     * Factory method to create a new {@link Profile} during onboarding.
+     * Factory method to create a new {@link Profile} for a given {@link User}.
      * 
-     * @param id       The UUID of the matching {@link User} entity
-     * @param username The username from Clerk
-     * @param imageUrl The optional profile image URL from Clerk
-     * @return New Profile instance
-     * @throws NullPointerException If {@code id} or {@code username} is null
+     * @param id the UUID of the matching {@link User} entity
+     * @return new {@link Profile} instance
+     * @throws IllegalArgumentException if {@code id} is null
      */
-    public static Profile fromClerk(UUID id, String username, String imageUrl) {
+    public static Profile forUser(UUID id) {
         return Profile.builder()
-            .id(Objects.requireNonNull(id))
-            .username(Objects.requireNonNull(username))
-            .avatarImageUrl(imageUrl)
-            .build();
-    }
-
-    /**
-     * Factory method to create a new {@link Profile} for <b>unit/integration
-     * testing only</b>.
-     * 
-     * @param id       The placeholder UUID
-     * @param username The placeholder unique Clerk username
-     * @return New Profile instance
-     * @throws NullPointerException if any parameter is null
-     */
-    public static Profile forTest(UUID id, String username) {
-        return Profile.builder()
-            .id(Objects.requireNonNull(id))
-            .username(Objects.requireNonNull(username))
+            .id(Utils.checkNotNull(id, "ID"))
             .build();
     }
 
     // ---- setters ----
+
+    /**
+     * Update the profile username
+     * 
+     * @param username the new username
+     * @throws IllegalArgumentException if {@code username} is null
+     */
+    public void setUsername(String username) {
+        this.username = Utils.checkNotNull(username, "Username");
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     public void setName(String name) {
         this.name = name;
@@ -104,14 +95,6 @@ public class Profile {
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public void setAvatarImageUrl(String imageUrl) {
-        this.avatarImageUrl = imageUrl;
-    }
-
-    public void setBannerImageUrl(String imageUrl) {
-        this.bannerImageUrl = imageUrl;
     }
 
 }
