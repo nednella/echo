@@ -1,14 +1,9 @@
 package com.example.echo_api.service.user;
 
-import java.util.UUID;
-
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.echo_api.exception.custom.badrequest.ClerkIdAlreadyExistsException;
-import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
-import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserDeleted;
-import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpdated;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.persistence.repository.ProfileRepository;
@@ -17,7 +12,8 @@ import com.example.echo_api.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Service implementation for managing CRUD operations of {@link User} entities.
+ * Service implementation for managing CRUD operations of a {@link User} and its
+ * associated {@link Profile}.
  */
 @Service
 @Transactional
@@ -28,60 +24,73 @@ public class UserServiceImpl implements UserService {
     private final ProfileRepository profileRepository;
 
     @Override
-    @Transactional
-    public User createUserWithProfile(String clerkId, String username, String imageUrl) {
-        if (userRepository.existsByClerkId(clerkId)) {
-            throw new ClerkIdAlreadyExistsException();
-        }
+    public User upsertFromExternalSource(String externalId, String username, String imageUrl) {
+        Optional<User> user = userRepository.findByExternalId(externalId);
 
-        User user = User.fromClerk(clerkId, username);
-        user = userRepository.save(user);
+        return user.isPresent()
+            ? updateExisting(user.get(), username, imageUrl)
+            : createNew(externalId, username, imageUrl);
+    }
 
-        Profile profile = Profile.fromClerk(user.getId(), user.getUsername(), imageUrl);
+    @Override
+    public int deleteFromExternalSource(String externalId) {
+        return userRepository.deleteByExternalId(externalId);
+    }
+
+    /**
+     * Create a new {@link User} and its associated {@link Profile} based on data
+     * from an external identity provider (IDP).
+     * 
+     * @param externalId the unique identifier from the IDP
+     * @param username   the unique username from the IDP
+     * @param imageUrl   the profile image URL from the IDP
+     * @return the new {@link User} instance
+     * @throws IllegalArgumentException if {@code externalId} or {@code username} is
+     *                                  null
+     */
+    private User createNew(String externalId, String username, String imageUrl) {
+        User user = User.fromExternalSource(externalId);
+        userRepository.save(user);
+
+        Profile profile = Profile.forUser(user.getId());
+        profile.setUsername(username);
+        profile.setImageUrl(imageUrl);
         profileRepository.save(profile);
 
         return user;
     }
 
-    @Override
-    public void handleClerkUserUpdated(UserUpdated data) {
-        User user = getUserEntityByClerkId(data.id());
-        Profile profile = getProfileEntityById(user.getId());
-
-        user.setUsername(data.username());
-        profile.setAvatarImageUrl(data.imageUrl());
-
-        userRepository.save(user);
-        profileRepository.save(profile);
-    }
-
-    @Override
-    public int handleClerkUserDeleted(UserDeleted data) {
-        return userRepository.deleteByClerkId(data.id());
-    }
-
     /**
-     * Retrieve a {@link User} entity by its associated Clerk ID.
+     * Updates an existing {@link User}'s associated {@link Profile} with the
+     * provided data from an external identity provider (IDP).
      * 
-     * @param clerkId the Clerk ID of the user
-     * @return The {@link User} entity
-     * @throws ResourceNotFoundException If no user by that Clerk ID exists
+     * @param user     the existing {@link User} whose information is to be updated
+     * @param username the new username to set (if changed) from the IDP
+     * @param imageUrl the new image URL to set (if changed) from the IDP
+     * @return the affected {@link User}
+     * @throws IllegalArgumentException if {@code username} is null
      */
-    private User getUserEntityByClerkId(String clerkId) throws ResourceNotFoundException {
-        return userRepository.findByClerkId(clerkId)
-            .orElseThrow(ResourceNotFoundException::new);
-    }
+    private User updateExisting(User user, String username, String imageUrl) {
+        profileRepository.findById(user.getId())
+            .ifPresent(profile -> {
+                boolean changed = false;
 
-    /**
-     * Retrieve a {@link Profile} via its {@link UUID}.
-     * 
-     * @param id The UUID of the profile
-     * @return The {@link Profile} entity
-     * @throws ResourceNotFoundException If no profile by that id exists
-     */
-    private Profile getProfileEntityById(UUID id) throws ResourceNotFoundException {
-        return profileRepository.findById(id)
-            .orElseThrow(ResourceNotFoundException::new);
+                if (!profile.getUsername().equals(username)) {
+                    profile.setUsername(username);
+                    changed = true;
+                }
+
+                if (!profile.getImageUrl().equals(imageUrl)) {
+                    profile.setImageUrl(imageUrl);
+                    changed = true;
+                }
+
+                if (changed) {
+                    profileRepository.save(profile);
+                }
+            });
+
+        return user;
     }
 
 }

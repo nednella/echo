@@ -1,45 +1,45 @@
 package com.example.echo_api.service.user;
 
-import com.example.echo_api.exception.custom.badrequest.ClerkIdAlreadyExistsException;
-import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
-import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserDeleted;
-import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpdated;
+import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.model.user.User;
 
 public interface UserService {
 
     /**
-     * Create a new {@link User} with an associated {@link Profile} as part of the
-     * Clerk user onboarding process.
+     * Creates or updates a local {@link User} and its associated {@link Profile}
+     * basd on data from an external identity provider (IDP).
      * 
-     * @param clerkId  The unique identifier from Clerk
-     * @param username The unique username from Clerk
-     * @param imageUrl The optional profile image URL from Clerk
-     * @return The newly created {@link User} entity
-     * @throws ClerkIdAlreadyExistsException If a {@link User} entity with the
-     *                                       supplied {@code clerkId} already exists
-     *                                       in the local database
+     * <p>
+     * If no user exists with the given {@code externalId}, a new {@link User} is
+     * created along with an associated {@link Profile}, populated with the supplied
+     * information. If the user already exists locally, then the associated
+     * {@link Profile} is updated with the supplied information.
+     * 
+     * <p>
+     * This method is intended to be used for database synchronisation between the
+     * IDP and the local application.
+     * 
+     * @param externalId the unique identifier from the IDP
+     * @param username   the unique username from the IDP
+     * @param imageUrl   the profile image URL from the IDP
+     * @return the upserted {@link User} instance
+     * @throws IllegalArgumentException if {@code externalId} or {@code username} is
+     *                                  null
+     * @throws
      */
-    public User createUserWithProfile(String clerkId, String username, String imageUrl);
+    public User upsertFromExternalSource(String externalId, String username, String imageUrl);
 
     /**
-     * Handle updates to user data originating from a Clerk webhook for local
-     * database synchronisation.
+     * Deletes a local {@link User} and its associated data based on the external
+     * identity providers (IDP) unique identifier for that user.
      * 
-     * @param data The {@link UserUpdated} event payload containing the relevant
-     *             user information to update
-     * @throws ResourceNotFoundException If no {@link User} matching the payload
-     *                                   Clerk ID exists
-     */
-    public void handleClerkUserUpdated(UserUpdated data);
-
-    /**
-     * Handle user deletions originating from a Clerk webhook for local database
-     * synchronisation.
+     * <p>
+     * This method is intended to be used for database synchronisation between the
+     * IDP and the local application.
      * 
-     * @param data The {@link UserDeleted} event payload containing the Clerk ID of
-     *             the deleted user
+     * @param externalId the unique identifier from the IDP
+     * @return the number of affected records (0 or 1)
      */
-    public int handleClerkUserDeleted(UserDeleted data);
+    public int deleteFromExternalSource(String externalId);
 
 }
