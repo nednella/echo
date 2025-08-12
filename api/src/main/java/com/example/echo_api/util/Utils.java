@@ -10,6 +10,23 @@ import lombok.NoArgsConstructor;
 public final class Utils {
 
     /**
+     * Throw an {@link IllegalArgumentException} if the provided object is
+     * {@code null}.
+     * 
+     * @param <T>  The type of {@code obj}
+     * @param obj  The object to check for {@code null}
+     * @param name The name of the object field to be consumed in the exception
+     *             message
+     * @return The non-null {@code obj}
+     */
+    public static <T> T checkNotNull(T obj, String name) {
+        if (obj == null) {
+            throw new IllegalArgumentException(name + " cannot be null");
+        }
+        return obj;
+    }
+
+    /**
      * Convert Spring HttpHeaders into Java HttpHeaders.
      * 
      * @param headers {@link org.springframework.http.HttpHeaders}
