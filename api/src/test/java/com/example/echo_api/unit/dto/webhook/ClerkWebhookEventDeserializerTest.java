@@ -5,10 +5,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
-import com.example.echo_api.persistence.dto.request.webhook.clerk.ClerkWebhookEvent;
-import com.example.echo_api.persistence.dto.request.webhook.clerk.ClerkWebhookEventType;
-import com.example.echo_api.persistence.dto.request.webhook.clerk.data.UserDeleted;
-import com.example.echo_api.persistence.dto.request.webhook.clerk.data.UserUpdated;
+import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEvent;
+import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEventType;
+import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserDeleted;
+import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpdated;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 class ClerkWebhookEventDeserializerTest {

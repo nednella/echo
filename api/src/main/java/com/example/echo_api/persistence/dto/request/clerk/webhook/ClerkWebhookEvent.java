@@ -1,4 +1,4 @@
-package com.example.echo_api.persistence.dto.request.webhook.clerk;
+package com.example.echo_api.persistence.dto.request.clerk.webhook;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 

@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.echo_api.exception.custom.badrequest.ClerkIdAlreadyExistsException;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
-import com.example.echo_api.persistence.dto.request.webhook.clerk.data.UserDeleted;
-import com.example.echo_api.persistence.dto.request.webhook.clerk.data.UserUpdated;
+import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserDeleted;
+import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpdated;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.persistence.repository.ProfileRepository;

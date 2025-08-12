@@ -14,8 +14,8 @@ import org.springframework.http.HttpHeaders;
 
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
 import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
-import com.example.echo_api.persistence.dto.request.webhook.clerk.data.UserDeleted;
-import com.example.echo_api.persistence.dto.request.webhook.clerk.data.UserUpdated;
+import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserDeleted;
+import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpdated;
 import com.example.echo_api.service.clerk.webhook.ClerkWebhookServiceImpl;
 import com.example.echo_api.service.user.UserService;
 import com.example.echo_api.util.Utils;

@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import com.example.echo_api.persistence.dto.request.webhook.clerk.ClerkWebhookEventType;
+import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEventType;
 
 class ClerkWebhookEventTypeTest {
 
