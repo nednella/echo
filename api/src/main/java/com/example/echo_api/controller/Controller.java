@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.echo_api.service.auth.session.SessionService;
+import com.example.echo_api.service.session.SessionService;
 
 import lombok.RequiredArgsConstructor;
 

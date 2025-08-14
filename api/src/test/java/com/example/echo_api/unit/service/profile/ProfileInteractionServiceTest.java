@@ -20,9 +20,9 @@ import com.example.echo_api.persistence.model.follow.Follow;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.FollowRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
-import com.example.echo_api.service.auth.session.SessionService;
 import com.example.echo_api.service.profile.interaction.ProfileInteractionService;
 import com.example.echo_api.service.profile.interaction.ProfileInteractionServiceImpl;
+import com.example.echo_api.service.session.SessionService;
 
 /**
  * Unit test class for {@link ProfileInteractionService}.

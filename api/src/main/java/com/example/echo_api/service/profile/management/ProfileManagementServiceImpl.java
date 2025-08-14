@@ -8,9 +8,9 @@ import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.dto.request.profile.UpdateInformationDTO;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
-import com.example.echo_api.service.auth.session.SessionService;
 import com.example.echo_api.service.file.FileService;
 import com.example.echo_api.service.profile.BaseProfileService;
+import com.example.echo_api.service.session.SessionService;
 
 /**
  * Service implementation for managing mutation operations for {@link Profile}

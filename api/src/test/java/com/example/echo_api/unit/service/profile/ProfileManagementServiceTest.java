@@ -16,10 +16,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.example.echo_api.persistence.dto.request.profile.UpdateInformationDTO;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
-import com.example.echo_api.service.auth.session.SessionService;
 import com.example.echo_api.service.file.FileService;
 import com.example.echo_api.service.profile.management.ProfileManagementService;
 import com.example.echo_api.service.profile.management.ProfileManagementServiceImpl;
+import com.example.echo_api.service.session.SessionService;
 
 /**
  * Unit test class for {@link ProfileManagementService}.

@@ -18,9 +18,9 @@ import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.model.post.Post;
 import com.example.echo_api.persistence.repository.PostLikeRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
-import com.example.echo_api.service.auth.session.SessionService;
 import com.example.echo_api.service.post.interaction.PostInteractionService;
 import com.example.echo_api.service.post.interaction.PostInteractionServiceImpl;
+import com.example.echo_api.service.session.SessionService;
 
 /**
  * Unit test class for {@link PostInteractionService}.

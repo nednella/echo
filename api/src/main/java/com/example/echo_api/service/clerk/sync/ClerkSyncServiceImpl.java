@@ -7,8 +7,8 @@ import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEv
 import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserDelete;
 import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpsert;
 import com.example.echo_api.persistence.model.user.User;
-import com.example.echo_api.service.auth.session.SessionService;
 import com.example.echo_api.service.clerk.sdk.ClerkSdkService;
+import com.example.echo_api.service.session.SessionService;
 import com.example.echo_api.service.user.UserService;
 
 import lombok.RequiredArgsConstructor;

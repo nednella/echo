@@ -1,4 +1,4 @@
-package com.example.echo_api.service.auth.session;
+package com.example.echo_api.service.session;
 
 import java.util.UUID;
 

@@ -1,4 +1,4 @@
-package com.example.echo_api.unit.service.auth.session;
+package com.example.echo_api.unit.service.session;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -18,7 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import com.example.echo_api.config.ClerkConfig;
-import com.example.echo_api.service.auth.session.SessionServiceImpl;
+import com.example.echo_api.service.session.SessionServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class SessionServiceTest {

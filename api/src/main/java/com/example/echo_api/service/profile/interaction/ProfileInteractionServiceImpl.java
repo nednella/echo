@@ -11,8 +11,8 @@ import com.example.echo_api.exception.custom.conflict.SelfActionException;
 import com.example.echo_api.persistence.model.follow.Follow;
 import com.example.echo_api.persistence.repository.FollowRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
-import com.example.echo_api.service.auth.session.SessionService;
 import com.example.echo_api.service.profile.BaseProfileService;
+import com.example.echo_api.service.session.SessionService;
 
 /**
  * Service implementation for managing CRUD operations between {@link Profile}

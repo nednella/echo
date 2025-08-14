@@ -26,9 +26,9 @@ import com.example.echo_api.persistence.model.post.entity.PostEntity;
 import com.example.echo_api.persistence.model.post.entity.PostEntityType;
 import com.example.echo_api.persistence.repository.PostEntityRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
-import com.example.echo_api.service.auth.session.SessionService;
 import com.example.echo_api.service.post.management.PostManagementService;
 import com.example.echo_api.service.post.management.PostManagementServiceImpl;
+import com.example.echo_api.service.session.SessionService;
 
 /**
  * Unit test class for {@link PostManagementService}.
