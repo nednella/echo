@@ -14,10 +14,9 @@ import org.springframework.http.HttpHeaders;
 
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
 import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
-import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserDeleted;
-import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpdated;
+import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEvent;
+import com.example.echo_api.service.clerk.sync.ClerkSyncService;
 import com.example.echo_api.service.clerk.webhook.ClerkWebhookServiceImpl;
-import com.example.echo_api.service.user.UserService;
 import com.example.echo_api.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.svix.Webhook;
@@ -26,7 +25,7 @@ import com.svix.Webhook;
 class ClerkWebhookServiceTest {
 
     @Mock
-    private UserService userService;
+    private ClerkSyncService clerkSyncService;
 
     @Mock
     private Webhook svixWebhook;
@@ -39,7 +38,7 @@ class ClerkWebhookServiceTest {
     @BeforeEach
     void setUp() {
         // Manually instantiate with a real ObjectMapper
-        clerkWebhookService = new ClerkWebhookServiceImpl(userService, svixWebhook, mapper);
+        clerkWebhookService = new ClerkWebhookServiceImpl(clerkSyncService, svixWebhook, mapper);
     }
 
     @Test
@@ -67,6 +66,22 @@ class ClerkWebhookServiceTest {
     }
 
     @Test
+    void handleWebhook_DeserializesAndDispatchesUserCreatedEvent() {
+        String payload = """
+                {
+                  "data": {
+                    "id": "user_29wBMCtzATuFJut8jO2VNTVekS4",
+                    "username": null
+                  },
+                  "type": "user.created"
+                }
+            """;
+
+        assertDoesNotThrow(() -> clerkWebhookService.handleWebhook(payload));
+        verify(clerkSyncService).handleWebhookEvent(any(ClerkWebhookEvent.class));
+    }
+
+    @Test
     void handleWebhook_DeserializesAndDispatchesUserUpdatedEvent() {
         String payload = """
                 {
@@ -79,7 +94,7 @@ class ClerkWebhookServiceTest {
             """;
 
         assertDoesNotThrow(() -> clerkWebhookService.handleWebhook(payload));
-        verify(userService).handleClerkUserUpdated(any(UserUpdated.class));
+        verify(clerkSyncService).handleWebhookEvent(any(ClerkWebhookEvent.class));
     }
 
     @Test
@@ -94,7 +109,7 @@ class ClerkWebhookServiceTest {
             """;
 
         assertDoesNotThrow(() -> clerkWebhookService.handleWebhook(payload));
-        verify(userService).handleClerkUserDeleted(any(UserDeleted.class));
+        verify(clerkSyncService).handleWebhookEvent(any(ClerkWebhookEvent.class));
     }
 
     @Test

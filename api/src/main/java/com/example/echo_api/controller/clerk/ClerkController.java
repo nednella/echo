@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.echo_api.config.ApiConfig;
-import com.example.echo_api.service.auth.onboarding.OnboardingService;
+import com.example.echo_api.persistence.model.user.User;
+import com.example.echo_api.service.clerk.sync.ClerkSyncService;
 import com.example.echo_api.service.clerk.webhook.ClerkWebhookService;
 
 import lombok.RequiredArgsConstructor;
@@ -18,13 +19,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ClerkController {
 
-    private final OnboardingService onboardingService;
+    private final ClerkSyncService clerkSyncService;
     private final ClerkWebhookService clerkWebhookService;
 
     @PostMapping(ApiConfig.Clerk.ONBOARDING)
-    public ResponseEntity<Void> clerkOnboarding() {
-        onboardingService.onboard();
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<User> clerkOnboarding() {
+        User user = clerkSyncService.onboardAuthenticatedUser();
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     @PostMapping(ApiConfig.Clerk.WEBHOOK)

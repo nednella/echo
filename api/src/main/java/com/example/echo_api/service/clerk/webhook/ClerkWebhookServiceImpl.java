@@ -7,10 +7,7 @@ import com.clerk.backend_api.Clerk;
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
 import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
 import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEvent;
-import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEventType;
-import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserDeleted;
-import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpdated;
-import com.example.echo_api.service.user.UserService;
+import com.example.echo_api.service.clerk.sync.ClerkSyncService;
 import com.example.echo_api.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.svix.Webhook;
@@ -18,14 +15,14 @@ import com.svix.Webhook;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Service implementation for acting upon received asynchronous {@link Clerk}
- * webhook notifications to maintain local database synchronisation.
+ * Service implementation for verifying and deserializing received asynchronous
+ * {@link Clerk} webhook notifications.
  */
 @Service
 @RequiredArgsConstructor
 public class ClerkWebhookServiceImpl implements ClerkWebhookService {
 
-    private final UserService userService;
+    private final ClerkSyncService clerkSyncService;
 
     private final Webhook svixWebhook;
     private final ObjectMapper mapper;
@@ -42,7 +39,7 @@ public class ClerkWebhookServiceImpl implements ClerkWebhookService {
     @Override
     public void handleWebhook(String payload) {
         var event = deserializePayload(payload);
-        dispatchEvent(event);
+        clerkSyncService.handleWebhookEvent(event);
     }
 
     /**
@@ -59,19 +56,6 @@ public class ClerkWebhookServiceImpl implements ClerkWebhookService {
             return mapper.readValue(payload, ClerkWebhookEvent.class);
         } catch (Exception ex) {
             throw new DeserializationException(ex.getMessage());
-        }
-    }
-
-    /**
-     * Check the {@link ClerkWebhookEventType} and pass the event data to the
-     * appropriate handler.
-     * 
-     * @param event The {@link ClerkWebhookEvent} to handle
-     */
-    void dispatchEvent(ClerkWebhookEvent event) {
-        switch (event.type()) {
-            case USER_UPDATED -> userService.handleClerkUserUpdated((UserUpdated) event.data());
-            case USER_DELETED -> userService.handleClerkUserDeleted((UserDeleted) event.data());
         }
     }
 

@@ -1,0 +1,62 @@
+package com.example.echo_api.service.clerk.sync;
+
+import org.springframework.stereotype.Service;
+
+import com.clerk.backend_api.Clerk;
+import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEvent;
+import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserDelete;
+import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpsert;
+import com.example.echo_api.persistence.model.user.User;
+import com.example.echo_api.service.auth.session.SessionService;
+import com.example.echo_api.service.clerk.sdk.ClerkSdkService;
+import com.example.echo_api.service.user.UserService;
+
+import lombok.RequiredArgsConstructor;
+
+/**
+ * Service implementation for maintaining local database synchronisation with
+ * {@link Clerk}.
+ */
+@Service
+@RequiredArgsConstructor
+public class ClerkSyncServiceImpl implements ClerkSyncService {
+
+    private final ClerkSdkService clerkSdkService;
+    private final SessionService sessionService;
+    private final UserService userService;
+
+    @Override
+    public User onboardAuthenticatedUser() {
+        if (sessionService.isAuthenticatedUserOnboarded()) {
+            return null;
+        }
+
+        String clerkId = sessionService.getAuthenticatedUserClerkId();
+        var clerkUser = clerkSdkService.getUser(clerkId);
+
+        User user = userService.upsertFromExternalSource(
+            clerkId,
+            clerkUser.username().get(),
+            clerkUser.imageUrl().orElse(null));
+
+        clerkSdkService.completeOnboarding(clerkId, user.getId().toString());
+        return user;
+    }
+
+    @Override
+    public void handleWebhookEvent(ClerkWebhookEvent event) {
+        switch (event.type()) {
+            case USER_CREATED, USER_UPDATED -> handleUserUpsert((UserUpsert) event.data());
+            case USER_DELETED -> handleUserDelete((UserDelete) event.data());
+        }
+    }
+
+    private User handleUserUpsert(UserUpsert data) {
+        return userService.upsertFromExternalSource(data.id(), data.username(), data.imageUrl());
+    }
+
+    private int handleUserDelete(UserDelete data) {
+        return userService.deleteFromExternalSource(data.id());
+    }
+
+}
