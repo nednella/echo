@@ -21,21 +21,21 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Custom {@link OncePerRequestFilter} for Spring Security to check the
- * onboarding status of an authenticated user when requested a protected
- * resource.
+ * onboarding status of an authenticated user and deny access to all
+ * <b>protected</b> routes until the onboarding process has been completed.
+ * 
+ * <p>
+ * This filter validates two JWT claims before allowing access to protected
+ * routes:
+ * <ol>
+ * <li>Onboarding completion status
+ * <li>Valid Echo ID (UUID format)
+ * </ol>
  * 
  * <p>
  * Since developers cannot directly interact with Clerk's user table to
  * synchronise databases, an onboarding flow is used to guarantee a local
  * reference to the Clerk user before allowing access to the application.
- * 
- * <p>
- * The filter validates two JWT claims before allowing access to protected
- * resources:
- * <ol>
- * <li>Onboarding completion status
- * <li>Valid Echo ID (UUID format)
- * </ol>
  * 
  * <p>
  * For more information, refer to:
