@@ -1,4 +1,4 @@
-package com.example.echo_api.unit.mapper;
+package com.example.echo_api.unit.persistence.mapper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

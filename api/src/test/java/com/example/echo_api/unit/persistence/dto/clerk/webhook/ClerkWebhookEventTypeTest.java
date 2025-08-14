@@ -1,4 +1,4 @@
-package com.example.echo_api.unit.dto.webhook;
+package com.example.echo_api.unit.persistence.dto.clerk.webhook;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
