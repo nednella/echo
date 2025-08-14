@@ -69,6 +69,22 @@ public class Profile {
             .build();
     }
 
+    /**
+     * Factory method to create a new {@link Profile} for <b>testing only</b>, in
+     * cases where a username is required to be set.
+     * 
+     * @param id       the placeholder UUID
+     * @param username the placeholder username
+     * @return new {@link Profile} instance
+     * @throws IllegalArgumentException if any argument is null
+     */
+    public static Profile forTest(UUID id, String username) {
+        return Profile.builder()
+            .id(Utils.checkNotNull(id, "ID"))
+            .username(Utils.checkNotNull(username, "Username"))
+            .build();
+    }
+
     // ---- setters ----
 
     /**
