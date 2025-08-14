@@ -25,7 +25,6 @@ public interface UserService {
      * @return the upserted {@link User} instance
      * @throws IllegalArgumentException if {@code externalId} or {@code username} is
      *                                  null
-     * @throws
      */
     public User upsertFromExternalSource(String externalId, String username, String imageUrl);
 
