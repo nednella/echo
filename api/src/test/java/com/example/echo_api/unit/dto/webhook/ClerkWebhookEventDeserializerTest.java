@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
 import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEvent;
 import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEventType;
-import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserDeleted;
-import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpdated;
+import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserDelete;
+import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpsert;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 class ClerkWebhookEventDeserializerTest {
@@ -16,7 +16,29 @@ class ClerkWebhookEventDeserializerTest {
     private ObjectMapper mapper = new ObjectMapper();
 
     @Test
-    void correctlyDeserializesUserUpdatedEvent() throws Exception {
+    void correctlyDeserializesUserCreatedEventDataIntoUserUpsert() throws Exception {
+        String payload = """
+                {
+                  "data": {
+                    "id": "user_29w83sxmDNGwOuEthce5gg56FcC",
+                    "image_url": "https://img.clerk.com/xxxxxx",
+                    "username": "test_user"
+                  },
+                  "type": "user.created"
+                }
+            """;
+
+        ClerkWebhookEvent e = mapper.readValue(payload, ClerkWebhookEvent.class);
+        assertEquals(ClerkWebhookEventType.USER_CREATED, e.type());
+
+        UserUpsert data = (UserUpsert) e.data();
+        assertEquals("user_29w83sxmDNGwOuEthce5gg56FcC", data.id());
+        assertEquals("https://img.clerk.com/xxxxxx", data.imageUrl());
+        assertEquals("test_user", data.username());
+    }
+
+    @Test
+    void correctlyDeserializesUserUpdatedEventDataIntoUserUpsert() throws Exception {
         String payload = """
                 {
                   "data": {
@@ -31,14 +53,14 @@ class ClerkWebhookEventDeserializerTest {
         ClerkWebhookEvent e = mapper.readValue(payload, ClerkWebhookEvent.class);
         assertEquals(ClerkWebhookEventType.USER_UPDATED, e.type());
 
-        UserUpdated data = (UserUpdated) e.data();
+        UserUpsert data = (UserUpsert) e.data();
         assertEquals("user_29w83sxmDNGwOuEthce5gg56FcC", data.id());
         assertEquals("https://img.clerk.com/xxxxxx", data.imageUrl());
         assertEquals("test_user", data.username());
     }
 
     @Test
-    void correctlyDeserializesUserDeletedEvent() throws Exception {
+    void correctlyDeserializesUserDeletedEventDataIntoUserDelete() throws Exception {
         String payload = """
                 {
                   "data": {
@@ -52,7 +74,7 @@ class ClerkWebhookEventDeserializerTest {
         ClerkWebhookEvent e = mapper.readValue(payload, ClerkWebhookEvent.class);
         assertEquals(ClerkWebhookEventType.USER_DELETED, e.type());
 
-        UserDeleted data = (UserDeleted) e.data();
+        UserDelete data = (UserDelete) e.data();
         assertEquals(true, data.deleted());
         assertEquals("user_29w83sxmDNGwOuEthce5gg56FcC", data.id());
     }
@@ -64,14 +86,14 @@ class ClerkWebhookEventDeserializerTest {
                   "data": {
                     "id": "user_29w83sxmDNGwOuEthce5gg56FcC"
                   },
-                  "type": "user.created"
+                  "type": "subscription.active"
                 }
             """;
 
         Exception ex = assertThrows(DeserializationException.class,
             () -> mapper.readValue(payload, ClerkWebhookEvent.class));
 
-        assertEquals("Unsupported event type: user.created", ex.getMessage());
+        assertEquals("Unsupported event type: subscription.active", ex.getMessage());
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.example.echo_api.persistence.dto.request.clerk.webhook;
 
 public enum ClerkWebhookEventType {
 
+    USER_CREATED,
     USER_UPDATED,
     USER_DELETED;
 

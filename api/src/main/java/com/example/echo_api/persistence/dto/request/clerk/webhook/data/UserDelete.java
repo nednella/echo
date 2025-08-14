@@ -4,7 +4,7 @@ import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEv
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record UserDeleted(
+public record UserDelete(
     String id,
     boolean deleted
 ) implements ClerkWebhookEventData {}
