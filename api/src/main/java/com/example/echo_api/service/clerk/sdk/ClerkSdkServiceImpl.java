@@ -23,9 +23,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ClerkSdkServiceImpl implements ClerkSdkService {
 
-    private static final String GET_USER_EXCEPTION_MSG = "Failed to retrieve user data. Try again and contact support if this persists.";
-    private static final String SET_EXTERNAL_ID_EXCEPTION_MSG = "Failed to update external ID. Try again and contact support if this persists.";
-    private static final String COMPLETE_ONBOARDING_EXCEPTION_MSG = "Failed to update public metadata. Try again and contact support if this persists.";
+    private static final String GET_USER_EXCEPTION_MSG = "Failed to retrieve Clerk user data";
+    private static final String COMPLETE_ONBOARDING_EXCEPTION_MSG = "Failed to update Clerk user external ID and public metadata";
 
     private final Clerk clerk;
 
@@ -40,25 +39,17 @@ public class ClerkSdkServiceImpl implements ClerkSdkService {
     }
 
     @Override
-    public void setExternalId(String clerkUserId, String externalId) throws ClerkException {
-        try {
-            clerk.users().update(
-                clerkUserId,
-                UpdateUserRequestBody.builder().externalId(externalId).build());
-        } catch (Exception ex) {
-            throw new ClerkException(SET_EXTERNAL_ID_EXCEPTION_MSG);
-        }
-    }
-
-    @Override
-    public void completeOnboarding(String clerkUserId) throws ClerkException {
+    public void completeOnboarding(String clerkUserId, String externalId) throws ClerkException {
         Map<String, Object> metadata = new HashMap<>();
         metadata.put(ClerkConfig.ONBOARDING_COMPLETE_METADATA_KEY, ClerkConfig.ONBOARDING_COMPLETE_METADATA_VALUE);
 
         try {
             clerk.users().update(
                 clerkUserId,
-                UpdateUserRequestBody.builder().publicMetadata(metadata).build());
+                UpdateUserRequestBody.builder()
+                    .externalId(externalId)
+                    .publicMetadata(metadata)
+                    .build());
         } catch (Exception ex) {
             throw new ClerkException(COMPLETE_ONBOARDING_EXCEPTION_MSG);
         }
