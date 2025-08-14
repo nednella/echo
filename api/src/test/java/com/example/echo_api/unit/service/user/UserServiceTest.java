@@ -1,6 +1,7 @@
 package com.example.echo_api.unit.service.user;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.Optional;
@@ -12,10 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.example.echo_api.exception.custom.badrequest.ClerkIdAlreadyExistsException;
-import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
-import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserDeleted;
-import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpdated;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.persistence.repository.ProfileRepository;
@@ -35,128 +32,123 @@ class UserServiceTest {
     private UserServiceImpl userService;
 
     @Test
-    void createUserWithProfile_CreatesUserAndProfile() {
+    void upsertFromExternalSource_PersistsNewUserAndProfile_WhenUserNotExistsByExternalId() {
         // arrange
-        String clerkId = "user_someRandomStringThatIsUniqueApparently";
+        UUID id = UUID.randomUUID();
+        String externalId = "user_someRandomStringThatIsUniqueApparently";
         String username = "username";
         String imageUrl = "imageUrl";
-        User user = User.forTest(UUID.randomUUID(), clerkId, username);
-        Profile profile = Profile.forTest(user.getId(), user.getUsername());
+        User newUser = User.forTest(id, externalId);
+        Profile newProfile = Profile.forTest(id, username);
 
-        when(userRepository.existsByClerkId(clerkId)).thenReturn(false);
-        when(userRepository.save(user)).thenReturn(user);
-        when(profileRepository.save(any(Profile.class))).thenReturn(profile);
-
-        // act & assert
-        assertDoesNotThrow(() -> userService.createUserWithProfile(clerkId, username, imageUrl));
-        verify(userRepository).existsByClerkId(clerkId);
-        verify(userRepository).save(user);
-        verify(profileRepository).save(any(Profile.class));
-    }
-
-    @Test
-    void createUserWithProfile_ThrowsWhenClerkIdAlreadyExists() {
-        // arrange
-        String clerkId = "user_someRandomStringThatIsUniqueApparently";
-        when(userRepository.existsByClerkId(clerkId)).thenReturn(true);
-
-        // act & assert
-        assertThrows(ClerkIdAlreadyExistsException.class, () -> userService.createUserWithProfile(clerkId, null, null));
-    }
-
-    @Test
-    void handleClerkUserDeleted_UpdatesUserAndProfile() {
-        // arrange
-        String clerkId = "user_someRandomStringThatIsUniqueApparently";
-        String username = "username";
-        String imageUrl = "imageUrl";
-        UUID userId = UUID.randomUUID();
-        User user = User.forTest(userId, clerkId, username);
-        Profile profile = Profile.forTest(userId, username);
-        UserUpdated data = new UserUpdated(clerkId, username, imageUrl);
-
-        when(userRepository.findByClerkId(clerkId)).thenReturn(Optional.of(user));
-        when(profileRepository.findById(user.getId())).thenReturn(Optional.of(profile));
-        when(userRepository.save(user)).thenReturn(user);
-        when(profileRepository.save(profile)).thenReturn(profile);
-
-        // act & assert
-        assertDoesNotThrow(() -> userService.handleClerkUserUpdated(data));
-        verify(userRepository).findByClerkId(clerkId);
-        verify(profileRepository).findById(user.getId());
-        verify(userRepository).save(user);
-        verify(profileRepository).save(profile);
-    }
-
-    @Test
-    void handleClerkUserUpdated_ThowsWhenUserNotExistsByClerkId() {
-        // arrange
-        String clerkId = "user_someRandomStringThatIsUniqueApparently";
-        String username = "username";
-        String imageUrl = "imageUrl";
-        UserUpdated data = new UserUpdated(clerkId, username, imageUrl);
-
-        when(userRepository.findByClerkId(clerkId)).thenReturn(Optional.empty());
-
-        // act & assert
-        assertThrows(ResourceNotFoundException.class, () -> userService.handleClerkUserUpdated(data));
-        verify(userRepository).findByClerkId(clerkId);
-        verify(profileRepository, never()).findById(any(UUID.class));
-        verify(userRepository, never()).save(any(User.class));
-        verify(profileRepository, never()).save(any(Profile.class));
-
-    }
-
-    @Test
-    void handleClerkUserUpdated_ThrowsWhenProfileNotExistsByUUID() {
-        // arrange
-        String clerkId = "user_someRandomStringThatIsUniqueApparently";
-        String username = "username";
-        String imageUrl = "imageUrl";
-        User user = User.forTest(UUID.randomUUID(), clerkId, username);
-        UserUpdated data = new UserUpdated(clerkId, username, imageUrl);
-
-        when(userRepository.findByClerkId(clerkId)).thenReturn(Optional.of(user));
-        when(profileRepository.findById(user.getId())).thenReturn(Optional.empty());
-
-        // act & assert
-        assertThrows(ResourceNotFoundException.class, () -> userService.handleClerkUserUpdated(data));
-        verify(userRepository).findByClerkId(clerkId);
-        verify(profileRepository).findById(user.getId());
-        verify(userRepository, never()).save(any(User.class));
-        verify(profileRepository, never()).save(any(Profile.class));
-    }
-
-    @Test
-    void handleClerkUserDeleted_Deletes1RecordWhenExistsByClerkId() {
-        // arrange
-        String clerkId = "user_someRandomStringThatIsUniqueApparently";
-        boolean deleted = true;
-        UserDeleted data = new UserDeleted(clerkId, deleted);
-        when(userRepository.deleteByClerkId(clerkId)).thenReturn(1);
+        when(userRepository.findByExternalId(externalId)).thenReturn(Optional.empty());
+        when(userRepository.save(any(User.class))).thenReturn(newUser);
+        when(profileRepository.save(any(Profile.class))).thenReturn(newProfile);
 
         // act
-        int actual = userService.handleClerkUserDeleted(data);
+        User actual = userService.upsertFromExternalSource(externalId, username, imageUrl);
 
         // assert
-        assertEquals(1, actual);
-        verify(userRepository).deleteByClerkId(clerkId);
+        assertEquals(newUser, actual);
+        verify(userRepository).findByExternalId(externalId);
+        verify(userRepository).save(any(User.class)); // saves new user
+        verify(profileRepository).save(any(Profile.class)); // saves new profile
     }
 
     @Test
-    void handleClerkUserDeleted_Deletes0RecordsWhenDoesNotExistByClerkId() {
+    void upsertFromExternalSource_UpdatesProfile_WhenUserExistsByExternalId() {
         // arrange
-        String clerkId = "user_someRandomStringThatIsUniqueApparently";
-        boolean deleted = true;
-        UserDeleted data = new UserDeleted(clerkId, deleted);
-        when(userRepository.deleteByClerkId(clerkId)).thenReturn(0);
+        UUID id = UUID.randomUUID();
+        String externalId = "user_someRandomStringThatIsUniqueApparently";
+        String username = "username";
+        String imageUrl = "imageUrl";
+        User expectedUser = User.forTest(id, externalId);
+        Profile expectedProfile = Profile.forTest(id, username);
+
+        when(userRepository.findByExternalId(externalId)).thenReturn(Optional.of(expectedUser));
+        when(profileRepository.findById(id)).thenReturn(Optional.of(expectedProfile));
 
         // act
-        int actual = userService.handleClerkUserDeleted(data);
+        User actual = userService.upsertFromExternalSource(externalId, username, imageUrl);
 
         // assert
-        assertEquals(0, actual);
-        verify(userRepository).deleteByClerkId(clerkId);
+        assertEquals(expectedUser, actual);
+        verify(userRepository).findByExternalId(externalId);
+        verify(userRepository, never()).save(any(User.class)); // never saves new user
+        verify(profileRepository).findById(id);
+        verify(profileRepository).save(expectedProfile); // updates profile
+
+    }
+
+    @Test
+    void upsertFromExternalSource_ShouldThrowAndNotSaveAnything_WhenExternalIdIsNull() {
+        // arrange
+        String externalId = null;
+        String username = "username";
+        String imageUrl = "imageUrl";
+
+        when(userRepository.findByExternalId(externalId)).thenReturn(Optional.empty());
+
+        // act & assert
+        Exception ex = assertThrows(IllegalArgumentException.class,
+            () -> userService.upsertFromExternalSource(externalId, username, imageUrl));
+
+        assertEquals("External ID cannot be null", ex.getMessage());
+        verify(userRepository).findByExternalId(externalId);
+        verify(userRepository, never()).save(any(User.class)); // never saves new user
+        verify(profileRepository, never()).save(any(Profile.class)); // never saves new profile
+    }
+
+    @Test
+    void upsertFromExternalSource_ShouldThrowAfterSavingUserAndBeforeSavingProfile_WhenUsernameIsNull() {
+        // arrange
+        UUID id = UUID.randomUUID();
+        String externalId = "user_someRandomStringThatIsUniqueApparently";
+        String username = null;
+        String imageUrl = "imageUrl";
+        User newUser = User.forTest(id, externalId);
+
+        when(userRepository.findByExternalId(externalId)).thenReturn(Optional.empty());
+        when(userRepository.save(any(User.class))).thenReturn(newUser);
+
+        // act & assert
+        Exception ex = assertThrows(IllegalArgumentException.class,
+            () -> userService.upsertFromExternalSource(externalId, username, imageUrl));
+
+        assertEquals("Username cannot be null", ex.getMessage());
+        verify(userRepository).findByExternalId(externalId);
+        verify(userRepository).save(any(User.class)); // attempts to save new user
+        verify(profileRepository, never()).save(any(Profile.class)); // never saves new profile
+    }
+
+    @Test
+    void deleteFromExternalSource_Returns1When1RecordAffected() {
+        // arrange
+        int expected = 1;
+        String externalId = "user_someRandomStringThatIsUniqueApparently";
+        when(userRepository.deleteByExternalId(externalId)).thenReturn(expected);
+
+        // act
+        int actual = userService.deleteFromExternalSource(externalId);
+
+        // assert
+        assertEquals(expected, actual);
+        verify(userRepository).deleteByExternalId(externalId);
+    }
+
+    @Test
+    void deleteFromExternalSource_Returns0When0RecordsAffected() {
+        // arrange
+        int expected = 0;
+        String externalId = "user_someRandomStringThatIsUniqueApparently";
+        when(userRepository.deleteByExternalId(externalId)).thenReturn(expected);
+
+        // act
+        int actual = userService.deleteFromExternalSource(externalId);
+
+        // assert
+        assertEquals(expected, actual);
+        verify(userRepository).deleteByExternalId(externalId);
     }
 
 }

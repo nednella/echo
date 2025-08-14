@@ -50,12 +50,12 @@ public class UserServiceImpl implements UserService {
      */
     private User createNew(String externalId, String username, String imageUrl) {
         User user = User.fromExternalSource(externalId);
-        userRepository.save(user);
+        user = userRepository.save(user);
 
         Profile profile = Profile.forUser(user.getId());
         profile.setUsername(username);
         profile.setImageUrl(imageUrl);
-        profileRepository.save(profile);
+        profile = profileRepository.save(profile);
 
         return user;
     }
@@ -75,12 +75,12 @@ public class UserServiceImpl implements UserService {
             .ifPresent(profile -> {
                 boolean changed = false;
 
-                if (!profile.getUsername().equals(username)) {
+                if (!profile.getUsername().equals(username)) { // never null
                     profile.setUsername(username);
                     changed = true;
                 }
 
-                if (!profile.getImageUrl().equals(imageUrl)) {
+                if (profile.getImageUrl() == null || !profile.getImageUrl().equals(imageUrl)) {
                     profile.setImageUrl(imageUrl);
                     changed = true;
                 }
