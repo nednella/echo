@@ -32,6 +32,7 @@ public class PostEntityExtractor {
 
         List<Extractor.Entity> twEntities = extractor.extractEntitiesWithIndices(text);
 
+        // TODO: use filter all by default. explicitly allow mentions, hashtags, urls
         return twEntities
             .stream()
             .filter(e -> e.getType() != Extractor.Entity.Type.CASHTAG) // exclude cashtag entities

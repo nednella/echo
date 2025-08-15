@@ -40,6 +40,9 @@ import lombok.extern.slf4j.Slf4j;
 @ControllerAdvice
 public class GlobalControllerAdvice extends AbstractControllerAdvice {
 
+    // TODO: unsupported request method (RequestMethodNotSupported) (e.g. POST)
+    // TODO: missing controller body/path/query params (MethodArgumentMismatch)
+
     /**
      * Handles {@link AuthenticationException} subclass
      * {@link InsufficientAuthenticationException}, related to Spring Security for
