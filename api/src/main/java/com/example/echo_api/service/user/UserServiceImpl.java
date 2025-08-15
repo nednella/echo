@@ -8,6 +8,7 @@ import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.persistence.repository.UserRepository;
+import com.example.echo_api.util.Utils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +26,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User upsertFromExternalSource(String externalId, String username, String imageUrl) {
+        Utils.checkNotNull(externalId, "External ID");
+        Utils.checkNotNull(username, "Username");
+
         Optional<User> user = userRepository.findByExternalId(externalId);
 
         return user.isPresent()
@@ -80,7 +84,7 @@ public class UserServiceImpl implements UserService {
                     changed = true;
                 }
 
-                if (profile.getImageUrl() == null || !profile.getImageUrl().equals(imageUrl)) {
+                if (profile.getImageUrl() == null || !profile.getImageUrl().equals(imageUrl)) { // can be null
                     profile.setImageUrl(imageUrl);
                     changed = true;
                 }

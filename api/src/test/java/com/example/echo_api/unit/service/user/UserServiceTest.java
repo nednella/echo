@@ -87,37 +87,30 @@ class UserServiceTest {
         String username = "username";
         String imageUrl = "imageUrl";
 
-        when(userRepository.findByExternalId(externalId)).thenReturn(Optional.empty());
-
         // act & assert
         Exception ex = assertThrows(IllegalArgumentException.class,
             () -> userService.upsertFromExternalSource(externalId, username, imageUrl));
 
         assertEquals("External ID cannot be null", ex.getMessage());
-        verify(userRepository).findByExternalId(externalId);
+        verify(userRepository, never()).findByExternalId(externalId); // never performs a lookup
         verify(userRepository, never()).save(any(User.class)); // never saves new user
         verify(profileRepository, never()).save(any(Profile.class)); // never saves new profile
     }
 
     @Test
-    void upsertFromExternalSource_ShouldThrowAfterSavingUserAndBeforeSavingProfile_WhenUsernameIsNull() {
+    void upsertFromExternalSource_ShouldThrowAndNotSaveAnything_WhenUsernameIsNull() {
         // arrange
-        UUID id = UUID.randomUUID();
         String externalId = "user_someRandomStringThatIsUniqueApparently";
         String username = null;
         String imageUrl = "imageUrl";
-        User newUser = User.forTest(id, externalId);
-
-        when(userRepository.findByExternalId(externalId)).thenReturn(Optional.empty());
-        when(userRepository.save(any(User.class))).thenReturn(newUser);
 
         // act & assert
         Exception ex = assertThrows(IllegalArgumentException.class,
             () -> userService.upsertFromExternalSource(externalId, username, imageUrl));
 
         assertEquals("Username cannot be null", ex.getMessage());
-        verify(userRepository).findByExternalId(externalId);
-        verify(userRepository).save(any(User.class)); // attempts to save new user
+        verify(userRepository, never()).findByExternalId(externalId); // never performs a lookup
+        verify(userRepository, never()).save(any(User.class)); // never saves new user
         verify(profileRepository, never()).save(any(Profile.class)); // never saves new profile
     }
 
