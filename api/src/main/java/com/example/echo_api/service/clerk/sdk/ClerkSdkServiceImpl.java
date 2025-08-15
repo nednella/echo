@@ -11,6 +11,7 @@ import com.clerk.backend_api.models.operations.GetUserResponse;
 import com.clerk.backend_api.models.operations.UpdateUserRequestBody;
 import com.example.echo_api.config.ClerkConfig;
 import com.example.echo_api.exception.custom.internalserver.ClerkException;
+import com.example.echo_api.util.Utils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +31,8 @@ public class ClerkSdkServiceImpl implements ClerkSdkService {
 
     @Override
     public User getUser(String clerkUserId) throws ClerkException {
+        Utils.checkNotNull(clerkUserId, "Clerk User ID");
+
         try {
             GetUserResponse res = clerk.users().get(clerkUserId);
             return res.user().orElseThrow();
@@ -40,6 +43,9 @@ public class ClerkSdkServiceImpl implements ClerkSdkService {
 
     @Override
     public void completeOnboarding(String clerkUserId, String externalId) throws ClerkException {
+        Utils.checkNotNull(clerkUserId, "Clerk User ID");
+        Utils.checkNotNull(externalId, "External ID");
+
         Map<String, Object> metadata = new HashMap<>();
         metadata.put(ClerkConfig.ONBOARDING_COMPLETE_METADATA_KEY, ClerkConfig.ONBOARDING_COMPLETE_METADATA_VALUE);
 
