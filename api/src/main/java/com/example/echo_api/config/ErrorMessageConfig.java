@@ -14,11 +14,8 @@ public final class ErrorMessageConfig {
     @NoArgsConstructor(access = PRIVATE)
     public static class BadRequest {
 
-        // Validation
+        // Jakarta Validation
         public static final String INVALID_REQUEST = "Invalid request";
-
-        // Onboarding
-        public static final String ONBOARDING_COMPLETED = "User has already completed the onboarding process";
 
     }
 
