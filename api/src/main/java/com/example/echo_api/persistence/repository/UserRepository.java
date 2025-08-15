@@ -31,6 +31,9 @@ public interface UserRepository extends ListCrudRepository<User, UUID> {
     /**
      * Deletes the {@link User} with the given {@code externalId}.
      * 
+     * <p>
+     * This action is idempotent.
+     * 
      * @param externalId The {@code externalId} to search for
      * @return The number of records deleted (0 or 1)
      */

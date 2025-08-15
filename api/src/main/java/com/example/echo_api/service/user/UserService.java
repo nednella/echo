@@ -33,6 +33,9 @@ public interface UserService {
      * identity providers (IDP) unique identifier for that user.
      * 
      * <p>
+     * This action is idempotent.
+     * 
+     * <p>
      * This method is intended to be used for database synchronisation between the
      * IDP and the local application.
      * 
