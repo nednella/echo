@@ -14,23 +14,22 @@ CREATE OR REPLACE FUNCTION fetch_profile(
     p_authenticated_user_id UUID
 )
 RETURNS TABLE (
-    is_self             BOOLEAN,
-    id                  UUID,
-    username            VARCHAR(15),
-    name                VARCHAR(50),
-    bio                 VARCHAR(160),
-    location            VARCHAR(30),
-    avatar_image_url    VARCHAR(255),
-    banner_image_url    VARCHAR(255),
-    created_at          TIMESTAMPTZ,
-    followers_count     BIGINT,
-    following_count     BIGINT,
-    post_count          BIGINT,
-    media_count         BIGINT,
-    rel_following       BOOLEAN,
-    rel_followed_by     BOOLEAN,
-    rel_blocking        BOOLEAN,
-    rel_blocked_by      BOOLEAN
+    is_self            BOOLEAN,
+    id                 UUID,
+    username           VARCHAR(255),
+    name               VARCHAR(50),
+    bio                VARCHAR(160),
+    location           VARCHAR(30),
+    image_url          VARCHAR(255),
+    created_at         TIMESTAMPTZ,
+    followers_count    BIGINT,
+    following_count    BIGINT,
+    post_count         BIGINT,
+    media_count        BIGINT,
+    rel_following      BOOLEAN,
+    rel_followed_by    BOOLEAN,
+    rel_blocking       BOOLEAN,
+    rel_blocked_by     BOOLEAN
 )
 AS
 '
@@ -44,8 +43,7 @@ AS
                 p.name,
                 p.bio,
                 p.location,
-                p.avatar_image_url,
-                p.banner_image_url,
+                p.image_url,
                 p.created_at
             FROM profile p
             WHERE (p_profile_id IS NOT NULL AND p.id = p_profile_id)
@@ -98,8 +96,7 @@ AS
             pd.name,
             pd.bio,
             pd.location,
-            pd.avatar_image_url,
-            pd.banner_image_url,
+            pd.image_url,
             pd.created_at,
             m.followers_count,
             m.following_count,

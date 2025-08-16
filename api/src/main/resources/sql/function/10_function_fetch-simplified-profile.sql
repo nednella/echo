@@ -11,15 +11,15 @@ CREATE OR REPLACE FUNCTION fetch_simplified_profile(
     p_authenticated_user_id UUID
 )
 RETURNS TABLE (
-    is_self             BOOLEAN,
-    id                  UUID,
-    username            VARCHAR(15),
-    name                VARCHAR(50),
-    avatar_image_url    VARCHAR(255),
-    rel_following       BOOLEAN,
-    rel_followed_by     BOOLEAN,
-    rel_blocking        BOOLEAN,
-    rel_blocked_by      BOOLEAN
+    is_self            BOOLEAN,
+    id                 UUID,
+    username           VARCHAR(255),
+    name               VARCHAR(50),
+    image_url          VARCHAR(255),
+    rel_following      BOOLEAN,
+    rel_followed_by    BOOLEAN,
+    rel_blocking       BOOLEAN,
+    rel_blocked_by     BOOLEAN
 )
 AS
 '
@@ -31,7 +31,7 @@ AS
                 p.id,
                 p.username,
                 p.name,
-                p.avatar_image_url
+                p.image_url
             FROM profile p
             WHERE p.id = p_profile_id
         ),
@@ -72,7 +72,7 @@ AS
             pd.id,
             pd.username,
             pd.name,
-            pd.avatar_image_url,
+            pd.image_url,
             r.rel_following,
             r.rel_followed_by,
             r.rel_blocking,

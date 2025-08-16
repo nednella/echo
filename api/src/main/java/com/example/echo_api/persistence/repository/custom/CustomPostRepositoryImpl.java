@@ -194,7 +194,7 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
                 rs.getString("author_id"),
                 rs.getString("author_username"),
                 rs.getString("author_name"),
-                rs.getString("author_avatar_url"),
+                rs.getString("author_image_url"),
                 isSelf
                     ? null
                     : new ProfileRelationshipDTO(

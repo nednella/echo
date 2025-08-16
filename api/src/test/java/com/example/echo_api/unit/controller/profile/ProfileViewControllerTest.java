@@ -64,7 +64,6 @@ class ProfileViewControllerTest {
             null,
             null,
             null,
-            null,
             new ProfileMetricsDTO(0, 0, 0),
             null);
     }
