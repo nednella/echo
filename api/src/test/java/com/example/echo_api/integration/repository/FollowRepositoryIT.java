@@ -14,12 +14,12 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.echo_api.integration.util.RepositoryTest;
-import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.follow.Follow;
 import com.example.echo_api.persistence.model.profile.Profile;
-import com.example.echo_api.persistence.repository.AccountRepository;
+import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.persistence.repository.FollowRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
+import com.example.echo_api.persistence.repository.UserRepository;
 
 /**
  * Integration test class for {@link FollowRepository}.
@@ -30,7 +30,7 @@ import com.example.echo_api.persistence.repository.ProfileRepository;
 class FollowRepositoryIT extends RepositoryTest {
 
     @Autowired
-    private AccountRepository accountRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private ProfileRepository profileRepository;
@@ -43,15 +43,13 @@ class FollowRepositoryIT extends RepositoryTest {
 
     @BeforeAll
     void setup() {
-        Account sourceAcc = new Account("source", "test");
-        accountRepository.save(sourceAcc); // save account to repository to generate a UUID
-        source = new Profile(sourceAcc.getId(), sourceAcc.getUsername());
-        profileRepository.save(source); // save profile to provide foreign key for follow table
+        User sourceU = User.fromExternalSource("placeholderExtId1");
+        User targetU = User.fromExternalSource("placeholderExtId2");
+        userRepository.saveAll(List.of(sourceU, targetU));
 
-        Account targetAcc = new Account("target", "test");
-        accountRepository.save(targetAcc); // save account to repository to generate a UUID
-        target = new Profile(targetAcc.getId(), targetAcc.getUsername());
-        profileRepository.save(target); // save profile to provide foreign key for follow table
+        source = Profile.forTest(sourceU.getId(), "source");
+        target = Profile.forTest(targetU.getId(), "target");
+        profileRepository.saveAll(List.of(source, target));
 
         // save a follow to db
         Follow follow = new Follow(source.getId(), target.getId());

@@ -19,15 +19,15 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import com.example.echo_api.integration.util.RepositoryTest;
 import com.example.echo_api.persistence.dto.response.post.PostDTO;
-import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.post.Post;
 import com.example.echo_api.persistence.model.post.like.PostLike;
 import com.example.echo_api.persistence.model.profile.Profile;
-import com.example.echo_api.persistence.repository.AccountRepository;
+import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.persistence.repository.PostEntityRepository;
 import com.example.echo_api.persistence.repository.PostLikeRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
+import com.example.echo_api.persistence.repository.UserRepository;
 import com.example.echo_api.util.extractor.PostEntityExtractor;
 
 // TODO: finish JDocs
@@ -41,7 +41,7 @@ import com.example.echo_api.util.extractor.PostEntityExtractor;
 class PostRepositoryIT extends RepositoryTest {
 
     @Autowired
-    private AccountRepository accountRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private ProfileRepository profileRepository;
@@ -64,9 +64,10 @@ class PostRepositoryIT extends RepositoryTest {
     private Post replyWithLike;
 
     private Profile createProfile(String username, String password) {
-        Account account = new Account(username, password);
-        accountRepository.save(account);
-        Profile profile = new Profile(account.getId(), account.getUsername());
+        User user = User.fromExternalSource("placeholderExtId1");
+        user = userRepository.save(user);
+
+        Profile profile = Profile.forTest(user.getId(), "username");
         return profileRepository.save(profile);
     }
 
