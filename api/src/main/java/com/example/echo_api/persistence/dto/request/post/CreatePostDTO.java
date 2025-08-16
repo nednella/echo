@@ -12,8 +12,8 @@ import jakarta.validation.constraints.Size;
 /**
  * Represents a request to create a post.
  * 
- * @param parentId The id of the parent post. Null if not a reply.
- * @param text     The text content of the post. Required field.
+ * @param parentId the id of the parent post. Null if not a reply
+ * @param text     tThe text content of the post. Required field
  */
 // @formatter:off
 public record CreatePostDTO(

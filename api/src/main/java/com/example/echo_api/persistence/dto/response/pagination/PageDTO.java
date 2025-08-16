@@ -10,15 +10,15 @@ import java.util.List;
  * <p>
  * Accepts a generic type {@code T} for the content type.
  * 
- * @param previous The {@code URI} to fetch the previous page, assuming the same
- *                 page size.
- * @param next     The {@code URI} to fetch the next page, assuming the same
- *                 page size.
- * @param limit    The size of this page.
- * @param offset   The offset of data fetched in this page (page size * page
- *                 number).
- * @param total    The total number of items available from this resource.
- * @param items    The list of content returned in this response.
+ * @param previous the {@code URI} to fetch the previous page, assuming the same
+ *                 page size
+ * @param next     the {@code URI} to fetch the next page, assuming the same
+ *                 page size
+ * @param limit    the size of this page
+ * @param offset   the offset of data fetched in this page (page size * page
+ *                 number)
+ * @param total    the total number of items available from this resource
+ * @param items    the list of content returned in this response
  */
 // @formatter:off
 public record PageDTO<T>(

@@ -8,9 +8,9 @@ import jakarta.validation.constraints.Size;
 /**
  * Represents a request to update the authenticated user's profile information.
  * 
- * @param name     The name for the profile.
- * @param bio      The bio for the profile.
- * @param location The location for the profile.
+ * @param name     the name for the profile
+ * @param bio      the bio for the profile
+ * @param location the location for the profile
  */
 // @formatter:off
 public record UpdateInformationDTO(
