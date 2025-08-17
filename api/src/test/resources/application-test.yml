@@ -1,15 +1,24 @@
 spring:
+
+    security:
+        oauth2:
+            resourceserver:
+                jwt:
+                    issuer-uri: ${TEST_CLERK_ISSUER_URI}
+                    jwk-set-uri: ${TEST_CLERK_JWK_SET_URI}
+
     sql:
         init:
             mode: always
 
 cors:
-    allowed-origins: '*' # comma-separated values
+    allowed-origins: ${TEST_CORS_ALLOWED_ORIGINS}
+
+clerk:
+    secret-key: ${TEST_CLERK_SECRET_KEY}
 
 logging:
     level:
         org:
             springframework:
                 web: DEBUG
-                jpa:
-                    core: TRACE

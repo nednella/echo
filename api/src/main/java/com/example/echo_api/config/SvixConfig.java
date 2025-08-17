@@ -9,25 +9,24 @@ import com.svix.Webhook;
 import lombok.Setter;
 
 /**
- * Config class for Svix webhook verification using the Clerk webhook signing
- * secret.
+ * Config class for Svix webhook verification.
  */
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "clerk.webhook")
+@ConfigurationProperties(prefix = "clerk")
 public class SvixConfig {
 
-    private String signingSecret;
+    private String webhookSigningSecret;
 
     /**
      * Create an instance of the Svix Webhook verifier using the supplied
-     * {@code signingSecret}.
+     * {@code webhookSigningSecret}.
      * 
-     * @return Svix webhook verifier instance
+     * @return svix webhook verifier instance
      */
     @Bean
     public Webhook webhook() {
-        return new Webhook(signingSecret);
+        return new Webhook(webhookSigningSecret);
     }
 
 }

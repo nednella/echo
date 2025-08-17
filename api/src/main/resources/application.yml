@@ -1,6 +1,6 @@
 server:
     port: 8080
-    
+
 spring:
     application:
         name: echo-api
@@ -11,33 +11,15 @@ spring:
     config:
         import: optional:file:.env[.properties]
 
-    security:
-        oauth2:
-            resourceserver:
-                jwt:
-                    issuer-uri: ${JWT_ISSUER_URI}
-                    jwk-set-uri: ${JWT_JWK_SET_URI}
-
     sql:
         init:
+            mode: never # default to disabled, override per-profile
             schema-locations:
                 - classpath:sql/schema/*.sql
                 - classpath:sql/function/*.sql
                 - classpath:sql/trigger/*.sql
-            mode: never # default disabled, overriden in dev/test profiles
-
-    servlet:
-        multipart:
-            max-file-size: 100MB # set maximum to Cloudinary free tier limit, customise per-file type within application
-            max-request-size: 100MB
-
-clerk:
-    secret-key: ${CLERK_SECRET_KEY}
-    webhook:
-        signing-secret: ${CLERK_WEBHOOK_SIGNING_SECRET}
 
 cloudinary:
     cloud-name: ${CLOUDINARY_NAME}
     api-key: ${CLOUDINARY_API_KEY}
     api-secret: ${CLOUDINARY_API_SECRET}
-
