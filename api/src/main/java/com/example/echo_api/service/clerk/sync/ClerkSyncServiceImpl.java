@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.clerk.backend_api.Clerk;
+import com.example.echo_api.persistence.dto.adapter.ClerkUserDTO;
 import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEvent;
 import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserDelete;
 import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpsert;
@@ -31,12 +32,12 @@ public class ClerkSyncServiceImpl implements ClerkSyncService {
             return null;
         }
 
-        var clerkUser = clerkSdkService.getUser(clerkId);
+        ClerkUserDTO clerkUser = clerkSdkService.getUser(clerkId);
 
         User user = userService.upsertFromExternalSource(
             clerkId,
-            clerkUser.username().get(),
-            clerkUser.imageUrl().orElse(null));
+            clerkUser.username(),
+            clerkUser.imageUrl());
 
         clerkSdkService.completeOnboarding(clerkUser, user.getId().toString());
         return user;

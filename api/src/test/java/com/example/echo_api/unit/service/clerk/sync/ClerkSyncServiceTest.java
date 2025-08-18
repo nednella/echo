@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.example.echo_api.persistence.dto.adapter.ClerkUserDTO;
 import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEvent;
 import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEventData;
 import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEventType;
@@ -34,17 +37,6 @@ class ClerkSyncServiceTest {
     @InjectMocks
     private ClerkSyncServiceImpl clerkSyncService;
 
-    private com.clerk.backend_api.models.components.User createMockClerkUser(
-        String id,
-        String username,
-        String imageUrl) {
-        return com.clerk.backend_api.models.components.User.builder()
-            .id(id)
-            .username(username)
-            .imageUrl(imageUrl)
-            .build();
-    }
-
     @Test
     void syncUser_ReturnsUser_WhenOnboardingProcessIsCompleted() {
         // arrange
@@ -52,7 +44,8 @@ class ClerkSyncServiceTest {
         String externalId = "user_someRandomStringThatIsUniqueApparently";
         String username = "username";
         String imageUrl = "imageUrl";
-        var clerkUser = createMockClerkUser(externalId, username, imageUrl);
+        Map<String, Object> metadata = new HashMap<>();
+        ClerkUserDTO clerkUser = new ClerkUserDTO(externalId, username, null, imageUrl, metadata);
         User expected = User.forTest(id, externalId);
 
         when(userService.existsByExternalId(externalId)).thenReturn(false);
@@ -85,8 +78,7 @@ class ClerkSyncServiceTest {
         verify(userService).existsByExternalId(externalId);
         verify(clerkSdkService, never()).getUser(anyString());
         verify(userService, never()).upsertFromExternalSource(anyString(), anyString(), anyString());
-        verify(clerkSdkService, never()).completeOnboarding(
-            any(com.clerk.backend_api.models.components.User.class), anyString());
+        verify(clerkSdkService, never()).completeOnboarding(any(ClerkUserDTO.class), anyString());
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.example.echo_api.service.clerk.sdk;
 
 import com.clerk.backend_api.models.components.User;
 import com.example.echo_api.exception.custom.internalserver.ClerkException;
+import com.example.echo_api.persistence.dto.adapter.ClerkUserDTO;
 
 public interface ClerkSdkService {
 
@@ -14,20 +15,20 @@ public interface ClerkSdkService {
      * @throws ClerkException           if the user data retrieval fails for
      *                                  whatever reason
      */
-    public User getUser(String clerkUserId);
+    public ClerkUserDTO getUser(String clerkUserId);
 
     /**
      * Marks a Clerk user as having completed the onboarding proccess by setting the
      * users {@code external_id} field and adding a boolean indicator to the users
      * {@code public_metadata}.
      * 
-     * @param clerkUserId the Clerk user
-     * @param externalId  the local application UUID for that Clerk user
+     * @param user       the Clerk user (represented by an internal DTO)
+     * @param externalId the local application UUID for that Clerk user
      * @throws IllegalArgumentException if {@code user} or {@code externalId} is
      *                                  null
      * @throws ClerkException           if the update operation fails for whatever
      *                                  reason
      */
-    public void completeOnboarding(User user, String externalId);
+    public void completeOnboarding(ClerkUserDTO user, String externalId);
 
 }
