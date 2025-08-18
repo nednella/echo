@@ -1,6 +1,7 @@
 package com.example.echo_api.service.clerk.sync;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.clerk.backend_api.Clerk;
 import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEvent;
@@ -8,7 +9,6 @@ import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserDelet
 import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpsert;
 import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.service.clerk.sdk.ClerkSdkService;
-import com.example.echo_api.service.session.SessionService;
 import com.example.echo_api.service.user.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -22,16 +22,15 @@ import lombok.RequiredArgsConstructor;
 public class ClerkSyncServiceImpl implements ClerkSyncService {
 
     private final ClerkSdkService clerkSdkService;
-    private final SessionService sessionService;
     private final UserService userService;
 
     @Override
-    public User onboardAuthenticatedUser() {
-        if (sessionService.isAuthenticatedUserOnboarded()) {
+    @Transactional
+    public User syncUser(String clerkId) {
+        if (userService.existsByExternalId(clerkId)) {
             return null;
         }
 
-        String clerkId = sessionService.getAuthenticatedUserClerkId();
         var clerkUser = clerkSdkService.getUser(clerkId);
 
         User user = userService.upsertFromExternalSource(
@@ -39,7 +38,7 @@ public class ClerkSyncServiceImpl implements ClerkSyncService {
             clerkUser.username().get(),
             clerkUser.imageUrl().orElse(null));
 
-        clerkSdkService.completeOnboarding(clerkId, user.getId().toString());
+        clerkSdkService.completeOnboarding(clerkUser, user.getId().toString());
         return user;
     }
 

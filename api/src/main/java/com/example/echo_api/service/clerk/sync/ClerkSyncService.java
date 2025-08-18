@@ -6,15 +6,15 @@ import com.example.echo_api.persistence.model.user.User;
 public interface ClerkSyncService {
 
     /**
-     * Onboard the authenticated user by persisting a local {@link User} that
-     * matches the user information included in Clerk-issued JWT, where Clerk acts
-     * as the external identity provider (IDP).
+     * Synchronises a user from Clerk by persisting a local {@link User} that
+     * matches the provided unique identifier. Also updates that Clerk user
+     * {@code external_id} and {@code public_metadata} for a 2-way sync.
      * 
-     * @return the persisted {@link User}, or {@code null} if the authenticated
-     *         token contains the relevant claims indicating the user was already
-     *         onboarded
+     * @param clerkId the unique identifier from Clerk
+     * @return the persisted {@link User}, or {@code null} if a {@link User} with
+     *         the given {@code clerkId} already exists
      */
-    public User onboardAuthenticatedUser();
+    public User syncUser(String clerkId);
 
     /**
      * Process a {@link ClerkWebhookEvent} according to its type, ensuring local
