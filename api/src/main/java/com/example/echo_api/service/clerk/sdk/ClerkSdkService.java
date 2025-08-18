@@ -6,28 +6,28 @@ import com.example.echo_api.exception.custom.internalserver.ClerkException;
 public interface ClerkSdkService {
 
     /**
-     * Retrieves a user from Clerk based on their unique identifier
+     * Retrieves a user from Clerk based on their unique identifier.
      * 
      * @param clerkUserId the unique identifier for the Clerk user
      * @return the retrieved Clerk {@link User}
-     * @throws IllegalArgumentException if {@code clerkUserId} is null
+     * @throws IllegalArgumentException if {@code user} is null
      * @throws ClerkException           if the user data retrieval fails for
      *                                  whatever reason
      */
-    public User getUser(String clerkUserId) throws ClerkException;
+    public User getUser(String clerkUserId);
 
     /**
      * Marks a Clerk user as having completed the onboarding proccess by setting the
      * users {@code external_id} field and adding a boolean indicator to the users
      * {@code public_metadata}.
      * 
-     * @param clerkUserId the unique identifier for the Clerk user
+     * @param clerkUserId the Clerk user
      * @param externalId  the local application UUID for that Clerk user
-     * @throws IllegalArgumentException if {@code clerkUserId} or {@code externalId}
-     *                                  is null
+     * @throws IllegalArgumentException if {@code user} or {@code externalId} is
+     *                                  null
      * @throws ClerkException           if the update operation fails for whatever
      *                                  reason
      */
-    public void completeOnboarding(String clerkUserId, String externalId) throws ClerkException;
+    public void completeOnboarding(User user, String externalId);
 
 }

@@ -1,6 +1,5 @@
 package com.example.echo_api.service.clerk.sdk;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -42,16 +41,17 @@ public class ClerkSdkServiceImpl implements ClerkSdkService {
     }
 
     @Override
-    public void completeOnboarding(String clerkUserId, String externalId) throws ClerkException {
-        Utils.checkNotNull(clerkUserId, "Clerk User ID");
+    public void completeOnboarding(User user, String externalId) throws ClerkException {
+        Utils.checkNotNull(user, "Clerk User");
         Utils.checkNotNull(externalId, "External ID");
 
-        Map<String, Object> metadata = new HashMap<>();
+        String userId = user.id().orElseThrow();
+        Map<String, Object> metadata = user.publicMetadata().orElseThrow();
         metadata.put(ClerkConfig.ONBOARDING_COMPLETE_METADATA_KEY, ClerkConfig.ONBOARDING_COMPLETE_METADATA_VALUE);
 
         try {
             clerk.users().update(
-                clerkUserId,
+                userId,
                 UpdateUserRequestBody.builder()
                     .externalId(externalId)
                     .publicMetadata(metadata)
