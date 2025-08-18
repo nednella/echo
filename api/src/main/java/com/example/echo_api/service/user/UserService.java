@@ -44,4 +44,12 @@ public interface UserService {
      */
     public int deleteFromExternalSource(String externalId);
 
+    /**
+     * Checks if a {@link User} exists with the specified {@code externalId}.
+     * 
+     * @param externalId the unique identifier from the IDP
+     * @return true if exists, otherwise false
+     */
+    public boolean existsByExternalId(String externalId);
+
 }

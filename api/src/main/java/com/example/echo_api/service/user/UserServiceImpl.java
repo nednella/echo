@@ -41,6 +41,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.deleteByExternalId(externalId);
     }
 
+    @Override
+    public boolean existsByExternalId(String externalId) {
+        return userRepository.existsByexternalId(externalId);
+    }
+
     /**
      * Create a new {@link User} and its associated {@link Profile} based on data
      * from an external identity provider (IDP).
