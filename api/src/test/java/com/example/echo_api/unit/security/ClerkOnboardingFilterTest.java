@@ -86,39 +86,49 @@ class ClerkOnboardingFilterTest {
         String echoId = UUID.randomUUID().toString();
 
         Jwt jwt = mockJwt();
+        when(jwt.hasClaim(ClerkConfig.JWT_ONBOARDED_CLAIM)).thenReturn(true);
+        when(jwt.hasClaim(ClerkConfig.JWT_ECHO_ID_CLAIM)).thenReturn(true);
         when(jwt.getClaim(ClerkConfig.JWT_ONBOARDED_CLAIM)).thenReturn(onboarded);
         when(jwt.getClaimAsString(ClerkConfig.JWT_ECHO_ID_CLAIM)).thenReturn(echoId);
 
         // act
-        onboardingFilter.doFilter(request, response, filterChain);
+        assertDoesNotThrow(() -> onboardingFilter.doFilter(request, response, filterChain));
 
         // assert
+        verify(jwt).hasClaim(ClerkConfig.JWT_ONBOARDED_CLAIM);
+        verify(jwt).hasClaim(ClerkConfig.JWT_ECHO_ID_CLAIM);
         verify(jwt).getClaim(ClerkConfig.JWT_ONBOARDED_CLAIM);
         verify(jwt).getClaimAsString(ClerkConfig.JWT_ECHO_ID_CLAIM);
         verify(filterChain).doFilter(request, response);
     }
 
     @Test
-    void doFilterInternal_BypassesFilterForPublicEndpoint() throws Exception {
+    void doFilterInternal_BypassesFilterWhenPublicEndpoint() throws Exception {
         // arrange
         mockAnonymousAuthentication();
 
         // act
-        onboardingFilter.doFilter(request, response, filterChain);
+        assertDoesNotThrow(() -> onboardingFilter.doFilter(request, response, filterChain));
 
         // assert
         verify(filterChain).doFilter(request, response);
     }
 
     @Test
-    void doFilterInternal_BypassesFilterForOnboardingEndpoint() throws Exception {
+    void doFilterInternal_OnlyValidatesTokenHasExpectedClaimsWhenOnboardingEndpoint() throws Exception {
         // arrange
         request.setRequestURI(ApiConfig.Clerk.ONBOARDING);
 
+        Jwt jwt = mockJwt();
+        when(jwt.hasClaim(ClerkConfig.JWT_ONBOARDED_CLAIM)).thenReturn(true);
+        when(jwt.hasClaim(ClerkConfig.JWT_ECHO_ID_CLAIM)).thenReturn(true);
+
         // act
-        onboardingFilter.doFilter(request, response, filterChain);
+        assertDoesNotThrow(() -> onboardingFilter.doFilter(request, response, filterChain));
 
         // assert
+        verify(jwt).hasClaim(ClerkConfig.JWT_ONBOARDED_CLAIM);
+        verify(jwt).hasClaim(ClerkConfig.JWT_ECHO_ID_CLAIM);
         verify(filterChain).doFilter(request, response);
     }
 
@@ -138,23 +148,56 @@ class ClerkOnboardingFilterTest {
     @Test
     void doFilterInternal_ThrowsWhenOnboardedClaimIsMissing() throws Exception {
         // arrange
-        Boolean onboarded = null;
         Jwt jwt = mockJwt();
+        when(jwt.hasClaim(ClerkConfig.JWT_ONBOARDED_CLAIM)).thenReturn(false);
+
+        // act & assert
+        Exception ex = assertThrows(AccessDeniedException.class,
+            () -> onboardingFilter.doFilter(request, response, filterChain));
+
+        assertEquals(ErrorMessageConfig.Forbidden.ONBOARDED_CLAIM_MISSING, ex.getMessage());
+        verify(filterChain, never()).doFilter(request, response);
+    }
+
+    @Test
+    void doFilterInternal_ThrowsWhenEchoIdClaimIsMissing() throws Exception {
+        // arrange
+        Jwt jwt = mockJwt();
+        when(jwt.hasClaim(ClerkConfig.JWT_ONBOARDED_CLAIM)).thenReturn(true);
+        when(jwt.hasClaim(ClerkConfig.JWT_ECHO_ID_CLAIM)).thenReturn(false);
+
+        // act & assert
+        Exception ex = assertThrows(AccessDeniedException.class,
+            () -> onboardingFilter.doFilter(request, response, filterChain));
+
+        assertEquals(ErrorMessageConfig.Forbidden.ECHO_ID_CLAIM_MISSING, ex.getMessage());
+        verify(filterChain, never()).doFilter(request, response);
+    }
+
+    @Test
+    void doFilterInternal_ThrowsWhenOnboardedClaimIsMalformed() throws Exception {
+        // arrange
+        Object onboarded = "string";
+        Jwt jwt = mockJwt();
+        when(jwt.hasClaim(ClerkConfig.JWT_ONBOARDED_CLAIM)).thenReturn(true);
+        when(jwt.hasClaim(ClerkConfig.JWT_ECHO_ID_CLAIM)).thenReturn(true);
         when(jwt.getClaim(ClerkConfig.JWT_ONBOARDED_CLAIM)).thenReturn(onboarded);
 
         // act & assert
         Exception ex = assertThrows(AccessDeniedException.class,
             () -> onboardingFilter.doFilter(request, response, filterChain));
 
-        assertEquals(ErrorMessageConfig.Forbidden.ONBOARDED_CLAIM_MISSING_OR_MALFORMED, ex.getMessage());
+        assertEquals(ErrorMessageConfig.Forbidden.ONBOARDED_CLAIM_MALFORMED, ex.getMessage());
         verify(filterChain, never()).doFilter(request, response);
     }
 
     @Test
     void doFilterInternal_ThrowsWhenUserNotOnboarded() throws Exception {
         // arrange
-        Boolean onboarded = false;
+        Object onboarded = false;
         Jwt jwt = mockJwt();
+        when(jwt.hasClaim(ClerkConfig.JWT_ONBOARDED_CLAIM)).thenReturn(true);
+        when(jwt.hasClaim(ClerkConfig.JWT_ECHO_ID_CLAIM)).thenReturn(true);
         when(jwt.getClaim(ClerkConfig.JWT_ONBOARDED_CLAIM)).thenReturn(onboarded);
 
         // act & assert
@@ -169,18 +212,19 @@ class ClerkOnboardingFilterTest {
     @NullSource
     @EmptySource
     @ValueSource(strings = { "invalid_UUID_string" })
-    void doFilterInternal_ThrowsWhenEchoIdClaimIsMissingOrInvalidUUID(String value) throws Exception {
+    void doFilterInternal_ThrowsWhenEchoIdClaimIsMalformed(String value) throws Exception {
         // arrange
-        Boolean onboarded = true;
         Jwt jwt = mockJwt();
-        when(jwt.getClaim(ClerkConfig.JWT_ONBOARDED_CLAIM)).thenReturn(onboarded);
+        when(jwt.hasClaim(ClerkConfig.JWT_ONBOARDED_CLAIM)).thenReturn(true);
+        when(jwt.hasClaim(ClerkConfig.JWT_ECHO_ID_CLAIM)).thenReturn(true);
+        when(jwt.getClaim(ClerkConfig.JWT_ONBOARDED_CLAIM)).thenReturn(true);
         when(jwt.getClaimAsString(ClerkConfig.JWT_ECHO_ID_CLAIM)).thenReturn(value);
 
         // act & assert
         Exception ex = assertThrows(AccessDeniedException.class,
             () -> onboardingFilter.doFilter(request, response, filterChain));
 
-        assertEquals(ErrorMessageConfig.Forbidden.ECHO_ID_CLAIM_MISSING_OR_MALFORMED, ex.getMessage());
+        assertEquals(ErrorMessageConfig.Forbidden.ECHO_ID_CLAIM_MALFORMED, ex.getMessage());
         verify(filterChain, never()).doFilter(request, response);
     }
 

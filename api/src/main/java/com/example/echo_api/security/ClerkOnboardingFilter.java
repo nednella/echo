@@ -20,22 +20,30 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Custom {@link OncePerRequestFilter} for Spring Security to check the
- * onboarding status of an authenticated user and deny access to all
- * <b>protected</b> routes until the onboarding process has been completed.
+ * Custom {@link OncePerRequestFilter} for Spring Security that enforces
+ * onboarding status for authenticated users.
  * 
  * <p>
- * This filter validates two JWT claims before allowing access to protected
- * routes:
- * <ol>
- * <li>Onboarding completion status
- * <li>Valid Echo ID (UUID format)
- * </ol>
+ * All <b>authenticated</b> requests must include the following two JWT claims:
+ * <ul>
+ * <li><b>onboarded</b> - boolean flag indicating the onboarding status
+ * <li><b>echo_id</b> - UUID referencing the synchronised local user entity
+ * </ul>
  * 
  * <p>
- * Since developers cannot directly interact with Clerk's user table to
- * synchronise databases, an onboarding flow is used to guarantee a local
- * reference to the Clerk user before allowing access to the application.
+ * Validation differs depending on the request:
+ * <ul>
+ * <li><b>Onboarding route</b>: both claims must be present, but the claim
+ * values do not matter.
+ * <li><b>Any other route</b>: both claims must be present and well-formed, and
+ * {@code onboarded} must be {@code true}.
+ * </ul>
+ * 
+ * <p>
+ * The filter ensures that a local reference to the authenticated Clerk user is
+ * created and synced before granting access to the API. The database sync is
+ * guaranteed with the use of an onboarding flow since Clerk does not allow
+ * developers to directly interact with the user table.
  * 
  * <p>
  * For more information, refer to:
@@ -52,13 +60,20 @@ public class ClerkOnboardingFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException
     {
-        if (shouldNotFilter(request)) {
+        if (isPublicEndpoint(request)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Jwt jwt = validateAuthenticationPrincipal(authentication);
+        validateExpectedClaimsArePresent(jwt);
+
+        if (isOnboardingEndpoint(request)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         validateOnboardingStatus(jwt);
         validateEchoId(jwt);
 
@@ -66,28 +81,22 @@ public class ClerkOnboardingFilter extends OncePerRequestFilter {
     } // @formatter:on
 
     /**
-     * Determine if the current request should bypass onboarding validation.
+     * Determine if the current request should bypass the filter entirely.
      * 
-     * @param request The current HTTP request
-     * @return True if the request is to a public or onboarding endpoint, false
-     *         otherwise
+     * @param request the current HTTP request
+     * @return true if the request is to a public endpoint, false otherwise
      */
-    @Override
-    public boolean shouldNotFilter(HttpServletRequest request) {
+    public boolean isPublicEndpoint(HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        boolean isPublicEndpoint = authentication instanceof AnonymousAuthenticationToken;
-        boolean isOnboardingEndpoint = request.getRequestURI().equals(ApiConfig.Clerk.ONBOARDING);
-
-        return isPublicEndpoint || isOnboardingEndpoint;
+        return authentication instanceof AnonymousAuthenticationToken;
     }
 
     /**
      * Validate that the authentication principal is a JWT.
      * 
-     * @param authentication The Spring Security authentication object
-     * @return The validated JWT
-     * @throws AccessDeniedException If the principal is not a JWT
+     * @param authentication the Spring Security authentication object
+     * @return the validated JWT
+     * @throws AccessDeniedException if the principal is not a JWT
      */
     private Jwt validateAuthenticationPrincipal(Authentication authentication) {
         if (!(authentication.getPrincipal() instanceof Jwt)) {
@@ -98,17 +107,45 @@ public class ClerkOnboardingFilter extends OncePerRequestFilter {
     }
 
     /**
+     * Validate that the {@code echo_id} and {@code onboarded} token claims are
+     * present.
+     * 
+     * @param jwt the authenticated JWT
+     * @throws AccessDeniedException if the {@code onboarded} claim or
+     *                               {@code echo_id} claim is missing
+     */
+    private void validateExpectedClaimsArePresent(Jwt jwt) {
+        if (!jwt.hasClaim(ClerkConfig.JWT_ONBOARDED_CLAIM)) {
+            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ONBOARDED_CLAIM_MISSING);
+        }
+        if (!jwt.hasClaim(ClerkConfig.JWT_ECHO_ID_CLAIM)) {
+            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ECHO_ID_CLAIM_MISSING);
+        }
+    }
+
+    /**
+     * Determine if the current request should bypass the onboarding status
+     * validation.
+     * 
+     * @param request the current HTTP request
+     * @return true if the request is to the onboarding endpoint, false otherwise
+     */
+    private boolean isOnboardingEndpoint(HttpServletRequest request) {
+        return request.getRequestURI().equals(ApiConfig.Clerk.ONBOARDING);
+    }
+
+    /**
      * Validate that the {@code onboarded} claim on the JWT indicates the onboarding
      * process has been completed.
      * 
-     * @param jwt The authenticated JWT
-     * @throws AccessDeniedException If the {@code onboarded} claim is missing,
-     *                               malformed, or false
+     * @param jwt the authenticated JWT
+     * @throws AccessDeniedException if the {@code onboarded} claim is malformed, or
+     *                               equal to false
      */
     private void validateOnboardingStatus(Jwt jwt) {
         Object onboarded = jwt.getClaim(ClerkConfig.JWT_ONBOARDED_CLAIM);
         if (!(onboarded instanceof Boolean)) {
-            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ONBOARDED_CLAIM_MISSING_OR_MALFORMED);
+            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ONBOARDED_CLAIM_MALFORMED);
         }
         if (!Boolean.TRUE.equals(onboarded)) {
             throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ONBOARDING_NOT_COMPLETED);
@@ -118,22 +155,21 @@ public class ClerkOnboardingFilter extends OncePerRequestFilter {
     /**
      * Validate that the {@code echo_id} claim on the JWT is a valid UUID.
      * 
-     * @param jwt The authenticated JWT
-     * @throws AccessDeniedException If the {@code echo_id} claim is missing or
-     *                               malformed
+     * @param jwt the authenticated JWT
+     * @throws AccessDeniedException if the {@code echo_id} claim is malformed
      */
     private void validateEchoId(Jwt jwt) {
         String echoId = jwt.getClaimAsString(ClerkConfig.JWT_ECHO_ID_CLAIM);
         if (echoId == null || !isValidUUID(echoId)) {
-            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ECHO_ID_CLAIM_MISSING_OR_MALFORMED);
+            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ECHO_ID_CLAIM_MALFORMED);
         }
     }
 
     /**
      * Check if a string is a valid UUID.
      * 
-     * @param id The string to validate
-     * @return True if the string is a valid UUID, false otherwise
+     * @param id the string to validate
+     * @return true if the string is a valid UUID, false otherwise
      */
     private boolean isValidUUID(String id) {
         try {

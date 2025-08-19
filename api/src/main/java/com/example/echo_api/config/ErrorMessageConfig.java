@@ -33,9 +33,11 @@ public final class ErrorMessageConfig {
     @NoArgsConstructor(access = PRIVATE)
     public static class Forbidden {
 
-        public static final String INVALID_AUTH_PRINCIPAL = "Missing or invalid authentication principal";
-        public static final String ONBOARDED_CLAIM_MISSING_OR_MALFORMED = "'onboarded' claim is missing or malformed";
-        public static final String ECHO_ID_CLAIM_MISSING_OR_MALFORMED = "'echo_id' claim is missing or malformed";
+        public static final String INVALID_AUTH_PRINCIPAL = "Authentication principal is missing or invalid";
+        public static final String ONBOARDED_CLAIM_MISSING = "Required token claim 'onboarded' is missing";
+        public static final String ONBOARDED_CLAIM_MALFORMED = "Token claim 'onboarded' contains an unexpected value";
+        public static final String ECHO_ID_CLAIM_MISSING = "Required token claim 'echo_id' is missing";
+        public static final String ECHO_ID_CLAIM_MALFORMED = "Token claim 'echo_id' contains an unexpected value";
         public static final String ONBOARDING_NOT_COMPLETED = "User has not completed the onboarding process";
         public static final String ACCESS_DENIED = "You are missing permissions required to perform this action";
         public static final String RESOURCE_OWNERSHIP_REQUIRED = "Resource ownership is required for performing this action";
