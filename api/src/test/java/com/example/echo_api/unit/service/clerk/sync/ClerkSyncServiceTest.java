@@ -23,10 +23,14 @@ import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpser
 import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.service.clerk.sdk.ClerkSdkService;
 import com.example.echo_api.service.clerk.sync.ClerkSyncServiceImpl;
+import com.example.echo_api.service.session.SessionService;
 import com.example.echo_api.service.user.UserService;
 
 @ExtendWith(MockitoExtension.class)
 class ClerkSyncServiceTest {
+
+    @Mock
+    private SessionService sessionService;
 
     @Mock
     private ClerkSdkService clerkSdkService;
@@ -38,7 +42,7 @@ class ClerkSyncServiceTest {
     private ClerkSyncServiceImpl clerkSyncService;
 
     @Test
-    void syncUser_ReturnsUser_WhenOnboardingProcessIsCompleted() {
+    void onboardAuthenticatedUser_ReturnsUser_WhenOnboardingProcessIsCompleted() {
         // arrange
         UUID id = UUID.randomUUID();
         String externalId = "user_someRandomStringThatIsUniqueApparently";
@@ -48,34 +52,36 @@ class ClerkSyncServiceTest {
         ClerkUserDTO clerkUser = new ClerkUserDTO(externalId, username, null, imageUrl, metadata);
         User expected = User.forTest(id, externalId);
 
-        when(userService.existsByExternalId(externalId)).thenReturn(false);
+        when(sessionService.isAuthenticatedUserOnboarded()).thenReturn(false);
+        when(sessionService.getAuthenticatedUserClerkId()).thenReturn(externalId);
         when(clerkSdkService.getUser(externalId)).thenReturn(clerkUser);
         when(userService.upsertFromExternalSource(externalId, username, imageUrl)).thenReturn(expected);
 
         // act
-        User actual = clerkSyncService.syncUser(externalId);
+        User actual = clerkSyncService.onboardAuthenticatedUser();
 
         // assert
         assertEquals(expected, actual);
-        verify(userService).existsByExternalId(externalId);
+        verify(sessionService).isAuthenticatedUserOnboarded();
+        verify(sessionService).getAuthenticatedUserClerkId();
         verify(clerkSdkService).getUser(externalId);
         verify(userService).upsertFromExternalSource(externalId, username, imageUrl);
         verify(clerkSdkService).completeOnboarding(clerkUser, id.toString());
     }
 
     @Test
-    void syncUser_ReturnsNull_WhenAlreadyExistsByClerkId() {
+    void onboardAuthenticatedUser_ReturnsNull_WhenAlreadyExistsByClerkId() {
         // arrange
-        String externalId = "user_someRandomStringThatIsUniqueApparently";
         User expected = null;
-        when(userService.existsByExternalId(externalId)).thenReturn(true);
+        when(sessionService.isAuthenticatedUserOnboarded()).thenReturn(true);
 
         // act
-        User actual = clerkSyncService.syncUser(externalId);
+        User actual = clerkSyncService.onboardAuthenticatedUser();
 
         // assert
         assertEquals(expected, actual);
-        verify(userService).existsByExternalId(externalId);
+        verify(sessionService).isAuthenticatedUserOnboarded();
+        verify(sessionService, never()).getAuthenticatedUserClerkId();
         verify(clerkSdkService, never()).getUser(anyString());
         verify(userService, never()).upsertFromExternalSource(anyString(), anyString(), anyString());
         verify(clerkSdkService, never()).completeOnboarding(any(ClerkUserDTO.class), anyString());

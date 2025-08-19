@@ -144,34 +144,4 @@ class UserServiceTest {
         verify(userRepository).deleteByExternalId(externalId);
     }
 
-    @Test
-    void existsByExternalId_ReturnsTrue() {
-        // arrange
-        String externalId = "user_someRandomStringThatIsUniqueApparently";
-        boolean expected = true;
-        when(userRepository.existsByexternalId(externalId)).thenReturn(expected);
-
-        // act
-        boolean actual = userService.existsByExternalId(externalId);
-
-        // assert
-        assertEquals(expected, actual);
-        verify(userRepository).existsByexternalId(externalId);
-    }
-
-    @Test
-    void existsByExternalId_ReturnsFalse() {
-        // arrange
-        String externalId = "user_someRandomStringThatIsUniqueApparently";
-        boolean expected = false;
-        when(userRepository.existsByexternalId(externalId)).thenReturn(expected);
-
-        // act
-        boolean actual = userService.existsByExternalId(externalId);
-
-        // assert
-        assertEquals(expected, actual);
-        verify(userRepository).existsByexternalId(externalId);
-    }
-
 }

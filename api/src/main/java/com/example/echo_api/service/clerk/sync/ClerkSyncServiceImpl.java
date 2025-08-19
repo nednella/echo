@@ -10,6 +10,7 @@ import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserDelet
 import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpsert;
 import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.service.clerk.sdk.ClerkSdkService;
+import com.example.echo_api.service.session.SessionService;
 import com.example.echo_api.service.user.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -22,24 +23,23 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ClerkSyncServiceImpl implements ClerkSyncService {
 
+    private final SessionService sessionService;
     private final ClerkSdkService clerkSdkService;
     private final UserService userService;
 
     @Override
     @Transactional
-    public User syncUser(String clerkId) {
-        if (userService.existsByExternalId(clerkId)) {
+    public User onboardAuthenticatedUser() {
+        if (sessionService.isAuthenticatedUserOnboarded()) {
             return null;
         }
 
+        String clerkId = sessionService.getAuthenticatedUserClerkId();
         ClerkUserDTO clerkUser = clerkSdkService.getUser(clerkId);
 
-        User user = userService.upsertFromExternalSource(
-            clerkId,
-            clerkUser.username(),
-            clerkUser.imageUrl());
-
+        User user = userService.upsertFromExternalSource(clerkId, clerkUser.username(), clerkUser.imageUrl());
         clerkSdkService.completeOnboarding(clerkUser, user.getId().toString());
+
         return user;
     }
 

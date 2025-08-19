@@ -22,7 +22,6 @@ import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.service.clerk.sync.ClerkSyncService;
 import com.example.echo_api.service.clerk.webhook.ClerkWebhookService;
-import com.example.echo_api.service.session.SessionService;
 
 @WebMvcTest(ClerkController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -36,9 +35,6 @@ class ClerkControllerTest {
     private MockMvcTester mvc;
 
     @MockitoBean
-    private SessionService sessionService;
-
-    @MockitoBean
     private ClerkSyncService clerkSyncService;
 
     @MockitoBean
@@ -47,10 +43,8 @@ class ClerkControllerTest {
     @Test
     void clerkOnboarding_Returns201User_WhenExternalUserInserted() {
         // api: POST /api/v1/clerk/onboarding ==> 201 Created : User
-        String clerkId = "user_someUniqueString";
-        User expected = User.forTest(UUID.randomUUID(), clerkId);
-        when(sessionService.getAuthenticatedUserClerkId()).thenReturn(clerkId);
-        when(clerkSyncService.syncUser(clerkId)).thenReturn(expected);
+        User expected = User.forTest(UUID.randomUUID(), "user_someUniqueString");
+        when(clerkSyncService.onboardAuthenticatedUser()).thenReturn(expected);
 
         var response = mvc.post()
             .uri(ONBOARDING_PATH)
@@ -64,10 +58,8 @@ class ClerkControllerTest {
     @Test
     void clerkOnboarding_Returns201Empty_WhenExternalUserUpdated() {
         // api: POST /api/v1/clerk/onboarding ==> 201 Created : []
-        String clerkId = "user_someUniqueString";
         User expected = null;
-        when(sessionService.getAuthenticatedUserClerkId()).thenReturn(clerkId);
-        when(clerkSyncService.syncUser(clerkId)).thenReturn(expected);
+        when(clerkSyncService.onboardAuthenticatedUser()).thenReturn(expected);
 
         var response = mvc.post()
             .uri(ONBOARDING_PATH)

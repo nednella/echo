@@ -12,7 +12,6 @@ import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.service.clerk.sync.ClerkSyncService;
 import com.example.echo_api.service.clerk.webhook.ClerkWebhookService;
-import com.example.echo_api.service.session.SessionService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,14 +19,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ClerkController {
 
-    private final SessionService sessionService;
     private final ClerkSyncService clerkSyncService;
     private final ClerkWebhookService clerkWebhookService;
 
     @PostMapping(ApiConfig.Clerk.ONBOARDING)
     public ResponseEntity<User> clerkOnboarding() {
-        String clerkId = sessionService.getAuthenticatedUserClerkId();
-        User user = clerkSyncService.syncUser(clerkId);
+        User user = clerkSyncService.onboardAuthenticatedUser();
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 

@@ -1,20 +1,35 @@
 package com.example.echo_api.service.clerk.sync;
 
+import com.example.echo_api.exception.custom.internalserver.ClerkException;
 import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEvent;
 import com.example.echo_api.persistence.model.user.User;
 
 public interface ClerkSyncService {
 
     /**
-     * Synchronises a user from Clerk by persisting a local {@link User} that
-     * matches the provided unique identifier. Also updates that Clerk user
-     * {@code external_id} and {@code public_metadata} for a 2-way sync.
+     * Completes the onboarding process for the currently authenticated user.
      * 
-     * @param clerkId the unique identifier from Clerk
-     * @return the persisted {@link User}, or {@code null} if a {@link User} with
-     *         the given {@code clerkId} already exists
+     * <p>
+     * This method performs a 2-way sync between the local database and Clerk:
+     * 
+     * <ol>
+     * <li>Ensures a corresponding local {@link User} exists by performing a db
+     * upsert.
+     * <li>Marks the Clerk user as onboarded by appending the local {@link User}
+     * UUID to the {@code external_id} field and adding an
+     * {@code onboardingComplete} key to the {@code public_metadata} map.
+     * </ol>
+     * 
+     * <p>
+     * If the authenticated user is already onboarded (as determined by the token
+     * claims), then this operation will return early with {@code null}.
+     * 
+     * @return the persisted {@link User}, or {@code null} if the authenticated user
+     *         is already indicated as having been onboarded
+     * @throws ClerkException if there is an issue when communicating with the Clerk
+     *                        SDK
      */
-    public User syncUser(String clerkId);
+    public User onboardAuthenticatedUser();
 
     /**
      * Process a {@link ClerkWebhookEvent} according to its type, ensuring local
