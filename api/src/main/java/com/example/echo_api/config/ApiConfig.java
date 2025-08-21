@@ -23,6 +23,15 @@ public final class ApiConfig {
     }
 
     @NoArgsConstructor(access = PRIVATE)
+    public static final class Dev {
+
+        private static final String ROOT = BASE_URL + "/dev";
+        public static final String PERSIST_ALL = ROOT + "/clerk/persist-all";
+        public static final String SYNC_ALL = ROOT + "/clerk/sync-all";
+
+    }
+
+    @NoArgsConstructor(access = PRIVATE)
     public static final class Profile {
 
         private static final String ROOT = BASE_URL + "/profile";

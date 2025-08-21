@@ -33,6 +33,7 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(req -> req
                 .requestMatchers("/public").permitAll()
+                .requestMatchers("/api/v1/dev/**").permitAll()
                 .requestMatchers(HttpMethod.POST, ApiConfig.Clerk.WEBHOOK).permitAll()
                 .anyRequest().authenticated()
             )
