@@ -23,7 +23,6 @@ class ClerkWebhookEventTypeTest {
     @ValueSource(strings = {
         "user___updated", // wrong format
         "user___deleted", // wrong format
-        "user.created", // unsupported event type
         "subscription.active", // unsupported event type
         "some_random!String_%&^" // self explanatory
     })
