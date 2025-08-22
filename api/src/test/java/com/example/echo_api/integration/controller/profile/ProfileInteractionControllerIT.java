@@ -31,7 +31,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     void ProfileController_Follow_Return204NoContent() {
         // api: POST /api/v1/profile/{id}/follow ==> 204 : No Content
         String path = ApiConfig.Profile.FOLLOW_BY_ID;
-        UUID id = otherUser.getId();
+        UUID id = mockUser.getId();
 
         ResponseEntity<Void> response = restTemplate.postForEntity(path, null, Void.class, id);
 
@@ -63,7 +63,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     void ProfileController_Follow_Throw409SelfActionException() {
         // api: POST /api/v1/profile/{id}/follow ==> 409 : SelfAction
         String path = ApiConfig.Profile.FOLLOW_BY_ID;
-        UUID id = authenticatedUser.getId();
+        UUID id = authUser.getId();
 
         ResponseEntity<ErrorDTO> response = restTemplate.postForEntity(path, null, ErrorDTO.class, id);
 
@@ -83,7 +83,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     void ProfileController_Follow_Throw409AlreadyFollowingException() {
         // api: POST /api/v1/profile/{id}/follow ==> 409 : AlreadyFollowing
         String path = ApiConfig.Profile.FOLLOW_BY_ID;
-        UUID id = otherUser.getId();
+        UUID id = mockUser.getId();
 
         // follow the user to create a follow relationship in the db
         ResponseEntity<Void> response1 = restTemplate.postForEntity(path, null, Void.class, id);
@@ -111,7 +111,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     void ProfileController_Unfollow_Return204NoContent() {
         // api: DELETE /api/v1/profile/{id}/follow ==> 204 : No Content
         String path = ApiConfig.Profile.FOLLOW_BY_ID;
-        UUID id = otherUser.getId();
+        UUID id = mockUser.getId();
 
         // follow the user to create a follow relationship in the db
         ResponseEntity<Void> followResponse = restTemplate.postForEntity(path, null, Void.class, id);
@@ -151,7 +151,7 @@ class ProfileInteractionControllerIT extends IntegrationTest {
     void ProfileController_Unfollow_Throw409SelfActionException() {
         // api: DELETE /api/v1/profile/{id}/follow ==> 409 : SelfAction
         String path = ApiConfig.Profile.FOLLOW_BY_ID;
-        UUID id = authenticatedUser.getId();
+        UUID id = authUser.getId();
 
         ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, id);
 

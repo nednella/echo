@@ -47,23 +47,23 @@ class PostViewControllerIT extends IntegrationTest {
     @BeforeAll
     void setup() {
         // get by id, homepage feed, discover feed
-        post = new Post(authenticatedUser.getId(), "Test post.");
+        post = new Post(authUser.getId(), "Test post.");
         post = postRepository.save(post);
 
         // post replies, replies feed
-        reply = new Post(post.getId(), otherUser.getId(), "Test reply.");
+        reply = new Post(post.getId(), mockUser.getId(), "Test reply.");
         reply = postRepository.save(reply);
 
         // homepage feed, discover feed
-        homepagePost = new Post(authenticatedUser.getId(), "This post will appear on the homepage feed.");
+        homepagePost = new Post(authUser.getId(), "This post will appear on the homepage feed.");
         homepagePost = postRepository.save(homepagePost);
 
         // discover feed
-        discoverPost = new Post(otherUser.getId(), "The post will appear on the discover feed.");
+        discoverPost = new Post(mockUser.getId(), "The post will appear on the discover feed.");
         discoverPost = postRepository.save(discoverPost);
 
         // likes feed
-        PostLike like = new PostLike(reply.getId(), authenticatedUser.getId());
+        PostLike like = new PostLike(reply.getId(), authUser.getId());
         postLikeRepository.save(like);
     }
 
@@ -188,7 +188,7 @@ class PostViewControllerIT extends IntegrationTest {
     void PostViewController_GetPostsByProfileId_ReturnPageDtoOfPostDto() {
         // api: GET /api/v1/feed/profile/{id} ==> : 200 : PageDTO<PostDTO>
         String path = ApiConfig.Feed.POSTS_BY_PROFILE_ID + "?offset=0&limit=20";
-        UUID id = authenticatedUser.getId();
+        UUID id = authUser.getId();
 
         ParameterizedTypeReference<PageDTO<PostDTO>> typeRef = new ParameterizedTypeReference<PageDTO<PostDTO>>() {};
         ResponseEntity<PageDTO<PostDTO>> response = restTemplate.exchange(path, GET, null, typeRef, id);
@@ -228,7 +228,7 @@ class PostViewControllerIT extends IntegrationTest {
     void PostViewController_GetRepliesByProfileId_ReturnPageDtoOfPostDto() {
         // api: GET /api/v1/feed/profile/{id}/replies ==> : 200 : PageDTO<PostDTO>
         String path = ApiConfig.Feed.REPLIES_BY_PROFILE_ID + "?offset=0&limit=20";
-        UUID id = otherUser.getId();
+        UUID id = mockUser.getId();
 
         ParameterizedTypeReference<PageDTO<PostDTO>> typeRef = new ParameterizedTypeReference<PageDTO<PostDTO>>() {};
         ResponseEntity<PageDTO<PostDTO>> response = restTemplate.exchange(path, GET, null, typeRef, id);
@@ -267,7 +267,7 @@ class PostViewControllerIT extends IntegrationTest {
     void PostViewController_GetLikesByProfileId_ReturnPageDtoOfPostDto() {
         // api: GET /api/v1/feed/profile/{id}/likes ==> : 200 : PageDTO<PostDTO>
         String path = ApiConfig.Feed.LIKES_BY_PROFILE_ID + "?offset=0&limit=20";
-        UUID id = authenticatedUser.getId();
+        UUID id = authUser.getId();
 
         ParameterizedTypeReference<PageDTO<PostDTO>> typeRef = new ParameterizedTypeReference<PageDTO<PostDTO>>() {};
         ResponseEntity<PageDTO<PostDTO>> response = restTemplate.exchange(path, GET, null, typeRef, id);
@@ -306,7 +306,7 @@ class PostViewControllerIT extends IntegrationTest {
     void PostViewController_GetMentionsOfProfileId_ReturnPageDtoOfPostDto() {
         // api: GET /api/v1/feed/profile/{id}/mentions ==> : 200 : PageDTO<PostDTO>
         String path = ApiConfig.Feed.MENTIONS_OF_PROFILE_ID + "?offset=0&limit=20";
-        UUID id = authenticatedUser.getId();
+        UUID id = authUser.getId();
 
         ParameterizedTypeReference<PageDTO<PostDTO>> typeRef = new ParameterizedTypeReference<PageDTO<PostDTO>>() {};
         ResponseEntity<PageDTO<PostDTO>> response = restTemplate.exchange(path, GET, null, typeRef, id);

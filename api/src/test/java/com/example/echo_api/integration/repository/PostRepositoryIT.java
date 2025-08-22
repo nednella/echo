@@ -63,11 +63,11 @@ class PostRepositoryIT extends RepositoryTest {
     private Post replyWithOpResponse;
     private Post replyWithLike;
 
-    private Profile createProfile(String username, String password) {
-        User user = User.fromExternalSource("placeholderExtId1");
+    private Profile createProfile(String externalId, String username) {
+        User user = User.fromExternalSource(externalId);
         user = userRepository.save(user);
 
-        Profile profile = Profile.forTest(user.getId(), "username");
+        Profile profile = Profile.forTest(user.getId(), username);
         return profileRepository.save(profile);
     }
 
@@ -91,8 +91,8 @@ class PostRepositoryIT extends RepositoryTest {
 
     @BeforeAll // @formatter:off
     void setup() {
-        self = createProfile("self", "password");
-        randomUser = createProfile("random_user", "password");
+        self = createProfile("user_someUniqueId1", "self");
+        randomUser = createProfile("user_someUniqueId2", "random_user");
 
         // Create root posts (no parent)
         postWithReplies = createPost(null, self.getId(), "This post has some replies.");

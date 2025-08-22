@@ -42,14 +42,14 @@ class ProfileViewControllerIT extends IntegrationTest {
         // assert body
         ProfileDTO body = response.getBody();
         assertNotNull(body);
-        assertEquals(authenticatedUser.getUsername(), body.username());
+        assertEquals(AUTH_USER_USERNAME, body.username());
     }
 
     @Test
     void ProfileController_GetByUsername_Return200ProfileDTO() {
         // api: GET /api/v1/profile/{username} ==> 200 : ProfileDTO
         String path = ApiConfig.Profile.GET_BY_USERNAME;
-        String username = authenticatedUser.getUsername();
+        String username = AUTH_USER_USERNAME;
 
         ResponseEntity<ProfileDTO> response = restTemplate.getForEntity(path, ProfileDTO.class, username);
 
@@ -88,7 +88,7 @@ class ProfileViewControllerIT extends IntegrationTest {
         // api: GET /api/v1/profile/{id}/followers ==> 200 : PageDTO<ProfileDTO>
         String followPath = ApiConfig.Profile.FOLLOW_BY_ID;
         String getFollowersPath = ApiConfig.Profile.GET_FOLLOWERS_BY_ID + "?offset=0&limit=1";
-        UUID id = otherUser.getId();
+        UUID id = mockUser.getId();
 
         // follow target user to create a follow relationship in the db
         ResponseEntity<Void> response1 = restTemplate.postForEntity(followPath, null, Void.class, id);
@@ -111,14 +111,14 @@ class ProfileViewControllerIT extends IntegrationTest {
         assertNull(data.next());
         assertEquals(1, data.total());
         assertEquals(1, data.items().size());
-        assertEquals(authenticatedUser.getUsername(), data.items().get(0).username());
+        assertEquals(AUTH_USER_USERNAME, data.items().get(0).username());
     }
 
     @Test
     void ProfileController_GetFollowers_Return200PageOfEmpty() {
         // api: GET /api/v1/profile/{id}/followers ==> 200 : PageDTO<ProfileDTO>
         String path = ApiConfig.Profile.GET_FOLLOWERS_BY_ID;
-        UUID id = otherUser.getId();
+        UUID id = mockUser.getId();
 
         ParameterizedTypeReference<PageDTO<ProfileDTO>> typeRef = new ParameterizedTypeReference<PageDTO<ProfileDTO>>() {};
         ResponseEntity<PageDTO<ProfileDTO>> response = restTemplate.exchange(path, GET, null, typeRef, id);
@@ -160,8 +160,8 @@ class ProfileViewControllerIT extends IntegrationTest {
         // api: GET /api/v1/profile/{id}/following ==> 400 : PageDTO<ProfileDTO>
         String followPath = ApiConfig.Profile.FOLLOW_BY_ID;
         String getFollowingPath = ApiConfig.Profile.GET_FOLLOWING_BY_ID + "?offset=0&limit=1";
-        UUID followId = otherUser.getId();
-        UUID getFollowingId = authenticatedUser.getId();
+        UUID followId = mockUser.getId();
+        UUID getFollowingId = authUser.getId();
 
         // follow target user to create a follow relationship in the db
         ResponseEntity<ErrorDTO> response1 = restTemplate.postForEntity(followPath, null, ErrorDTO.class, followId);
@@ -196,7 +196,7 @@ class ProfileViewControllerIT extends IntegrationTest {
     void ProfileController_GetFollowing_Return200PageOfEmpty() {
         // api: GET /api/v1/profile/{id}/following ==> 400 : PageDTO<ProfileDTO>
         String path = ApiConfig.Profile.GET_FOLLOWING_BY_ID;
-        UUID id = otherUser.getId();
+        UUID id = mockUser.getId();
 
         ParameterizedTypeReference<PageDTO<ProfileDTO>> typeRef = new ParameterizedTypeReference<PageDTO<ProfileDTO>>() {};
         ResponseEntity<PageDTO<ProfileDTO>> response = restTemplate.exchange(path, GET, null, typeRef, id);

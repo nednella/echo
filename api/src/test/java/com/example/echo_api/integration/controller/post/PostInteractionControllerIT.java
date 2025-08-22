@@ -36,7 +36,7 @@ class PostInteractionControllerIT extends IntegrationTest {
 
     @BeforeAll
     void setup() {
-        post = new Post(authenticatedUser.getId(), "Test post.");
+        post = new Post(authUser.getId(), "Test post.");
         post = postRepository.save(post);
     }
 

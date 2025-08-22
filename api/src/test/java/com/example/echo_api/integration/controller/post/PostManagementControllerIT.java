@@ -41,10 +41,10 @@ class PostManagementControllerIT extends IntegrationTest {
 
     @BeforeAll
     void setup() {
-        selfPost = new Post(authenticatedUser.getId(), "Test post.");
+        selfPost = new Post(authUser.getId(), "Test post.");
         selfPost = postRepository.save(selfPost);
 
-        notSelfPost = new Post(otherUser.getId(), "Test post.");
+        notSelfPost = new Post(mockUser.getId(), "Test post.");
         notSelfPost = postRepository.save(notSelfPost);
     }
 
