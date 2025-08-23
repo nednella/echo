@@ -156,6 +156,24 @@ class PageMapperTest {
         }
 
         @Test
+        void previous_CorrectlyReducesOffsetEqualToLimit_WhenPreviousPageAvailable() {
+            // arrange
+            int offset = 20;
+            int limit = 20;
+            int totalItemsAvailable = 40;
+            List<String> items = constructListFrom(offset, limit, totalItemsAvailable);
+            Page<String> page = pageOf(items, offset, limit, totalItemsAvailable);
+            String expectedPagination = String.format("?offset=%d&limit=%d", offset - limit, offset);
+
+            // act
+            PageDTO<String> dto = PageMapper.toDTO(page, BASE_URI);
+
+            // assert
+            assertThat(page.hasPrevious()).isTrue(); // assert previous items available
+            assertThat(dto.previous()).asString().contains(expectedPagination);
+        }
+
+        @Test
         void previous_PreservesExistingUnrelatedQueryParams() {
             // arrange
             int offset = 20;
@@ -262,6 +280,24 @@ class PageMapperTest {
             // assert
             assertThat(page.isLast()).isTrue(); // assert no more items available
             assertThat(dto.next()).isNull();
+        }
+
+        @Test
+        void next_CorrectlyIncreasesOffsetEqualToLimit_WhenNextPageAvailable() {
+            // arrange
+            int offset = 20;
+            int limit = 20;
+            int totalItemsAvailable = 41;
+            List<String> items = constructListFrom(offset, limit, totalItemsAvailable);
+            Page<String> page = pageOf(items, offset, limit, totalItemsAvailable);
+            String expectedPagination = String.format("?offset=%d&limit=%d", offset + limit, offset);
+
+            // act
+            PageDTO<String> dto = PageMapper.toDTO(page, BASE_URI);
+
+            // assert
+            assertThat(page.hasNext()).isTrue(); // assert more items available
+            assertThat(dto.next()).asString().contains(expectedPagination);
         }
 
         @Test
