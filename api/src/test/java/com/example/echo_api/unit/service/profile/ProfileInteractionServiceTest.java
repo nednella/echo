@@ -1,6 +1,7 @@
 package com.example.echo_api.unit.service.profile;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.Optional;
@@ -106,7 +107,7 @@ class ProfileInteractionServiceTest {
         verify(followRepository, never()).save(any(Follow.class));
     }
 
-    @Test // TODO: remove tests after unfollow refactored to idempotent operation
+    @Test
     void unfollow_ReturnVoid() {
         // arrange
         UUID id = target.getId();
@@ -119,7 +120,7 @@ class ProfileInteractionServiceTest {
         verify(followRepository).deleteByFollowerIdAndFollowedId(authenticatedUserId, id);
     }
 
-    @Test
+    @Test // TODO: remove when unfollow is refactored to idempotent operation
     void unfollow_ThrowResourceNotFound() {
         // arrange
         UUID id = UUID.randomUUID();
@@ -132,7 +133,7 @@ class ProfileInteractionServiceTest {
         verify(followRepository, never()).deleteByFollowerIdAndFollowedId(authenticatedUserId, id);
     }
 
-    @Test
+    @Test // TODO: remove when unfollow is refactored to idempotent operation
     void unfollow_ThrowSelfActionException() {
         // arrange
         UUID id = target.getId();

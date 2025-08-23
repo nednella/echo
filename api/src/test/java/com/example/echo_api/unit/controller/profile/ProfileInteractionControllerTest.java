@@ -138,7 +138,7 @@ class ProfileInteractionControllerTest {
         verify(profileInteractionService).unfollow(id);
     }
 
-    @Test
+    @Test // TODO: remove when unfollow is refactored to idempotent operation
     void unfollow_Returns404NotFound_WhenProfileByIdDoesNotExist() {
         // api: DELETE /api/v1/profile/{id}/follow ==> 404 Not Found : ErrorDTO
         UUID id = UUID.randomUUID();
