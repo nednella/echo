@@ -121,4 +121,22 @@ class OffsetLimitRequestTest {
         assertThat(first.getOffset()).isZero();
     }
 
+    @Test
+    void hasPrevious_ShouldReturnTrueWhenOffsetGreaterThanLimit() {
+        int offset = 100;
+        int limit = 10;
+        var page = new OffsetLimitRequest(offset, limit);
+
+        assertThat(page.hasPrevious()).isTrue();
+    }
+
+    @Test
+    void hasPrevious_ShouldReturnTrueWhenOffsetLessThanLimit() {
+        int offset = 6;
+        int limit = 10;
+        var page = new OffsetLimitRequest(offset, limit);
+
+        assertThat(page.hasPrevious()).isFalse();
+    }
+
 }
