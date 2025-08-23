@@ -11,6 +11,9 @@ import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserDelet
 import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpsert;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Unit test class for {@link ClerkWebhookDeserializer}.
+ */
 class ClerkWebhookEventDeserializerTest {
 
     private ObjectMapper mapper = new ObjectMapper();

@@ -26,6 +26,9 @@ import com.example.echo_api.service.clerk.sync.ClerkSyncServiceImpl;
 import com.example.echo_api.service.session.SessionService;
 import com.example.echo_api.service.user.UserService;
 
+/**
+ * Unit test class for {@link ClerkSyncService}.
+ */
 @ExtendWith(MockitoExtension.class)
 class ClerkSyncServiceTest {
 

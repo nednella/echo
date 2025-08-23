@@ -10,6 +10,9 @@ import com.example.echo_api.persistence.model.image.Image;
 import com.example.echo_api.persistence.model.image.ImageType;
 import com.example.echo_api.util.cloudinary.CloudinaryUploadSuccess;
 
+/**
+ * Unit test class for {@link ImageMapper}.
+ */
 class ImageMapperTest {
 
     @Test

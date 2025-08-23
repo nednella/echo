@@ -20,6 +20,9 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import com.example.echo_api.config.ClerkConfig;
 import com.example.echo_api.service.session.SessionServiceImpl;
 
+/**
+ * Unit test class for {@link SessionService}.
+ */
 @ExtendWith(MockitoExtension.class)
 class SessionServiceTest {
 

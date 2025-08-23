@@ -21,6 +21,9 @@ import com.example.echo_api.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.svix.Webhook;
 
+/**
+ * Unit test class for {@link ClerkWebhookService}.
+ */
 @ExtendWith(MockitoExtension.class)
 class ClerkWebhookServiceTest {
 

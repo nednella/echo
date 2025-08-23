@@ -8,6 +8,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEventType;
 
+/**
+ * Unit test class for {@link ClerkWebhookEventType}.
+ */
 class ClerkWebhookEventTypeTest {
 
     @ParameterizedTest

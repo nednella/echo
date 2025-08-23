@@ -33,6 +33,9 @@ import com.example.echo_api.security.ClerkOnboardingFilter;
 
 import jakarta.servlet.FilterChain;
 
+/**
+ * Unit test class for {@link ClerkOnboardingFilter}.
+ */
 @ExtendWith(MockitoExtension.class)
 class ClerkOnboardingFilterTest {
 

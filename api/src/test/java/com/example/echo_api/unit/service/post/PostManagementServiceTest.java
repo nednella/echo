@@ -59,7 +59,7 @@ class PostManagementServiceTest {
     }
 
     @Test
-    void PostManagementService_Create_SavesNoEntities() {
+    void create_SavesNoEntities_WhenPostTextContainsNoEntities() {
         // arrange
         var request = new CreatePostDTO(
             UUID.randomUUID(),
@@ -77,12 +77,12 @@ class PostManagementServiceTest {
 
         // act & assert
         assertDoesNotThrow(() -> postManagementService.create(request));
-        verify(postRepository, times(1)).existsById(request.parentId());
-        verify(postEntityRepository, times(1)).saveAll(List.of()); // empty list of entities
+        verify(postRepository).existsById(request.parentId());
+        verify(postEntityRepository).saveAll(List.of()); // empty list of entities
     }
 
     @Test
-    void PostManagementService_Create_SavesMultipleEntities() {
+    void create_SavesMultipleEntities_WhenPostTextContainsMultipleEntities() {
         // arrange
         var request = new CreatePostDTO(
             UUID.randomUUID(),
@@ -104,8 +104,8 @@ class PostManagementServiceTest {
 
         // act & assert
         assertDoesNotThrow(() -> postManagementService.create(request));
-        verify(postRepository, times(1)).existsById(request.parentId());
-        verify(postEntityRepository, times(1)).saveAll(postEntityCaptor.capture());
+        verify(postRepository).existsById(request.parentId());
+        verify(postEntityRepository).saveAll(postEntityCaptor.capture());
 
         // validate captured postEntityRepository.saveAll argument
         List<PostEntity> captured = postEntityCaptor.getValue();
@@ -114,7 +114,7 @@ class PostManagementServiceTest {
     }
 
     @Test
-    void PostManagementService_Create_ThrowInvalidParentIdException() {
+    void create_ThrowsInvalidParentId_WhenPostByParentIdDoesNotExist() {
         var request = new CreatePostDTO(
             UUID.randomUUID(),
             "Test post.");
@@ -125,12 +125,12 @@ class PostManagementServiceTest {
 
         // act & assert
         assertThrows(InvalidParentIdException.class, () -> postManagementService.create(request));
-        verify(postRepository, times(1)).existsById(request.parentId());
+        verify(postRepository).existsById(request.parentId());
         verify(postEntityRepository, never()).saveAll(anyList());
     }
 
     @Test
-    void PostManagementService_Create_ThrowIllegalArgumentException() {
+    void create_ThrowIllegalArgument_WhenPostTextIsNull() {
         // arrange
         var request = new CreatePostDTO(
             UUID.randomUUID(),
@@ -148,12 +148,12 @@ class PostManagementServiceTest {
 
         // act & assert
         assertThrows(IllegalArgumentException.class, () -> postManagementService.create(request));
-        verify(postRepository, times(1)).existsById(request.parentId());
+        verify(postRepository).existsById(request.parentId());
         verify(postEntityRepository, never()).saveAll(anyList());
     }
 
     @Test
-    void PostManagementService_Delete_ReturnVoid() {
+    void delete_ReturnVoid_WhenPostSuccessfullyDeleted() {
         // arrange
         var id = UUID.randomUUID();
         var post = new Post(authenticatedUserId, "Test post."); // post belonging to authenticatedUser
@@ -163,11 +163,11 @@ class PostManagementServiceTest {
 
         // act & assert
         assertDoesNotThrow(() -> postManagementService.delete(id));
-        verify(postRepository, times(1)).findById(id);
+        verify(postRepository).findById(id);
     }
 
     @Test
-    void PostManagementService_Delete_ThrowResourceOwnershipException() {
+    void delete_ThrowResourceOwnership_WhenPostByIdNotOwnedByYou() {
         // arrange
         var id = UUID.randomUUID();
         var post = new Post(UUID.randomUUID(), "Test post."); // post belonging to another user
@@ -177,7 +177,7 @@ class PostManagementServiceTest {
 
         // act & assert
         assertThrows(ResourceOwnershipException.class, () -> postManagementService.delete(id));
-        verify(postRepository, times(1)).findById(id);
+        verify(postRepository).findById(id);
     }
 
 }

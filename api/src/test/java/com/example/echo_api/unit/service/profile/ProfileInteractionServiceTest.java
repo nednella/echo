@@ -53,12 +53,8 @@ class ProfileInteractionServiceTest {
         target = Profile.forTest(UUID.randomUUID(), "target");
     }
 
-    /**
-     * Test ensures {@link ProfileInteractionServiceImpl#follow(UUID)} does not
-     * throw any exceptions when called with a valid {@code id}.
-     */
     @Test
-    void ProfileInteractionService_Follow_ReturnVoid() {
+    void follow_ReturnsVoid_WhenFollowSuccessfullyCreated() {
         // arrange
         UUID id = target.getId();
 
@@ -67,15 +63,11 @@ class ProfileInteractionServiceTest {
 
         // act & assert
         assertDoesNotThrow(() -> profileInteractionService.follow(id));
-        verify(followRepository, times(1)).save(any(Follow.class));
+        verify(followRepository).save(any(Follow.class));
     }
 
-    /**
-     * Test ensures {@link ProfileInteractionServiceImpl#follow(UUID)} throws
-     * {@link ResourceNotFoundException} when called with an invalid {@code id}.
-     */
     @Test
-    void ProfileInteractionService_Follow_ThrowResourceNotFound() {
+    void follow_ThrowsResourceNotFound_WhenProfileByIdDoesNotExist() {
         // arrange
         UUID id = UUID.randomUUID();
 
@@ -84,16 +76,11 @@ class ProfileInteractionServiceTest {
 
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> profileInteractionService.follow(id));
-        verify(followRepository, times(0)).save(any(Follow.class));
+        verify(followRepository, never()).save(any(Follow.class));
     }
 
-    /**
-     * Test ensures {@link ProfileInteractionServiceImpl#follow(UUID)} throws
-     * {@link SelfActionException} when the supplied {@code id} is the {@code id} of
-     * the authenticated user.
-     */
     @Test
-    void ProfileInteractionService_Follow_ThrowSelfActionException() {
+    void follow_ThrowsSelfAction_WhenProfileByIdIsYou() {
         // arrange
         UUID id = target.getId();
 
@@ -102,16 +89,11 @@ class ProfileInteractionServiceTest {
 
         // act & assert
         assertThrows(SelfActionException.class, () -> profileInteractionService.follow(id));
-        verify(followRepository, times(0)).save(any(Follow.class));
+        verify(followRepository, never()).save(any(Follow.class));
     }
 
-    /**
-     * Test ensures {@link ProfileInteractionServiceImpl#follow(UUID)} throws
-     * {@link AlreadyFollowingException} when the supplied {@code id} is already
-     * followed by the authenticated user.
-     */
     @Test
-    void ProfileInteractionService_Follow_ThrowAlreadyFollowingException() {
+    void follow_ThrowsAlreadyFollowing_WhenProfileByIdAlreadyFollowedByYou() {
         // arrange
         UUID id = target.getId();
 
@@ -121,15 +103,11 @@ class ProfileInteractionServiceTest {
 
         // act & assert
         assertThrows(AlreadyFollowingException.class, () -> profileInteractionService.follow(id));
-        verify(followRepository, times(0)).save(any(Follow.class));
+        verify(followRepository, never()).save(any(Follow.class));
     }
 
-    /**
-     * Test ensures {@link ProfileInteractionServiceImpl#unfollow(UUID)} does not
-     * throw any exceptions when called with a valid {@code id}.
-     */
-    @Test
-    void ProfileInteractionService_Unfollow_ReturnVoid() {
+    @Test // TODO: remove tests after unfollow refactored to idempotent operation
+    void unfollow_ReturnVoid() {
         // arrange
         UUID id = target.getId();
 
@@ -138,15 +116,11 @@ class ProfileInteractionServiceTest {
 
         // act & assert
         assertDoesNotThrow(() -> profileInteractionService.unfollow(id));
-        verify(followRepository, times(1)).deleteByFollowerIdAndFollowedId(authenticatedUserId, id);
+        verify(followRepository).deleteByFollowerIdAndFollowedId(authenticatedUserId, id);
     }
 
-    /**
-     * Test ensures {@link ProfileInteractionServiceImpl#unfollow(UUID)} throws
-     * {@link ResourceNotFoundException} when called with an invalid {@code id}.
-     */
     @Test
-    void ProfileInteractionService_Unfollow_ThrowResourceNotFound() {
+    void unfollow_ThrowResourceNotFound() {
         // arrange
         UUID id = UUID.randomUUID();
 
@@ -155,16 +129,11 @@ class ProfileInteractionServiceTest {
 
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> profileInteractionService.unfollow(id));
-        verify(followRepository, times(0)).deleteByFollowerIdAndFollowedId(authenticatedUserId, id);
+        verify(followRepository, never()).deleteByFollowerIdAndFollowedId(authenticatedUserId, id);
     }
 
-    /**
-     * Test ensures {@link ProfileInteractionServiceImpl#unfollow(UUID)} throws
-     * {@link SelfActionException} when the supplied {@code id} is the {@code id} of
-     * the authenticated user.
-     */
     @Test
-    void ProfileInteractionService_Unfollow_ThrowSelfActionException() {
+    void unfollow_ThrowSelfActionException() {
         // arrange
         UUID id = target.getId();
 
@@ -173,7 +142,7 @@ class ProfileInteractionServiceTest {
 
         // act & assert
         assertThrows(SelfActionException.class, () -> profileInteractionService.unfollow(id));
-        verify(followRepository, times(0)).deleteByFollowerIdAndFollowedId(authenticatedUserId, id);
+        verify(followRepository, never()).deleteByFollowerIdAndFollowedId(authenticatedUserId, id);
     }
 
 }

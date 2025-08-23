@@ -24,7 +24,7 @@ class PostEntityExtractorTest {
     private static final UUID mockPostId = UUID.randomUUID();
 
     @Test
-    void PostEntityExtractor_Extract_ThrowsIllegalArgumentException() {
+    void extract_ThrowsIllegalArgument_WhenTextIsNull() {
         // arrange
         String text = null;
 
@@ -33,7 +33,7 @@ class PostEntityExtractorTest {
     }
 
     @Test
-    void PostEntityExtractor_Extract_IgnoresCashtags() {
+    void extract_IgnoresCashtags_WhenTextCotainsCashtags() {
         // arrange
         String text = "$btc!      $cshtag  $AAPL, $etc";
 
@@ -49,14 +49,14 @@ class PostEntityExtractorTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "          ", // only whitespace chars
-            "\n\n", // newline chars
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vitae ex quis purus pharetra.", // basic text
-            "#Yo# #Invalid#Hashtags #$ #^   #*  #  ##  ###", // invalid hashtags
-            "@# @john_doe@john_doe! @|$ername @^st @invalid@ @  @@  @@@", // invalid mentions
-            "$www.google.com. u$ername.com d|scord.*gg @^st @invalid@ @  @@  @@@" // invalid urls
+        "          ", // only whitespace chars
+        "\n\n", // newline chars
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vitae ex quis purus pharetra.", // basic text
+        "#Yo# #Invalid#Hashtags #$ #^   #*  #  ##  ###", // invalid hashtags
+        "@# @john_doe@john_doe! @|$ername @^st @invalid@ @  @@  @@@", // invalid mentions
+        "$www.google.com. u$ername.com d|scord.*gg @^st @invalid@ @  @@  @@@" // invalid urls
     })
-    void PostEntityExtractor_Extract_ContainsNoEntitiesOrInvalidEntities(String text) {
+    void extract_ReturnsNoEntities_WhenTextDoesNotContainAnyValidEntities(String text) {
         // act
         List<PostEntity> entities = PostEntityExtractor.extract(mockPostId, text);
 
@@ -66,7 +66,7 @@ class PostEntityExtractorTest {
     }
 
     @Test
-    void PostEntityExtractor_Extract_ContainsMultipleValidEntities() {
+    void extract_ReturnsEntities_WhenTextContainsMultipleValidEntities() {
         // arrange
         String text = "Hi @john_doe, @admin(:D) and @test! Cool #Java #SpringBoot application! #dev #test GH link github.com/abc";
 
@@ -96,7 +96,7 @@ class PostEntityExtractorTest {
     }
 
     @Test
-    void PostEntityExtractor_Extract_ContainsValidHashtagAtStart() {
+    void extract_ReturnsEntities_WhenTextContainsValidHashtagAtStart() {
         // arrange
         String text = "#Hello!      whitespace #valid, but#invalid.";
 
@@ -114,7 +114,7 @@ class PostEntityExtractorTest {
     }
 
     @Test
-    void PostEntityExtractor_Extract_ContainsValidMentionAtStart() {
+    void extract_ReturnsEntities_WhenTextContainsValidMentionAtStart() {
         // arrange
         String text = "@Hello!      whitespace @valid, but@invalid.";
 
@@ -132,7 +132,7 @@ class PostEntityExtractorTest {
     }
 
     @Test
-    void PostEntityExtractor_Extract_ContainsValidUrlAtStart() {
+    void extract_ReturnsEntities_WhenTextContainsValidUrlAtStart() {
         // arrange
         String text = "https://www.google.com      and my github github.com, but@invalid.com";
 
@@ -150,7 +150,7 @@ class PostEntityExtractorTest {
     }
 
     @Test
-    void PostEntityExtractor_Extract_ContainsValidHashtagAtEnd() {
+    void extract_ReturnsEntities_WhenTextContainsValidHashtagAtEnd() {
         // arrange
         String text = "This is a test string with a valid hashtag at the #end";
 
@@ -167,7 +167,7 @@ class PostEntityExtractorTest {
     }
 
     @Test
-    void PostEntityExtractor_Extract_ContainsValidMentionAtEnd() {
+    void extract_ReturnsEntities_WhenTextContainsValidMentionAtEnd() {
         // arrange
         String text = "This is a test string with a valid mention at the @end";
 
@@ -184,7 +184,7 @@ class PostEntityExtractorTest {
     }
 
     @Test
-    void PostEntityExtractor_Extract_ContainsValidUrlAtEnd() {
+    void extract_ReturnsEntities_WhenTextContainsValidUrlAtEnd() {
         // arrange
         String text = "This is a test string with a valid url at the end.gg";
 
@@ -201,7 +201,7 @@ class PostEntityExtractorTest {
     }
 
     @Test
-    void PostEntityExtractor_Extract_ContainsValidHashtagAfterLineBreak() {
+    void extract_ReturnsEntities_WhenTextContainsValidHashtagAfterLineBreak() {
         // arrange
         String text = "#Hello! \n#NewLineValidHashtag, testing...";
 
@@ -221,7 +221,7 @@ class PostEntityExtractorTest {
     }
 
     @Test
-    void PostEntityExtractor_Extract_ContainsValidMentionAfterLineBreak() {
+    void extract_ReturnsEntities_WhenTextContainsValidMentionAfterLineBreak() {
         // arrange
         String text = "@admin! \n@valid_user1, testing...";
 
@@ -239,7 +239,7 @@ class PostEntityExtractorTest {
     }
 
     @Test
-    void PostEntityExtractor_Extract_ContainsValidUrlAfterLineBreak() {
+    void extract_ReturnsEntities_WhenTextContainsValidUrlAfterLineBreak() {
         // arrange
         String text = "mysite.au! \ndiscord.gg, testing...";
 
@@ -257,7 +257,7 @@ class PostEntityExtractorTest {
     }
 
     @Test
-    void PostEntityExtractor_Extract_ContainsValidHashtagsBeforeAndAfterPunctuation() {
+    void extract_ReturnsEntities_WhenTextContainsValidHashtagsBeforeAndAfterPunctuation() {
         // arrange
         String text = "#HashtagFollowedByComma, .#AnotherValidHashtag and, #ValidHashtag.";
 
@@ -276,7 +276,7 @@ class PostEntityExtractorTest {
     }
 
     @Test
-    void PostEntityExtractor_Extract_ContainsValidMentionsBeforeAndAfterPunctuation() {
+    void extract_ReturnsEntities_WhenTextContainsValidMentionsBeforeAndAfterPunctuation() {
         // arrange
         String text = "Mention followed by a @Comma, .@ThisIsAValidMention_ and, @Also_Valid1Mention.";
 
@@ -295,7 +295,7 @@ class PostEntityExtractorTest {
     }
 
     @Test
-    void PostEntityExtractor_Extract_ContainsValidUrlsBeforeAndAfterPunctuation() {
+    void extract_ReturnsEntities_WhenTextContainsValidUrlsBeforeAndAfterPunctuation() {
         // arrange
         String text = "Url followed by a https://comma.co.uk, ThisIsAValidUrl.gg and, www.Also3ValidUrl.co.";
 
@@ -314,7 +314,7 @@ class PostEntityExtractorTest {
     }
 
     @Test
-    void PostEntityExtractor_Extract_ContainsExtremelyLongValidHashtag() {
+    void extract_ReturnsEntities_WhenTextContainsExtremelyLongValidHashtag() {
         // arrange
         String text = "This text contains a #VeryVeryVeryLongHashtagWith_SomeAdditionalWord_Characters_And_Numbers_123_But_No_Non_Word_Characters_";
 
@@ -331,7 +331,7 @@ class PostEntityExtractorTest {
     }
 
     @Test
-    void PostEntityExtractor_Extract_MaxLengthValidMention() {
+    void extract_CutsMentions_WhenTextContainsAMentionThatExceedsMaxAllowedLength() {
         // arrange
         String text = "Hello @valid_len_12345, and @max_length_valid_mention_that_gets_chopped_at_20th_char";
 

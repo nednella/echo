@@ -19,6 +19,9 @@ import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.persistence.repository.UserRepository;
 import com.example.echo_api.service.user.UserServiceImpl;
 
+/**
+ * Unit test class for {@link UserService}.
+ */
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 

@@ -75,7 +75,7 @@ class ProfileViewServiceTest {
     }
 
     @Test
-    void ProfileViewService_GetMe_ReturnProfileDto() {
+    void getMe_ReturnsProfileDto_WhenIExist() {
         // arrange
         ProfileDTO expected = createProfileDto(UUID.randomUUID(), "username");
 
@@ -93,7 +93,7 @@ class ProfileViewServiceTest {
     }
 
     @Test
-    void ProfileViewService_GetMe_ThrowResourceNotFound() {
+    void getMe_ThrowsResourceNotFound_WhenIDoNotExist() {
         // arrange
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(profileRepository.findProfileDtoById(authenticatedUserId, authenticatedUserId))
@@ -106,7 +106,7 @@ class ProfileViewServiceTest {
     }
 
     @Test
-    void ProfileViewService_GetById_ReturnProfileDto() {
+    void getById_ReturnsProfileDto_WhenProfileByIdExists() {
         // arrange
         UUID id = UUID.randomUUID();
         ProfileDTO expected = createProfileDto(id, "test");
@@ -125,7 +125,7 @@ class ProfileViewServiceTest {
     }
 
     @Test
-    void ProfileViewService_GetById_ThrowResourceNotFound() {
+    void getById_ThrowsResourceNotFound_WhenProfileByIdDoesNotExist() {
         // arrange
         UUID id = UUID.randomUUID();
 
@@ -141,7 +141,7 @@ class ProfileViewServiceTest {
     }
 
     @Test
-    void ProfileViewService_GetByUsername_ReturnProfileDto() {
+    void getByUsername_ReturnsProfileDto_WhenProfileByUsernameExists() {
         // arrange
         String username = "test";
         ProfileDTO expected = createProfileDto(UUID.randomUUID(), username);
@@ -160,7 +160,7 @@ class ProfileViewServiceTest {
     }
 
     @Test
-    void ProfileViewService_GetByUsername_ThrowResourceNotFound() {
+    void getByUsername_ThrowsResourceNotFound_WhenProfileByUsernameDoesNotExist() {
         // arrange
         String username = "test";
 
@@ -172,11 +172,10 @@ class ProfileViewServiceTest {
         assertThrows(ResourceNotFoundException.class, () -> profileViewService.getByUsername(username));
         verify(sessionService).getAuthenticatedUserId();
         verify(profileRepository).findProfileDtoByUsername(username, authenticatedUserId);
-
     }
 
     @Test
-    void ProfileViewService_GetFollowers_ReturnPageDtoOfProfileDto() {
+    void getFollowers_ReturnsPageDtoOfProfileDto_WhenProfileByIdExists() {
         // arrange
         UUID id = UUID.randomUUID();
         Profile profile = createProfile(id, "username");
@@ -204,7 +203,7 @@ class ProfileViewServiceTest {
     }
 
     @Test
-    void ProfileViewService_GetFollowers_ThrowResourceNotFound() {
+    void getFollowers_ThrowsResourceNotFound_WhenProfileByIdDoesNotExist() {
         // arrange
         UUID id = UUID.randomUUID();
 
@@ -219,7 +218,7 @@ class ProfileViewServiceTest {
     }
 
     @Test
-    void ProfileViewService_GetFollowing_ReturnPageDtoOfProfileDto() {
+    void getFollowing_ReturnsPageDtoOfProfileDto_WhenProfileByIdExists() {
         // arrange
         UUID id = UUID.randomUUID();
         Profile profile = createProfile(id, "username");
@@ -247,7 +246,7 @@ class ProfileViewServiceTest {
     }
 
     @Test
-    void ProfileViewService_GetFollowing_ThrowResourceNotFound() {
+    void getFollowing_ThrowsResourceNotFound_WhenProfileByIdDoesNotExist() {
         // arrange
         UUID id = UUID.randomUUID();
 

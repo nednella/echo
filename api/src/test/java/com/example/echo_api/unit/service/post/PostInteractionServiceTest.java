@@ -50,7 +50,7 @@ class PostInteractionServiceTest {
     }
 
     @Test
-    void PostInteractionService_Like_ReturnVoid() {
+    void like_ReturnsVoid_WhenLikeSuccessfullyCreated() {
         // arrange
         UUID id = post.getId();
 
@@ -60,12 +60,12 @@ class PostInteractionServiceTest {
 
         // act & assert
         assertDoesNotThrow(() -> postInteractionService.like(id));
-        verify(postRepository, times(1)).findById(id);
-        verify(likeRepository, times(1)).existsByPostIdAndAuthorId(id, authenticatedUserId);
+        verify(postRepository).findById(id);
+        verify(likeRepository).existsByPostIdAndAuthorId(id, authenticatedUserId);
     }
 
     @Test
-    void PostInteractionService_Like_ThrowResourceNotFoundException() {
+    void like_ThrowsResourceNotFound_WhenPostByIdDoesNotExist() {
         // arrange
         UUID id = post.getId();
 
@@ -74,12 +74,12 @@ class PostInteractionServiceTest {
 
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> postInteractionService.like(id));
-        verify(postRepository, times(1)).findById(id);
-        verify(likeRepository, times(0)).existsByPostIdAndAuthorId(id, authenticatedUserId);
+        verify(postRepository).findById(id);
+        verify(likeRepository, never()).existsByPostIdAndAuthorId(id, authenticatedUserId);
     }
 
     @Test
-    void PostInteractionService_Like_ThrowAlreadyLikedException() {
+    void like_ThrowsAlreadyLiked_WhenPostByIdAlreadyLikedByYou() {
         // arrange
         UUID id = post.getId();
 
@@ -89,12 +89,12 @@ class PostInteractionServiceTest {
 
         // act & assert
         assertThrows(AlreadyLikedException.class, () -> postInteractionService.like(id));
-        verify(postRepository, times(1)).findById(id);
-        verify(likeRepository, times(1)).existsByPostIdAndAuthorId(id, authenticatedUserId);
+        verify(postRepository).findById(id);
+        verify(likeRepository).existsByPostIdAndAuthorId(id, authenticatedUserId);
     }
 
     @Test
-    void PostInteractionService_Unlike_ReturnVoid() {
+    void unlike_ReturnsVoid() {
         // arrange
         UUID id = post.getId();
 

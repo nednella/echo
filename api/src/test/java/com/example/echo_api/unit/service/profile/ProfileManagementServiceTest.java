@@ -54,7 +54,7 @@ class ProfileManagementServiceTest {
     }
 
     @Test
-    void ProfileManagementService_UpdateInformation_ReturnVoid() {
+    void updateInformation_ReturnsVoid_WhenSuccessfullyUpdated() {
         // arrange
         UpdateInformationDTO request = new UpdateInformationDTO(
             "John Doe",

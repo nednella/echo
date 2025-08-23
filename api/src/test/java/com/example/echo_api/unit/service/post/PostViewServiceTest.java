@@ -87,7 +87,7 @@ class PostViewServiceTest {
     }
 
     @Test
-    void PostViewService_GetPostById_ReturnPostDto() {
+    void getPostById_ReturnsPostDto_WhenPostByIdExists() {
         // arrange
         UUID id = UUID.randomUUID();
         PostDTO expected = createPostDto(id, "Test post.");
@@ -100,11 +100,11 @@ class PostViewServiceTest {
 
         // assert
         assertEquals(expected, actual);
-        verify(postRepository, times(1)).findPostDtoById(id, authenticatedUserId);
+        verify(postRepository).findPostDtoById(id, authenticatedUserId);
     }
 
     @Test
-    void PostViewService_GetPostById_ThrowResourceNotFoundException() {
+    void getPostById_ThrowsResourceNotFound_WhenPostByIdDoesNotExist() {
         // arrange
         UUID id = UUID.randomUUID();
 
@@ -113,11 +113,11 @@ class PostViewServiceTest {
 
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> postViewService.getPostById(id));
-        verify(postRepository, times(1)).findPostDtoById(id, authenticatedUserId);
+        verify(postRepository).findPostDtoById(id, authenticatedUserId);
     }
 
     @Test
-    void PostViewService_GetRepliesById_ReturnPageDtoOfPostDto() {
+    void getRepliesById_ReturnPageDtoOfPostDto_WhenPostByIdExists() {
         // arrange
         UUID id = UUID.randomUUID();
         Post post = new Post(UUID.randomUUID(), "Test post.");
@@ -139,12 +139,12 @@ class PostViewServiceTest {
 
         // assert
         assertEquals(expected, actual);
-        verify(postRepository, times(1)).findById(id);
-        verify(postRepository, times(1)).findRepliesById(post.getId(), authenticatedUserId, page);
+        verify(postRepository).findById(id);
+        verify(postRepository).findRepliesById(post.getId(), authenticatedUserId, page);
     }
 
     @Test
-    void PostViewService_GetRepliesById_ThrowResourceNotFoundException() {
+    void getRepliesById_ThrowsResourceNotFound_WhenPostByIdDoesNotExist() {
         // arrange
         UUID id = UUID.randomUUID();
 
@@ -156,12 +156,12 @@ class PostViewServiceTest {
 
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> postViewService.getRepliesById(id, page));
-        verify(postRepository, times(1)).findById(id);
-        verify(postRepository, times(0)).findRepliesById(any(UUID.class), eq(authenticatedUserId), eq(page));
+        verify(postRepository).findById(id);
+        verify(postRepository, never()).findRepliesById(any(UUID.class), eq(authenticatedUserId), eq(page));
     }
 
     @Test
-    void PostViewService_GetHomepagePosts_ReturnPageDtoOfPostDto() {
+    void getHomepagePosts_ReturnPageDtoOfPostDto() {
         // arrange
         String uri = "/some/api/uri";
         int offset = 0;
@@ -178,11 +178,11 @@ class PostViewServiceTest {
 
         // assert
         assertEquals(expected, actual);
-        verify(postRepository, times(1)).findHomepagePosts(authenticatedUserId, page);
+        verify(postRepository).findHomepagePosts(authenticatedUserId, page);
     }
 
     @Test
-    void PostViewService_GetDiscoverPosts_ReturnPageDtoOfPostDto() {
+    void getDiscoverPosts_ReturnPageDtoOfPostDto() {
         // arrange
         String uri = "/some/api/uri";
         int offset = 0;
@@ -199,11 +199,11 @@ class PostViewServiceTest {
 
         // assert
         assertEquals(expected, actual);
-        verify(postRepository, times(1)).findDiscoverPosts(authenticatedUserId, page);
+        verify(postRepository).findDiscoverPosts(authenticatedUserId, page);
     }
 
     @Test
-    void PostViewService_GetPostsByAuthorId_ReturnPageDtoOfPostDto() {
+    void getPostsByAuthorId_ReturnPageDtoOfPostDto_WhenProfileByIdExists() {
         // arrange
         UUID id = UUID.randomUUID();
         Profile profile = createProfileEntity(id, "random_string");
@@ -224,12 +224,12 @@ class PostViewServiceTest {
 
         // assert
         assertEquals(expected, actual);
-        verify(profileRepository, times(1)).findById(id);
-        verify(postRepository, times(1)).findPostsByProfileId(profile.getId(), authenticatedUserId, page);
+        verify(profileRepository).findById(id);
+        verify(postRepository).findPostsByProfileId(profile.getId(), authenticatedUserId, page);
     }
 
     @Test
-    void PostViewService_GetPostsByAuthorId_ThrowResourceNotFoundException() {
+    void getPostsByAuthorId_ThrowsResourceNotFound_WhenProfileByIdDoesNotExist() {
         // arrange
         UUID id = UUID.randomUUID();
 
@@ -241,12 +241,12 @@ class PostViewServiceTest {
 
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> postViewService.getPostsByAuthorId(id, page));
-        verify(profileRepository, times(1)).findById(id);
-        verify(postRepository, times(0)).findPostsByProfileId(any(UUID.class), eq(authenticatedUserId), eq(page));
+        verify(profileRepository).findById(id);
+        verify(postRepository, never()).findPostsByProfileId(any(UUID.class), eq(authenticatedUserId), eq(page));
     }
 
     @Test
-    void PostViewService_GetRepliesByAuthorId_ReturnPageDtoOfPostDto() {
+    void getRepliesByAuthorId_ReturnPageDtoOfPostDto_WhenProfileByIdExists() {
         // arrange
         UUID profileId = UUID.randomUUID();
         Profile profile = createProfileEntity(profileId, "random-string");
@@ -267,12 +267,12 @@ class PostViewServiceTest {
 
         // assert
         assertEquals(expected, actual);
-        verify(profileRepository, times(1)).findById(profileId);
-        verify(postRepository, times(1)).findRepliesByProfileId(profile.getId(), authenticatedUserId, page);
+        verify(profileRepository).findById(profileId);
+        verify(postRepository).findRepliesByProfileId(profile.getId(), authenticatedUserId, page);
     }
 
     @Test
-    void PostViewService_GetRepliesByAuthorId_ThrowResourceNotFoundException() {
+    void getRepliesByAuthorId_ThrowsResourceNotFound_WhenProfileByIdDoesNotExist() {
         // arrange
         UUID profileId = UUID.randomUUID();
 
@@ -284,13 +284,13 @@ class PostViewServiceTest {
 
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> postViewService.getRepliesByAuthorId(profileId, page));
-        verify(profileRepository, times(1)).findById(profileId);
-        verify(postRepository, times(0)).findRepliesByProfileId(any(UUID.class), eq(authenticatedUserId),
+        verify(profileRepository).findById(profileId);
+        verify(postRepository, never()).findRepliesByProfileId(any(UUID.class), eq(authenticatedUserId),
             eq(page));
     }
 
     @Test
-    void PostViewService_GetLikesByAuthorId_ReturnPageDtoOfPostDto() {
+    void getLikesByAuthorId_ReturnPageDtoOfPostDto_WhenProfileByIdExists() {
         // arrange
         UUID profileId = UUID.randomUUID();
         Profile profile = createProfileEntity(profileId, "random-string");
@@ -311,12 +311,12 @@ class PostViewServiceTest {
 
         // assert
         assertEquals(expected, actual);
-        verify(profileRepository, times(1)).findById(profileId);
-        verify(postRepository, times(1)).findPostsLikedByProfileId(profile.getId(), authenticatedUserId, page);
+        verify(profileRepository).findById(profileId);
+        verify(postRepository).findPostsLikedByProfileId(profile.getId(), authenticatedUserId, page);
     }
 
     @Test
-    void PostViewService_GetLikesByAuthorId_ThrowResourceNotFoundException() {
+    void getLikesByAuthorId_ThrowsResourceNotFound_WhenProfileByIdDoesNotExist() {
         // arrange
         UUID profileId = UUID.randomUUID();
 
@@ -328,13 +328,13 @@ class PostViewServiceTest {
 
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> postViewService.getLikesByAuthorId(profileId, page));
-        verify(profileRepository, times(1)).findById(profileId);
-        verify(postRepository, times(0)).findPostsLikedByProfileId(any(UUID.class), eq(authenticatedUserId),
+        verify(profileRepository).findById(profileId);
+        verify(postRepository, never()).findPostsLikedByProfileId(any(UUID.class), eq(authenticatedUserId),
             eq(page));
     }
 
     @Test
-    void PostViewService_GetMentionsOfAuthorId_ReturnPageDtoOfPostDto() {
+    void getMentionsOfAuthorId_ReturnPageDtoOfPostDto_WhenProfileByIdExists() {
         // arrange
         UUID profileId = UUID.randomUUID();
         Profile profile = createProfileEntity(profileId, "random-string");
@@ -355,12 +355,12 @@ class PostViewServiceTest {
 
         // assert
         assertEquals(expected, actual);
-        verify(profileRepository, times(1)).findById(profileId);
-        verify(postRepository, times(1)).findPostsMentioningProfileId(profile.getId(), authenticatedUserId, page);
+        verify(profileRepository).findById(profileId);
+        verify(postRepository).findPostsMentioningProfileId(profile.getId(), authenticatedUserId, page);
     }
 
     @Test
-    void PostViewService_GetMentionsOfAuthorId_ThrowResourceNotFoundException() {
+    void getMentionsOfAuthorId_ThrowsResourceNotFound_WhenProfileByIdDoesNotExist() {
         // arrange
         UUID profileId = UUID.randomUUID();
 
@@ -372,8 +372,8 @@ class PostViewServiceTest {
 
         // act & assert
         assertThrows(ResourceNotFoundException.class, () -> postViewService.getMentionsOfAuthorId(profileId, page));
-        verify(profileRepository, times(1)).findById(profileId);
-        verify(postRepository, times(0)).findPostsMentioningProfileId(any(UUID.class), eq(authenticatedUserId),
+        verify(profileRepository).findById(profileId);
+        verify(postRepository, never()).findPostsMentioningProfileId(any(UUID.class), eq(authenticatedUserId),
             eq(page));
     }
 

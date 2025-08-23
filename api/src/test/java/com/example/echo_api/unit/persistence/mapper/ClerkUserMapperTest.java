@@ -16,6 +16,9 @@ import com.clerk.backend_api.models.components.User;
 import com.example.echo_api.persistence.dto.adapter.ClerkUserDTO;
 import com.example.echo_api.persistence.mapper.ClerkUserMapper;
 
+/**
+ * Unit test class for {@link ClerkUserMapper}.
+ */
 class ClerkUserMapperTest {
 
     private User createMockClerkUser(
