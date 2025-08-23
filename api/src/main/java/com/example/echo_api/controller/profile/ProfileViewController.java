@@ -45,7 +45,7 @@ public class ProfileViewController {
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
     ) {
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         return ResponseEntity.ok(profileViewService.getFollowers(id, page));
     }
 
@@ -55,7 +55,7 @@ public class ProfileViewController {
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
     ) {
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         return ResponseEntity.ok(profileViewService.getFollowing(id, page));
     }
     // @formatter:on

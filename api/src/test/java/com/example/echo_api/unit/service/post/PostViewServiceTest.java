@@ -125,7 +125,7 @@ class PostViewServiceTest {
         String uri = "/some/api/uri";
         int offset = 0;
         int limit = 20;
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> repliesDto = new PageImpl<>(List.of(createPostDto(id, "Test post.")), page, 1);
         PageDTO<PostDTO> expected = PageMapper.toDTO(repliesDto, uri);
 
@@ -150,7 +150,7 @@ class PostViewServiceTest {
 
         int offset = 0;
         int limit = 20;
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
 
         when(postRepository.findById(id)).thenReturn(Optional.empty());
 
@@ -166,7 +166,7 @@ class PostViewServiceTest {
         String uri = "/some/api/uri";
         int offset = 0;
         int limit = 20;
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(createPostDto(UUID.randomUUID(), "Test post.")), page, 1);
         PageDTO<PostDTO> expected = PageMapper.toDTO(posts, uri);
 
@@ -187,7 +187,7 @@ class PostViewServiceTest {
         String uri = "/some/api/uri";
         int offset = 0;
         int limit = 20;
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(createPostDto(UUID.randomUUID(), "Test post.")), page, 1);
         PageDTO<PostDTO> expected = PageMapper.toDTO(posts, uri);
 
@@ -211,7 +211,7 @@ class PostViewServiceTest {
         String uri = "/some/api/uri";
         int offset = 0;
         int limit = 20;
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(createPostDto(UUID.randomUUID(), "Test post.")), page, 1);
         PageDTO<PostDTO> expected = PageMapper.toDTO(posts, uri);
 
@@ -235,7 +235,7 @@ class PostViewServiceTest {
 
         int offset = 0;
         int limit = 20;
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
 
         when(profileRepository.findById(id)).thenReturn(Optional.empty());
 
@@ -254,7 +254,7 @@ class PostViewServiceTest {
         String uri = "/some/api/uri";
         int offset = 0;
         int limit = 20;
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(createPostDto(UUID.randomUUID(), "Test post.")), page, 1);
         PageDTO<PostDTO> expected = PageMapper.toDTO(posts, uri);
 
@@ -278,7 +278,7 @@ class PostViewServiceTest {
 
         int offset = 0;
         int limit = 20;
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
 
         when(profileRepository.findById(profileId)).thenReturn(Optional.empty());
 
@@ -298,7 +298,7 @@ class PostViewServiceTest {
         String uri = "/some/api/uri";
         int offset = 0;
         int limit = 20;
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(createPostDto(UUID.randomUUID(), "Test post.")), page, 1);
         PageDTO<PostDTO> expected = PageMapper.toDTO(posts, uri);
 
@@ -322,7 +322,7 @@ class PostViewServiceTest {
 
         int offset = 0;
         int limit = 20;
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
 
         when(profileRepository.findById(profileId)).thenReturn(Optional.empty());
 
@@ -342,7 +342,7 @@ class PostViewServiceTest {
         String uri = "/some/api/uri";
         int offset = 0;
         int limit = 20;
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(createPostDto(UUID.randomUUID(), "Test post.")), page, 1);
         PageDTO<PostDTO> expected = PageMapper.toDTO(posts, uri);
 
@@ -366,7 +366,7 @@ class PostViewServiceTest {
 
         int offset = 0;
         int limit = 20;
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
 
         when(profileRepository.findById(profileId)).thenReturn(Optional.empty());
 

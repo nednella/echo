@@ -128,7 +128,7 @@ class PostViewControllerTest {
         int offset = 0;
         int limit = 20;
 
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> replies = new PageImpl<>(List.of(post), page, 1);
         PageDTO<PostDTO> expected = PageMapper.toDTO(replies, GET_REPLIES_BY_ID_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
@@ -235,7 +235,7 @@ class PostViewControllerTest {
         int offset = 0;
         int limit = 20;
 
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
         PageDTO<PostDTO> expected = PageMapper.toDTO(posts, HOMEPAGE_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
@@ -311,7 +311,7 @@ class PostViewControllerTest {
         int offset = 0;
         int limit = 20;
 
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
         PageDTO<PostDTO> expected = PageMapper.toDTO(posts, DISCOVER_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
@@ -388,7 +388,7 @@ class PostViewControllerTest {
         int offset = 0;
         int limit = 20;
 
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
         PageDTO<PostDTO> expected = PageMapper.toDTO(posts, POSTS_BY_PROFILE_ID_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
@@ -496,7 +496,7 @@ class PostViewControllerTest {
         int offset = 0;
         int limit = 20;
 
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
         PageDTO<PostDTO> expected = PageMapper.toDTO(posts, REPLIES_BY_PROFILE_ID_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
@@ -604,7 +604,7 @@ class PostViewControllerTest {
         int offset = 0;
         int limit = 20;
 
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
         PageDTO<PostDTO> expected = PageMapper.toDTO(posts, LIKES_BY_PROFILE_ID_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
@@ -714,7 +714,7 @@ class PostViewControllerTest {
         int offset = 0;
         int limit = 20;
 
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
         PageDTO<PostDTO> expected = PageMapper.toDTO(posts, MENTIONS_BY_PROFILE_ID_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);

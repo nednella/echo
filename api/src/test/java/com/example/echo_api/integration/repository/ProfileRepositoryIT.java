@@ -180,7 +180,7 @@ class ProfileRepositoryIT extends RepositoryTest {
      */
     @Test
     void ProfileRepository_FindFollowerDtosById_ReturnPageOfProfileDto() {
-        Pageable page = new OffsetLimitRequest(0, 10);
+        Pageable page = OffsetLimitRequest.of(0, 10);
 
         Page<SimplifiedProfileDTO> followersPage = profileRepository.findFollowerDtosById(
             target.getId(),
@@ -199,7 +199,7 @@ class ProfileRepositoryIT extends RepositoryTest {
      */
     @Test
     void ProfileRepository_FindFollowerDtosById_ReturnPageOfEmpty() {
-        Pageable page = new OffsetLimitRequest(0, 10);
+        Pageable page = OffsetLimitRequest.of(0, 10);
 
         Page<SimplifiedProfileDTO> followersPage = profileRepository.findFollowerDtosById(
             source.getId(),
@@ -218,7 +218,7 @@ class ProfileRepositoryIT extends RepositoryTest {
      */
     @Test
     void ProfileRepository_FindFollowingDtosById_ReturnPageOfProfileDto() {
-        Pageable page = new OffsetLimitRequest(0, 10);
+        Pageable page = OffsetLimitRequest.of(0, 10);
 
         Page<SimplifiedProfileDTO> followingPage = profileRepository.findFollowingDtosById(
             source.getId(),
@@ -237,7 +237,7 @@ class ProfileRepositoryIT extends RepositoryTest {
      */
     @Test
     void ProfileRepository_FindFollowingDtosById_ReturnPageOfEmpty() {
-        Pageable page = new OffsetLimitRequest(0, 10);
+        Pageable page = OffsetLimitRequest.of(0, 10);
 
         Page<SimplifiedProfileDTO> followingPage = profileRepository.findFollowingDtosById(
             target.getId(),

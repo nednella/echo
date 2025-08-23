@@ -167,7 +167,7 @@ class ProfileViewControllerTest {
         int offset = 0;
         int limit = 20;
 
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<SimplifiedProfileDTO> pageProfileDto = new PageImpl<>(List.of(simplifiedProfile), page, 1);
         PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(pageProfileDto, GET_FOLLOWERS_BY_ID_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
@@ -275,7 +275,7 @@ class ProfileViewControllerTest {
         int offset = 0;
         int limit = 1;
 
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<SimplifiedProfileDTO> pageProfileDto = new PageImpl<>(List.of(simplifiedProfile), page, 1);
         PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(pageProfileDto, GET_FOLLOWING_BY_ID_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);

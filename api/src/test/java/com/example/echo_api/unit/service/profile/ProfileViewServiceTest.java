@@ -184,7 +184,7 @@ class ProfileViewServiceTest {
         String uri = "/some/api/uri";
         int offset = 0;
         int limit = 1;
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<SimplifiedProfileDTO> followersDto = new PageImpl<>(new ArrayList<>(), page, 0);
         PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(followersDto, uri);
 
@@ -210,7 +210,7 @@ class ProfileViewServiceTest {
 
         int offset = 0;
         int limit = 1;
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
 
         when(profileRepository.findById(id)).thenReturn(Optional.empty());
 
@@ -227,7 +227,7 @@ class ProfileViewServiceTest {
         String uri = "/some/api/uri";
         int offset = 0;
         int limit = 1;
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<SimplifiedProfileDTO> followingDto = new PageImpl<>(new ArrayList<>(), page, 0);
         PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(followingDto, uri);
 
@@ -253,7 +253,7 @@ class ProfileViewServiceTest {
 
         int offset = 0;
         int limit = 1;
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
 
         when(profileRepository.findById(id)).thenReturn(Optional.empty());
 
