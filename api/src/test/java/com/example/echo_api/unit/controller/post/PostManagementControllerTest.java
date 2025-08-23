@@ -1,10 +1,7 @@
 package com.example.echo_api.unit.controller.post;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.UUID;
 
@@ -15,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
@@ -35,8 +32,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @AutoConfigureMockMvc(addFilters = false)
 class PostManagementControllerTest {
 
+    private static final String CREATE_PATH = ApiConfig.Post.CREATE;
+    private static final String GET_BY_ID_PATH = ApiConfig.Post.GET_BY_ID;
+
     @Autowired
-    private MockMvc mockMvc;
+    private MockMvcTester mvc;
 
     @MockitoBean
     private PostManagementService postManagementService;
@@ -45,198 +45,167 @@ class PostManagementControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void PostManagementController_Create_Return204NoContent() throws Exception {
-        // api: POST /api/v1/post ==> : 204 : No Content
-        String path = ApiConfig.Post.CREATE;
-
+    void create_Returns204NoContent_WhenPassesValidation() throws Exception {
+        // api: POST /api/v1/post ==> 204 No Content
         CreatePostDTO post = new CreatePostDTO(null, "This is a new post.");
         String body = objectMapper.writeValueAsString(post);
 
-        doNothing().when(postManagementService).create(post);
+        var response = mvc.post()
+            .uri(CREATE_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .exchange();
 
-        mockMvc
-            .perform(post(path)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
-            .andDo(print())
-            .andExpect(status().isNoContent());
+        assertThat(response)
+            .hasStatus(204)
+            .body().isEmpty();
 
-        verify(postManagementService, times(1)).create(post);
+        verify(postManagementService).create(post);
     }
 
     @Test
-    void PostManagementController_Create_Throw400InvalidRequest_TextCannotBeNull() throws Exception {
-        // api: POST /api/v1/post ==> : 400 : InvalidRequest
-        String path = ApiConfig.Post.CREATE;
-
-        CreatePostDTO post = new CreatePostDTO(
-            UUID.randomUUID(),
-            null);
-
+    void create_Returns400BadRequest_WhenPostTextFieldIsNull() throws Exception {
+        // api: POST /api/v1/post ==> 400 Bad Request : ErrorDTO
+        String text = null;
+        CreatePostDTO post = new CreatePostDTO(null, text);
         String body = objectMapper.writeValueAsString(post);
-
-        String response = mockMvc
-            .perform(post(path)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
-            .andDo(print())
-            .andExpect(status().isBadRequest())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.TEXT_NULL_OR_BLANK,
-            path);
+            CREATE_PATH);
 
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+        var response = mvc.post()
+            .uri(CREATE_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .exchange();
 
-        assertEquals(expected, actual);
+        assertThat(response)
+            .hasStatus(400)
+            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+
         verify(postManagementService, never()).create(post);
     }
 
     @Test
-    void PostManagementController_Create_Throw400InvalidRequest_TextCannotBeBlank() throws Exception {
-        // api: POST /api/v1/post ==> : 400 : InvalidRequest
-        String path = ApiConfig.Post.CREATE;
-
-        CreatePostDTO post = new CreatePostDTO(
-            UUID.randomUUID(),
-            " ");
-
+    void create_Returns400BadRequest_WhenPostTextFieldIsBlank() throws Exception {
+        // api: POST /api/v1/post ==> 400 Bad Request : ErrorDTO
+        String text = " ";
+        CreatePostDTO post = new CreatePostDTO(null, text);
         String body = objectMapper.writeValueAsString(post);
-
-        String response = mockMvc
-            .perform(post(path)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
-            .andDo(print())
-            .andExpect(status().isBadRequest())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.TEXT_NULL_OR_BLANK,
-            path);
+            CREATE_PATH);
 
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+        var response = mvc.post()
+            .uri(CREATE_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .exchange();
 
-        assertEquals(expected, actual);
+        assertThat(response)
+            .hasStatus(400)
+            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+
         verify(postManagementService, never()).create(post);
     }
 
     @Test
-    void PostManagementController_Create_Throw400InvalidRequest_TextExceeds280Characters() throws Exception {
-        // api: POST /api/v1/post ==> : 400 : InvalidRequest
-        String path = ApiConfig.Post.CREATE;
-
-        CreatePostDTO post = new CreatePostDTO(
-            UUID.randomUUID(),
-            "Thistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281characters.....");
-
+    void create_Returns400BadRequest_TextExceeds280Characters() throws Exception {
+        // api: POST /api/v1/post ==> 400 Bad Request : ErrorDTO
+        String text = "Thistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281characters.....";
+        CreatePostDTO post = new CreatePostDTO(null, text);
         String body = objectMapper.writeValueAsString(post);
-
-        String response = mockMvc
-            .perform(post(path)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
-            .andDo(print())
-            .andExpect(status().isBadRequest())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.TEXT_TOO_LONG,
-            path);
+            CREATE_PATH);
 
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+        var response = mvc.post()
+            .uri(CREATE_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .exchange();
 
-        assertEquals(expected, actual);
+        assertThat(response)
+            .hasStatus(400)
+            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+
         verify(postManagementService, never()).create(post);
     }
 
     @Test
-    void PostManagementController_Create_Throw400InvalidParentId() throws Exception {
-        // api: POST /api/v1/post ==> : 400 : InvalidParentId
-        String path = ApiConfig.Post.CREATE;
-
+    void create_Returns400BadRequest_WhenPostByParentIdDoesNotExist() throws Exception {
+        // api: POST /api/v1/post ==> 400 Bad Request : ErrorDTO
         CreatePostDTO post = new CreatePostDTO(UUID.randomUUID(), "This is a new post with a parent id.");
         String body = objectMapper.writeValueAsString(post);
 
         doThrow(new InvalidParentIdException()).when(postManagementService).create(post);
 
-        String response = mockMvc
-            .perform(post(path)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
-            .andDo(print())
-            .andExpect(status().isBadRequest())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_PARENT_ID,
-            path);
+            CREATE_PATH);
 
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+        var response = mvc.post()
+            .uri(CREATE_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .exchange();
 
-        assertEquals(expected, actual);
-        verify(postManagementService, times(1)).create(post);
+        assertThat(response)
+            .hasStatus(400)
+            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+
+        verify(postManagementService).create(post);
     }
 
     @Test
-    void PostManagementController_Delete_Return204NoContent() throws Exception {
-        // api: DELETE /api/v1/post/{id} ==> : 204 : No Content
-        String path = ApiConfig.Post.GET_BY_ID;
+    void delete_Returns204NoContent_WhenPostByIdDoesNotExistOrIsOwnedByYou() {
+        // api: DELETE /api/v1/post/{id} ==> 204 No Content
         UUID id = UUID.randomUUID();
 
-        doNothing().when(postManagementService).delete(id);
+        var response = mvc.delete()
+            .uri(GET_BY_ID_PATH, id)
+            .exchange();
 
-        mockMvc
-            .perform(delete(path, id))
-            .andDo(print())
-            .andExpect(status().isNoContent());
+        assertThat(response)
+            .hasStatus(204)
+            .body().isEmpty();
 
-        verify(postManagementService, times(1)).delete(id);
+        verify(postManagementService).delete(id);
     }
 
     @Test
-    void PostManagementController_Delete_Throw403ResourceOwnershipRequired() throws Exception {
-        // api: DELETE /api/v1/post/{id} ==> : 403 : ResourceOwnershipRequired
-        String path = ApiConfig.Post.GET_BY_ID;
+    void delete_Returns403Forbidden_WhenPostByIdExistsAndIsNotOwnedByYou() {
+        // api: DELETE /api/v1/post/{id} ==> 403 Forbidden : ErrorDTO
         UUID id = UUID.randomUUID();
 
         doThrow(new ResourceOwnershipException()).when(postManagementService).delete(id);
-
-        String response = mockMvc
-            .perform(delete(path, id))
-            .andDo(print())
-            .andExpect(status().isForbidden())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.FORBIDDEN,
             ErrorMessageConfig.Forbidden.RESOURCE_OWNERSHIP_REQUIRED,
             null,
-            path);
+            GET_BY_ID_PATH);
 
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+        var response = mvc.delete()
+            .uri(GET_BY_ID_PATH, id)
+            .exchange();
 
-        assertEquals(expected, actual);
-        verify(postManagementService, times(1)).delete(id);
+        assertThat(response)
+            .hasStatus(403)
+            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+
+        verify(postManagementService).delete(id);
     }
 
 }

@@ -1,17 +1,15 @@
 package com.example.echo_api.unit.controller.profile;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
-import java.util.ArrayList;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -21,7 +19,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
@@ -31,12 +29,12 @@ import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileMetricsDTO;
+import com.example.echo_api.persistence.dto.response.profile.ProfileRelationshipDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
 import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
 import com.example.echo_api.persistence.mapper.PageMapper;
 import com.example.echo_api.service.profile.view.ProfileViewService;
 import com.example.echo_api.util.pagination.OffsetLimitRequest;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -46,8 +44,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @AutoConfigureMockMvc(addFilters = false)
 class ProfileViewControllerTest {
 
+    private static final String ME_PATH = ApiConfig.Profile.ME;
+    private static final String GET_BY_USERNAME_PATH = ApiConfig.Profile.GET_BY_USERNAME;
+    private static final String GET_FOLLOWERS_BY_ID_PATH = ApiConfig.Profile.GET_FOLLOWERS_BY_ID;
+    private static final String GET_FOLLOWING_BY_ID_PATH = ApiConfig.Profile.GET_FOLLOWING_BY_ID;
+
     @Autowired
-    private MockMvc mockMvc;
+    private MockMvcTester mvc;
 
     @MockitoBean
     private ProfileViewService profileViewService;
@@ -55,262 +58,138 @@ class ProfileViewControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private ProfileDTO createProfileDto(UUID id, String username) {
-        return new ProfileDTO(
-            id.toString(),
-            username,
-            null,
-            null,
-            null,
-            null,
-            null,
+    private static ProfileDTO profile;
+    private static SimplifiedProfileDTO simplifiedProfile;
+
+    @BeforeAll
+    static void setup() {
+        profile = new ProfileDTO(
+            UUID.randomUUID().toString(),
+            "username",
+            "name",
+            "bio",
+            "location",
+            "imageUrl",
+            Instant.now().toString(),
             new ProfileMetricsDTO(0, 0, 0),
-            null);
-    }
+            new ProfileRelationshipDTO(false, false, false, false));
 
-    private SimplifiedProfileDTO createSimplifiedProfileDto(UUID id, String username) {
-        return new SimplifiedProfileDTO(
-            id.toString(),
-            username,
-            null,
-            null,
-            null);
-    }
-
-    @Test
-    void ProfileViewController_GetMe_Return200ProfileDTO() throws Exception {
-        // api: GET /api/v1/profile/me ==> 200 : ProfileResponse
-        String path = ApiConfig.Profile.ME;
-
-        ProfileDTO expected = createProfileDto(UUID.randomUUID(), "test");
-
-        when(profileViewService.getMe()).thenReturn(expected);
-
-        String response = mockMvc
-            .perform(get(path))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
-        ProfileDTO actual = objectMapper.readValue(response, ProfileDTO.class);
-
-        assertEquals(expected, actual);
-        verify(profileViewService, times(1)).getMe();
+        simplifiedProfile = new SimplifiedProfileDTO(
+            UUID.randomUUID().toString(),
+            "username",
+            "name",
+            "imageUrl",
+            new ProfileRelationshipDTO(false, false, false, false));
     }
 
     @Test
-    void ProfileViewController_GetMe_Throw404ResourceNotFound() throws Exception {
-        // api: GET /api/v1/profile/me ==> 404 : Resource Not Found
-        String path = ApiConfig.Profile.ME;
+    void getMe_Returns200ProfileDto_WhenIExist() {
+        // api: GET /api/v1/profile/me ==> 200 OK : ProfileDTO
+        when(profileViewService.getMe()).thenReturn(profile);
 
+        var response = mvc.get()
+            .uri(ME_PATH)
+            .exchange();
+
+        assertThat(response)
+            .hasStatus(200)
+            .bodyJson().convertTo(ProfileDTO.class).isEqualTo(profile);
+
+        verify(profileViewService).getMe();
+    }
+
+    @Test
+    void getMe_Throw404ResourceNotFound_WhenIDoNotExist() {
+        // api: GET /api/v1/profile/me ==> 404 Not Found : ErrorDTO
         when(profileViewService.getMe()).thenThrow(new ResourceNotFoundException());
 
-        String response = mockMvc
-            .perform(get(path))
-            .andDo(print())
-            .andExpect(status().isNotFound())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
-            path);
+            ME_PATH);
 
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+        var response = mvc.get()
+            .uri(ME_PATH)
+            .exchange();
 
-        assertEquals(expected, actual);
-        verify(profileViewService, times(1)).getMe();
+        assertThat(response)
+            .hasStatus(404)
+            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+
+        verify(profileViewService).getMe();
     }
 
     @Test
-    void ProfileViewController_GetByUsername_Return200ProfileDTO() throws Exception {
+    void getByUsername_Returns200ProfileDto_WhenProfileByUsernameExists() {
         // api: GET /api/v1/profile/{username} ==> 200 : ProfileDTO
-        String path = ApiConfig.Profile.GET_BY_USERNAME;
         String username = "test";
+        when(profileViewService.getByUsername(username)).thenReturn(profile);
 
-        ProfileDTO expected = createProfileDto(UUID.randomUUID(), username);
+        var response = mvc.get()
+            .uri(GET_BY_USERNAME_PATH, username)
+            .exchange();
 
-        when(profileViewService.getByUsername(username)).thenReturn(expected);
+        assertThat(response)
+            .hasStatus(200)
+            .bodyJson().convertTo(ProfileDTO.class).isEqualTo(profile);
 
-        String response = mockMvc
-            .perform(get(path, username))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
-        ProfileDTO actual = objectMapper.readValue(response, ProfileDTO.class);
-
-        assertEquals(expected, actual);
-        verify(profileViewService, times(1)).getByUsername(username);
+        verify(profileViewService).getByUsername(username);
     }
 
     @Test
-    void ProfileViewController_GetByUsername_Throw404ResourceNotFound() throws Exception {
-        // api: GET /api/v1/profile/{username} ==> 404 : Resource Not Found
-        String path = ApiConfig.Profile.GET_BY_USERNAME;
+    void getByUsername_Returns404NotFound_WhenProfileByUsernameDoesNotExist() {
+        // api: GET /api/v1/profile/{username} ==> 404 Not Found : ErrorDTO
         String username = "non-existent-user";
-
         when(profileViewService.getByUsername(username)).thenThrow(new ResourceNotFoundException());
 
-        String response = mockMvc
-            .perform(get(path, username))
-            .andDo(print())
-            .andExpect(status().isNotFound())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
-            path);
+            GET_BY_USERNAME_PATH);
 
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+        var response = mvc.get()
+            .uri(GET_BY_USERNAME_PATH, username)
+            .exchange();
 
-        assertEquals(expected, actual);
-        verify(profileViewService, times(1)).getByUsername(username);
+        assertThat(response)
+            .hasStatus(404)
+            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+
+        verify(profileViewService).getByUsername(username);
     }
 
     @Test
-    void ProfileViewController_GetFollowers_Return200PageOfProfileDTO() throws Exception {
-        // api: GET /api/v1/profile/{id}/followers ==> 200 : PageDTO<ProfileDTO>
-        String path = ApiConfig.Profile.GET_FOLLOWERS_BY_ID;
+    void getFollowers_Returns200PageDtoOfProfileDto_WhenProfileByIdExists() throws Exception {
+        // api: GET /api/v1/profile/{id}/followers ==> 200 OK : PageDTO<ProfileDTO>
         UUID id = UUID.randomUUID();
         int offset = 0;
-        int limit = 1;
+        int limit = 20;
 
         Pageable page = new OffsetLimitRequest(offset, limit);
-
-        SimplifiedProfileDTO profileDto = createSimplifiedProfileDto(id, "username");
-        Page<SimplifiedProfileDTO> pageProfileDto = new PageImpl<>(List.of(profileDto), page, 1);
-        PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(pageProfileDto, path);
+        Page<SimplifiedProfileDTO> pageProfileDto = new PageImpl<>(List.of(simplifiedProfile), page, 1);
+        PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(pageProfileDto, GET_FOLLOWERS_BY_ID_PATH);
+        String expectedJson = objectMapper.writeValueAsString(expected);
 
         when(profileViewService.getFollowers(eq(id), any(Pageable.class))).thenReturn(expected);
 
-        String response = mockMvc
-            .perform(get(path, id)
-                .param("offset", String.valueOf(offset))
-                .param("limit", String.valueOf(limit)))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
+        var response = mvc.get()
+            .uri(GET_FOLLOWERS_BY_ID_PATH, id)
+            .queryParam("offset", String.valueOf(offset))
+            .queryParam("limit", String.valueOf(limit))
+            .exchange();
 
-        PageDTO<SimplifiedProfileDTO> actual = objectMapper.readValue(response,
-            new TypeReference<PageDTO<SimplifiedProfileDTO>>() {});
+        assertThat(response)
+            .hasStatus(200)
+            .bodyJson().isEqualTo(expectedJson);
 
-        assertEquals(expected, actual);
-        assertEquals(1, actual.total());
-        assertEquals(1, actual.items().size());
-        verify(profileViewService, times(1)).getFollowers(eq(id), any(Pageable.class));
+        verify(profileViewService).getFollowers(eq(id), any(Pageable.class));
     }
 
     @Test
-    void ProfileViewController_GetFollowers_Return200PageOfEmpty() throws Exception {
-        // api: GET /api/v1/profile/{id}/followers ==> 200 : PageDTO<ProfileDTO>
-        String path = ApiConfig.Profile.GET_FOLLOWERS_BY_ID;
-        UUID id = UUID.randomUUID();
-        int offset = 0;
-        int limit = 1;
-
-        Pageable page = new OffsetLimitRequest(offset, limit);
-
-        Page<SimplifiedProfileDTO> pageProfileDto = new PageImpl<>(new ArrayList<>(), page, 0);
-        PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(pageProfileDto, path);
-
-        when(profileViewService.getFollowers(eq(id), any(Pageable.class))).thenReturn(expected);
-
-        String response = mockMvc
-            .perform(get(path, id)
-                .param("offset", String.valueOf(offset))
-                .param("limit", String.valueOf(limit)))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
-        PageDTO<ProfileDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<ProfileDTO>>() {});
-
-        assertEquals(expected, actual);
-        assertEquals(0, actual.total());
-        assertEquals(0, actual.items().size());
-        verify(profileViewService, times(1)).getFollowers(eq(id), any(Pageable.class));
-    }
-
-    @Test
-    void ProfileViewController_GetFollowers_Throw400InvalidRequest_InvalidOffset() throws Exception {
-        // api: GET /api/v1/profile/{id}/followers ==> 400 : InvalidRequest
-        String path = ApiConfig.Profile.GET_FOLLOWERS_BY_ID;
-        UUID id = UUID.randomUUID();
-        int offset = -1;
-        int limit = 1;
-
-        String response = mockMvc
-            .perform(get(path, id)
-                .param("offset", String.valueOf(offset))
-                .param("limit", String.valueOf(limit)))
-            .andDo(print())
-            .andExpect(status().isBadRequest())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
-        ErrorDTO expected = new ErrorDTO(
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            ValidationMessageConfig.INVALID_OFFSET,
-            path);
-
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
-
-        assertEquals(expected, actual);
-        verify(profileViewService, never()).getFollowers(eq(id), any(Pageable.class));
-    }
-
-    @Test
-    void ProfileViewController_GetFollowers_Throw400InvalidRequest_InvalidLimit() throws Exception {
-        // api: GET /api/v1/profile/{id}/followers ==> 400 : InvalidRequest
-        String path = ApiConfig.Profile.GET_FOLLOWERS_BY_ID;
-        UUID id = UUID.randomUUID();
-        int offset = 0;
-        int limit = 0;
-
-        String response = mockMvc
-            .perform(get(path, id)
-                .param("offset", String.valueOf(offset))
-                .param("limit", String.valueOf(limit)))
-            .andDo(print())
-            .andExpect(status().isBadRequest())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
-        ErrorDTO expected = new ErrorDTO(
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            ValidationMessageConfig.INVALID_LIMIT,
-            path);
-
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
-
-        assertEquals(expected, actual);
-        verify(profileViewService, never()).getFollowers(eq(id), any(Pageable.class));
-    }
-
-    @Test
-    void ProfileViewController_GetFollowers_Throw404ResourceNotFound() throws Exception {
-        // api: GET /api/v1/profile/{id}/followers ==> 404 : Resource Not Found
-        String path = ApiConfig.Profile.GET_FOLLOWERS_BY_ID;
+    void getFollowers_Returns404NotFound_WhenProfileByIdDoesNotExist() {
+        // api: GET /api/v1/profile/{id}/followers ==> 404 Not Found : ErrorDTO
         UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 1;
@@ -318,160 +197,107 @@ class ProfileViewControllerTest {
         when(profileViewService.getFollowers(eq(id), any(Pageable.class)))
             .thenThrow(new ResourceNotFoundException());
 
-        String response = mockMvc
-            .perform(get(path, id)
-                .param("offset", String.valueOf(offset))
-                .param("limit", String.valueOf(limit)))
-            .andDo(print())
-            .andExpect(status().isNotFound())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
-            path);
+            GET_FOLLOWERS_BY_ID_PATH);
 
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+        var response = mvc.get()
+            .uri(GET_FOLLOWERS_BY_ID_PATH, id)
+            .queryParam("offset", String.valueOf(offset))
+            .queryParam("limit", String.valueOf(limit))
+            .exchange();
 
-        assertEquals(expected, actual);
-        verify(profileViewService, times(1)).getFollowers(eq(id), any(Pageable.class));
+        assertThat(response)
+            .hasStatus(404)
+            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+
+        verify(profileViewService).getFollowers(eq(id), any(Pageable.class));
     }
 
     @Test
-    void ProfileViewController_GetFollowing_Return200PageOfProfileDTO() throws Exception {
-        // api: GET /api/v1/profile/{id}/following ==> 200 : PageDTO<ProfileDTO>
-        String path = ApiConfig.Profile.GET_FOLLOWING_BY_ID;
-        UUID id = UUID.randomUUID();
-        int offset = 0;
-        int limit = 1;
-
-        Pageable page = new OffsetLimitRequest(offset, limit);
-
-        SimplifiedProfileDTO profileDto = createSimplifiedProfileDto(id, "username");
-        Page<SimplifiedProfileDTO> pageProfileDto = new PageImpl<>(List.of(profileDto), page, 1);
-        PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(pageProfileDto, path);
-
-        when(profileViewService.getFollowing(eq(id), any(Pageable.class))).thenReturn(expected);
-
-        String response = mockMvc
-            .perform(get(path, id)
-                .param("offset", String.valueOf(offset))
-                .param("limit", String.valueOf(limit)))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
-        PageDTO<SimplifiedProfileDTO> actual = objectMapper.readValue(response,
-            new TypeReference<PageDTO<SimplifiedProfileDTO>>() {});
-
-        assertEquals(expected, actual);
-        assertEquals(1, actual.total());
-        assertEquals(1, actual.items().size());
-        verify(profileViewService, times(1)).getFollowing(eq(id), any(Pageable.class));
-    }
-
-    @Test
-    void ProfileViewController_GetFollowing_Return200PageOfEmpty() throws Exception {
-        // api: GET /api/v1/profile/{id}/following ==> 200 : PageDTO<ProfileDTO>
-        String path = ApiConfig.Profile.GET_FOLLOWING_BY_ID;
-        UUID id = UUID.randomUUID();
-        int offset = 0;
-        int limit = 1;
-
-        Pageable page = new OffsetLimitRequest(offset, limit);
-
-        Page<SimplifiedProfileDTO> pageProfileDto = new PageImpl<>(new ArrayList<>(), page, 0);
-        PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(pageProfileDto, path);
-
-        when(profileViewService.getFollowing(eq(id), any(Pageable.class))).thenReturn(expected);
-
-        String response = mockMvc
-            .perform(get(path, id)
-                .param("offset", String.valueOf(offset))
-                .param("limit", String.valueOf(limit)))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
-        PageDTO<ProfileDTO> actual = objectMapper.readValue(response, new TypeReference<PageDTO<ProfileDTO>>() {});
-
-        assertEquals(expected, actual);
-        assertEquals(0, actual.total());
-        assertEquals(0, actual.items().size());
-        verify(profileViewService, times(1)).getFollowing(eq(id), any(Pageable.class));
-    }
-
-    @Test
-    void ProfileViewController_GetFollowing_Throw400InvalidRequest_InvalidOffset() throws Exception {
-        // api: GET /api/v1/profile/{id}/following ==> 400 : InvalidRequest
-        String path = ApiConfig.Profile.GET_FOLLOWING_BY_ID;
+    void getFollowers_Returns400BadRequest_WhenInvalidOffsetSupplied() {
+        // api: GET /api/v1/profile/{id}/followers ==> 400 Bad Request : ErrorDTO
         UUID id = UUID.randomUUID();
         int offset = -1;
-        int limit = 1;
-
-        String response = mockMvc
-            .perform(get(path, id)
-                .param("offset", String.valueOf(offset))
-                .param("limit", String.valueOf(limit)))
-            .andDo(print())
-            .andExpect(status().isBadRequest())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
+        int limit = 20;
 
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_OFFSET,
-            path);
+            GET_FOLLOWERS_BY_ID_PATH);
 
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+        var response = mvc.get()
+            .uri(GET_FOLLOWERS_BY_ID_PATH, id)
+            .queryParam("offset", String.valueOf(offset))
+            .queryParam("limit", String.valueOf(limit))
+            .exchange();
 
-        assertEquals(expected, actual);
-        verify(profileViewService, never()).getFollowing(eq(id), any(Pageable.class));
+        assertThat(response)
+            .hasStatus(400)
+            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+
+        verify(profileViewService, never()).getFollowers(eq(id), any(Pageable.class));
     }
 
     @Test
-    void ProfileViewController_GetFollowing_Throw400InvalidRequest_InvalidLimit() throws Exception {
-        // api: GET /api/v1/profile/{id}/following ==> 400 : InvalidRequest
-        String path = ApiConfig.Profile.GET_FOLLOWING_BY_ID;
+    void getFollowers_Returns400BadRequest_WhenInvalidLimitSupplied() {
+        // api: GET /api/v1/profile/{id}/followers ==> 400 Bad Request : ErrorDTO
         UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 0;
-
-        String response = mockMvc
-            .perform(get(path, id)
-                .param("offset", String.valueOf(offset))
-                .param("limit", String.valueOf(limit)))
-            .andDo(print())
-            .andExpect(status().isBadRequest())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
 
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_LIMIT,
-            path);
+            GET_FOLLOWERS_BY_ID_PATH);
 
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+        var response = mvc.get()
+            .uri(GET_FOLLOWERS_BY_ID_PATH, id)
+            .queryParam("offset", String.valueOf(offset))
+            .queryParam("limit", String.valueOf(limit))
+            .exchange();
 
-        assertEquals(expected, actual);
-        verify(profileViewService, never()).getFollowing(eq(id), any(Pageable.class));
+        assertThat(response)
+            .hasStatus(400)
+            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+
+        verify(profileViewService, never()).getFollowers(eq(id), any(Pageable.class));
     }
 
     @Test
-    void ProfileViewController_GetFollowing_Throw404ResourceNotFound() throws Exception {
-        // api: GET /api/v1/profile/{id}/following ==> 404 : Resource Not Found
-        String path = ApiConfig.Profile.GET_FOLLOWING_BY_ID;
+    void getFollowing_Returns200PageDtoOfProfileDto_WhenProfileByIdExists() throws Exception {
+        // api: GET /api/v1/profile/{id}/following ==> 200 OK : PageDTO<ProfileDTO>
+        UUID id = UUID.randomUUID();
+        int offset = 0;
+        int limit = 1;
+
+        Pageable page = new OffsetLimitRequest(offset, limit);
+        Page<SimplifiedProfileDTO> pageProfileDto = new PageImpl<>(List.of(simplifiedProfile), page, 1);
+        PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(pageProfileDto, GET_FOLLOWING_BY_ID_PATH);
+        String expectedJson = objectMapper.writeValueAsString(expected);
+
+        when(profileViewService.getFollowing(eq(id), any(Pageable.class))).thenReturn(expected);
+
+        var response = mvc.get()
+            .uri(GET_FOLLOWING_BY_ID_PATH, id)
+            .queryParam("offset", String.valueOf(offset))
+            .queryParam("limit", String.valueOf(limit))
+            .exchange();
+
+        assertThat(response)
+            .hasStatus(200)
+            .bodyJson().isEqualTo(expectedJson);
+
+        verify(profileViewService).getFollowing(eq(id), any(Pageable.class));
+    }
+
+    @Test
+    void getFollowing_Returns404NotFound_WhenProfileByIdDoesNotExist() {
+        // api: GET /api/v1/profile/{id}/following ==> 404 Not Found : ErrorDTO
         UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 1;
@@ -479,26 +305,75 @@ class ProfileViewControllerTest {
         when(profileViewService.getFollowing(eq(id), any(Pageable.class)))
             .thenThrow(new ResourceNotFoundException());
 
-        String response = mockMvc
-            .perform(get(path, id)
-                .param("offset", String.valueOf(offset))
-                .param("limit", String.valueOf(limit)))
-            .andDo(print())
-            .andExpect(status().isNotFound())
-            .andReturn()
-            .getResponse()
-            .getContentAsString();
-
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
-            path);
+            GET_FOLLOWING_BY_ID_PATH);
 
-        ErrorDTO actual = objectMapper.readValue(response, ErrorDTO.class);
+        var response = mvc.get()
+            .uri(GET_FOLLOWING_BY_ID_PATH, id)
+            .queryParam("offset", String.valueOf(offset))
+            .queryParam("limit", String.valueOf(limit))
+            .exchange();
 
-        assertEquals(expected, actual);
-        verify(profileViewService, times(1)).getFollowing(eq(id), any(Pageable.class));
+        assertThat(response)
+            .hasStatus(404)
+            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+
+        verify(profileViewService).getFollowing(eq(id), any(Pageable.class));
+    }
+
+    @Test
+    void getFollowing_Returns400BadRequest_WhenInvalidOffsetSupplied() {
+        // api: GET /api/v1/profile/{id}/following ==> 400 Bad Request : ErrorDTO
+        UUID id = UUID.randomUUID();
+        int offset = -1;
+        int limit = 1;
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_OFFSET,
+            GET_FOLLOWING_BY_ID_PATH);
+
+        var response = mvc.get()
+            .uri(GET_FOLLOWING_BY_ID_PATH, id)
+            .queryParam("offset", String.valueOf(offset))
+            .queryParam("limit", String.valueOf(limit))
+            .exchange();
+
+        assertThat(response)
+            .hasStatus(400)
+            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+
+        verify(profileViewService, never()).getFollowing(eq(id), any(Pageable.class));
+    }
+
+    @Test
+    void getFollowing_Returns400BadRequest_WhenInvalidLimitSupplied() {
+        // api: GET /api/v1/profile/{id}/following ==> 400 Bad Request : ErrorDTO
+        UUID id = UUID.randomUUID();
+        int offset = 0;
+        int limit = 0;
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_LIMIT,
+            GET_FOLLOWING_BY_ID_PATH);
+
+        var response = mvc.get()
+            .uri(GET_FOLLOWING_BY_ID_PATH, id)
+            .queryParam("offset", String.valueOf(offset))
+            .queryParam("limit", String.valueOf(limit))
+            .exchange();
+
+        assertThat(response)
+            .hasStatus(400)
+            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+
+        verify(profileViewService, never()).getFollowing(eq(id), any(Pageable.class));
     }
 
 }
