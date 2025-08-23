@@ -2,7 +2,10 @@ package com.example.echo_api.persistence.mapper;
 
 import static lombok.AccessLevel.PRIVATE;
 
+import java.net.URI;
+
 import org.springframework.data.domain.Page;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 
@@ -20,8 +23,8 @@ public class PageMapper {
         int offset = (int) page.getPageable().getOffset();
         int limit = page.getPageable().getPageSize();
 
-        String previous = page.hasPrevious() ? constructPreviousUri(uri, offset, limit) : null;
-        String next = page.hasNext() ? constructNextUri(uri, offset, limit) : null;
+        URI previous = page.hasPrevious() ? constructUri(uri, offset - limit, limit) : null;
+        URI next = page.hasNext() ? constructUri(uri, offset + limit, limit) : null;
 
         return new PageDTO<>(
             previous,
@@ -32,14 +35,13 @@ public class PageMapper {
             page.getContent());
     }
 
-    private static String constructPreviousUri(String path, int offset, int limit) {
-        String pagination = String.format("?offset=%d&limit=%d", offset - limit, limit);
-        return path + pagination;
-    }
-
-    private static String constructNextUri(String path, int offset, int limit) {
-        String pagination = String.format("?offset=%d&limit=%d", offset + limit, limit);
-        return path + pagination;
+    private static URI constructUri(String baseUri, int offset, int limit) {
+        return UriComponentsBuilder
+            .fromUriString(baseUri)
+            .replaceQueryParam("offset", offset)
+            .replaceQueryParam("limit", limit)
+            .build()
+            .toUri();
     }
 
 }

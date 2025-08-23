@@ -1,5 +1,6 @@
 package com.example.echo_api.persistence.dto.response.pagination;
 
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -10,9 +11,9 @@ import java.util.List;
  * <p>
  * Accepts a generic type {@code T} for the content type.
  * 
- * @param previous the {@code URI} to fetch the previous page, assuming the same
+ * @param previous the {@link URI} to fetch the previous page, assuming the same
  *                 page size
- * @param next     the {@code URI} to fetch the next page, assuming the same
+ * @param next     the {@link URI} to fetch the next page, assuming the same
  *                 page size
  * @param limit    the size of this page
  * @param offset   the offset of data fetched in this page (page size * page
@@ -20,13 +21,11 @@ import java.util.List;
  * @param total    the total number of items available from this resource
  * @param items    the list of content returned in this response
  */
-// @formatter:off
 public record PageDTO<T>(
-    String previous,
-    String next,
+    URI previous,
+    URI next,
     int offset,
     int limit,
     int total,
     List<T> items
 ) {}
-// @formatter:on
