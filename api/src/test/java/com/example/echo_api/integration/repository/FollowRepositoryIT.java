@@ -9,8 +9,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.echo_api.integration.util.RepositoryTest;
@@ -24,9 +22,7 @@ import com.example.echo_api.persistence.repository.UserRepository;
 /**
  * Integration test class for {@link FollowRepository}.
  */
-@DataJpaTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class FollowRepositoryIT extends RepositoryTest {
 
     @Autowired

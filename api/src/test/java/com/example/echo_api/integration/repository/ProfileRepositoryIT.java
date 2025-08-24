@@ -10,10 +10,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.annotation.DirtiesContext;
 
 import com.example.echo_api.integration.util.RepositoryTest;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
@@ -29,9 +27,7 @@ import com.example.echo_api.persistence.repository.FollowRepository;
 /**
  * Integration test class for {@link ProfileRepository}.
  */
-@DataJpaTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ProfileRepositoryIT extends RepositoryTest {
 
     @Autowired
