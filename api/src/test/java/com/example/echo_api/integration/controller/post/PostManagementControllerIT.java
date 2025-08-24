@@ -1,26 +1,22 @@
 package com.example.echo_api.integration.controller.post;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.http.HttpStatus.*;
-import static org.springframework.http.HttpMethod.*;
-
 import java.util.UUID;
+import java.util.stream.Stream;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.config.ValidationMessageConfig;
 import com.example.echo_api.controller.post.PostManagementController;
 import com.example.echo_api.integration.util.IntegrationTest;
-import com.example.echo_api.integration.util.TestUtils;
 import com.example.echo_api.persistence.dto.request.post.CreatePostDTO;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.persistence.model.post.Post;
@@ -29,9 +25,11 @@ import com.example.echo_api.persistence.repository.PostRepository;
 /**
  * Integration test class for {@link PostManagementController}.
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class PostManagementControllerIT extends IntegrationTest {
+
+    private static final String CREATE_PATH = ApiConfig.Post.CREATE;
+    private static final String GET_BY_ID_PATH = ApiConfig.Post.GET_BY_ID;
 
     @Autowired
     private PostRepository postRepository;
@@ -39,7 +37,7 @@ class PostManagementControllerIT extends IntegrationTest {
     private Post selfPost;
     private Post notSelfPost;
 
-    @BeforeAll
+    @BeforeEach
     void setup() {
         selfPost = new Post(authUser.getId(), "Test post.");
         selfPost = postRepository.save(selfPost);
@@ -49,76 +47,107 @@ class PostManagementControllerIT extends IntegrationTest {
     }
 
     @Test
-    @Transactional
-    void PostManagementController_Create_Return204NoContent() {
-        // api: POST /api/v1/post ==> : 204 : No Content
-        String path = ApiConfig.Post.CREATE;
+    void create_Returns204NoContent_WhenPassesValidation() {
+        // api: POST /api/v1/post ==> 204 No Content
+        UUID parentId = selfPost.getId();
+        String text = "Test post.";
+        var body = new CreatePostDTO(parentId, text);
 
-        CreatePostDTO body = new CreatePostDTO(null, "Test post.");
+        authenticatedClient.post()
+            .uri(CREATE_PATH)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isNoContent()
+            .expectBody().isEmpty();
+    }
 
-        HttpEntity<CreatePostDTO> request = TestUtils.createJsonRequestEntity(body);
-        ResponseEntity<Void> response = restTemplate.exchange(path, POST, request, Void.class);
+    static Stream<Arguments> invalidTextCases() {
+        return Stream.of(
+            Arguments.of(null, ValidationMessageConfig.TEXT_NULL_OR_BLANK),
+            Arguments.of(" ", ValidationMessageConfig.TEXT_NULL_OR_BLANK),
+            Arguments.of("x".repeat(281), ValidationMessageConfig.TEXT_TOO_LONG));
+    }
 
-        // assert response
-        assertEquals(NO_CONTENT, response.getStatusCode());
-        assertNull(response.getBody());
+    @ParameterizedTest(name = "create_Returns400BadRequest_WhenPostTextFieldIsInvalid: \"{0}\"")
+    @MethodSource("invalidTextCases")
+    void create_Returns400BadRequest_WhenPostTextFieldIsInvalid(String text, String expectedDetails) {
+        // api: POST /api/v1/post ==> 400 Bad Request : ErrorDTO
+        var body = new CreatePostDTO(null, text);
+
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            expectedDetails,
+            null);
+
+        authenticatedClient.post()
+            .uri(CREATE_PATH)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest()
+            .expectBody(ErrorDTO.class).isEqualTo(expected);
     }
 
     @Test
-    @Transactional
-    void PostManagementController_Create_Throw400InvalidParentId() {
-        // api: POST /api/v1/post ==> : 400 : InvalidParentId
-        String path = ApiConfig.Post.CREATE;
-        UUID invalidParentPostId = UUID.randomUUID();
+    void create_Returns400BadRequest_WhenPostByParentIdDoesNotExist() {
+        // api: POST /api/v1/post ==> 400 Bad Request : ErrorDTO
+        UUID invalidParentId = UUID.randomUUID();
+        var body = new CreatePostDTO(invalidParentId, "Test post.");
 
-        CreatePostDTO body = new CreatePostDTO(invalidParentPostId, "Test post.");
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.BAD_REQUEST,
+            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            ValidationMessageConfig.INVALID_PARENT_ID,
+            null);
 
-        HttpEntity<CreatePostDTO> request = TestUtils.createJsonRequestEntity(body);
-        ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, POST, request, ErrorDTO.class);
-
-        // assert response
-        assertEquals(BAD_REQUEST, response.getStatusCode());
-        assertNotNull(response.getBody());
-
-        // assert error
-        ErrorDTO error = response.getBody();
-        assertNotNull(error);
-        assertEquals(BAD_REQUEST.value(), error.status());
-        assertEquals(ErrorMessageConfig.BadRequest.INVALID_REQUEST, error.message());
-        assertEquals(ValidationMessageConfig.INVALID_PARENT_ID, error.details());
+        authenticatedClient.post()
+            .uri(CREATE_PATH)
+            .bodyValue(body)
+            .exchange()
+            .expectStatus().isBadRequest()
+            .expectBody(ErrorDTO.class).isEqualTo(expected);
     }
 
     @Test
-    void PostManagementController_Delete_Return204NoContent() {
-        // api: DELETE /api/v1/post/{id} ==> : 204 : No Content
-        String path = ApiConfig.Post.GET_BY_ID;
-        UUID postId = selfPost.getId();
+    void delete_Returns204NoContent_WhenPostByIdIsOwnedByYou() {
+        // api: DELETE /api/v1/post/{id} ==> 204 No Content
+        UUID myPostId = selfPost.getId();
 
-        ResponseEntity<Void> response = restTemplate.exchange(path, DELETE, null, Void.class, postId);
-
-        // assert response
-        assertEquals(NO_CONTENT, response.getStatusCode());
-        assertNull(response.getBody());
+        authenticatedClient.delete()
+            .uri(GET_BY_ID_PATH, myPostId)
+            .exchange()
+            .expectStatus().isNoContent()
+            .expectBody().isEmpty();
     }
 
     @Test
-    void PostManagementController_Delete_Throw403ResourceOwnershipRequired() {
-        // api: DELETE /api/v1/post/{id} ==> : 403 : ResourceOwnershipRequired
-        String path = ApiConfig.Post.GET_BY_ID;
-        UUID postId = notSelfPost.getId();
+    void delete_Returns204NoContent_WhenPostByIdDoesNotExist() {
+        // api: DELETE /api/v1/post/{id} ==> 204 No Content
+        UUID nonExistingPostId = UUID.randomUUID();
 
-        ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, postId);
+        authenticatedClient.delete()
+            .uri(GET_BY_ID_PATH, nonExistingPostId)
+            .exchange()
+            .expectStatus().isNoContent()
+            .expectBody().isEmpty();
+    }
 
-        // assert response
-        assertEquals(FORBIDDEN, response.getStatusCode());
-        assertNotNull(response.getBody());
+    @Test
+    void delete_Returns403Forbidden_WhenPostByIdExistsAndIsNotOwnedByYou() {
+        // api: DELETE /api/v1/post/{id} ==> 403 Forbidden : ErrorDTO
+        UUID notMyPostId = notSelfPost.getId();
 
-        // assert error
-        ErrorDTO error = response.getBody();
-        assertNotNull(error);
-        assertEquals(FORBIDDEN.value(), error.status());
-        assertEquals(ErrorMessageConfig.Forbidden.RESOURCE_OWNERSHIP_REQUIRED, error.message());
-        assertEquals(null, error.details());
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.FORBIDDEN,
+            ErrorMessageConfig.Forbidden.RESOURCE_OWNERSHIP_REQUIRED,
+            null,
+            null);
+
+        authenticatedClient.delete()
+            .uri(GET_BY_ID_PATH, notMyPostId)
+            .exchange()
+            .expectStatus().isForbidden()
+            .expectBody(ErrorDTO.class).isEqualTo(expected);
     }
 
 }

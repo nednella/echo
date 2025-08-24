@@ -7,11 +7,14 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -21,11 +24,23 @@ import com.example.echo_api.persistence.dto.adapter.ClerkUserDTO;
 import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.service.dev.DevService;
 
+/**
+ * Base class for full-stack integration tests.
+ * 
+ * <ul>
+ * <li>runs with the "test" profile and Testcontainers
+ * <li>boots the application with a random port
+ * <li>uses {@link WebTestClient} for fluent assertions
+ * <li>import test-only beans (DatabaseCleaner, SvixTestConfig)
+ * </ul>
+ */
 @ActiveProfiles(value = "test")
 @Testcontainers
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureWebTestClient
+@Import(DatabaseCleaner.class)
 @ContextConfiguration(classes = { SvixTestConfig.class }) // Ensure default SvixConfig is NOT loaded
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class IntegrationTest {
 
     protected static final String AUTH_USER_USERNAME = "auth_user";
@@ -36,10 +51,13 @@ public abstract class IntegrationTest {
     protected static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest");
 
     @Autowired
-    protected TestRestTemplate restTemplate;
+    protected DatabaseCleaner cleaner;
 
     @Autowired
-    protected AuthorizationHeaderInterceptor authorizationHeaderInterceptor;
+    protected WebTestClient authenticatedClient;
+
+    @Autowired
+    protected WebTestClient unauthenticatedClient;
 
     @Autowired
     private ClerkTestUtils clerkTestUtils;
@@ -64,26 +82,23 @@ public abstract class IntegrationTest {
      * Initialise the integration test environment:
      * 
      * <ul>
-     * <li>Append Authorization header interceptor to the rest template
      * <li>Create Clerk users & sync to the local database
      * <li>Mark a Clerk user as having completed the onboarding process
      * <li>Obtain a bearer token for that user to send authenticated requests
+     * <li>Build an authenticated testing client with a default AUTHORIZATION header
      * </ul>
      */
     @BeforeAll
     void integrationTestSetup() {
-        restTemplate
-            .getRestTemplate()
-            .getInterceptors()
-            .add(authorizationHeaderInterceptor);
-
         authUser = createTestUser("test1@echo.app", AUTH_USER_USERNAME);
         mockUser = createTestUser("test2@echo.app", MOCK_USER_USERNAME);
 
         clerkTestUtils.completeOnboarding(authUser.getExternalId(), authUser.getId().toString());
-
         String token = clerkTestUtils.getSessionTokenForUser(authUser.getExternalId());
-        authorizationHeaderInterceptor.setToken(token);
+
+        authenticatedClient = authenticatedClient.mutate()
+            .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+            .build();
     }
 
     /**

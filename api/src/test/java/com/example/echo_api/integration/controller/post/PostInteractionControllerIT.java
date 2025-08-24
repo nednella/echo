@@ -1,18 +1,14 @@
 package com.example.echo_api.integration.controller.post;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.http.HttpStatus.*;
-import static org.springframework.http.HttpMethod.*;
-
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.jdbc.Sql;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
@@ -29,6 +25,8 @@ import com.example.echo_api.persistence.repository.PostRepository;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class PostInteractionControllerIT extends IntegrationTest {
 
+    private static final String LIKE_PATH = ApiConfig.Post.LIKE;
+
     @Autowired
     private PostRepository postRepository;
 
@@ -40,85 +38,89 @@ class PostInteractionControllerIT extends IntegrationTest {
         post = postRepository.save(post);
     }
 
-    @Test
-    @Sql(scripts = "/sql/post-interaction-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void PostInteractionController_Like_Return204NoContent() {
-        // api: POST /api/v1/post/{id}/like ==> : 204 : No Content
-        String path = ApiConfig.Post.LIKE;
-        UUID id = post.getId();
-
-        ResponseEntity<Void> response = restTemplate.postForEntity(path, null, Void.class, id);
-
-        // assert response
-        assertEquals(NO_CONTENT, response.getStatusCode());
-        assertNull(response.getBody());
+    @BeforeEach
+    void cleanDb() {
+        cleaner.cleanPostInteractions();
     }
 
     @Test
-    void PostInteractionController_Like_Throw404ResourceNotFound() {
-        // api: POST /api/v1/post/{id}/like ==> : 404 : ResourceNotFound
-        String path = ApiConfig.Post.LIKE;
-        UUID id = UUID.randomUUID();
+    void like_Returns204NoContent_WhenPostByIdExistsAndNotAlreadyLiked() {
+        // api: POST /api/v1/post/{id}/like ==> 204 No Content
+        UUID postId = post.getId();
 
-        ResponseEntity<ErrorDTO> response = restTemplate.postForEntity(path, null, ErrorDTO.class, id);
-
-        // assert response
-        assertEquals(NOT_FOUND, response.getStatusCode());
-        assertNotNull(response.getBody());
-
-        // assert error
-        ErrorDTO error = response.getBody();
-        assertNotNull(error);
-        assertEquals(NOT_FOUND.value(), error.status());
-        assertEquals(ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND, error.message());
-        assertEquals(null, error.details());
+        authenticatedClient.post()
+            .uri(LIKE_PATH, postId)
+            .exchange()
+            .expectStatus().isNoContent()
+            .expectBody().isEmpty();
     }
 
     @Test
-    @Sql(scripts = "/sql/post-interaction-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void PostInteractionController_Like_Throw409AlreadyLiked() {
-        // api: POST /api/v1/post/{id}/like ==> : 409 : AlreadyLiked
-        String path = ApiConfig.Post.LIKE;
-        UUID id = post.getId();
+    void like_Returns404NotFound_WhenPostByIdDoesNotExist() {
+        // api: POST /api/v1/post/{id}/like ==> 404 Not Found : ErrorDTO
+        UUID nonExistingPostId = UUID.randomUUID();
 
-        ResponseEntity<Void> response1 = restTemplate.postForEntity(path, null, Void.class, id);
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.NOT_FOUND,
+            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            null,
+            null);
 
-        // assert 1st response
-        assertEquals(NO_CONTENT, response1.getStatusCode());
-        assertNull(response1.getBody());
-
-        ResponseEntity<ErrorDTO> response2 = restTemplate.postForEntity(path, null, ErrorDTO.class, id);
-
-        // assert 2nd response
-        assertEquals(CONFLICT, response2.getStatusCode());
-        assertNotNull(response2.getBody());
-
-        // assert error
-        ErrorDTO error = response2.getBody();
-        assertNotNull(error);
-        assertEquals(CONFLICT.value(), error.status());
-        assertEquals(ErrorMessageConfig.Conflict.ALREADY_LIKED, error.message());
-        assertEquals(null, error.details());
+        authenticatedClient.post()
+            .uri(LIKE_PATH, nonExistingPostId)
+            .exchange()
+            .expectStatus().isNotFound()
+            .expectBody(ErrorDTO.class).isEqualTo(expected);
     }
 
     @Test
-    void PostInteractionController_Unlike_Return204NoContent() {
-        // api: DELETE /api/v1/post/{id}/like ==> : 204 : No Content
-        String path = ApiConfig.Post.LIKE;
-        UUID existingId = post.getId();
-        UUID nonExistingId = UUID.randomUUID();
+    void like_Returns409Conflict_WhenPostByIdAlreadyLiked() {
+        // api: POST /api/v1/post/{id}/like ==> 409 Conflict : ErrorDTO
+        UUID postId = post.getId();
 
-        ResponseEntity<Void> response1 = restTemplate.exchange(path, DELETE, null, Void.class, existingId);
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.CONFLICT,
+            ErrorMessageConfig.Conflict.ALREADY_LIKED,
+            null,
+            null);
 
-        // assert existing id returns 204
-        assertEquals(NO_CONTENT, response1.getStatusCode());
-        assertNull(response1.getBody());
+        // 1st like request --> 204
+        authenticatedClient.post()
+            .uri(LIKE_PATH, postId)
+            .exchange()
+            .expectStatus().isNoContent()
+            .expectBody().isEmpty();
 
-        ResponseEntity<Void> response2 = restTemplate.exchange(path, DELETE, null, Void.class, nonExistingId);
+        // 2nd like request --> 409
+        authenticatedClient.post()
+            .uri(LIKE_PATH, postId)
+            .exchange()
+            .expectStatus().isEqualTo(409)
+            .expectBody(ErrorDTO.class).isEqualTo(expected);
+    }
 
-        // assert invalid id returns 204 (idempotent endpoint)
-        assertEquals(NO_CONTENT, response2.getStatusCode());
-        assertNull(response2.getBody());
+    @Test
+    void unlike_Returns204NoContent_WhenPostByIdExists() {
+        // api: DELETE /api/v1/post/{id}/like ==> 204 No Content
+        UUID existingPostId = post.getId();
+
+        authenticatedClient.delete()
+            .uri(LIKE_PATH, existingPostId)
+            .exchange()
+            .expectStatus().isNoContent()
+            .expectBody().isEmpty();
+    }
+
+    @Test
+    void unlike_Returns204NoContent_WhenPostByIdDoesNotExist() {
+        // api: DELETE /api/v1/post/{id}/like ==> 204 No Content
+        UUID nonExistingPostId = UUID.randomUUID();
+
+        authenticatedClient.delete()
+            .uri(LIKE_PATH, nonExistingPostId)
+            .exchange()
+            .expectStatus().isNoContent()
+            .expectBody().isEmpty();
     }
 
 }

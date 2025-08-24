@@ -24,15 +24,15 @@ import lombok.NoArgsConstructor;
 public class Follow {
 
     @Id
-    @Column(name = "follower_id")
+    @Column(name = "follower_id", nullable = false, updatable = false)
     private UUID followerId;
 
     @Id
-    @Column(name = "followed_id")
+    @Column(name = "followed_id", nullable = false, updatable = false)
     private UUID followedId;
 
     @CreationTimestamp
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
     public Follow(UUID source, UUID target) {

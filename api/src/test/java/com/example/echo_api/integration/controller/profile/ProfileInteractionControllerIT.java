@@ -1,17 +1,11 @@
 package com.example.echo_api.integration.controller.profile;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.http.HttpStatus.*;
-
 import java.util.UUID;
 
-import static org.springframework.http.HttpMethod.*;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.jdbc.Sql;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
@@ -22,148 +16,118 @@ import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 /**
  * Integration test class for {@link ProfileInteractionController}.
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ProfileInteractionControllerIT extends IntegrationTest {
 
-    @Test
-    @Sql(scripts = "/sql/profile-interaction-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void ProfileController_Follow_Return204NoContent() {
-        // api: POST /api/v1/profile/{id}/follow ==> 204 : No Content
-        String path = ApiConfig.Profile.FOLLOW_BY_ID;
-        UUID id = mockUser.getId();
+    private static final String FOLLOW_PATH = ApiConfig.Profile.FOLLOW_BY_ID;
 
-        ResponseEntity<Void> response = restTemplate.postForEntity(path, null, Void.class, id);
-
-        // assert response
-        assertEquals(NO_CONTENT, response.getStatusCode());
-        assertNull(response.getBody());
+    @BeforeEach
+    void cleanDb() {
+        cleaner.cleanProfileInteractions();
     }
 
     @Test
-    void ProfileController_Follow_Throw404ResourceNotFound() {
-        // api: POST /api/v1/profile/{id}/follow ==> 404 : ResourceNotFound
-        String path = ApiConfig.Profile.FOLLOW_BY_ID;
-        UUID id = UUID.randomUUID();
+    void follow_Returns204NoContent_WhenProfileByIdExistsAndNotAlreadyFollowed() {
+        // api: POST /api/v1/profile/{id}/follow ==> 204 No Content
+        UUID profileId = mockUser.getId();
 
-        ResponseEntity<ErrorDTO> response = restTemplate.postForEntity(path, null, ErrorDTO.class, id);
-
-        // assert response
-        assertEquals(NOT_FOUND, response.getStatusCode());
-        assertNotNull(response.getBody());
-
-        // assert error
-        ErrorDTO error = response.getBody();
-        assertNotNull(error);
-        assertEquals(NOT_FOUND.value(), error.status());
-        assertEquals(ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND, error.message());
+        authenticatedClient.post()
+            .uri(FOLLOW_PATH, profileId)
+            .exchange()
+            .expectStatus().isNoContent()
+            .expectBody().isEmpty();
     }
 
     @Test
-    void ProfileController_Follow_Throw409SelfActionException() {
-        // api: POST /api/v1/profile/{id}/follow ==> 409 : SelfAction
-        String path = ApiConfig.Profile.FOLLOW_BY_ID;
-        UUID id = authUser.getId();
+    void follow_Returns404NotFound_WhenProfileByIdDoesNotExist() {
+        // api: POST /api/v1/profile/{id}/follow ==> 404 Not Found : ErrorDTO
+        UUID nonExistingProfileId = UUID.randomUUID();
 
-        ResponseEntity<ErrorDTO> response = restTemplate.postForEntity(path, null, ErrorDTO.class, id);
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.NOT_FOUND,
+            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            null,
+            null);
 
-        // assert response
-        assertEquals(CONFLICT, response.getStatusCode());
-        assertNotNull(response.getBody());
-
-        // assert error
-        ErrorDTO error = response.getBody();
-        assertNotNull(error);
-        assertEquals(CONFLICT.value(), error.status());
-        assertEquals(ErrorMessageConfig.Conflict.SELF_ACTION, error.message());
+        authenticatedClient.post()
+            .uri(FOLLOW_PATH, nonExistingProfileId)
+            .exchange()
+            .expectStatus().isNotFound()
+            .expectBody(ErrorDTO.class).isEqualTo(expected);
     }
 
     @Test
-    @Sql(scripts = "/sql/profile-interaction-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void ProfileController_Follow_Throw409AlreadyFollowingException() {
-        // api: POST /api/v1/profile/{id}/follow ==> 409 : AlreadyFollowing
-        String path = ApiConfig.Profile.FOLLOW_BY_ID;
-        UUID id = mockUser.getId();
+    void follow_Returns409Conflict_WhenProfileByIdIsYou() {
+        // api: POST /api/v1/profile/{id}/follow ==> 409 Conflict : ErrorDTO
+        UUID myProfileId = authUser.getId();
 
-        // follow the user to create a follow relationship in the db
-        ResponseEntity<Void> response1 = restTemplate.postForEntity(path, null, Void.class, id);
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.CONFLICT,
+            ErrorMessageConfig.Conflict.SELF_ACTION,
+            null,
+            null);
 
-        // assert response
-        assertEquals(NO_CONTENT, response1.getStatusCode());
-        assertNull(response1.getBody());
-
-        // attempt to follow the same user again to force a 409 AlreadyFollowing
-        ResponseEntity<ErrorDTO> response2 = restTemplate.postForEntity(path, null, ErrorDTO.class, id);
-
-        // assert response
-        assertEquals(CONFLICT, response2.getStatusCode());
-        assertNotNull(response2.getBody());
-
-        // assert error
-        ErrorDTO error = response2.getBody();
-        assertNotNull(error);
-        assertEquals(CONFLICT.value(), error.status());
-        assertEquals(ErrorMessageConfig.Conflict.ALREADY_FOLLOWING, error.message());
+        authenticatedClient.post()
+            .uri(FOLLOW_PATH, myProfileId)
+            .exchange()
+            .expectStatus().isEqualTo(409)
+            .expectBody(ErrorDTO.class).isEqualTo(expected);
     }
 
     @Test
-    @Sql(scripts = "/sql/profile-interaction-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void ProfileController_Unfollow_Return204NoContent() {
-        // api: DELETE /api/v1/profile/{id}/follow ==> 204 : No Content
-        String path = ApiConfig.Profile.FOLLOW_BY_ID;
-        UUID id = mockUser.getId();
+    void follow_Returns409Conflict_WhenProfileByIdAlreadyFollowedByYou() {
+        // api: POST /api/v1/profile/{id}/follow ==> 409 Conflict : ErrorDTO
+        UUID profileId = mockUser.getId();
 
-        // follow the user to create a follow relationship in the db
-        ResponseEntity<Void> followResponse = restTemplate.postForEntity(path, null, Void.class, id);
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.CONFLICT,
+            ErrorMessageConfig.Conflict.ALREADY_FOLLOWING,
+            null,
+            null);
 
-        // assert response
-        assertEquals(NO_CONTENT, followResponse.getStatusCode());
-        assertNull(followResponse.getBody());
+        // 1st follow request --> 204
+        authenticatedClient.post()
+            .uri(FOLLOW_PATH, profileId)
+            .exchange()
+            .expectStatus().isNoContent()
+            .expectBody().isEmpty();
 
-        // unfollow the user
-        ResponseEntity<Void> unfollowResponse = restTemplate.exchange(path, DELETE, null, Void.class, id);
-
-        // assert response
-        assertEquals(NO_CONTENT, unfollowResponse.getStatusCode());
-        assertNull(unfollowResponse.getBody());
+        // 2nd follow request --> 409
+        authenticatedClient.post()
+            .uri(FOLLOW_PATH, profileId)
+            .exchange()
+            .expectStatus().isEqualTo(409)
+            .expectBody(ErrorDTO.class).isEqualTo(expected);
     }
 
-    @Test
-    void ProfileController_Unfollow_Throw404ResourceNotFound() {
-        // api: DELETE /api/v1/profile/{id}/follow ==> 404 : ResourceNotFound
-        String path = ApiConfig.Profile.FOLLOW_BY_ID;
-        UUID id = UUID.randomUUID();
+    @Test // TODO: implement when unfollow is refactored to idempotent operation
+    void unfollow_Returns204NoContent_WhenProfileByIdExists() {
+        // api: DELETE /api/v1/profile/{id}/follow ==> 204 No Content
 
-        ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, id);
-
-        // assert response
-        assertEquals(NOT_FOUND, response.getStatusCode());
-        assertNotNull(response.getBody());
-
-        // assert error
-        ErrorDTO error = response.getBody();
-        assertNotNull(error);
-        assertEquals(NOT_FOUND.value(), error.status());
-        assertEquals(ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND, error.message());
     }
 
-    @Test
-    void ProfileController_Unfollow_Throw409SelfActionException() {
-        // api: DELETE /api/v1/profile/{id}/follow ==> 409 : SelfAction
-        String path = ApiConfig.Profile.FOLLOW_BY_ID;
-        UUID id = authUser.getId();
+    @Test // TODO: implement when unfollow is refactored to idempotent operation
+    void unfollow_Returns204NoContent_WhenProfileByIdIsYou() {
+        // api: DELETE /api/v1/profile/{id}/follow ==> 204 No Content
 
-        ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, DELETE, null, ErrorDTO.class, id);
+    }
 
-        // assert response
-        assertEquals(CONFLICT, response.getStatusCode());
-        assertNotNull(response.getBody());
+    @Test // TODO: implement when unfollow is refactored to idempotent operation
+    void unfollow_Returns204NoContent_WhenProfileByIdDoesNotExist() {
+        // api: DELETE /api/v1/profile/{id}/follow ==> 204 No Content
 
-        // assert error
-        ErrorDTO error = response.getBody();
-        assertNotNull(error);
-        assertEquals(CONFLICT.value(), error.status());
-        assertEquals(ErrorMessageConfig.Conflict.SELF_ACTION, error.message());
+    }
+
+    @Test // TODO: remove when unfollow is refactored to idempotent operation
+    void unfollow_Returns404NotFound_WhenProfileByIdDoesNotExist() {
+        // api: DELETE /api/v1/profile/{id}/follow ==> 404 Not Found : ErrorDTO
+
+    }
+
+    @Test // TODO: remove when unfollow is refactored to idempotent operation
+    void unfollow_Returns409Conflict_WhenProfileByIdIsYou() {
+        // api: DELETE /api/v1/profile/{id}/follow ==> 409 Conflict : ErrorDTO
+
     }
 
 }

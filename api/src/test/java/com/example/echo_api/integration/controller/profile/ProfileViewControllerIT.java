@@ -1,235 +1,196 @@
 package com.example.echo_api.integration.controller.profile;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.http.HttpStatus.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.net.URI;
 import java.util.UUID;
 
-import static org.springframework.http.HttpMethod.*;
-
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.jdbc.Sql;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.controller.profile.ProfileViewController;
 import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
+import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
+import com.example.echo_api.persistence.model.follow.Follow;
+import com.example.echo_api.persistence.repository.FollowRepository;
 
 /**
  * Integration test class for {@link ProfileViewController}.
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ProfileViewControllerIT extends IntegrationTest {
 
-    @Test
-    void ProfileController_GetMe_Return200ProfileDTO() {
-        // api: GET /api/v1/profile/me ==> 200 : ProfileDTO
-        String path = ApiConfig.Profile.ME;
+    private static final String ME_PATH = ApiConfig.Profile.ME;
+    private static final String GET_BY_USERNAME_PATH = ApiConfig.Profile.GET_BY_USERNAME;
+    private static final String GET_FOLLOWERS_BY_ID_PATH = ApiConfig.Profile.GET_FOLLOWERS_BY_ID;
+    private static final String GET_FOLLOWING_BY_ID_PATH = ApiConfig.Profile.GET_FOLLOWING_BY_ID;
 
-        ResponseEntity<ProfileDTO> response = restTemplate.getForEntity(path, ProfileDTO.class);
+    @Autowired
+    private FollowRepository followRepository;
 
-        // assert response
-        assertEquals(OK, response.getStatusCode());
-        assertNotNull(response.getBody());
+    /**
+     * Create and persist a new {@link Follow} between the supplied profiles by ID.
+     * 
+     * @param yourId  your profile ID
+     * @param theirId the profile ID of the user you want to follow
+     */
+    private void followProfile(UUID yourId, UUID theirId) {
+        followRepository.save(new Follow(yourId, theirId));
+    }
 
-        // assert body
-        ProfileDTO body = response.getBody();
-        assertNotNull(body);
-        assertEquals(AUTH_USER_USERNAME, body.username());
+    /**
+     * Helper funtion to validate pagination metadata.
+     */
+    private static void assertPageMetadata(
+        PageDTO<?> dto,
+        URI expectedPrevious,
+        URI expectedNext,
+        int expectedOffset,
+        int expectedLimit,
+        int expectedTotal) {
+        assertThat(dto).isNotNull();
+        assertThat(dto.previous()).isEqualTo(expectedPrevious);
+        assertThat(dto.next()).isEqualTo(expectedNext);
+        assertThat(dto.offset()).isEqualTo(expectedOffset);
+        assertThat(dto.limit()).isEqualTo(expectedLimit);
+        assertThat(dto.total()).isEqualTo(expectedTotal);
     }
 
     @Test
-    void ProfileController_GetByUsername_Return200ProfileDTO() {
+    void getMe_Returns200ProfileDto() {
+        // api: GET /api/v1/profile/me ==> 200 OK : ProfileDTO
+        ProfileDTO response = authenticatedClient.get()
+            .uri(ME_PATH)
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody(ProfileDTO.class)
+            .returnResult()
+            .getResponseBody();
+
+        assertThat(response).isNotNull();
+        assertThat(response.id()).isEqualTo(authUser.getId().toString());
+    }
+
+    @Test
+    void getByUsername_Returns200ProfileDto_WhenProfileByUsernameExists() {
         // api: GET /api/v1/profile/{username} ==> 200 : ProfileDTO
-        String path = ApiConfig.Profile.GET_BY_USERNAME;
-        String username = AUTH_USER_USERNAME;
+        String username = MOCK_USER_USERNAME;
 
-        ResponseEntity<ProfileDTO> response = restTemplate.getForEntity(path, ProfileDTO.class, username);
+        ProfileDTO response = authenticatedClient.get()
+            .uri(GET_BY_USERNAME_PATH, username)
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody(ProfileDTO.class)
+            .returnResult()
+            .getResponseBody();
 
-        // assert response
-        assertEquals(OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-
-        // assert body
-        ProfileDTO body = response.getBody();
-        assertNotNull(body);
-        assertEquals(username, body.username());
+        assertThat(response).isNotNull();
+        assertThat(response.id()).isEqualTo(mockUser.getId().toString());
+        assertThat(response.username()).isEqualTo(username);
     }
 
     @Test
-    void ProfileController_GetByUsername_Throw404ResourceNotFound() {
-        // api: GET /api/v1/profile/{username} ==> 404 : Resource Not Found
-        String path = ApiConfig.Profile.GET_BY_USERNAME;
-        String username = "non-existent-user";
+    void getByUsername_Returns404NotFound_WhenProfileByUsernameDoesNotExist() {
+        // api: GET /api/v1/profile/{username} ==> 404 Not Found : ErrorDTO
+        String nonExistingUsername = "i_dont_exist";
 
-        ResponseEntity<ErrorDTO> response = restTemplate.getForEntity(path, ErrorDTO.class, username);
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.NOT_FOUND,
+            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            null,
+            null);
 
-        // assert response
-        assertEquals(NOT_FOUND, response.getStatusCode());
-        assertNotNull(response.getBody());
-
-        // assert error
-        ErrorDTO error = response.getBody();
-        assertNotNull(error);
-        assertEquals(NOT_FOUND.value(), error.status());
-        assertEquals(ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND, error.message());
+        authenticatedClient.get()
+            .uri(GET_BY_USERNAME_PATH, nonExistingUsername)
+            .exchange()
+            .expectStatus().isNotFound()
+            .expectBody(ErrorDTO.class).isEqualTo(expected);
     }
 
     @Test
-    @Sql(scripts = "/sql/profile-interaction-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void ProfileController_GetFollowers_Return200PageOfProfileDTO() {
-        // api: GET /api/v1/profile/{id}/followers ==> 200 : PageDTO<ProfileDTO>
-        String followPath = ApiConfig.Profile.FOLLOW_BY_ID;
-        String getFollowersPath = ApiConfig.Profile.GET_FOLLOWERS_BY_ID + "?offset=0&limit=1";
-        UUID id = mockUser.getId();
+    void getFollowers_Returns200PageDtoOfSimplifiedProfileDto_WhenProfileByIdExists() {
+        // api: GET /api/v1/profile/{id}/followers ==> 200 OK : PageDTO<ProfileDTO>
+        UUID profileId = mockUser.getId();
+        followProfile(authUser.getId(), profileId); // follow mock user
 
-        // follow target user to create a follow relationship in the db
-        ResponseEntity<Void> response1 = restTemplate.postForEntity(followPath, null, Void.class, id);
+        PageDTO<SimplifiedProfileDTO> response = authenticatedClient.get()
+            .uri(GET_FOLLOWERS_BY_ID_PATH, profileId)
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody(new ParameterizedTypeReference<PageDTO<SimplifiedProfileDTO>>() {})
+            .returnResult()
+            .getResponseBody();
 
-        // assert response
-        assertEquals(NO_CONTENT, response1.getStatusCode());
-        assertNull(response1.getBody());
-
-        // get followers of target user
-        ParameterizedTypeReference<PageDTO<ProfileDTO>> typeRef = new ParameterizedTypeReference<PageDTO<ProfileDTO>>() {};
-        ResponseEntity<PageDTO<ProfileDTO>> response2 = restTemplate.exchange(getFollowersPath, GET, null, typeRef, id);
-
-        // assert response
-        assertEquals(OK, response2.getStatusCode());
-        assertNotNull(response2.getBody());
-
-        PageDTO<ProfileDTO> data = response2.getBody();
-        assertNotNull(data);
-        assertNull(data.previous());
-        assertNull(data.next());
-        assertEquals(1, data.total());
-        assertEquals(1, data.items().size());
-        assertEquals(AUTH_USER_USERNAME, data.items().get(0).username());
+        assertPageMetadata(response, null, null, 0, 20, 1);
+        assertThat(response.items())
+            .hasSize(1)
+            .extracting(SimplifiedProfileDTO::id)
+            .containsExactly(authUser.getId().toString());
     }
 
     @Test
-    void ProfileController_GetFollowers_Return200PageOfEmpty() {
-        // api: GET /api/v1/profile/{id}/followers ==> 200 : PageDTO<ProfileDTO>
-        String path = ApiConfig.Profile.GET_FOLLOWERS_BY_ID;
-        UUID id = mockUser.getId();
+    void getFollowers_Returns404NotFound_WhenProfileByIdDoesNotExist() {
+        // api: GET /api/v1/profile/{id}/followers ==> 404 Not Found : ErrorDTO
+        UUID nonExistingProfileId = UUID.randomUUID();
 
-        ParameterizedTypeReference<PageDTO<ProfileDTO>> typeRef = new ParameterizedTypeReference<PageDTO<ProfileDTO>>() {};
-        ResponseEntity<PageDTO<ProfileDTO>> response = restTemplate.exchange(path, GET, null, typeRef, id);
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.NOT_FOUND,
+            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            null,
+            null);
 
-        // assert response
-        assertEquals(OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-
-        PageDTO<ProfileDTO> data = response.getBody();
-        assertNotNull(data);
-        assertNull(data.previous());
-        assertNull(data.next());
-        assertEquals(0, data.total());
-        assertEquals(0, data.items().size());
+        authenticatedClient.get()
+            .uri(GET_FOLLOWERS_BY_ID_PATH, nonExistingProfileId)
+            .exchange()
+            .expectStatus().isNotFound()
+            .expectBody(ErrorDTO.class).isEqualTo(expected);
     }
 
     @Test
-    void ProfileController_GetFollowers_Throw404ResourceNotFound() {
-        // api: GET /api/v1/profile/{id}/followers ==> 404 : Resource Not Found
-        String path = ApiConfig.Profile.GET_FOLLOWERS_BY_ID;
-        UUID id = UUID.randomUUID();
+    void getFollowing_Returns200PageDtoOfSimplifiedProfileDto_WhenProfileByIdExists() {
+        // api: GET /api/v1/profile/{id}/following ==> 200 OK : PageDTO<ProfileDTO>
+        UUID profileId = authUser.getId();
+        followProfile(profileId, mockUser.getId()); // follow mock user
 
-        ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, GET, null, ErrorDTO.class, id);
+        PageDTO<SimplifiedProfileDTO> response = authenticatedClient.get()
+            .uri(GET_FOLLOWING_BY_ID_PATH, profileId)
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody(new ParameterizedTypeReference<PageDTO<SimplifiedProfileDTO>>() {})
+            .returnResult()
+            .getResponseBody();
 
-        // assert response
-        assertEquals(NOT_FOUND, response.getStatusCode());
-        assertNotNull(response.getBody());
-
-        // assert error
-        ErrorDTO error = response.getBody();
-        assertNotNull(error);
-        assertEquals(NOT_FOUND.value(), error.status());
-        assertEquals(ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND, error.message());
+        assertPageMetadata(response, null, null, 0, 20, 1);
+        assertThat(response.items())
+            .hasSize(1)
+            .extracting(SimplifiedProfileDTO::id)
+            .containsExactly(mockUser.getId().toString());
     }
 
     @Test
-    @Sql(scripts = "/sql/profile-interaction-cleanup.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    void ProfileController_GetFollowing_Return200PageOfProfileDTO() {
-        // api: GET /api/v1/profile/{id}/following ==> 400 : PageDTO<ProfileDTO>
-        String followPath = ApiConfig.Profile.FOLLOW_BY_ID;
-        String getFollowingPath = ApiConfig.Profile.GET_FOLLOWING_BY_ID + "?offset=0&limit=1";
-        UUID followId = mockUser.getId();
-        UUID getFollowingId = authUser.getId();
+    void getFollowing_Returns404NotFound_WhenProfileByIdDoesNotExist() {
+        // api: GET /api/v1/profile/{id}/following ==> 404 Not Found : ErrorDTO
+        UUID nonExistingProfileId = UUID.randomUUID();
 
-        // follow target user to create a follow relationship in the db
-        ResponseEntity<ErrorDTO> response1 = restTemplate.postForEntity(followPath, null, ErrorDTO.class, followId);
+        ErrorDTO expected = new ErrorDTO(
+            HttpStatus.NOT_FOUND,
+            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            null,
+            null);
 
-        System.out.println("-----------------------");
-        System.out.println(response1.getBody());
-        System.out.println("-----------------------");
-
-        // assert response
-        assertEquals(NO_CONTENT, response1.getStatusCode());
-        assertNull(response1.getBody());
-
-        // get following of existing user
-        ParameterizedTypeReference<PageDTO<ProfileDTO>> typeRef = new ParameterizedTypeReference<PageDTO<ProfileDTO>>() {};
-        ResponseEntity<PageDTO<ProfileDTO>> response2 = restTemplate.exchange(getFollowingPath, GET, null, typeRef,
-            getFollowingId);
-
-        // assert response
-        assertEquals(OK, response2.getStatusCode());
-        assertNotNull(response2.getBody());
-
-        PageDTO<ProfileDTO> data = response2.getBody();
-        assertNotNull(data);
-        assertNull(data.previous());
-        assertNull(data.next());
-        assertEquals(1, data.total());
-        assertEquals(1, data.items().size());
-        assertEquals(followId.toString(), data.items().get(0).id());
-    }
-
-    @Test
-    void ProfileController_GetFollowing_Return200PageOfEmpty() {
-        // api: GET /api/v1/profile/{id}/following ==> 400 : PageDTO<ProfileDTO>
-        String path = ApiConfig.Profile.GET_FOLLOWING_BY_ID;
-        UUID id = mockUser.getId();
-
-        ParameterizedTypeReference<PageDTO<ProfileDTO>> typeRef = new ParameterizedTypeReference<PageDTO<ProfileDTO>>() {};
-        ResponseEntity<PageDTO<ProfileDTO>> response = restTemplate.exchange(path, GET, null, typeRef, id);
-
-        // assert response
-        assertEquals(OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-
-        PageDTO<ProfileDTO> data = response.getBody();
-        assertNotNull(data);
-        assertNull(data.previous());
-        assertNull(data.next());
-        assertEquals(0, data.total());
-        assertEquals(0, data.items().size());
-    }
-
-    @Test
-    void ProfileController_GetFollowing_Throw404ResourceNotFound() {
-        // api: GET /api/v1/profile/{id}/following ==> 404 : Resource Not Found
-        String path = ApiConfig.Profile.GET_FOLLOWING_BY_ID;
-        UUID id = UUID.randomUUID();
-
-        ResponseEntity<ErrorDTO> response = restTemplate.exchange(path, GET, null, ErrorDTO.class, id);
-
-        // assert response
-        assertEquals(NOT_FOUND, response.getStatusCode());
-        assertNotNull(response.getBody());
-
-        // assert error
-        ErrorDTO error = response.getBody();
-        assertNotNull(error);
-        assertEquals(NOT_FOUND.value(), error.status());
-        assertEquals(ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND, error.message());
+        authenticatedClient.get()
+            .uri(GET_FOLLOWING_BY_ID_PATH, nonExistingProfileId)
+            .exchange()
+            .expectStatus().isNotFound()
+            .expectBody(ErrorDTO.class).isEqualTo(expected);
     }
 
 }
