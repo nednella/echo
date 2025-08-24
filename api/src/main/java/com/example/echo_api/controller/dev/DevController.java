@@ -15,7 +15,7 @@ import com.example.echo_api.service.dev.DevService;
 
 import lombok.RequiredArgsConstructor;
 
-@Profile({ "dev", "test" })
+@Profile("dev")
 @RestController
 @RequiredArgsConstructor
 public class DevController {
