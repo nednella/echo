@@ -12,6 +12,9 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+/**
+ * Base class for service and/or repository layer integration tests.
+ */
 @ActiveProfiles(value = "test")
 @DataJpaTest // default @Transactional
 @Testcontainers
