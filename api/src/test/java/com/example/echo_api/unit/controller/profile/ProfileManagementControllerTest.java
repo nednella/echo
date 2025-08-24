@@ -61,7 +61,7 @@ class ProfileManagementControllerTest {
     @Test
     void updateInformation_Returns400BadRequest_WhenNameExceeds50Characters() throws Exception {
         // api: PUT /api/v1/profile/me/info ==> 400 Bad Request : ErrorDTO
-        String invalidName = "ThisNameIsTooLongBy......................1Character";
+        String invalidName = "x".repeat(51);
         var request = new UpdateInformationDTO(invalidName, "bio", "location");
         String body = objectMapper.writeValueAsString(request);
 
@@ -69,7 +69,7 @@ class ProfileManagementControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.NAME_TOO_LONG,
-            ME_INFO_PATH);
+            null);
 
         var response = mvc.put()
             .uri(ME_INFO_PATH)
@@ -87,7 +87,7 @@ class ProfileManagementControllerTest {
     @Test
     void updateInformation_Returns400BadRequest_WhenBioExceeds160Characters() throws Exception {
         // api: PUT /api/v1/profile/me/info ==> 400 Bad Request : ErrorDTO
-        String invalidBio = "ThisBioIsTooLongBy.....................................................................................................................................1Character";
+        String invalidBio = "x".repeat(161);
         var request = new UpdateInformationDTO("name", invalidBio, "location");
         String body = objectMapper.writeValueAsString(request);
 
@@ -95,7 +95,7 @@ class ProfileManagementControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.BIO_TOO_LONG,
-            ME_INFO_PATH);
+            null);
 
         var response = mvc.put()
             .uri(ME_INFO_PATH)
@@ -113,7 +113,7 @@ class ProfileManagementControllerTest {
     @Test
     void updateInformation_Returns400BadRequest_WhenLocationExceeds30Characters() throws Exception {
         // api: PUT /api/v1/profile/me/info ==> 400 Bad Request : ErrorDTO
-        String invalidLocation = "ThisLocationIsTooLongBy4Characters";
+        String invalidLocation = "x".repeat(31);
         var request = new UpdateInformationDTO("name", "bio", invalidLocation);
         String body = objectMapper.writeValueAsString(request);
 
@@ -121,7 +121,7 @@ class ProfileManagementControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.LOCATION_TOO_LONG,
-            ME_INFO_PATH);
+            null);
 
         var response = mvc.put()
             .uri(ME_INFO_PATH)

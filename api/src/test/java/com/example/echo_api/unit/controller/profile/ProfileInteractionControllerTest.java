@@ -63,7 +63,7 @@ class ProfileInteractionControllerTest {
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
-            FOLLOW_PATH);
+            null);
 
         var response = mvc.post()
             .uri(FOLLOW_PATH, id)
@@ -86,7 +86,7 @@ class ProfileInteractionControllerTest {
             HttpStatus.CONFLICT,
             ErrorMessageConfig.Conflict.SELF_ACTION,
             null,
-            FOLLOW_PATH);
+            null);
 
         var response = mvc.post()
             .uri(FOLLOW_PATH, id)
@@ -109,7 +109,7 @@ class ProfileInteractionControllerTest {
             HttpStatus.CONFLICT,
             ErrorMessageConfig.Conflict.ALREADY_FOLLOWING,
             null,
-            FOLLOW_PATH);
+            null);
 
         var response = mvc.post()
             .uri(FOLLOW_PATH, id)
@@ -148,7 +148,7 @@ class ProfileInteractionControllerTest {
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
-            FOLLOW_PATH);
+            null);
 
         var response = mvc.delete()
             .uri(FOLLOW_PATH, id)
@@ -171,7 +171,7 @@ class ProfileInteractionControllerTest {
             HttpStatus.CONFLICT,
             ErrorMessageConfig.Conflict.SELF_ACTION,
             null,
-            FOLLOW_PATH);
+            null);
 
         var response = mvc.delete()
             .uri(FOLLOW_PATH, id)

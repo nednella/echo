@@ -107,7 +107,7 @@ class ProfileViewControllerTest {
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
-            ME_PATH);
+            null);
 
         var response = mvc.get()
             .uri(ME_PATH)
@@ -147,7 +147,7 @@ class ProfileViewControllerTest {
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
-            GET_BY_USERNAME_PATH);
+            null);
 
         var response = mvc.get()
             .uri(GET_BY_USERNAME_PATH, username)
@@ -201,7 +201,7 @@ class ProfileViewControllerTest {
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
-            GET_FOLLOWERS_BY_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(GET_FOLLOWERS_BY_ID_PATH, id)
@@ -227,7 +227,7 @@ class ProfileViewControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_OFFSET,
-            GET_FOLLOWERS_BY_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(GET_FOLLOWERS_BY_ID_PATH, id)
@@ -253,7 +253,7 @@ class ProfileViewControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_LIMIT,
-            GET_FOLLOWERS_BY_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(GET_FOLLOWERS_BY_ID_PATH, id)
@@ -309,7 +309,7 @@ class ProfileViewControllerTest {
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
-            GET_FOLLOWING_BY_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(GET_FOLLOWING_BY_ID_PATH, id)
@@ -335,7 +335,7 @@ class ProfileViewControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_OFFSET,
-            GET_FOLLOWING_BY_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(GET_FOLLOWING_BY_ID_PATH, id)
@@ -361,7 +361,7 @@ class ProfileViewControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_LIMIT,
-            GET_FOLLOWING_BY_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(GET_FOLLOWING_BY_ID_PATH, id)

@@ -108,7 +108,7 @@ class PostViewControllerTest {
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
-            GET_BY_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(GET_BY_ID_PATH, id)
@@ -159,7 +159,7 @@ class PostViewControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_OFFSET,
-            GET_REPLIES_BY_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(GET_REPLIES_BY_ID_PATH, id)
@@ -185,7 +185,7 @@ class PostViewControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_LIMIT,
-            GET_REPLIES_BY_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(GET_REPLIES_BY_ID_PATH, id)
@@ -214,7 +214,7 @@ class PostViewControllerTest {
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
-            GET_REPLIES_BY_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(GET_REPLIES_BY_ID_PATH, id)
@@ -265,7 +265,7 @@ class PostViewControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_OFFSET,
-            HOMEPAGE_PATH);
+            null);
 
         var response = mvc.get()
             .uri(HOMEPAGE_PATH)
@@ -290,7 +290,7 @@ class PostViewControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_LIMIT,
-            HOMEPAGE_PATH);
+            null);
 
         var response = mvc.get()
             .uri(HOMEPAGE_PATH)
@@ -341,7 +341,7 @@ class PostViewControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_OFFSET,
-            DISCOVER_PATH);
+            null);
 
         var response = mvc.get()
             .uri(DISCOVER_PATH)
@@ -366,7 +366,7 @@ class PostViewControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_LIMIT,
-            DISCOVER_PATH);
+            null);
 
         var response = mvc.get()
             .uri(DISCOVER_PATH)
@@ -419,7 +419,7 @@ class PostViewControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_OFFSET,
-            POSTS_BY_PROFILE_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(POSTS_BY_PROFILE_ID_PATH, id)
@@ -445,7 +445,7 @@ class PostViewControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_LIMIT,
-            POSTS_BY_PROFILE_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(POSTS_BY_PROFILE_ID_PATH, id)
@@ -474,7 +474,7 @@ class PostViewControllerTest {
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
-            POSTS_BY_PROFILE_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(POSTS_BY_PROFILE_ID_PATH, id)
@@ -527,7 +527,7 @@ class PostViewControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_OFFSET,
-            REPLIES_BY_PROFILE_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(REPLIES_BY_PROFILE_ID_PATH, id)
@@ -553,7 +553,7 @@ class PostViewControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_LIMIT,
-            REPLIES_BY_PROFILE_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(REPLIES_BY_PROFILE_ID_PATH, id)
@@ -582,7 +582,7 @@ class PostViewControllerTest {
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
-            REPLIES_BY_PROFILE_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(REPLIES_BY_PROFILE_ID_PATH, id)
@@ -635,7 +635,7 @@ class PostViewControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_OFFSET,
-            LIKES_BY_PROFILE_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(LIKES_BY_PROFILE_ID_PATH, id)
@@ -662,7 +662,7 @@ class PostViewControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_LIMIT,
-            LIKES_BY_PROFILE_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(LIKES_BY_PROFILE_ID_PATH, id)
@@ -692,7 +692,7 @@ class PostViewControllerTest {
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
-            LIKES_BY_PROFILE_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(LIKES_BY_PROFILE_ID_PATH, id)
@@ -745,7 +745,7 @@ class PostViewControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_OFFSET,
-            MENTIONS_BY_PROFILE_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(MENTIONS_BY_PROFILE_ID_PATH, id)
@@ -772,7 +772,7 @@ class PostViewControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_LIMIT,
-            MENTIONS_BY_PROFILE_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(MENTIONS_BY_PROFILE_ID_PATH, id)
@@ -802,7 +802,7 @@ class PostViewControllerTest {
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
-            MENTIONS_BY_PROFILE_ID_PATH);
+            null);
 
         var response = mvc.get()
             .uri(MENTIONS_BY_PROFILE_ID_PATH, id)

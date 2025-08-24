@@ -63,7 +63,7 @@ class PostInteractionControllerTest {
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null,
-            LIKE_PATH);
+            null);
 
         var response = mvc.post()
             .uri(LIKE_PATH, id)
@@ -87,7 +87,7 @@ class PostInteractionControllerTest {
             HttpStatus.CONFLICT,
             ErrorMessageConfig.Conflict.ALREADY_LIKED,
             null,
-            LIKE_PATH);
+            null);
 
         var response = mvc.post()
             .uri(LIKE_PATH, id)

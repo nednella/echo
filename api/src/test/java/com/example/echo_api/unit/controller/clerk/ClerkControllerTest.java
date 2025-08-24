@@ -104,7 +104,7 @@ class ClerkControllerTest {
             HttpStatus.UNAUTHORIZED,
             ErrorMessageConfig.Unauthorised.INVALID_WEBHOOK_SIGNATURE,
             null,
-            WEBHOOK_PATH);
+            null);
 
         var response = mvc.post()
             .uri(WEBHOOK_PATH)
@@ -129,7 +129,7 @@ class ClerkControllerTest {
             HttpStatus.BAD_REQUEST,
             "Unsupported event type: subscription.active",
             null,
-            WEBHOOK_PATH);
+            null);
 
         var response = mvc.post()
             .uri(WEBHOOK_PATH)

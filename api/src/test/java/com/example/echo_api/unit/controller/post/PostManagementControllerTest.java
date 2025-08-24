@@ -4,8 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -63,70 +67,24 @@ class PostManagementControllerTest {
         verify(postManagementService).create(post);
     }
 
-    @Test
-    void create_Returns400BadRequest_WhenPostTextFieldIsNull() throws Exception {
-        // api: POST /api/v1/post ==> 400 Bad Request : ErrorDTO
-        String text = null;
-        CreatePostDTO post = new CreatePostDTO(null, text);
-        String body = objectMapper.writeValueAsString(post);
-
-        ErrorDTO expected = new ErrorDTO(
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            ValidationMessageConfig.TEXT_NULL_OR_BLANK,
-            CREATE_PATH);
-
-        var response = mvc.post()
-            .uri(CREATE_PATH)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(body)
-            .exchange();
-
-        assertThat(response)
-            .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
-
-        verify(postManagementService, never()).create(post);
+    static Stream<Arguments> invalidTextCases() {
+        return Stream.of(
+            Arguments.of(null, ValidationMessageConfig.TEXT_NULL_OR_BLANK),
+            Arguments.of(" ", ValidationMessageConfig.TEXT_NULL_OR_BLANK),
+            Arguments.of("x".repeat(281), ValidationMessageConfig.TEXT_TOO_LONG));
     }
 
-    @Test
-    void create_Returns400BadRequest_WhenPostTextFieldIsBlank() throws Exception {
-        // api: POST /api/v1/post ==> 400 Bad Request : ErrorDTO
-        String text = " ";
+    @ParameterizedTest(name = "create_Returns400BadRequest_WhenPostTextFieldIsInvalid: \"{0}\"")
+    @MethodSource("invalidTextCases")
+    void create_Returns400BadRequest_WhenPostTextFieldIsInvalid(String text, String expectedDetails) throws Exception {
         CreatePostDTO post = new CreatePostDTO(null, text);
         String body = objectMapper.writeValueAsString(post);
 
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            ValidationMessageConfig.TEXT_NULL_OR_BLANK,
-            CREATE_PATH);
-
-        var response = mvc.post()
-            .uri(CREATE_PATH)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(body)
-            .exchange();
-
-        assertThat(response)
-            .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
-
-        verify(postManagementService, never()).create(post);
-    }
-
-    @Test
-    void create_Returns400BadRequest_TextExceeds280Characters() throws Exception {
-        // api: POST /api/v1/post ==> 400 Bad Request : ErrorDTO
-        String text = "Thistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281charactersThistextis281characters.....";
-        CreatePostDTO post = new CreatePostDTO(null, text);
-        String body = objectMapper.writeValueAsString(post);
-
-        ErrorDTO expected = new ErrorDTO(
-            HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            ValidationMessageConfig.TEXT_TOO_LONG,
-            CREATE_PATH);
+            expectedDetails,
+            null);
 
         var response = mvc.post()
             .uri(CREATE_PATH)
@@ -153,7 +111,7 @@ class PostManagementControllerTest {
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             ValidationMessageConfig.INVALID_PARENT_ID,
-            CREATE_PATH);
+            null);
 
         var response = mvc.post()
             .uri(CREATE_PATH)
@@ -195,7 +153,7 @@ class PostManagementControllerTest {
             HttpStatus.FORBIDDEN,
             ErrorMessageConfig.Forbidden.RESOURCE_OWNERSHIP_REQUIRED,
             null,
-            GET_BY_ID_PATH);
+            null);
 
         var response = mvc.delete()
             .uri(GET_BY_ID_PATH, id)
