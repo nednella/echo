@@ -3,9 +3,7 @@ package com.example.echo_api.integration.controller.clerk;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.http.HttpHeaders;
-import org.springframework.test.annotation.DirtiesContext;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.controller.clerk.ClerkController;
@@ -16,8 +14,6 @@ import com.example.echo_api.persistence.model.user.User;
 /**
  * Integration test class for {@link ClerkController}.
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ClerkControllerIT extends IntegrationTest {
 
     private static final String ONBOARDING_PATH = ApiConfig.Clerk.ONBOARDING;

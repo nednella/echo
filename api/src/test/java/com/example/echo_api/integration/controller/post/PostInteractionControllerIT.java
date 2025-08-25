@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
@@ -22,7 +21,6 @@ import com.example.echo_api.persistence.repository.PostRepository;
  * Integration test class for {@link PostInteractionController}.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class PostInteractionControllerIT extends IntegrationTest {
 
     private static final String LIKE_PATH = ApiConfig.Post.LIKE;

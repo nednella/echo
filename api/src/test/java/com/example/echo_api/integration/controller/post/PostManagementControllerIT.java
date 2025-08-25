@@ -10,7 +10,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
@@ -25,7 +24,6 @@ import com.example.echo_api.persistence.repository.PostRepository;
 /**
  * Integration test class for {@link PostManagementController}.
  */
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class PostManagementControllerIT extends IntegrationTest {
 
     private static final String CREATE_PATH = ApiConfig.Post.CREATE;

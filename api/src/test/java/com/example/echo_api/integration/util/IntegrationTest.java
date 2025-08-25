@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -42,6 +43,7 @@ import com.example.echo_api.service.dev.DevService;
 @Import(DatabaseCleaner.class)
 @ContextConfiguration(classes = { SvixTestConfig.class }) // Ensure default SvixConfig is NOT loaded
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public abstract class IntegrationTest {
 
     protected static final String AUTH_USER_USERNAME = "auth_user";

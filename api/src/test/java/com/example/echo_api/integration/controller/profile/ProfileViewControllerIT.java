@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
@@ -25,7 +24,6 @@ import com.example.echo_api.persistence.repository.FollowRepository;
 /**
  * Integration test class for {@link ProfileViewController}.
  */
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ProfileViewControllerIT extends IntegrationTest {
 
     private static final String ME_PATH = ApiConfig.Profile.ME;

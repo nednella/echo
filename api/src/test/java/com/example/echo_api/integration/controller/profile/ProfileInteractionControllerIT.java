@@ -5,7 +5,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
@@ -16,7 +15,6 @@ import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 /**
  * Integration test class for {@link ProfileInteractionController}.
  */
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ProfileInteractionControllerIT extends IntegrationTest {
 
     private static final String FOLLOW_PATH = ApiConfig.Profile.FOLLOW_BY_ID;

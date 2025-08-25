@@ -7,7 +7,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
@@ -20,7 +19,6 @@ import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 /**
  * Integration test class for {@link ProfileManagementController}.
  */
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ProfileManagementControllerIT extends IntegrationTest {
 
     private static final String ME_INFO_PATH = ApiConfig.Profile.ME_INFO;

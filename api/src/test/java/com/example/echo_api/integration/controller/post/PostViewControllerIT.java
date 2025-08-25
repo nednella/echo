@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
 
 import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
@@ -29,7 +28,6 @@ import com.example.echo_api.util.extractor.PostEntityExtractor;
 /**
  * Integration test class for {@link PostViewController}.
  */
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class PostViewControllerIT extends IntegrationTest {
 
     private static final String GET_BY_ID_PATH = ApiConfig.Post.GET_BY_ID;
