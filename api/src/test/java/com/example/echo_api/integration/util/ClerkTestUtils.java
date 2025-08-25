@@ -21,7 +21,25 @@ import com.example.echo_api.persistence.mapper.ClerkUserMapper;
 @Component
 public class ClerkTestUtils {
 
-    private static final String TOKEN_TEMPLATE = "echo-api-test";
+    public static enum Template {
+
+        VALID_TOKEN("echo-api-test"),
+        MISSING_ONBOARDED_CLAIM("missing-onboarded-claim"),
+        MALFORMED_ONBOARDED_CLAIM("malformed-onboarded-claim"),
+        MISSING_ECHO_ID_CLAIM("missing-echo_id-claim"),
+        MALFORMED_ECHO_ID_CLAIM("malformed-echo_id-claim");
+
+        private String templateName;
+
+        Template(String templateName) {
+            this.templateName = templateName;
+        }
+
+        public String getTemplateName() {
+            return this.templateName;
+        }
+
+    }
 
     @Autowired
     private Clerk clerk;
@@ -65,7 +83,7 @@ public class ClerkTestUtils {
         }
     }
 
-    public String getSessionTokenForUser(String clerkUserId) {
+    public String getSessionTokenFromTemplate(String clerkUserId, Template template) {
         CreateSessionRequestBody request = CreateSessionRequestBody.builder()
             .userId(clerkUserId)
             .build();
@@ -74,7 +92,7 @@ public class ClerkTestUtils {
             var createSessionResponse = clerk.sessions().create().request(request).call();
             String sessId = createSessionResponse.session().orElseThrow().id();
 
-            var createTokenResponse = clerk.sessions().createTokenFromTemplate(sessId, TOKEN_TEMPLATE);
+            var createTokenResponse = clerk.sessions().createTokenFromTemplate(sessId, template.getTemplateName());
             return createTokenResponse.object().get().jwt().orElseThrow();
         } catch (Exception ex) {
             throw new RuntimeException("Could not generate token for Clerk user: " + clerkUserId);

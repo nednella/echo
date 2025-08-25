@@ -20,6 +20,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.example.echo_api.config.SvixTestConfig;
+import com.example.echo_api.integration.util.ClerkTestUtils.Template;
 import com.example.echo_api.persistence.dto.adapter.ClerkUserDTO;
 import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.service.dev.DevService;
@@ -60,7 +61,7 @@ public abstract class IntegrationTest {
     protected WebTestClient unauthenticatedClient;
 
     @Autowired
-    private ClerkTestUtils clerkTestUtils;
+    protected ClerkTestUtils clerkTestUtils;
 
     @Autowired
     private DevService devService;
@@ -94,7 +95,7 @@ public abstract class IntegrationTest {
         mockUser = createTestUser("test2@echo.app", MOCK_USER_USERNAME);
 
         clerkTestUtils.completeOnboarding(authUser.getExternalId(), authUser.getId().toString());
-        String token = clerkTestUtils.getSessionTokenForUser(authUser.getExternalId());
+        String token = clerkTestUtils.getSessionTokenFromTemplate(authUser.getExternalId(), Template.VALID_TOKEN);
 
         authenticatedClient = authenticatedClient.mutate()
             .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token)
@@ -105,7 +106,7 @@ public abstract class IntegrationTest {
      * Clean up the integration test environment:
      * 
      * <ul>
-     * <li>Remove any Clerk users that were crated as part of the test suite
+     * <li>Remove any Clerk users that were created as part of the test suite
      * </ul>
      */
     @AfterAll
