@@ -1,19 +1,10 @@
-server:
-    port: 8080
-
 spring:
     application:
         name: echo-api
 
-    profiles:
-        active: dev
-
-    config:
-        import: optional:file:.env[.properties]
-
     sql:
         init:
-            mode: never # default to disabled, override per-profile
+            mode: never # default to disabled, override where required
             schema-locations:
                 - classpath:sql/schema/*.sql
                 - classpath:sql/function/*.sql

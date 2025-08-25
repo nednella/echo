@@ -1,4 +1,6 @@
 spring:
+    config:
+        import: optional:file:.env.test[.properties]
 
     security:
         oauth2:
