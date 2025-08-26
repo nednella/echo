@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.clerk.backend_api.Clerk;
 import com.example.echo_api.config.properties.ClerkProperties;
+import com.svix.Webhook;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,7 +31,7 @@ public class ClerkConfig {
     private final ClerkProperties props;
 
     /**
-     * Create an instance of the Clerk SDK using the supplied {@code props}.
+     * Create an instance of the Clerk SDK using the supplied {@code secretKey}.
      * 
      * @return Clerk SDK instance
      */
@@ -40,6 +41,17 @@ public class ClerkConfig {
             .builder()
             .bearerAuth(props.getSecretKey())
             .build();
+    }
+
+    /**
+     * Create an instance of the Svix Webhook verifier using the supplied
+     * {@code webhookSigningSecret}.
+     * 
+     * @return svix webhook instance
+     */
+    @Bean
+    public Webhook webhook() {
+        return new Webhook(props.getWebhookSigningSecret());
     }
 
 }
