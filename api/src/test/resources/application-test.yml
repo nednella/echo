@@ -6,18 +6,21 @@ spring:
         oauth2:
             resourceserver:
                 jwt:
-                    issuer-uri: ${TEST_CLERK_ISSUER_URI}
-                    jwk-set-uri: ${TEST_CLERK_JWK_SET_URI}
+                    issuer-uri: ${CLERK_ISSUER_URI:}
+                    jwk-set-uri: ${CLERK_JWK_SET_URI:}
 
     sql:
         init:
             mode: always
 
-cors:
-    allowed-origins: ${TEST_CORS_ALLOWED_ORIGINS}
-
 clerk:
-    secret-key: ${TEST_CLERK_SECRET_KEY}
+    secret-key: ${CLERK_SECRET_KEY:}
+    webhook-signing-secret: ${CLERK_WEBHOOK_SIGNING_SECRET:whsec_DUMMYKEY} # default dummy value to pass tests
+
+cloudinary:
+    cloud-name: ${CLOUDINARY_CLOUD_NAME:dummyName} # default dummy value to pass tests
+    api-key: ${CLOUDINARY_API_KEY:dummyKey} # default dummy value to pass tests
+    api-secret: ${CLOUDINARY_API_SECRET:dummySecret} # default dummy value to pass tests
 
 logging:
     level:
