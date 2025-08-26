@@ -1,12 +1,12 @@
 package com.example.echo_api.config;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.clerk.backend_api.Clerk;
+import com.example.echo_api.config.properties.ClerkProperties;
 
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Config class for Clerk authentication integration.
@@ -17,9 +17,8 @@ import lombok.Setter;
  * <li>Clerk SDK instance configuration
  * </ul>
  */
-@Setter
 @Configuration
-@ConfigurationProperties(prefix = "clerk")
+@RequiredArgsConstructor
 public class ClerkConfig {
 
     public static final String JWT_ECHO_ID_CLAIM = "echo_id";
@@ -28,10 +27,10 @@ public class ClerkConfig {
     public static final String ONBOARDING_COMPLETE_METADATA_KEY = "onboardingComplete";
     public static final boolean ONBOARDING_COMPLETE_METADATA_VALUE = true;
 
-    private String secretKey;
+    private final ClerkProperties props;
 
     /**
-     * Create an instance of the Clerk SDK using the supplied {@code secretKey}.
+     * Create an instance of the Clerk SDK using the supplied {@code props}.
      * 
      * @return Clerk SDK instance
      */
@@ -39,7 +38,7 @@ public class ClerkConfig {
     Clerk clerk() {
         return Clerk
             .builder()
-            .bearerAuth(secretKey)
+            .bearerAuth(props.getSecretKey())
             .build();
     }
 

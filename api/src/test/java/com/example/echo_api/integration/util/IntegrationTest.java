@@ -14,13 +14,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.example.echo_api.config.SvixTestConfig;
 import com.example.echo_api.integration.util.ClerkTestUtils.Template;
 import com.example.echo_api.persistence.dto.adapter.ClerkUserDTO;
 import com.example.echo_api.persistence.model.user.User;
@@ -41,7 +39,6 @@ import com.example.echo_api.service.dev.DevService;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
 @Import(DatabaseCleaner.class)
-@ContextConfiguration(classes = { SvixTestConfig.class }) // Ensure default SvixConfig is NOT loaded
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public abstract class IntegrationTest {
