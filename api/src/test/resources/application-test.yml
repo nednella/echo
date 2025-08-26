@@ -22,6 +22,9 @@ cloudinary:
     api-key: ${CLOUDINARY_API_KEY:dummyKey} # default dummy value to pass tests
     api-secret: ${CLOUDINARY_API_SECRET:dummySecret} # default dummy value to pass tests
 
+cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:*} # default dummy value to pass tests
+
 logging:
     level:
         org:
