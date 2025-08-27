@@ -1,11 +1,6 @@
 package com.example.echo_api.service.profile.management;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import com.example.echo_api.exception.custom.internalserver.CloudinaryException;
-import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
-import com.example.echo_api.persistence.dto.request.profile.UpdateInformationDTO;
-import com.example.echo_api.persistence.model.image.Image;
+import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
 
 public interface ProfileManagementService {
 
@@ -15,52 +10,8 @@ public interface ProfileManagementService {
      * <p>
      * Valid fields are {@code name}, {@code bio}, {@code location}.
      * 
-     * @param request The request DTO containing the updated profile information.
+     * @param request the request DTO containing the updated profile information
      */
-    public void updateInformation(UpdateInformationDTO request);
-
-    /**
-     * Update the profile avatar image of the authenticated user.
-     * 
-     * @param image The {@link MultipartFile} resembling the uploaded image.
-     * @throws ResourceNotFoundException If there is an existing avatar and its
-     *                                   {@link Image} entity could not be found
-     *                                   when deleting.
-     * @throws CloudinaryException       If there was an error when interacting with
-     *                                   the Cloudinary SDK.
-     */
-    public void updateAvatar(MultipartFile image) throws ResourceNotFoundException, CloudinaryException;
-
-    /**
-     * Remove the profile avatar image of the authenticated user.
-     * 
-     * @throws ResourceNotFoundException If the existing avatar's {@link Image}
-     *                                   entity could not be found when deleting.
-     * @throws CloudinaryException       If there was an error when interacting with
-     *                                   the Cloudinary SDK.
-     */
-    public void deleteAvatar() throws ResourceNotFoundException, CloudinaryException;
-
-    /**
-     * Update the profile banner image of the authenticated user.
-     * 
-     * @param image The {@link MultipartFile} resembling the uploaded image.
-     * @throws ResourceNotFoundException If there is an existing banner and its
-     *                                   {@link Image} entity could not be found
-     *                                   when deleting.
-     * @throws CloudinaryException       If there was an error when interacting with
-     *                                   the Cloudinary SDK.
-     */
-    public void updateBanner(MultipartFile image) throws ResourceNotFoundException, CloudinaryException;
-
-    /**
-     * Remove the profile avatar image of the authenticated user.
-     * 
-     * @throws ResourceNotFoundException If the existing banner's {@link Image}
-     *                                   entity could not be found when deleting.
-     * @throws CloudinaryException       If there was an error when interacting with
-     *                                   the Cloudinary SDK.
-     */
-    public void deleteBanner() throws ResourceNotFoundException, CloudinaryException;
+    public void updateProfile(UpdateProfileDTO request);
 
 }
