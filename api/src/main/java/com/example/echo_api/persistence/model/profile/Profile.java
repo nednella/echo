@@ -6,36 +6,36 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.example.echo_api.persistence.model.account.Account;
-import com.example.echo_api.persistence.model.image.Image;
-import com.example.echo_api.validation.account.annotations.Username;
+import com.example.echo_api.persistence.model.user.User;
+import com.example.echo_api.util.Utils;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Entity class representing an {@link Account} profile in the system.
+ * Entity class representing a {@link User} profile in the local application.
  */
 @Entity
 @Table
 @Getter
-@NoArgsConstructor
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Profile {
 
     @Id
-    @Column(unique = true, nullable = false)
+    @Column(updatable = false)
     private UUID id;
 
-    @Username
     @Column(unique = true, nullable = false)
     private String username;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @Column(length = 50)
     private String name;
@@ -46,14 +46,6 @@ public class Profile {
     @Column(length = 30)
     private String location;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "avatar_id")
-    private Image avatar;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "banner_id")
-    private Image banner;
-
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
@@ -62,14 +54,52 @@ public class Profile {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    // ---- constructors ----
+    // ---- factory methods ----
 
-    public Profile(UUID id, String username) {
-        this.id = id;
-        this.username = username;
+    /**
+     * Factory method to create a new {@link Profile} for a given {@link User}.
+     * 
+     * @param id the UUID of the matching {@link User} entity
+     * @return new {@link Profile} instance
+     * @throws IllegalArgumentException if {@code id} is null
+     */
+    public static Profile forUser(UUID id) {
+        return Profile.builder()
+            .id(Utils.checkNotNull(id, "ID"))
+            .build();
+    }
+
+    /**
+     * Factory method to create a new {@link Profile} for <b>testing only</b>, in
+     * cases where a username is required to be set.
+     * 
+     * @param id       the placeholder UUID
+     * @param username the placeholder username
+     * @return new {@link Profile} instance
+     * @throws IllegalArgumentException if any argument is null
+     */
+    public static Profile forTest(UUID id, String username) {
+        return Profile.builder()
+            .id(Utils.checkNotNull(id, "ID"))
+            .username(Utils.checkNotNull(username, "Username"))
+            .build();
     }
 
     // ---- setters ----
+
+    /**
+     * Update the profile username
+     * 
+     * @param username the new username
+     * @throws IllegalArgumentException if {@code username} is null
+     */
+    public void setUsername(String username) {
+        this.username = Utils.checkNotNull(username, "Username");
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     public void setName(String name) {
         this.name = name;
@@ -81,14 +111,6 @@ public class Profile {
 
     public void setLocation(String location) {
         this.location = location;
-    }
-
-    public void setAvatar(Image avatar) {
-        this.avatar = avatar;
-    }
-
-    public void setBanner(Image banner) {
-        this.banner = banner;
     }
 
 }

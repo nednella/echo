@@ -16,12 +16,11 @@ CREATE OR REPLACE FUNCTION fetch_profile(
 RETURNS TABLE (
     is_self            BOOLEAN,
     id                 UUID,
-    username           VARCHAR(15),
+    username           VARCHAR(255),
     name               VARCHAR(50),
     bio                VARCHAR(160),
     location           VARCHAR(30),
-    avatar_url         VARCHAR(255),
-    banner_url         VARCHAR(255),
+    image_url          VARCHAR(255),
     created_at         TIMESTAMPTZ,
     followers_count    BIGINT,
     following_count    BIGINT,
@@ -44,12 +43,9 @@ AS
                 p.name,
                 p.bio,
                 p.location,
-                avatar.transformed_url AS avatar_url,
-                banner.transformed_url AS banner_url,
+                p.image_url,
                 p.created_at
             FROM profile p
-            LEFT JOIN image avatar ON p.avatar_id = avatar.id
-            LEFT JOIN image banner ON p.banner_id = banner.id
             WHERE (p_profile_id IS NOT NULL AND p.id = p_profile_id)
                OR (p_username IS NOT NULL AND p.username = p_username)
         ),
@@ -100,8 +96,7 @@ AS
             pd.name,
             pd.bio,
             pd.location,
-            pd.avatar_url,
-            pd.banner_url,
+            pd.image_url,
             pd.created_at,
             m.followers_count,
             m.following_count,

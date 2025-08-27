@@ -1,50 +1,44 @@
 package com.example.echo_api.service.session;
 
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
+import java.util.UUID;
 
-import com.example.echo_api.persistence.model.account.Account;
-import com.example.echo_api.service.account.AccountService;
+import com.example.echo_api.security.ClerkOnboardingFilter;
 
 public interface SessionService {
 
     /**
-     * Retrieves the authenticated {@link Account} entity from
-     * {@link SecurityContextHolder}.
-     *
-     * @return The authenticated {@link Account}, or {@code null} if no user is
-     *         authenticated.
-     */
-    public Account getAuthenticatedUser();
-
-    /**
-     * Custom authentication method, required when manually authenticating users
-     * through a custom {@code /login} API endpoint.
+     * Retrieve the authenticated user Echo API UUID from the authenticated Clerk
+     * token.
      * 
      * <p>
-     * The method attempts to authenticate the supplied credentials against the
-     * database using {@link AuthenticationManager}, and stores the authenticated
-     * {@link SecurityContext} in the HTTP session if successful.
+     * Note that the {@code echo_id} claim will always be present, otherwise any
+     * authenticated request would fail at the {@link ClerkOnboardingFilter}.
      * 
-     * @param username The username of the user to authenticate.
-     * @param password The password of the user to authenticate.
-     * @throws AuthenticationException if authentication fails.
+     * @return The UUID of the authenticated user
      */
-    public void authenticate(String username, String password) throws AuthenticationException;
+    public UUID getAuthenticatedUserId();
 
     /**
-     * Reauthentication method, required when there is a change to the authenticated
-     * {@link Account} information via {@link AccountService}.
+     * Retrieve the authenticated user Clerk ID from the authenticated Clerk token.
      * 
      * <p>
-     * The method reauthenticates the specified user by creating a new authenticated
-     * token and updating {@link SecurityContext} in both the application and the
-     * HTTP session.
+     * Note that the {@code sub} claim will always be present, as this is default
+     * Clerk session token claim that cannot be removed.
      * 
-     * @param user The {@link Account} to reauthenticate.
+     * @return The Clerk ID of the authenticated user
      */
-    public void reauthenticate(Account user);
+    public String getAuthenticatedUserClerkId();
+
+    /**
+     * Retrieve the authenticated user onboarding status from the authenticated
+     * Clerk token.
+     * 
+     * <p>
+     * Note that the {@code onboarded} claim will always be present, otherwise any
+     * authenticated request would fail at the {@link ClerkOnboardingFilter}.
+     * 
+     * @return A boolean representing the {@code onboarded} claim
+     */
+    public boolean isAuthenticatedUserOnboarded();
 
 }

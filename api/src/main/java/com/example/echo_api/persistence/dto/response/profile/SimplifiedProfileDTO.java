@@ -8,19 +8,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Represents a simplified response format for a user profile, to be returned to
  * the client alongside larger entities, such as posts and comments.
  *
- * @param id           The id of the account associated to the profile
- * @param username     The username of the account associated to the profile.
- * @param name         The profile name.
- * @param avatarUrl    The URL of the profile avatar image.
- * @param relationship The profile relationship between the requesting and the
- *                     requested profiles. Null if those profiles are the same.
+ * @param id           the id of the user associated to the profile
+ * @param username     the username of the user associated to the profile
+ * @param imageUrl     the URL of the profile avatar image
+ * @param name         the profile name
+ * @param relationship the profile relationship between the requesting and the
+ *                     requested profiles. Null if those profiles are the same
  */
 // @formatter:off
 public record SimplifiedProfileDTO(
     String id,
     String username,
     String name,
-    @JsonProperty("avatar_url") String avatarUrl,
+    @JsonProperty("image_url") String imageUrl,
     @JsonInclude(Include.NON_NULL) ProfileRelationshipDTO relationship
 ) {}
 // @formatter:on

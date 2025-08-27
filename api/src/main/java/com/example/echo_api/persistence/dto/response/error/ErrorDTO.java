@@ -11,11 +11,11 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 /**
  * Represents a standardised error response format for the application.
  * 
- * @param timestamp The timestamp when the error occured (ISO-8601 format).
- * @param status    The HTTP status code associated to the error.
- * @param message   A brief description of the error.
- * @param details   Additional information about the error (optional).
- * @param path      The request path that triggered the error.
+ * @param timestamp the timestamp when the error occured (ISO-8601 format)
+ * @param status    the HTTP status code associated to the error
+ * @param message   a brief description of the error
+ * @param details   additional information about the error (optional)
+ * @param path      the request path that triggered the error
  */
 // @formatter:off
 @JsonInclude(Include.NON_NULL)

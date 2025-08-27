@@ -1,29 +1,26 @@
 package com.example.echo_api.config;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.example.echo_api.config.properties.CloudinaryProperties;
 
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 
-@Setter
 @Configuration
-@ConfigurationProperties(prefix = "cloudinary")
+@RequiredArgsConstructor
 public class CloudinaryConfig {
 
-    private String cloudName;
-    private String apiKey;
-    private String apiSecret;
+    private final CloudinaryProperties props;
 
     @Bean
     Cloudinary cloudinary() {
         return new Cloudinary(ObjectUtils.asMap(
-            "cloud_name", cloudName,
-            "api_key", apiKey,
-            "api_secret", apiSecret));
+            "cloud_name", props.getCloudName(),
+            "api_key", props.getApiKey(),
+            "api_secret", props.getApiSecret()));
     }
 
 }

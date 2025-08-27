@@ -3,7 +3,6 @@ package com.example.echo_api.service.profile;
 import java.util.UUID;
 
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
-import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.service.session.SessionService;
@@ -21,14 +20,8 @@ public abstract class BaseProfileService {
     protected final SessionService sessionService;
     protected final ProfileRepository profileRepository;
 
-    /**
-     * Protected method for obtaining the {@link Account} associated to the
-     * authenticated user.
-     * 
-     * @return The {@link Account} entity.
-     */
-    protected Account getAuthenticatedUser() {
-        return sessionService.getAuthenticatedUser();
+    protected UUID getAuthenticatedUserId() {
+        return sessionService.getAuthenticatedUserId();
     }
 
     /**
@@ -38,7 +31,7 @@ public abstract class BaseProfileService {
      * @return The found {@link Profile}.
      */
     protected Profile getAuthenticatedUserProfile() {
-        return getProfileEntityById(getAuthenticatedUser().getId());
+        return getProfileEntityById(getAuthenticatedUserId());
     }
 
     /**

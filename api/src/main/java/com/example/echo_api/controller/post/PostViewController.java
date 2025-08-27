@@ -39,7 +39,7 @@ public class PostViewController {
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
     ) {
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         return ResponseEntity.ok(postViewService.getRepliesById(id, page));
     } // @formatter:on
 
@@ -49,7 +49,7 @@ public class PostViewController {
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit)
     {
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         return ResponseEntity.ok(postViewService.getHomepagePosts(page));
     } // @formatter:on
 
@@ -59,7 +59,7 @@ public class PostViewController {
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
     ) {
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         return ResponseEntity.ok(postViewService.getDiscoverPosts(page));
     } // @formatter:on
 
@@ -70,7 +70,7 @@ public class PostViewController {
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
     ) {
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         return ResponseEntity.ok(postViewService.getPostsByAuthorId(id, page));
     } // @formatter:on
 
@@ -81,7 +81,7 @@ public class PostViewController {
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
     ) {
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         return ResponseEntity.ok(postViewService.getRepliesByAuthorId(id, page));
     } // @formatter:on
 
@@ -92,7 +92,7 @@ public class PostViewController {
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
     ) {
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         return ResponseEntity.ok(postViewService.getLikesByAuthorId(id, page));
     } // @formatter:on
 
@@ -103,7 +103,7 @@ public class PostViewController {
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
     ) {
-        Pageable page = new OffsetLimitRequest(offset, limit);
+        Pageable page = OffsetLimitRequest.of(offset, limit);
         return ResponseEntity.ok(postViewService.getMentionsOfAuthorId(id, page));
     } // @formatter:on
 

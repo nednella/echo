@@ -5,14 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Represents a standardised response format for profile relationships.
  *
- * @param following  Indicates if the requesting profile follows the requested
- *                   profile.
- * @param followedBy Indicates if the requesting profile is followed by the
- *                   requested profile.
- * @param blocking   Indicates if the requesting profile blocks the requested
- *                   profile. // TODO: remove field
- * @param blockedBy  Indicates if the requesting profile is blocked by the
- *                   requested profile. // TODO: remove field
+ * @param following  indicates if the requesting profile follows the requested
+ *                   profile
+ * @param followedBy indicates if the requesting profile is followed by the
+ *                   requested profile
+ * @param blocking   indicates if the requesting profile blocks the requested
+ *                   profile // TODO: remove field
+ * @param blockedBy  indicates if the requesting profile is blocked by the
+ *                   requested profile // TODO: remove field
  */
 // @formatter:off
 public record ProfileRelationshipDTO(

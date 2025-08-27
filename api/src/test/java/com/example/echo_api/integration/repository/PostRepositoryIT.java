@@ -11,23 +11,21 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.annotation.DirtiesContext;
 
 import com.example.echo_api.integration.util.RepositoryTest;
 import com.example.echo_api.persistence.dto.response.post.PostDTO;
-import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.post.Post;
 import com.example.echo_api.persistence.model.post.like.PostLike;
 import com.example.echo_api.persistence.model.profile.Profile;
-import com.example.echo_api.persistence.repository.AccountRepository;
+import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.persistence.repository.PostEntityRepository;
 import com.example.echo_api.persistence.repository.PostLikeRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
+import com.example.echo_api.persistence.repository.UserRepository;
 import com.example.echo_api.util.extractor.PostEntityExtractor;
 
 // TODO: finish JDocs
@@ -35,13 +33,11 @@ import com.example.echo_api.util.extractor.PostEntityExtractor;
 /**
  * Integration test class for {@link PostRepository}.
  */
-@DataJpaTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class PostRepositoryIT extends RepositoryTest {
 
     @Autowired
-    private AccountRepository accountRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private ProfileRepository profileRepository;
@@ -63,10 +59,11 @@ class PostRepositoryIT extends RepositoryTest {
     private Post replyWithOpResponse;
     private Post replyWithLike;
 
-    private Profile createProfile(String username, String password) {
-        Account account = new Account(username, password);
-        accountRepository.save(account);
-        Profile profile = new Profile(account.getId(), account.getUsername());
+    private Profile createProfile(String externalId, String username) {
+        User user = User.fromExternalSource(externalId);
+        user = userRepository.save(user);
+
+        Profile profile = Profile.forTest(user.getId(), username);
         return profileRepository.save(profile);
     }
 
@@ -90,8 +87,8 @@ class PostRepositoryIT extends RepositoryTest {
 
     @BeforeAll // @formatter:off
     void setup() {
-        self = createProfile("self", "password");
-        randomUser = createProfile("random_user", "password");
+        self = createProfile("user_someUniqueId1", "self");
+        randomUser = createProfile("user_someUniqueId2", "random_user");
 
         // Create root posts (no parent)
         postWithReplies = createPost(null, self.getId(), "This post has some replies.");

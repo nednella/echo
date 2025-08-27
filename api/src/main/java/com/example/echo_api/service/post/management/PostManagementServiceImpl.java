@@ -42,7 +42,7 @@ public class PostManagementServiceImpl extends BasePostService implements PostMa
     @Transactional
     public void create(CreatePostDTO request) {
         UUID parentId = request.parentId() != null ? request.parentId() : null;
-        UUID authorId = getAuthenticatedUser().getId();
+        UUID authorId = getAuthenticatedUserId();
         String text = request.text();
 
         validatePostExistsByParentId(parentId);
@@ -55,7 +55,7 @@ public class PostManagementServiceImpl extends BasePostService implements PostMa
     @Override
     @Transactional
     public void delete(UUID id) {
-        UUID authenticatedUserId = getAuthenticatedUser().getId();
+        UUID authenticatedUserId = getAuthenticatedUserId();
         Optional<Post> optPost = postRepository.findById(id);
 
         if (optPost.isEmpty())

@@ -11,11 +11,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Loader implements CommandLineRunner {
 
-    private final AccountLoader accountLoader;
-
     @Override
     public void run(String... args) throws Exception {
-        accountLoader.loadData();
     }
 
 }

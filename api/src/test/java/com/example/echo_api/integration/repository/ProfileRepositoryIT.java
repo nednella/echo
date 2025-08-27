@@ -2,6 +2,7 @@ package com.example.echo_api.integration.repository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -9,32 +10,28 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.annotation.DirtiesContext;
 
 import com.example.echo_api.integration.util.RepositoryTest;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
 import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
-import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.follow.Follow;
 import com.example.echo_api.persistence.model.profile.Profile;
+import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.persistence.repository.ProfileRepository;
+import com.example.echo_api.persistence.repository.UserRepository;
 import com.example.echo_api.util.pagination.OffsetLimitRequest;
-import com.example.echo_api.persistence.repository.AccountRepository;
 import com.example.echo_api.persistence.repository.FollowRepository;
 
 /**
  * Integration test class for {@link ProfileRepository}.
  */
-@DataJpaTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ProfileRepositoryIT extends RepositoryTest {
 
     @Autowired
-    private AccountRepository accountRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private ProfileRepository profileRepository;
@@ -47,15 +44,13 @@ class ProfileRepositoryIT extends RepositoryTest {
 
     @BeforeAll
     void setup() {
-        Account sourceAcc = new Account("source", "test");
-        accountRepository.save(sourceAcc); // save account to repository to generate a UUID
-        source = new Profile(sourceAcc.getId(), sourceAcc.getUsername());
-        profileRepository.save(source); // save profile to provide foreign key for follow table
+        User sourceU = User.fromExternalSource("placeholderExtId1");
+        User targetU = User.fromExternalSource("placeholderExtId2");
+        userRepository.saveAll(List.of(sourceU, targetU));
 
-        Account targetAcc = new Account("target", "test");
-        accountRepository.save(targetAcc); // save account to repository to generate a UUID
-        target = new Profile(targetAcc.getId(), targetAcc.getUsername());
-        profileRepository.save(target); // save profile to provide foreign key for follow table
+        source = Profile.forTest(sourceU.getId(), "source");
+        target = Profile.forTest(targetU.getId(), "target");
+        profileRepository.saveAll(List.of(source, target));
 
         // save a follow to db
         Follow follow = new Follow(source.getId(), target.getId());
@@ -181,7 +176,7 @@ class ProfileRepositoryIT extends RepositoryTest {
      */
     @Test
     void ProfileRepository_FindFollowerDtosById_ReturnPageOfProfileDto() {
-        Pageable page = new OffsetLimitRequest(0, 10);
+        Pageable page = OffsetLimitRequest.of(0, 10);
 
         Page<SimplifiedProfileDTO> followersPage = profileRepository.findFollowerDtosById(
             target.getId(),
@@ -200,7 +195,7 @@ class ProfileRepositoryIT extends RepositoryTest {
      */
     @Test
     void ProfileRepository_FindFollowerDtosById_ReturnPageOfEmpty() {
-        Pageable page = new OffsetLimitRequest(0, 10);
+        Pageable page = OffsetLimitRequest.of(0, 10);
 
         Page<SimplifiedProfileDTO> followersPage = profileRepository.findFollowerDtosById(
             source.getId(),
@@ -219,7 +214,7 @@ class ProfileRepositoryIT extends RepositoryTest {
      */
     @Test
     void ProfileRepository_FindFollowingDtosById_ReturnPageOfProfileDto() {
-        Pageable page = new OffsetLimitRequest(0, 10);
+        Pageable page = OffsetLimitRequest.of(0, 10);
 
         Page<SimplifiedProfileDTO> followingPage = profileRepository.findFollowingDtosById(
             source.getId(),
@@ -238,7 +233,7 @@ class ProfileRepositoryIT extends RepositoryTest {
      */
     @Test
     void ProfileRepository_FindFollowingDtosById_ReturnPageOfEmpty() {
-        Pageable page = new OffsetLimitRequest(0, 10);
+        Pageable page = OffsetLimitRequest.of(0, 10);
 
         Page<SimplifiedProfileDTO> followingPage = profileRepository.findFollowingDtosById(
             target.getId(),

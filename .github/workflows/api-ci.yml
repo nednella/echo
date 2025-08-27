@@ -35,6 +35,11 @@ jobs:
                 image: docker:latest
                 options: --privileged
 
+        env:
+          CLERK_ISSUER_URI: ${{ secrets.API_CI_CLERK_ISSUER_URI }}
+          CLERK_JWK_SET_URI: ${{ secrets.API_CI_CLERK_JWK_SET_URI }}
+          CLERK_SECRET_KEY: ${{ secrets.API_CI_CLERK_SECRET_KEY }}
+
         steps:
             - name: Checkout Code
               uses: actions/checkout@v4

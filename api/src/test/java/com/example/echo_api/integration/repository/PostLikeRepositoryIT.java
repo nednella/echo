@@ -8,30 +8,26 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.echo_api.integration.util.RepositoryTest;
-import com.example.echo_api.persistence.model.account.Account;
 import com.example.echo_api.persistence.model.post.Post;
 import com.example.echo_api.persistence.model.post.like.PostLike;
 import com.example.echo_api.persistence.model.profile.Profile;
-import com.example.echo_api.persistence.repository.AccountRepository;
+import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.persistence.repository.PostLikeRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
+import com.example.echo_api.persistence.repository.UserRepository;
 
 /**
  * Integration test class for {@link PostLikeRepository}.
  */
-@DataJpaTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class PostLikeRepositoryIT extends RepositoryTest {
 
     @Autowired
-    private AccountRepository accountRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private ProfileRepository profileRepository;
@@ -42,16 +38,16 @@ class PostLikeRepositoryIT extends RepositoryTest {
     @Autowired
     private PostLikeRepository likeRepository;
 
-    private Profile user;
+    private Profile profile;
     private Post postWithLike;
     private Post postNoLikes;
 
     @BeforeAll
     void setup() {
-        Account userAcc = new Account("user", "password");
-        accountRepository.save(userAcc); // save account to repository to generate a UUID & foreign key
-        user = new Profile(userAcc.getId(), userAcc.getUsername());
-        user = profileRepository.save(user); // save profile to provide foreign key
+        User user = User.fromExternalSource("placeholderExtId1");
+        user = userRepository.save(user);
+        profile = Profile.forTest(user.getId(), "username");
+        profile = profileRepository.save(profile);
 
         // save 2 posts to db
         postWithLike = new Post(user.getId(), "Test post with 1 like.");
@@ -71,7 +67,7 @@ class PostLikeRepositoryIT extends RepositoryTest {
      */
     @Test
     void LikeRepository_ExistsByPostIdAndAuthorId_ReturnTrue() {
-        boolean exists = likeRepository.existsByPostIdAndAuthorId(postWithLike.getId(), user.getId());
+        boolean exists = likeRepository.existsByPostIdAndAuthorId(postWithLike.getId(), profile.getId());
 
         assertTrue(exists);
     }
@@ -83,7 +79,7 @@ class PostLikeRepositoryIT extends RepositoryTest {
      */
     @Test
     void LikeRepository_ExistsByPostIdAndAuthorId_ReturnFalse() {
-        boolean exists = likeRepository.existsByPostIdAndAuthorId(postNoLikes.getId(), user.getId());
+        boolean exists = likeRepository.existsByPostIdAndAuthorId(postNoLikes.getId(), profile.getId());
 
         assertFalse(exists);
     }
@@ -96,7 +92,7 @@ class PostLikeRepositoryIT extends RepositoryTest {
     @Test
     @Transactional
     void LikeRepository_DeleteByPostIdAndAuthorId_Return1() {
-        int deletedRows = likeRepository.deleteByPostIdAndAuthorId(postWithLike.getId(), user.getId());
+        int deletedRows = likeRepository.deleteByPostIdAndAuthorId(postWithLike.getId(), profile.getId());
 
         assertEquals(1, deletedRows);
     }
@@ -108,7 +104,7 @@ class PostLikeRepositoryIT extends RepositoryTest {
      */
     @Test
     void LikeRepository_DeleteByPostIdAndAuthorId_Return0() {
-        int deletedRows = likeRepository.deleteByPostIdAndAuthorId(postNoLikes.getId(), user.getId());
+        int deletedRows = likeRepository.deleteByPostIdAndAuthorId(postNoLikes.getId(), profile.getId());
 
         assertEquals(0, deletedRows);
     }

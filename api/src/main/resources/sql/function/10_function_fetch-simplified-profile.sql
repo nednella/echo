@@ -13,9 +13,9 @@ CREATE OR REPLACE FUNCTION fetch_simplified_profile(
 RETURNS TABLE (
     is_self            BOOLEAN,
     id                 UUID,
-    username           VARCHAR(15),
+    username           VARCHAR(255),
     name               VARCHAR(50),
-    avatar_url         VARCHAR(255),
+    image_url          VARCHAR(255),
     rel_following      BOOLEAN,
     rel_followed_by    BOOLEAN,
     rel_blocking       BOOLEAN,
@@ -31,9 +31,8 @@ AS
                 p.id,
                 p.username,
                 p.name,
-                avatar.transformed_url AS avatar_url
+                p.image_url
             FROM profile p
-            LEFT JOIN image avatar ON p.avatar_id = avatar.id
             WHERE p.id = p_profile_id
         ),
         relationship AS (
@@ -73,7 +72,7 @@ AS
             pd.id,
             pd.username,
             pd.name,
-            pd.avatar_url,
+            pd.image_url,
             r.rel_following,
             r.rel_followed_by,
             r.rel_blocking,
