@@ -48,13 +48,10 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
         followRepository.save(new Follow(source, target));
     }
 
-    @Override // TODO: refactor to idempotent
+    @Override
     public void unfollow(UUID id) {
-        UUID source = getAuthenticatedUserId();
-        UUID target = getProfileEntityById(id).getId();
-
-        validateNoSelfAction(source, target);
-        followRepository.deleteByFollowerIdAndFollowedId(source, target);
+        UUID authenticatedUserId = getAuthenticatedUserId();
+        followRepository.deleteByFollowerIdAndFollowedId(authenticatedUserId, id);
     }
 
     /**
