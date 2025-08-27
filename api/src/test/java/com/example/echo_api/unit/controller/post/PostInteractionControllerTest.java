@@ -101,7 +101,7 @@ class PostInteractionControllerTest {
     }
 
     @Test
-    void unlike_Returns204NoContent() {
+    void unlike_Returns204NoContent_IsIdempotent() {
         // api: DELETE /api/v1/post/{id}/like ==> 204 No Content
         UUID id = UUID.randomUUID();
 

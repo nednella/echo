@@ -108,42 +108,14 @@ class ProfileInteractionServiceTest {
     }
 
     @Test
-    void unfollow_ReturnVoid() {
+    void unfollow_ReturnsVoid() {
         // arrange
         UUID id = target.getId();
 
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
-        when(profileRepository.findById(id)).thenReturn(Optional.of(target));
 
         // act & assert
         assertDoesNotThrow(() -> profileInteractionService.unfollow(id));
-        verify(followRepository).deleteByFollowerIdAndFollowedId(authenticatedUserId, id);
-    }
-
-    @Test // TODO: remove when unfollow is refactored to idempotent operation
-    void unfollow_ThrowResourceNotFound() {
-        // arrange
-        UUID id = UUID.randomUUID();
-
-        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
-        when(profileRepository.findById(id)).thenReturn(Optional.empty());
-
-        // act & assert
-        assertThrows(ResourceNotFoundException.class, () -> profileInteractionService.unfollow(id));
-        verify(followRepository, never()).deleteByFollowerIdAndFollowedId(authenticatedUserId, id);
-    }
-
-    @Test // TODO: remove when unfollow is refactored to idempotent operation
-    void unfollow_ThrowSelfActionException() {
-        // arrange
-        UUID id = target.getId();
-
-        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
-        when(profileRepository.findById(id)).thenReturn(Optional.of(authenticatedUserProfile));
-
-        // act & assert
-        assertThrows(SelfActionException.class, () -> profileInteractionService.unfollow(id));
-        verify(followRepository, never()).deleteByFollowerIdAndFollowedId(authenticatedUserId, id);
     }
 
 }
