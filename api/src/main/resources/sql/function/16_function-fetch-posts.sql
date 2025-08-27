@@ -26,8 +26,6 @@ RETURNS TABLE (
     author_image_url          VARCHAR(255),
     author_rel_following      BOOLEAN,
     author_rel_followed_by    BOOLEAN,
-    author_rel_blocking       BOOLEAN,
-    author_rel_blocked_by     BOOLEAN,
     post_entities             JSONB
 )
 AS
@@ -67,9 +65,7 @@ AS
                 sp.name AS author_name,
                 sp.image_url AS author_image_url,
                 sp.rel_following AS author_rel_following,
-                sp.rel_followed_by AS author_rel_followed_by,
-                sp.rel_blocking AS author_rel_blocking,
-                sp.rel_blocked_by AS author_rel_blocked_by
+                sp.rel_followed_by AS author_rel_followed_by
             FROM post_data pd
             CROSS JOIN LATERAL fetch_simplified_profile(pd.author_id, p_authenticated_user_id) sp
         )
@@ -91,8 +87,6 @@ AS
             ad.author_image_url,
             ad.author_rel_following,
             ad.author_rel_followed_by,
-            ad.author_rel_blocking,
-            ad.author_rel_blocked_by,
             fetch_post_entities(pd.id) AS post_entities
         FROM post_data pd
         LEFT JOIN post_metrics pm ON pd.id = pm.post_id

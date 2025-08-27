@@ -17,9 +17,7 @@ RETURNS TABLE (
     name               VARCHAR(50),
     image_url          VARCHAR(255),
     rel_following      BOOLEAN,
-    rel_followed_by    BOOLEAN,
-    rel_blocking       BOOLEAN,
-    rel_blocked_by     BOOLEAN
+    rel_followed_by    BOOLEAN
 )
 AS
 '
@@ -50,21 +48,7 @@ AS
                         WHERE follower_id = pd.id
                         AND followed_id = p_authenticated_user_id
                     )
-                END AS rel_followed_by,
-                CASE WHEN pd.is_self THEN NULL
-                    ELSE EXISTS(
-                        SELECT 1 FROM block
-                        WHERE blocker_id = p_authenticated_user_id
-                        AND blocked_id = pd.id
-                    )
-                END AS rel_blocking,
-                CASE WHEN pd.is_self THEN NULL
-                    ELSE EXISTS(
-                        SELECT 1 FROM block
-                        WHERE blocker_id = pd.id
-                        AND blocked_id = p_authenticated_user_id
-                    )
-                END AS rel_blocked_by
+                END AS rel_followed_by
             FROM profile_data pd
         )
         SELECT
@@ -74,9 +58,7 @@ AS
             pd.name,
             pd.image_url,
             r.rel_following,
-            r.rel_followed_by,
-            r.rel_blocking,
-            r.rel_blocked_by
+            r.rel_followed_by
         FROM profile_data pd
         CROSS JOIN relationship r;
     END;
