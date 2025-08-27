@@ -14,17 +14,16 @@ public interface UserRepository extends ListCrudRepository<User, UUID> {
     /**
      * Find a {@link User} by {@code externalId}.
      * 
-     * @param externalId The {@code externalId} to search for
-     * @return An {@link Optional} containing the {@link User} if found, otherwise
-     *         empty
+     * @param externalId the {@code externalId} to query
+     * @return {@link Optional} containing {@link User} if found, else empty
      */
     Optional<User> findByExternalId(String externalId);
 
     /**
      * Check if a {@link User} exists by {@code externalId}.
      * 
-     * @param externalId The {@code externalId} to search for
-     * @return True if exists, else false
+     * @param externalId the {@code externalId} to query
+     * @return {@code true} if exists, else {@code false}
      */
     boolean existsByexternalId(String externalId);
 
@@ -34,8 +33,8 @@ public interface UserRepository extends ListCrudRepository<User, UUID> {
      * <p>
      * This action is idempotent.
      * 
-     * @param externalId The {@code externalId} to search for
-     * @return The number of records deleted (0 or 1)
+     * @param externalId the {@code externalId} to query
+     * @return the number of records deleted (0 or 1)
      */
     int deleteByExternalId(String externalId);
 

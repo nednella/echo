@@ -14,19 +14,21 @@ public interface PostLikeRepository extends ListCrudRepository<PostLike, PostLik
     /**
      * Check if a post like exists between a post id and a profile id.
      * 
-     * @param postId   The id of the post being checked.
-     * @param authorId The id of the profile being checked.
-     * @return {@code true} if a like exists, else {@code false}.
+     * @param postId   the id of the post to query
+     * @param authorId the id of the profile to query
+     * @return {@code true} if exists, else {@code false}
      */
     boolean existsByPostIdAndAuthorId(UUID postId, UUID authorId);
 
     /**
-     * Deletes any existing like relationship between a post and a profile. This
-     * operation is idempotent.
+     * Deletes any existing like relationship between a post and a profile.
      * 
-     * @param postId   The id of the post to unlike.
-     * @param authorId The id of the profile unliking the post.
-     * @return The number of like records deleted (0 or 1).
+     * <p>
+     * This operation is idempotent.
+     * 
+     * @param postId   the id of the post to unlike
+     * @param authorId the id of the profile unliking the post
+     * @return the number of records deleted (0 or 1)
      */
     int deleteByPostIdAndAuthorId(UUID postId, UUID authorId);
 

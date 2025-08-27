@@ -2,10 +2,7 @@ package com.example.echo_api.persistence.repository;
 
 import java.util.UUID;
 
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.echo_api.persistence.model.follow.Follow;
@@ -18,10 +15,10 @@ public interface FollowRepository extends ListCrudRepository<Follow, FollowPK> {
      * Check if a unidirectional follow exists from the follower to the followed
      * profile id.
      * 
-     * @param followerId The id of the profile initiating the follow.
-     * @param followedId The id of the profile being followed.
-     * @return True if a unidirectional follow exists from follower to followed,
-     *         else false.
+     * @param followerId the id of the profile initiating the follow
+     * @param followedId the id of the profile being followed
+     * @return {@code true} if a unidirectional follow exists from follower to
+     *         followed, else {@code false}
      */
     boolean existsByFollowerIdAndFollowedId(UUID followerId, UUID followedId);
 
@@ -30,28 +27,10 @@ public interface FollowRepository extends ListCrudRepository<Follow, FollowPK> {
      * <p>
      * This action is idempotent.
      * 
-     * @param followerId The id of the profile following.
-     * @param followedId The id of the profile being followed.
-     * @return The number of follow records deleted (0 or 1).
+     * @param followerId the id of the profile following
+     * @param followedId the id of the profile being followed
+     * @return the number of records deleted (0 or 1)
      */
     int deleteByFollowerIdAndFollowedId(UUID followerId, UUID followedId);
-
-    /**
-     * Delete any follows that exist between the supplied profile ids in either
-     * direction (unidirectional or bidirectional).
-     * <p>
-     * This action is idempotent.
-     * 
-     * @param profileId1 The id of the first user.
-     * @param profileId2 The id of the second user.
-     * @return The number of follow records deleted (0 or 1 or 2).
-     */
-    @Modifying
-    @Query("""
-        DELETE FROM Follow f
-        WHERE (f.followerId = :profileId1 AND f.followedId = :profileId2)
-           OR (f.followerId = :profileId2 AND f.followedId = :profileId1)
-        """)
-    int deleteAnyFollowIfExistsBetween(@Param("profileId1") UUID profileId1, @Param("profileId2") UUID profileId2);
 
 }

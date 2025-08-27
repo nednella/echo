@@ -98,34 +98,28 @@ class ProfileInteractionControllerIT extends IntegrationTest {
             .expectBody(ErrorDTO.class).isEqualTo(expected);
     }
 
-    @Test // TODO: implement when unfollow is refactored to idempotent operation
+    @Test
     void unfollow_Returns204NoContent_WhenProfileByIdExists() {
         // api: DELETE /api/v1/profile/{id}/follow ==> 204 No Content
+        UUID profileId = mockUser.getId();
 
+        authenticatedClient.delete()
+            .uri(FOLLOW_PATH, profileId)
+            .exchange()
+            .expectStatus().isNoContent()
+            .expectBody().isEmpty();
     }
 
-    @Test // TODO: implement when unfollow is refactored to idempotent operation
-    void unfollow_Returns204NoContent_WhenProfileByIdIsYou() {
-        // api: DELETE /api/v1/profile/{id}/follow ==> 204 No Content
-
-    }
-
-    @Test // TODO: implement when unfollow is refactored to idempotent operation
+    @Test
     void unfollow_Returns204NoContent_WhenProfileByIdDoesNotExist() {
         // api: DELETE /api/v1/profile/{id}/follow ==> 204 No Content
+        UUID nonExistingProfileId = UUID.randomUUID();
 
-    }
-
-    @Test // TODO: remove when unfollow is refactored to idempotent operation
-    void unfollow_Returns404NotFound_WhenProfileByIdDoesNotExist() {
-        // api: DELETE /api/v1/profile/{id}/follow ==> 404 Not Found : ErrorDTO
-
-    }
-
-    @Test // TODO: remove when unfollow is refactored to idempotent operation
-    void unfollow_Returns409Conflict_WhenProfileByIdIsYou() {
-        // api: DELETE /api/v1/profile/{id}/follow ==> 409 Conflict : ErrorDTO
-
+        authenticatedClient.delete()
+            .uri(FOLLOW_PATH, nonExistingProfileId)
+            .exchange()
+            .expectStatus().isNoContent()
+            .expectBody().isEmpty();
     }
 
 }

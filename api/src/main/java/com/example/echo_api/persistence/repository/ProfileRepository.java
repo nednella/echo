@@ -17,9 +17,8 @@ public interface ProfileRepository
     /**
      * Find a {@link Profile} by {@code username}.
      * 
-     * @param username The username to search for.
-     * @return An {@link Optional} containing the {@link Profile} if found,
-     *         otherwise empty.
+     * @param username the username to search for
+     * @return {@link Optional} containing {@link Profile} if found, else empty
      */
     Optional<Profile> findByUsername(String username);
 

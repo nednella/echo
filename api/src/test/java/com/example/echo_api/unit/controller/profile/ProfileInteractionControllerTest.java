@@ -123,7 +123,7 @@ class ProfileInteractionControllerTest {
     }
 
     @Test
-    void unfollow_Returns204NoContent() {
+    void unfollow_Returns204NoContent_IsIdempotent() {
         // api: DELETE /api/v1/profile/{id}/follow ==> 204 No Content
         UUID id = UUID.randomUUID();
 
@@ -134,52 +134,6 @@ class ProfileInteractionControllerTest {
         assertThat(response)
             .hasStatus(204)
             .body().isEmpty();
-
-        verify(profileInteractionService).unfollow(id);
-    }
-
-    @Test // TODO: remove when unfollow is refactored to idempotent operation
-    void unfollow_Returns404NotFound_WhenProfileByIdDoesNotExist() {
-        // api: DELETE /api/v1/profile/{id}/follow ==> 404 Not Found : ErrorDTO
-        UUID id = UUID.randomUUID();
-        doThrow(new ResourceNotFoundException()).when(profileInteractionService).unfollow(id);
-
-        ErrorDTO expected = new ErrorDTO(
-            HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
-            null);
-
-        var response = mvc.delete()
-            .uri(FOLLOW_PATH, id)
-            .exchange();
-
-        assertThat(response)
-            .hasStatus(404)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
-
-        verify(profileInteractionService).unfollow(id);
-    }
-
-    @Test // TODO: remove when unfollow is refactored to idempotent operation
-    void unfollow_Returns409Conflict_WhenProfileByIdIsYou() {
-        // api: DELETE /api/v1/profile/{id}/follow ==> 409 Conflict : ErrorDTO
-        UUID id = UUID.randomUUID();
-        doThrow(new SelfActionException()).when(profileInteractionService).unfollow(id);
-
-        ErrorDTO expected = new ErrorDTO(
-            HttpStatus.CONFLICT,
-            ErrorMessageConfig.Conflict.SELF_ACTION,
-            null,
-            null);
-
-        var response = mvc.delete()
-            .uri(FOLLOW_PATH, id)
-            .exchange();
-
-        assertThat(response)
-            .hasStatus(409)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
 
         verify(profileInteractionService).unfollow(id);
     }
