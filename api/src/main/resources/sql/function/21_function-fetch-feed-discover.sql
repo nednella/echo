@@ -28,8 +28,6 @@ RETURNS TABLE (
     author_image_url          VARCHAR(255),
     author_rel_following      BOOLEAN,
     author_rel_followed_by    BOOLEAN,
-    author_rel_blocking       BOOLEAN,
-    author_rel_blocked_by     BOOLEAN,
     post_entities             JSONB
 )
 AS

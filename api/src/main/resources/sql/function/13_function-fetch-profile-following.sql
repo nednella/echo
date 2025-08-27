@@ -19,9 +19,7 @@ RETURNS TABLE (
     name               VARCHAR(50),
     image_url          VARCHAR(255),
     rel_following      BOOLEAN,
-    rel_followed_by    BOOLEAN,
-    rel_blocking       BOOLEAN,
-    rel_blocked_by     BOOLEAN
+    rel_followed_by    BOOLEAN
 )
 AS
 '
@@ -34,9 +32,7 @@ AS
             sp.name,
             sp.image_url,
             sp.rel_following,
-            sp.rel_followed_by,
-            sp.rel_blocking,
-            sp.rel_blocked_by
+            sp.rel_followed_by
         FROM (
             SELECT followed_id
             FROM follow

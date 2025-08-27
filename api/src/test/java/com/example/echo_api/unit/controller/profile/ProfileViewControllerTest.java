@@ -72,14 +72,14 @@ class ProfileViewControllerTest {
             "imageUrl",
             Instant.now().toString(),
             new ProfileMetricsDTO(0, 0, 0),
-            new ProfileRelationshipDTO(false, false, false, false));
+            new ProfileRelationshipDTO(false, false));
 
         simplifiedProfile = new SimplifiedProfileDTO(
             UUID.randomUUID().toString(),
             "username",
             "name",
             "imageUrl",
-            new ProfileRelationshipDTO(false, false, false, false));
+            new ProfileRelationshipDTO(false, false));
     }
 
     @Test
