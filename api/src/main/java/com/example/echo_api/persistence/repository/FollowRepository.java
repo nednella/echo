@@ -2,10 +2,7 @@ package com.example.echo_api.persistence.repository;
 
 import java.util.UUID;
 
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.echo_api.persistence.model.follow.Follow;
@@ -35,23 +32,5 @@ public interface FollowRepository extends ListCrudRepository<Follow, FollowPK> {
      * @return The number of follow records deleted (0 or 1).
      */
     int deleteByFollowerIdAndFollowedId(UUID followerId, UUID followedId);
-
-    /**
-     * Delete any follows that exist between the supplied profile ids in either
-     * direction (unidirectional or bidirectional).
-     * <p>
-     * This action is idempotent.
-     * 
-     * @param profileId1 The id of the first user.
-     * @param profileId2 The id of the second user.
-     * @return The number of follow records deleted (0 or 1 or 2).
-     */
-    @Modifying
-    @Query("""
-        DELETE FROM Follow f
-        WHERE (f.followerId = :profileId1 AND f.followedId = :profileId2)
-           OR (f.followerId = :profileId2 AND f.followedId = :profileId1)
-        """)
-    int deleteAnyFollowIfExistsBetween(@Param("profileId1") UUID profileId1, @Param("profileId2") UUID profileId2);
 
 }
