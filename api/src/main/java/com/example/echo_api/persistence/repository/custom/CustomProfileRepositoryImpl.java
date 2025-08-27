@@ -144,9 +144,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                     ? null
                     : new ProfileRelationshipDTO(
                         rs.getBoolean("rel_following"),
-                        rs.getBoolean("rel_followed_by"),
-                        rs.getBoolean("rel_blocking"),
-                        rs.getBoolean("rel_blocked_by")));
+                        rs.getBoolean("rel_followed_by")));
         }
 
     }
@@ -170,9 +168,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                     ? null
                     : new ProfileRelationshipDTO(
                         rs.getBoolean("rel_following"),
-                        rs.getBoolean("rel_followed_by"),
-                        rs.getBoolean("rel_blocking"),
-                        rs.getBoolean("rel_blocked_by")));
+                        rs.getBoolean("rel_followed_by")));
         }
 
     }

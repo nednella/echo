@@ -199,9 +199,7 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
                     ? null
                     : new ProfileRelationshipDTO(
                         rs.getBoolean("author_rel_following"),
-                        rs.getBoolean("author_rel_followed_by"),
-                        rs.getBoolean("author_rel_blocking"),
-                        rs.getBoolean("author_rel_blocked_by")));
+                        rs.getBoolean("author_rel_followed_by")));
 
             PostEntitiesDTO entities = null;
             try {
