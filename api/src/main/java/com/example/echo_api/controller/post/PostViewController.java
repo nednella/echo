@@ -11,7 +11,7 @@ import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.post.PostDTO;
 import com.example.echo_api.service.post.view.PostViewService;
-import com.example.echo_api.util.pagination.OffsetLimitRequest;
+import com.example.echo_api.util.OffsetLimitRequest;
 import com.example.echo_api.validation.pagination.annotations.Limit;
 import com.example.echo_api.validation.pagination.annotations.Offset;
 

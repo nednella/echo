@@ -13,7 +13,7 @@ import jakarta.validation.constraints.Size;
  * @param location the location for the profile
  */
 // @formatter:off
-public record UpdateInformationDTO(
+public record UpdateProfileDTO(
 
     @Size(max = ConstraintsConfig.Profile.NAME_MAX_LENGTH, message = ValidationMessageConfig.NAME_TOO_LONG)
     String name,

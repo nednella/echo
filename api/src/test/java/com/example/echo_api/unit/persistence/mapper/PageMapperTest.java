@@ -13,7 +13,7 @@ import org.springframework.data.domain.PageImpl;
 
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.mapper.PageMapper;
-import com.example.echo_api.util.pagination.OffsetLimitRequest;
+import com.example.echo_api.util.OffsetLimitRequest;
 
 /**
  * Unit test class for {@link PageMapper}.

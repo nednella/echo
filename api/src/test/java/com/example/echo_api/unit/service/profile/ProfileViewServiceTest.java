@@ -28,7 +28,7 @@ import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.service.profile.view.ProfileViewService;
 import com.example.echo_api.service.profile.view.ProfileViewServiceImpl;
 import com.example.echo_api.service.session.SessionService;
-import com.example.echo_api.util.pagination.OffsetLimitRequest;
+import com.example.echo_api.util.OffsetLimitRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 

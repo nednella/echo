@@ -1,6 +1,6 @@
 package com.example.echo_api.unit.service.profile;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import java.util.Optional;
@@ -13,10 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.example.echo_api.persistence.dto.request.profile.UpdateInformationDTO;
+import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
-import com.example.echo_api.service.file.FileService;
 import com.example.echo_api.service.profile.management.ProfileManagementService;
 import com.example.echo_api.service.profile.management.ProfileManagementServiceImpl;
 import com.example.echo_api.service.session.SessionService;
@@ -36,41 +35,35 @@ class ProfileManagementServiceTest {
     @Mock
     private ProfileRepository profileRepository;
 
-    @Mock
-    private FileService fileService;
-
     private static UUID authenticatedUserId;
-    private static Profile authenticatedUserProfile;
 
     @BeforeAll
     static void setup() {
         authenticatedUserId = UUID.randomUUID();
-        authenticatedUserProfile = Profile.forTest(authenticatedUserId, "test");
-    }
-
-    private void mockAuthenticatedUser() {
-        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
-        when(profileRepository.findById(authenticatedUserId)).thenReturn(Optional.of(authenticatedUserProfile));
     }
 
     @Test
-    void updateInformation_ReturnsVoid_WhenSuccessfullyUpdated() {
+    void updateProfile_ReturnsVoid_WhenSuccessfullyUpdated() {
         // arrange
-        UpdateInformationDTO request = new UpdateInformationDTO(
+        var request = new UpdateProfileDTO(
             "John Doe",
             "Bio",
             "Location");
 
-        mockAuthenticatedUser();
+        var profile = Profile.forTest(UUID.randomUUID(), "username");
+
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
+        when(profileRepository.findById(authenticatedUserId)).thenReturn(Optional.of(profile));
 
         // act
-        profileManagementService.updateInformation(request);
+        profileManagementService.updateProfile(request);
 
         // assert
-        assertEquals(request.name(), authenticatedUserProfile.getName());
-        assertEquals(request.bio(), authenticatedUserProfile.getBio());
-        assertEquals(request.location(), authenticatedUserProfile.getLocation());
+        assertThat(profile.getName()).isEqualTo(request.name());
+        assertThat(profile.getBio()).isEqualTo(request.bio());
+        assertThat(profile.getLocation()).isEqualTo(request.location());
         verify(profileRepository).findById(authenticatedUserId);
+        verify(profileRepository).save(profile);
     }
 
 }

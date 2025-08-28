@@ -15,7 +15,7 @@ import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
 import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
 import com.example.echo_api.service.profile.view.ProfileViewService;
-import com.example.echo_api.util.pagination.OffsetLimitRequest;
+import com.example.echo_api.util.OffsetLimitRequest;
 import com.example.echo_api.validation.pagination.annotations.Limit;
 import com.example.echo_api.validation.pagination.annotations.Offset;
 

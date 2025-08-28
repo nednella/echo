@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.echo_api.persistence.model.post.entity.PostEntity;
 import com.example.echo_api.persistence.model.post.entity.PostEntityType;
-import com.example.echo_api.util.extractor.PostEntityExtractor;
+import com.example.echo_api.util.PostEntityExtractor;
 
 /**
  * Unit test class for {@link PostEntityExtractor}.

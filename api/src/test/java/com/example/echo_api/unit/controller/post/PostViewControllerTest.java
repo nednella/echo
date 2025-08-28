@@ -35,7 +35,7 @@ import com.example.echo_api.persistence.dto.response.post.PostRelationshipDTO;
 import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
 import com.example.echo_api.persistence.mapper.PageMapper;
 import com.example.echo_api.service.post.view.PostViewService;
-import com.example.echo_api.util.pagination.OffsetLimitRequest;
+import com.example.echo_api.util.OffsetLimitRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**

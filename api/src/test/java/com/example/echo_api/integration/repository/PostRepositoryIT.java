@@ -26,7 +26,7 @@ import com.example.echo_api.persistence.repository.PostLikeRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.persistence.repository.UserRepository;
-import com.example.echo_api.util.extractor.PostEntityExtractor;
+import com.example.echo_api.util.PostEntityExtractor;
 
 // TODO: finish JDocs
 

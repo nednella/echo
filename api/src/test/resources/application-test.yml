@@ -17,11 +17,6 @@ clerk:
     secret-key: ${CLERK_SECRET_KEY:}
     webhook-signing-secret: ${CLERK_WEBHOOK_SIGNING_SECRET:whsec_DUMMYKEY} # default dummy value to pass tests
 
-cloudinary:
-    cloud-name: ${CLOUDINARY_CLOUD_NAME:dummyName} # default dummy value to pass tests
-    api-key: ${CLOUDINARY_API_KEY:dummyKey} # default dummy value to pass tests
-    api-secret: ${CLOUDINARY_API_SECRET:dummySecret} # default dummy value to pass tests
-
 cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:*} # default dummy value to pass tests
 

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.data.domain.Pageable;
 
-import com.example.echo_api.util.pagination.OffsetLimitRequest;
+import com.example.echo_api.util.OffsetLimitRequest;
 
 /**
  * Unit test class for {@link OffsetLimitRequest}.

@@ -16,7 +16,7 @@ import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.config.ValidationMessageConfig;
 import com.example.echo_api.controller.profile.ProfileManagementController;
-import com.example.echo_api.persistence.dto.request.profile.UpdateInformationDTO;
+import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.service.profile.management.ProfileManagementService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @AutoConfigureMockMvc(addFilters = false)
 class ProfileManagementControllerTest {
 
-    private static final String ME_INFO_PATH = ApiConfig.Profile.ME_INFO;
+    private static final String ME_PATH = ApiConfig.Profile.ME;
 
     @Autowired
     private MockMvcTester mvc;
@@ -40,13 +40,13 @@ class ProfileManagementControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void updateInformation_Returns204NoContent_WhenPassesValidation() throws Exception {
-        // api: PUT /api/v1/profile/me/info ==> 204 No Content
-        var request = new UpdateInformationDTO("name", "bio", "location");
+    void updateProfile_Returns204NoContent_WhenPassesValidation() throws Exception {
+        // api: PUT /api/v1/profile/me ==> 204 No Content
+        var request = new UpdateProfileDTO("name", "bio", "location");
         String body = objectMapper.writeValueAsString(request);
 
         var response = mvc.put()
-            .uri(ME_INFO_PATH)
+            .uri(ME_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
             .exchange();
@@ -55,14 +55,14 @@ class ProfileManagementControllerTest {
             .hasStatus(204)
             .body().isEmpty();
 
-        verify(profileManagementService).updateInformation(request);
+        verify(profileManagementService).updateProfile(request);
     }
 
     @Test
-    void updateInformation_Returns400BadRequest_WhenNameExceeds50Characters() throws Exception {
-        // api: PUT /api/v1/profile/me/info ==> 400 Bad Request : ErrorDTO
+    void updateProfile_Returns400BadRequest_WhenNameExceeds50Characters() throws Exception {
+        // api: PUT /api/v1/profile/me ==> 400 Bad Request : ErrorDTO
         String invalidName = "x".repeat(51);
-        var request = new UpdateInformationDTO(invalidName, "bio", "location");
+        var request = new UpdateProfileDTO(invalidName, "bio", "location");
         String body = objectMapper.writeValueAsString(request);
 
         ErrorDTO expected = new ErrorDTO(
@@ -72,7 +72,7 @@ class ProfileManagementControllerTest {
             null);
 
         var response = mvc.put()
-            .uri(ME_INFO_PATH)
+            .uri(ME_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
             .exchange();
@@ -81,14 +81,14 @@ class ProfileManagementControllerTest {
             .hasStatus(400)
             .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
 
-        verify(profileManagementService, never()).updateInformation(request);
+        verify(profileManagementService, never()).updateProfile(request);
     }
 
     @Test
-    void updateInformation_Returns400BadRequest_WhenBioExceeds160Characters() throws Exception {
-        // api: PUT /api/v1/profile/me/info ==> 400 Bad Request : ErrorDTO
+    void updateProfile_Returns400BadRequest_WhenBioExceeds160Characters() throws Exception {
+        // api: PUT /api/v1/profile/me ==> 400 Bad Request : ErrorDTO
         String invalidBio = "x".repeat(161);
-        var request = new UpdateInformationDTO("name", invalidBio, "location");
+        var request = new UpdateProfileDTO("name", invalidBio, "location");
         String body = objectMapper.writeValueAsString(request);
 
         ErrorDTO expected = new ErrorDTO(
@@ -98,7 +98,7 @@ class ProfileManagementControllerTest {
             null);
 
         var response = mvc.put()
-            .uri(ME_INFO_PATH)
+            .uri(ME_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
             .exchange();
@@ -107,14 +107,14 @@ class ProfileManagementControllerTest {
             .hasStatus(400)
             .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
 
-        verify(profileManagementService, never()).updateInformation(request);
+        verify(profileManagementService, never()).updateProfile(request);
     }
 
     @Test
-    void updateInformation_Returns400BadRequest_WhenLocationExceeds30Characters() throws Exception {
-        // api: PUT /api/v1/profile/me/info ==> 400 Bad Request : ErrorDTO
+    void updateProfile_Returns400BadRequest_WhenLocationExceeds30Characters() throws Exception {
+        // api: PUT /api/v1/profile/me ==> 400 Bad Request : ErrorDTO
         String invalidLocation = "x".repeat(31);
-        var request = new UpdateInformationDTO("name", "bio", invalidLocation);
+        var request = new UpdateProfileDTO("name", "bio", invalidLocation);
         String body = objectMapper.writeValueAsString(request);
 
         ErrorDTO expected = new ErrorDTO(
@@ -124,7 +124,7 @@ class ProfileManagementControllerTest {
             null);
 
         var response = mvc.put()
-            .uri(ME_INFO_PATH)
+            .uri(ME_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .content(body)
             .exchange();
@@ -133,7 +133,7 @@ class ProfileManagementControllerTest {
             .hasStatus(400)
             .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
 
-        verify(profileManagementService, never()).updateInformation(request);
+        verify(profileManagementService, never()).updateProfile(request);
     }
 
 }

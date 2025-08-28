@@ -11,11 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PRIVATE)
 public final class ValidationMessageConfig {
 
-    /* File */
-    public static final String INVALID_FILE = "File cannot be null or empty";
-    public static final String IMAGE_SIZE_TOO_LARGE = "File size exceeds limit of " + FileConfig.Image.MAX_SIZE_MB + " MB";
-    public static final String IMAGE_FORMAT_UNSUPPORTED = "File type does not match allowed: " + FileConfig.Image.ALLOWED_TYPES;
-
     /* Pagination */
     public static final String INVALID_OFFSET = "Offset index must not be negative";
     public static final String INVALID_LIMIT = "Limit must be in the range 1 to 50";

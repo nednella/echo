@@ -1,8 +1,10 @@
-package com.example.echo_api.util.extractor;
+package com.example.echo_api.util;
 
 import static lombok.AccessLevel.PRIVATE;
 
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import com.example.echo_api.exception.custom.internalserver.TwitterTextEnumException;
@@ -25,6 +27,10 @@ public class PostEntityExtractor {
 
     private static final Extractor extractor = new Extractor();
 
+    // Explicitly allow mentions, hashtags & URLs.
+    private static final Set<Extractor.Entity.Type> ALLOWED_ENTITY_TYPES = EnumSet.of(
+        Extractor.Entity.Type.MENTION, Extractor.Entity.Type.HASHTAG, Extractor.Entity.Type.URL);
+
     public static List<PostEntity> extract(UUID postId, String text) {
         if (postId == null || text == null) {
             throw new IllegalArgumentException("Extractor arguments cannot be null.");
@@ -32,10 +38,9 @@ public class PostEntityExtractor {
 
         List<Extractor.Entity> twEntities = extractor.extractEntitiesWithIndices(text);
 
-        // TODO: use filter all by default. explicitly allow mentions, hashtags, urls
         return twEntities
             .stream()
-            .filter(e -> e.getType() != Extractor.Entity.Type.CASHTAG) // exclude cashtag entities
+            .filter(e -> ALLOWED_ENTITY_TYPES.contains(e.getType()))
             .map(e -> toPostEntity(postId, e))
             .toList();
     }
