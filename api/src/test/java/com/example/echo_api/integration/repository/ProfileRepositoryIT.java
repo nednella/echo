@@ -21,7 +21,7 @@ import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.persistence.repository.UserRepository;
-import com.example.echo_api.util.pagination.OffsetLimitRequest;
+import com.example.echo_api.util.OffsetLimitRequest;
 import com.example.echo_api.persistence.repository.FollowRepository;
 
 /**

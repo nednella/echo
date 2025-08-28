@@ -17,7 +17,7 @@ import com.example.echo_api.persistence.repository.PostEntityRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
 import com.example.echo_api.service.post.BasePostService;
 import com.example.echo_api.service.session.SessionService;
-import com.example.echo_api.util.extractor.PostEntityExtractor;
+import com.example.echo_api.util.PostEntityExtractor;
 
 /**
  * Service implementation for managing mutation operations for {@link Post}

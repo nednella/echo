@@ -1,4 +1,4 @@
-package com.example.echo_api.util.pagination;
+package com.example.echo_api.util;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

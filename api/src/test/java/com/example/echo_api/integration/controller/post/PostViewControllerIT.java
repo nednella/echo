@@ -23,7 +23,7 @@ import com.example.echo_api.persistence.model.post.like.PostLike;
 import com.example.echo_api.persistence.repository.PostEntityRepository;
 import com.example.echo_api.persistence.repository.PostLikeRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
-import com.example.echo_api.util.extractor.PostEntityExtractor;
+import com.example.echo_api.util.PostEntityExtractor;
 
 /**
  * Integration test class for {@link PostViewController}.

@@ -1,4 +1,4 @@
-package com.example.echo_api.util.extractor;
+package com.example.echo_api.util;
 
 import static lombok.AccessLevel.PRIVATE;
 
