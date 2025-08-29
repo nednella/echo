@@ -1,4 +1,4 @@
-package com.example.echo_api.unit.service.session;
+package com.example.echo_api.shared.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -18,7 +18,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import com.example.echo_api.config.ClerkConfig;
-import com.example.echo_api.service.session.SessionServiceImpl;
 
 /**
  * Unit test class for {@link SessionService}.

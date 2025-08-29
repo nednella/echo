@@ -23,8 +23,8 @@ import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpser
 import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.service.clerk.sdk.ClerkSdkService;
 import com.example.echo_api.service.clerk.sync.ClerkSyncServiceImpl;
-import com.example.echo_api.service.session.SessionService;
 import com.example.echo_api.service.user.UserService;
+import com.example.echo_api.shared.service.SessionService;
 
 /**
  * Unit test class for {@link ClerkSyncService}.

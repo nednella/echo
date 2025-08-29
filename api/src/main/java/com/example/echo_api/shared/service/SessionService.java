@@ -1,4 +1,4 @@
-package com.example.echo_api.service.session;
+package com.example.echo_api.shared.service;
 
 import java.util.UUID;
 

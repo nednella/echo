@@ -15,7 +15,7 @@ import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.PostRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.service.post.BasePostService;
-import com.example.echo_api.service.session.SessionService;
+import com.example.echo_api.shared.service.SessionService;
 
 import jakarta.servlet.http.HttpServletRequest;
 

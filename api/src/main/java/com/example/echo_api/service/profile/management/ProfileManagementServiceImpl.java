@@ -6,7 +6,7 @@ import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.service.profile.BaseProfileService;
-import com.example.echo_api.service.session.SessionService;
+import com.example.echo_api.shared.service.SessionService;
 
 /**
  * Service implementation for managing mutation operations for {@link Profile}

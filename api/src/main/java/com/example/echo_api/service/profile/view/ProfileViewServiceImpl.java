@@ -14,7 +14,7 @@ import com.example.echo_api.persistence.mapper.PageMapper;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.service.profile.BaseProfileService;
-import com.example.echo_api.service.session.SessionService;
+import com.example.echo_api.shared.service.SessionService;
 
 import jakarta.servlet.http.HttpServletRequest;
 

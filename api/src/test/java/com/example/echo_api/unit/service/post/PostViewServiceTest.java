@@ -31,7 +31,7 @@ import com.example.echo_api.persistence.repository.PostRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.service.post.view.PostViewService;
 import com.example.echo_api.service.post.view.PostViewServiceImpl;
-import com.example.echo_api.service.session.SessionService;
+import com.example.echo_api.shared.service.SessionService;
 import com.example.echo_api.util.OffsetLimitRequest;
 
 import jakarta.servlet.http.HttpServletRequest;

@@ -18,7 +18,7 @@ import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.service.profile.management.ProfileManagementService;
 import com.example.echo_api.service.profile.management.ProfileManagementServiceImpl;
-import com.example.echo_api.service.session.SessionService;
+import com.example.echo_api.shared.service.SessionService;
 
 /**
  * Unit test class for {@link ProfileManagementService}.
