@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.clerk.backend_api.models.components.User;
 import com.example.echo_api.exception.custom.internalserver.ClerkException;
-import com.example.echo_api.persistence.dto.adapter.ClerkUserDTO;
+import com.example.echo_api.modules.clerk.dto.sdk.ClerkUserDTO;
 
 public interface ClerkSdkService {
 

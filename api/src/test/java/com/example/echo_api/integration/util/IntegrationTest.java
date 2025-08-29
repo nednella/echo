@@ -20,7 +20,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.example.echo_api.integration.util.ClerkTestUtils.Template;
-import com.example.echo_api.persistence.dto.adapter.ClerkUserDTO;
+import com.example.echo_api.modules.clerk.dto.sdk.ClerkUserDTO;
 import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.service.dev.DevService;
 

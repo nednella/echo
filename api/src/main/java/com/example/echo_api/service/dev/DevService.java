@@ -2,7 +2,7 @@ package com.example.echo_api.service.dev;
 
 import java.util.List;
 
-import com.example.echo_api.persistence.dto.adapter.ClerkUserDTO;
+import com.example.echo_api.modules.clerk.dto.sdk.ClerkUserDTO;
 import com.example.echo_api.persistence.model.user.User;
 
 public interface DevService {

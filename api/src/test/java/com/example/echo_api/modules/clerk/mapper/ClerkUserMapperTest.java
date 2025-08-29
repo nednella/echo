@@ -1,4 +1,4 @@
-package com.example.echo_api.unit.persistence.mapper;
+package com.example.echo_api.modules.clerk.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -13,8 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.openapitools.jackson.nullable.JsonNullable;
 
 import com.clerk.backend_api.models.components.User;
-import com.example.echo_api.persistence.dto.adapter.ClerkUserDTO;
-import com.example.echo_api.persistence.mapper.ClerkUserMapper;
+import com.example.echo_api.modules.clerk.dto.sdk.ClerkUserDTO;
 
 /**
  * Unit test class for {@link ClerkUserMapper}.

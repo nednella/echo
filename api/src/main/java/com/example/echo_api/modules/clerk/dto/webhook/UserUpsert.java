@@ -1,6 +1,5 @@
-package com.example.echo_api.persistence.dto.request.clerk.webhook.data;
+package com.example.echo_api.modules.clerk.dto.webhook;
 
-import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEventData;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

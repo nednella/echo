@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import com.clerk.backend_api.Clerk;
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
 import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
-import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEvent;
+import com.example.echo_api.modules.clerk.dto.webhook.ClerkWebhookEvent;
 import com.example.echo_api.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.svix.Webhook;

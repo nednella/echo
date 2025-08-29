@@ -1,4 +1,4 @@
-package com.example.echo_api.persistence.dto.request.clerk.webhook;
+package com.example.echo_api.modules.clerk.dto.webhook;
 
 public enum ClerkWebhookEventType {
 

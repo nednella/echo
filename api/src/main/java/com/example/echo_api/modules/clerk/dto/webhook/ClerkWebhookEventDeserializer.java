@@ -1,8 +1,6 @@
-package com.example.echo_api.persistence.dto.request.clerk.webhook;
+package com.example.echo_api.modules.clerk.dto.webhook;
 
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
-import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserDelete;
-import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpsert;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;

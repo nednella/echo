@@ -14,12 +14,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.example.echo_api.persistence.dto.adapter.ClerkUserDTO;
-import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEvent;
-import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEventData;
-import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEventType;
-import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserDelete;
-import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpsert;
+import com.example.echo_api.modules.clerk.dto.sdk.ClerkUserDTO;
+import com.example.echo_api.modules.clerk.dto.webhook.ClerkWebhookEvent;
+import com.example.echo_api.modules.clerk.dto.webhook.ClerkWebhookEventData;
+import com.example.echo_api.modules.clerk.dto.webhook.ClerkWebhookEventType;
+import com.example.echo_api.modules.clerk.dto.webhook.UserDelete;
+import com.example.echo_api.modules.clerk.dto.webhook.UserUpsert;
 import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.service.user.UserService;
 import com.example.echo_api.shared.service.SessionService;

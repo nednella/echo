@@ -1,11 +1,11 @@
-package com.example.echo_api.persistence.mapper;
+package com.example.echo_api.modules.clerk.mapper;
 
 import static lombok.AccessLevel.PRIVATE;
 
 import java.util.List;
 
 import com.clerk.backend_api.models.components.User;
-import com.example.echo_api.persistence.dto.adapter.ClerkUserDTO;
+import com.example.echo_api.modules.clerk.dto.sdk.ClerkUserDTO;
 
 import lombok.NoArgsConstructor;
 

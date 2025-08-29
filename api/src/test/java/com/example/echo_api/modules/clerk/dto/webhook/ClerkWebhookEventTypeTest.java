@@ -1,12 +1,10 @@
-package com.example.echo_api.unit.persistence.dto.clerk.webhook;
+package com.example.echo_api.modules.clerk.dto.webhook;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEventType;
 
 /**
  * Unit test class for {@link ClerkWebhookEventType}.

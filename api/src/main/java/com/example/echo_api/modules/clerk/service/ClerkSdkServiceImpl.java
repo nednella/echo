@@ -13,8 +13,8 @@ import com.clerk.backend_api.models.operations.UpdateUserRequestBody;
 import com.example.echo_api.config.ClerkConfig;
 import com.example.echo_api.exception.custom.internalserver.ClerkException;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
-import com.example.echo_api.persistence.dto.adapter.ClerkUserDTO;
-import com.example.echo_api.persistence.mapper.ClerkUserMapper;
+import com.example.echo_api.modules.clerk.dto.sdk.ClerkUserDTO;
+import com.example.echo_api.modules.clerk.mapper.ClerkUserMapper;
 import com.example.echo_api.util.Utils;
 
 import lombok.RequiredArgsConstructor;
