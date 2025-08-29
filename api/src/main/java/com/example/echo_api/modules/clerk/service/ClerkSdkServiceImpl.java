@@ -13,7 +13,7 @@ import com.clerk.backend_api.models.operations.UpdateUserRequestBody;
 import com.example.echo_api.config.ClerkConfig;
 import com.example.echo_api.exception.custom.internalserver.ClerkException;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
-import com.example.echo_api.modules.clerk.dto.sdk.ClerkUserDTO;
+import com.example.echo_api.modules.clerk.dto.ClerkUser;
 import com.example.echo_api.modules.clerk.mapper.ClerkUserMapper;
 import com.example.echo_api.util.Utils;
 
@@ -31,31 +31,33 @@ class ClerkSdkServiceImpl implements ClerkSdkService {
     private final Clerk clerk;
 
     @Override
-    public ClerkUserDTO getUser(String clerkUserId) throws ClerkException {
+    public ClerkUser getUser(String clerkUserId) throws ClerkException {
         Utils.checkNotNull(clerkUserId, "Clerk User ID");
 
         try {
             GetUserResponse res = clerk.users().get(clerkUserId);
             User user = res.user().orElseThrow(ResourceNotFoundException::new);
-            return ClerkUserMapper.toDTO(user);
+            return ClerkUserMapper.fromSDK(user);
         } catch (Exception ex) {
             throw new ClerkException(ex.getMessage());
         }
     }
 
     @Override
-    public List<ClerkUserDTO> getAllUsers() {
+    public List<ClerkUser> getAllUsers() {
         try {
             GetUserListResponse res = clerk.users().list().call();
             List<User> users = res.userList().orElseThrow(ResourceNotFoundException::new);
-            return ClerkUserMapper.toListDTO(users);
+            return users.stream()
+                .map(ClerkUserMapper::fromSDK)
+                .toList();
         } catch (Exception ex) {
             throw new ClerkException(ex.getMessage());
         }
     }
 
     @Override
-    public void completeOnboarding(ClerkUserDTO user, String externalId) throws ClerkException {
+    public void completeOnboarding(ClerkUser user, String externalId) throws ClerkException {
         Utils.checkNotNull(user, "Clerk User");
         Utils.checkNotNull(externalId, "External ID");
 
@@ -76,7 +78,7 @@ class ClerkSdkServiceImpl implements ClerkSdkService {
     }
 
     @Override
-    public void revertOnboarding(ClerkUserDTO user) {
+    public void revertOnboarding(ClerkUser user) {
         Utils.checkNotNull(user, "Clerk User");
 
         String userId = user.id();

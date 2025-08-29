@@ -4,29 +4,29 @@ import java.util.List;
 
 import com.clerk.backend_api.models.components.User;
 import com.example.echo_api.exception.custom.internalserver.ClerkException;
-import com.example.echo_api.modules.clerk.dto.sdk.ClerkUserDTO;
+import com.example.echo_api.modules.clerk.dto.ClerkUser;
 
-public interface ClerkSdkService {
+interface ClerkSdkService {
 
     /**
      * Retrieves a user from Clerk based on their unique identifier.
      * 
      * @param clerkUserId the unique identifier for the Clerk user
-     * @return the retrieved Clerk {@link User} mapped to {@link ClerkUserDTO}
+     * @return the retrieved Clerk {@link User} mapped to {@link ClerkUser}
      * @throws IllegalArgumentException if {@code user} is null
      * @throws ClerkException           if the user data retrieval fails for
      *                                  whatever reason
      */
-    ClerkUserDTO getUser(String clerkUserId);
+    ClerkUser getUser(String clerkUserId);
 
     /**
      * Retrieves all users from Clerk.
      * 
      * @return the retrieved {@link List} of Clerk {@link User} mapped to
-     *         {@link ClerkUserDTO}
+     *         {@link ClerkUser}
      * @throws ClerkException if the user data retrieval fails for whatever reason
      */
-    List<ClerkUserDTO> getAllUsers();
+    List<ClerkUser> getAllUsers();
 
     /**
      * Marks a Clerk user as having completed the onboarding proccess by setting the
@@ -40,7 +40,7 @@ public interface ClerkSdkService {
      * @throws ClerkException           if the update operation fails for whatever
      *                                  reason
      */
-    void completeOnboarding(ClerkUserDTO user, String externalId);
+    void completeOnboarding(ClerkUser user, String externalId);
 
     /**
      * Unmarks a user as having completed the onboarding process by removing the
@@ -52,6 +52,6 @@ public interface ClerkSdkService {
      * @throws ClerkException           if the update operation fails for whatever
      *                                  reason
      */
-    void revertOnboarding(ClerkUserDTO user);
+    void revertOnboarding(ClerkUser user);
 
 }

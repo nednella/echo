@@ -7,6 +7,9 @@ import com.clerk.backend_api.Clerk;
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
 import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
 import com.example.echo_api.modules.clerk.dto.webhook.ClerkWebhook;
+import com.example.echo_api.modules.clerk.dto.webhook.UserDelete;
+import com.example.echo_api.modules.clerk.dto.webhook.UserUpsert;
+import com.example.echo_api.modules.clerk.mapper.ClerkUserMapper;
 import com.example.echo_api.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.svix.Webhook;
@@ -21,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 class ClerkWebhookServiceImpl implements ClerkWebhookService {
 
-    private final ClerkSyncService clerkSyncService;
+    private final ClerkSyncService syncService;
 
     private final Webhook svixWebhook;
     private final ObjectMapper mapper;
@@ -37,8 +40,11 @@ class ClerkWebhookServiceImpl implements ClerkWebhookService {
 
     @Override
     public void handleWebhook(String payload) {
-        var event = deserializePayload(payload);
-        clerkSyncService.handleWebhookEvent(event);
+        var event = deserialize(payload);
+        switch (event.type()) {
+            case USER_CREATED, USER_UPDATED -> handleUserUpsert((UserUpsert) event.data());
+            case USER_DELETED -> handleUserDelete((UserDelete) event.data());
+        }
     }
 
     /**
@@ -50,12 +56,20 @@ class ClerkWebhookServiceImpl implements ClerkWebhookService {
      * @throws DeserializationException If there was an issue when deserializing the
      *                                  JSON payload for whatever reason
      */
-    ClerkWebhook deserializePayload(String payload) {
+    ClerkWebhook deserialize(String payload) {
         try {
             return mapper.readValue(payload, ClerkWebhook.class);
         } catch (Exception ex) {
             throw new DeserializationException(ex.getMessage());
         }
+    }
+
+    private void handleUserUpsert(UserUpsert data) {
+        syncService.ingestUserUpserted(ClerkUserMapper.fromWebhook(data));
+    }
+
+    private void handleUserDelete(UserDelete data) {
+        syncService.ingestUserDeleted(data.id());
     }
 
 }
