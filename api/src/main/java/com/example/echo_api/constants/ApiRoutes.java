@@ -15,6 +15,8 @@ public class ApiRoutes {
         private static final String ROOT = BASE_URL + "/clerk";
         public static final String ONBOARDING = ROOT + "/onboarding";
         public static final String WEBHOOK = ROOT + "/webhook";
+        public static final String PERSIST_ALL = ROOT + "/persist-all"; // dev only
+        public static final String SYNC_ALL = ROOT + "/sync-all"; // dev only
 
     }
 
