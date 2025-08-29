@@ -17,7 +17,7 @@ public interface ClerkSdkService {
      * @throws ClerkException           if the user data retrieval fails for
      *                                  whatever reason
      */
-    public ClerkUserDTO getUser(String clerkUserId);
+    ClerkUserDTO getUser(String clerkUserId);
 
     /**
      * Retrieves all users from Clerk.
@@ -26,7 +26,7 @@ public interface ClerkSdkService {
      *         {@link ClerkUserDTO}
      * @throws ClerkException if the user data retrieval fails for whatever reason
      */
-    public List<ClerkUserDTO> getAllUsers();
+    List<ClerkUserDTO> getAllUsers();
 
     /**
      * Marks a Clerk user as having completed the onboarding proccess by setting the
@@ -40,7 +40,7 @@ public interface ClerkSdkService {
      * @throws ClerkException           if the update operation fails for whatever
      *                                  reason
      */
-    public void completeOnboarding(ClerkUserDTO user, String externalId);
+    void completeOnboarding(ClerkUserDTO user, String externalId);
 
     /**
      * Unmarks a user as having completed the onboarding process by removing the
@@ -52,6 +52,6 @@ public interface ClerkSdkService {
      * @throws ClerkException           if the update operation fails for whatever
      *                                  reason
      */
-    public void revertOnboarding(ClerkUserDTO user);
+    void revertOnboarding(ClerkUserDTO user);
 
 }

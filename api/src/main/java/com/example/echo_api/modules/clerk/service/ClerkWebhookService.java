@@ -20,7 +20,7 @@ public interface ClerkWebhookService {
      * @throws WebhookVerificationException If the webhook signature verification
      *                                      fails
      */
-    public void verify(HttpHeaders headers, String payload);
+    void verify(HttpHeaders headers, String payload);
 
     /**
      * Handle processing of Clerk webhooks, including payload deserialization and
@@ -31,6 +31,6 @@ public interface ClerkWebhookService {
      * @throws DeserializationException If there was an issue when deserializing the
      *                                  JSON payload for whatever reason
      */
-    public void handleWebhook(String payload);
+    void handleWebhook(String payload);
 
 }

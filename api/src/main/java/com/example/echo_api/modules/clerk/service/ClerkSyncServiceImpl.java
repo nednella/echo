@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
-public class ClerkSyncServiceImpl implements ClerkSyncService {
+class ClerkSyncServiceImpl implements ClerkSyncService {
 
     private final SessionService sessionService;
     private final ClerkSdkService clerkSdkService;

@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
-public class ClerkSdkServiceImpl implements ClerkSdkService {
+class ClerkSdkServiceImpl implements ClerkSdkService {
 
     private final Clerk clerk;
 

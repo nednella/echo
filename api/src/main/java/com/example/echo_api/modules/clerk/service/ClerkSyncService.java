@@ -29,7 +29,7 @@ public interface ClerkSyncService {
      * @throws ClerkException if there is an issue when communicating with the Clerk
      *                        SDK
      */
-    public User onboardAuthenticatedUser();
+    User onboardAuthenticatedUser();
 
     /**
      * Process a {@link ClerkWebhookEvent} according to its type, ensuring local
@@ -37,6 +37,6 @@ public interface ClerkSyncService {
      * 
      * @param event the {@link ClerkWebhookEvent} to process
      */
-    public void handleWebhookEvent(ClerkWebhookEvent event);
+    void handleWebhookEvent(ClerkWebhookEvent event);
 
 }

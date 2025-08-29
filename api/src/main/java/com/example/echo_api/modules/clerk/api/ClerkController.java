@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-class ClerkController {
+public class ClerkController {
 
     private final ClerkSyncService clerkSyncService;
     private final ClerkWebhookService clerkWebhookService;

@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
-public class ClerkWebhookServiceImpl implements ClerkWebhookService {
+class ClerkWebhookServiceImpl implements ClerkWebhookService {
 
     private final ClerkSyncService clerkSyncService;
 
