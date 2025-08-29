@@ -12,9 +12,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.config.ValidationMessageConfig;
+import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.controller.profile.ProfileManagementController;
 import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @AutoConfigureMockMvc(addFilters = false)
 class ProfileManagementControllerTest {
 
-    private static final String ME_PATH = ApiConfig.Profile.ME;
+    private static final String ME_PATH = ApiRoutes.PROFILE.ME;
 
     @Autowired
     private MockMvcTester mvc;

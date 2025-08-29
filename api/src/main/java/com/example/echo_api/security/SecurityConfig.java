@@ -11,7 +11,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 
-import com.example.echo_api.config.ApiConfig;
+import com.example.echo_api.constants.ApiRoutes;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,7 +34,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(req -> req
                 .requestMatchers("/public").permitAll()
                 .requestMatchers("/api/v1/dev/**").permitAll()
-                .requestMatchers(HttpMethod.POST, ApiConfig.Clerk.WEBHOOK).permitAll()
+                .requestMatchers(HttpMethod.POST, ApiRoutes.CLERK.WEBHOOK).permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth -> oauth

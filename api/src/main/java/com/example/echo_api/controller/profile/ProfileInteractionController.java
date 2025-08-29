@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.echo_api.config.ApiConfig;
+import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.service.profile.interaction.ProfileInteractionService;
 
 import lombok.RequiredArgsConstructor;
@@ -19,13 +19,13 @@ public class ProfileInteractionController {
 
     private final ProfileInteractionService profileInteractionService;
 
-    @PostMapping(ApiConfig.Profile.FOLLOW_BY_ID)
+    @PostMapping(ApiRoutes.PROFILE.FOLLOW)
     public ResponseEntity<Void> followById(@PathVariable("id") UUID id) {
         profileInteractionService.follow(id);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(ApiConfig.Profile.FOLLOW_BY_ID)
+    @DeleteMapping(ApiRoutes.PROFILE.FOLLOW)
     public ResponseEntity<Void> unfollowById(@PathVariable("id") UUID id) {
         profileInteractionService.unfollow(id);
         return ResponseEntity.noContent().build();

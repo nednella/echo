@@ -13,8 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.controller.profile.ProfileInteractionController;
 import com.example.echo_api.exception.custom.conflict.AlreadyFollowingException;
 import com.example.echo_api.exception.custom.conflict.SelfActionException;
@@ -29,7 +29,7 @@ import com.example.echo_api.service.profile.interaction.ProfileInteractionServic
 @AutoConfigureMockMvc(addFilters = false)
 class ProfileInteractionControllerTest {
 
-    private static final String FOLLOW_PATH = ApiConfig.Profile.FOLLOW_BY_ID;
+    private static final String FOLLOW_PATH = ApiRoutes.PROFILE.FOLLOW;
 
     @Autowired
     private MockMvcTester mvc;

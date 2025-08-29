@@ -7,8 +7,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 
-import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.security.ClerkOnboardingFilter;
@@ -20,7 +20,7 @@ import com.example.echo_api.integration.util.ClerkTestUtils.Template;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ClerkOnboardingFilterIT extends IntegrationTest {
 
-    private static final String PROTECTED_ENDPOINT = ApiConfig.Profile.ME; // random protected endpoint
+    private static final String PROTECTED_ENDPOINT = ApiRoutes.PROFILE.ME; // random protected endpoint
 
     @Test
     void protectedEndpoint_Returns403Forbidden_WhenMissingOnboardedClaim() {

@@ -1,6 +1,8 @@
 package com.example.echo_api.unit.controller.clerk;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import java.util.UUID;
@@ -14,8 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.controller.clerk.ClerkController;
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
 import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
@@ -31,8 +33,8 @@ import com.example.echo_api.service.clerk.webhook.ClerkWebhookService;
 @AutoConfigureMockMvc(addFilters = false)
 class ClerkControllerTest {
 
-    private static final String ONBOARDING_PATH = ApiConfig.Clerk.ONBOARDING;
-    private static final String WEBHOOK_PATH = ApiConfig.Clerk.WEBHOOK;
+    private static final String ONBOARDING_PATH = ApiRoutes.CLERK.ONBOARDING;
+    private static final String WEBHOOK_PATH = ApiRoutes.CLERK.WEBHOOK;
     private static final String WEBHOOK_PAYLOAD = "some_placeholder_payload";
 
     @Autowired

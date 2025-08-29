@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.echo_api.config.ApiConfig;
+import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
 import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
@@ -28,18 +28,18 @@ public class ProfileViewController {
 
     private final ProfileViewService profileViewService;
 
-    @GetMapping(ApiConfig.Profile.ME)
+    @GetMapping(ApiRoutes.PROFILE.ME)
     public ResponseEntity<ProfileDTO> getMe() {
         return ResponseEntity.ok(profileViewService.getMe());
     }
 
-    @GetMapping(ApiConfig.Profile.GET_BY_USERNAME)
+    @GetMapping(ApiRoutes.PROFILE.BY_USERNAME)
     public ResponseEntity<ProfileDTO> getByUsername(@PathVariable("username") String username) {
         return ResponseEntity.ok(profileViewService.getByUsername(username));
     }
 
     // @formatter:off
-    @GetMapping(ApiConfig.Profile.GET_FOLLOWERS_BY_ID)
+    @GetMapping(ApiRoutes.PROFILE.FOLLOWERS)
     public ResponseEntity<PageDTO<SimplifiedProfileDTO>> getFollowers(
         @PathVariable("id") UUID id,
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
@@ -49,7 +49,7 @@ public class ProfileViewController {
         return ResponseEntity.ok(profileViewService.getFollowers(id, page));
     }
 
-    @GetMapping(ApiConfig.Profile.GET_FOLLOWING_BY_ID)
+    @GetMapping(ApiRoutes.PROFILE.FOLLOWING)
     public ResponseEntity<PageDTO<SimplifiedProfileDTO>> getFollowing(
        @PathVariable("id") UUID id,
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,

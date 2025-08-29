@@ -9,8 +9,8 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.controller.post.PostInteractionController;
 import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
@@ -23,7 +23,7 @@ import com.example.echo_api.persistence.repository.PostRepository;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PostInteractionControllerIT extends IntegrationTest {
 
-    private static final String LIKE_PATH = ApiConfig.Post.LIKE;
+    private static final String LIKE_PATH = ApiRoutes.POST.LIKE;
 
     @Autowired
     private PostRepository postRepository;

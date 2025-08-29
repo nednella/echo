@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.echo_api.config.ApiConfig;
+import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.post.PostDTO;
 import com.example.echo_api.service.post.view.PostViewService;
@@ -27,13 +27,13 @@ public class PostViewController {
 
     private final PostViewService postViewService;
 
-    @GetMapping(ApiConfig.Post.GET_BY_ID)
+    @GetMapping(ApiRoutes.POST.BY_ID)
     public ResponseEntity<PostDTO> getPostById(@PathVariable("id") UUID id) {
         return ResponseEntity.ok(postViewService.getPostById(id));
     }
 
     // @formatter:off
-    @GetMapping(ApiConfig.Post.GET_REPLIES_BY_ID)
+    @GetMapping(ApiRoutes.POST.REPLIES)
     public ResponseEntity<PageDTO<PostDTO>> getRepliesById(
         @PathVariable("id") UUID id,
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
@@ -44,7 +44,7 @@ public class PostViewController {
     } // @formatter:on
 
     // @formatter:off
-    @GetMapping(ApiConfig.Feed.HOMEPAGE)
+    @GetMapping(ApiRoutes.FEED.HOMEPAGE)
     public ResponseEntity<PageDTO<PostDTO>> getHomepagePosts(
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit)
@@ -54,7 +54,7 @@ public class PostViewController {
     } // @formatter:on
 
     // @formatter:off
-    @GetMapping(ApiConfig.Feed.DISCOVER)
+    @GetMapping(ApiRoutes.FEED.DISCOVER)
     public ResponseEntity<PageDTO<PostDTO>> getDiscoverPosts(
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
@@ -64,7 +64,7 @@ public class PostViewController {
     } // @formatter:on
 
     // @formatter:off
-    @GetMapping(ApiConfig.Feed.POSTS_BY_PROFILE_ID)
+    @GetMapping(ApiRoutes.FEED.POSTS)
     public ResponseEntity<PageDTO<PostDTO>> getPostsByProfileId(
         @PathVariable("id") UUID id,
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
@@ -75,7 +75,7 @@ public class PostViewController {
     } // @formatter:on
 
     // @formatter:off
-    @GetMapping(ApiConfig.Feed.REPLIES_BY_PROFILE_ID)
+    @GetMapping(ApiRoutes.FEED.REPLIES)
     public ResponseEntity<PageDTO<PostDTO>> getRepliesByProfileId(
         @PathVariable("id") UUID id,
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
@@ -86,7 +86,7 @@ public class PostViewController {
     } // @formatter:on
 
     // @formatter:off
-    @GetMapping(ApiConfig.Feed.LIKES_BY_PROFILE_ID)
+    @GetMapping(ApiRoutes.FEED.LIKES)
     public ResponseEntity<PageDTO<PostDTO>> getLikesByProfileId(
         @PathVariable("id") UUID id,
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
@@ -97,7 +97,7 @@ public class PostViewController {
     } // @formatter:on
 
     // @formatter:off
-    @GetMapping(ApiConfig.Feed.MENTIONS_OF_PROFILE_ID)
+    @GetMapping(ApiRoutes.FEED.MENTIONS)
     public ResponseEntity<PageDTO<PostDTO>> getMentionsOfProfileId(
         @PathVariable("id") UUID id,
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,

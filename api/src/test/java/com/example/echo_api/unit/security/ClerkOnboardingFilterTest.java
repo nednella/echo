@@ -26,9 +26,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ClerkConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.security.ClerkOnboardingFilter;
 
 import jakarta.servlet.FilterChain;
@@ -120,7 +120,7 @@ class ClerkOnboardingFilterTest {
     @Test
     void doFilterInternal_OnlyValidatesTokenHasExpectedClaimsWhenOnboardingEndpoint() throws Exception {
         // arrange
-        request.setRequestURI(ApiConfig.Clerk.ONBOARDING);
+        request.setRequestURI(ApiRoutes.CLERK.ONBOARDING);
 
         Jwt jwt = mockJwt();
         when(jwt.hasClaim(ClerkConfig.JWT_ONBOARDED_CLAIM)).thenReturn(true);

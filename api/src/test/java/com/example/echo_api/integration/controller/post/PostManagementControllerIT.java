@@ -11,9 +11,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.config.ValidationMessageConfig;
+import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.controller.post.PostManagementController;
 import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.persistence.dto.request.post.CreatePostDTO;
@@ -26,8 +26,8 @@ import com.example.echo_api.persistence.repository.PostRepository;
  */
 class PostManagementControllerIT extends IntegrationTest {
 
-    private static final String CREATE_PATH = ApiConfig.Post.CREATE;
-    private static final String GET_BY_ID_PATH = ApiConfig.Post.GET_BY_ID;
+    private static final String CREATE_PATH = ApiRoutes.POST.CREATE;
+    private static final String BY_ID_PATH = ApiRoutes.POST.BY_ID;
 
     @Autowired
     private PostRepository postRepository;
@@ -112,7 +112,7 @@ class PostManagementControllerIT extends IntegrationTest {
         UUID myPostId = selfPost.getId();
 
         authenticatedClient.delete()
-            .uri(GET_BY_ID_PATH, myPostId)
+            .uri(BY_ID_PATH, myPostId)
             .exchange()
             .expectStatus().isNoContent()
             .expectBody().isEmpty();
@@ -124,7 +124,7 @@ class PostManagementControllerIT extends IntegrationTest {
         UUID nonExistingPostId = UUID.randomUUID();
 
         authenticatedClient.delete()
-            .uri(GET_BY_ID_PATH, nonExistingPostId)
+            .uri(BY_ID_PATH, nonExistingPostId)
             .exchange()
             .expectStatus().isNoContent()
             .expectBody().isEmpty();
@@ -142,7 +142,7 @@ class PostManagementControllerIT extends IntegrationTest {
             null);
 
         authenticatedClient.delete()
-            .uri(GET_BY_ID_PATH, notMyPostId)
+            .uri(BY_ID_PATH, notMyPostId)
             .exchange()
             .expectStatus().isForbidden()
             .expectBody(ErrorDTO.class).isEqualTo(expected);

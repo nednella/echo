@@ -2,7 +2,6 @@ package com.example.echo_api.service.clerk.webhook;
 
 import org.springframework.http.HttpHeaders;
 
-import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
 import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
 

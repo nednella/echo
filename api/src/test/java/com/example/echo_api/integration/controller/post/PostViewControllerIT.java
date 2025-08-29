@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 
-import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.controller.post.PostViewController;
 import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
@@ -30,14 +30,14 @@ import com.example.echo_api.util.PostEntityExtractor;
  */
 class PostViewControllerIT extends IntegrationTest {
 
-    private static final String GET_BY_ID_PATH = ApiConfig.Post.GET_BY_ID;
-    private static final String GET_REPLIES_BY_ID_PATH = ApiConfig.Post.GET_REPLIES_BY_ID;
-    private static final String HOMEPAGE_PATH = ApiConfig.Feed.HOMEPAGE;
-    private static final String DISCOVER_PATH = ApiConfig.Feed.DISCOVER;
-    private static final String POSTS_BY_PROFILE_ID_PATH = ApiConfig.Feed.POSTS_BY_PROFILE_ID;
-    private static final String REPLIES_BY_PROFILE_ID_PATH = ApiConfig.Feed.REPLIES_BY_PROFILE_ID;
-    private static final String LIKES_BY_PROFILE_ID_PATH = ApiConfig.Feed.LIKES_BY_PROFILE_ID;
-    private static final String MENTIONS_BY_PROFILE_ID_PATH = ApiConfig.Feed.MENTIONS_OF_PROFILE_ID;
+    private static final String BY_ID_PATH = ApiRoutes.POST.BY_ID;
+    private static final String REPLIES_PATH = ApiRoutes.POST.REPLIES;
+    private static final String HOMEPAGE_FEED_PATH = ApiRoutes.FEED.HOMEPAGE;
+    private static final String DISCOVER_FEED_PATH = ApiRoutes.FEED.DISCOVER;
+    private static final String POSTS_FEED_PATH = ApiRoutes.FEED.POSTS;
+    private static final String REPLIES_FEED_PATH = ApiRoutes.FEED.REPLIES;
+    private static final String LIKES_FEED_PATH = ApiRoutes.FEED.LIKES;
+    private static final String MENTIONS_FEED_PATH = ApiRoutes.FEED.MENTIONS;
 
     @Autowired
     private PostRepository postRepository;
@@ -103,7 +103,7 @@ class PostViewControllerIT extends IntegrationTest {
         Post post = createPost(null, authUser.getId(), "Test post.");
 
         PostDTO response = authenticatedClient.get()
-            .uri(GET_BY_ID_PATH, post.getId())
+            .uri(BY_ID_PATH, post.getId())
             .exchange()
             .expectStatus().isOk()
             .expectBody(PostDTO.class)
@@ -128,7 +128,7 @@ class PostViewControllerIT extends IntegrationTest {
             null);
 
         authenticatedClient.get()
-            .uri(GET_BY_ID_PATH, nonExistingPostId)
+            .uri(BY_ID_PATH, nonExistingPostId)
             .exchange()
             .expectStatus().isNotFound()
             .expectBody(ErrorDTO.class).isEqualTo(expected);
@@ -142,7 +142,7 @@ class PostViewControllerIT extends IntegrationTest {
         Post reply2 = createPost(post.getId(), mockUser.getId(), "Test reply 2.");
 
         PageDTO<PostDTO> response = authenticatedClient.get()
-            .uri(GET_REPLIES_BY_ID_PATH, post.getId())
+            .uri(REPLIES_PATH, post.getId())
             .exchange()
             .expectStatus().isOk()
             .expectBody(new ParameterizedTypeReference<PageDTO<PostDTO>>() {})
@@ -168,7 +168,7 @@ class PostViewControllerIT extends IntegrationTest {
             null);
 
         authenticatedClient.get()
-            .uri(GET_REPLIES_BY_ID_PATH, nonExistingPostId)
+            .uri(REPLIES_PATH, nonExistingPostId)
             .exchange()
             .expectStatus().isNotFound()
             .expectBody(ErrorDTO.class).isEqualTo(expected);
@@ -181,7 +181,7 @@ class PostViewControllerIT extends IntegrationTest {
         Post post2 = createPost(null, authUser.getId(), "Test post 2.");
 
         PageDTO<PostDTO> response = authenticatedClient.get()
-            .uri(HOMEPAGE_PATH)
+            .uri(HOMEPAGE_FEED_PATH)
             .exchange()
             .expectStatus().isOk()
             .expectBody(new ParameterizedTypeReference<PageDTO<PostDTO>>() {})
@@ -204,7 +204,7 @@ class PostViewControllerIT extends IntegrationTest {
         Post post2 = createPost(null, mockUser.getId(), "Test post 2.");
 
         PageDTO<PostDTO> response = authenticatedClient.get()
-            .uri(DISCOVER_PATH)
+            .uri(DISCOVER_FEED_PATH)
             .exchange()
             .expectStatus().isOk()
             .expectBody(new ParameterizedTypeReference<PageDTO<PostDTO>>() {})
@@ -227,7 +227,7 @@ class PostViewControllerIT extends IntegrationTest {
         Post post = createPost(null, mockUser.getId(), "Test post.");
 
         PageDTO<PostDTO> response = authenticatedClient.get()
-            .uri(POSTS_BY_PROFILE_ID_PATH, profileId)
+            .uri(POSTS_FEED_PATH, profileId)
             .exchange()
             .expectStatus().isOk()
             .expectBody(new ParameterizedTypeReference<PageDTO<PostDTO>>() {})
@@ -253,7 +253,7 @@ class PostViewControllerIT extends IntegrationTest {
             null);
 
         authenticatedClient.get()
-            .uri(POSTS_BY_PROFILE_ID_PATH, nonExistingProfileId)
+            .uri(POSTS_FEED_PATH, nonExistingProfileId)
             .exchange()
             .expectStatus().isNotFound()
             .expectBody(ErrorDTO.class).isEqualTo(expected);
@@ -268,7 +268,7 @@ class PostViewControllerIT extends IntegrationTest {
         Post reply2 = createPost(post.getId(), profileId, "Test reply 2.");
 
         PageDTO<PostDTO> response = authenticatedClient.get()
-            .uri(REPLIES_BY_PROFILE_ID_PATH, profileId)
+            .uri(REPLIES_FEED_PATH, profileId)
             .exchange()
             .expectStatus().isOk()
             .expectBody(new ParameterizedTypeReference<PageDTO<PostDTO>>() {})
@@ -296,7 +296,7 @@ class PostViewControllerIT extends IntegrationTest {
             null);
 
         authenticatedClient.get()
-            .uri(REPLIES_BY_PROFILE_ID_PATH, nonExistingProfileId)
+            .uri(REPLIES_FEED_PATH, nonExistingProfileId)
             .exchange()
             .expectStatus().isNotFound()
             .expectBody(ErrorDTO.class).isEqualTo(expected);
@@ -311,7 +311,7 @@ class PostViewControllerIT extends IntegrationTest {
         likePost(post.getId(), profileId);
 
         PageDTO<PostDTO> response = authenticatedClient.get()
-            .uri(LIKES_BY_PROFILE_ID_PATH, profileId)
+            .uri(LIKES_FEED_PATH, profileId)
             .exchange()
             .expectStatus().isOk()
             .expectBody(new ParameterizedTypeReference<PageDTO<PostDTO>>() {})
@@ -339,7 +339,7 @@ class PostViewControllerIT extends IntegrationTest {
             null);
 
         authenticatedClient.get()
-            .uri(LIKES_BY_PROFILE_ID_PATH, nonExistingProfileId)
+            .uri(LIKES_FEED_PATH, nonExistingProfileId)
             .exchange()
             .expectStatus().isNotFound()
             .expectBody(ErrorDTO.class).isEqualTo(expected);
@@ -353,7 +353,7 @@ class PostViewControllerIT extends IntegrationTest {
         Post post = createPost(null, mockUser.getId(), textWithMention);
 
         PageDTO<PostDTO> response = authenticatedClient.get()
-            .uri(MENTIONS_BY_PROFILE_ID_PATH, profileId)
+            .uri(MENTIONS_FEED_PATH, profileId)
             .exchange()
             .expectStatus().isOk()
             .expectBody(new ParameterizedTypeReference<PageDTO<PostDTO>>() {})
@@ -381,7 +381,7 @@ class PostViewControllerIT extends IntegrationTest {
             null);
 
         authenticatedClient.get()
-            .uri(MENTIONS_BY_PROFILE_ID_PATH, nonExistingProfileId)
+            .uri(MENTIONS_FEED_PATH, nonExistingProfileId)
             .exchange()
             .expectStatus().isNotFound()
             .expectBody(ErrorDTO.class).isEqualTo(expected);

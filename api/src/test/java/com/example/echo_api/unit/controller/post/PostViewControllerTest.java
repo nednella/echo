@@ -21,9 +21,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.config.ValidationMessageConfig;
+import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.controller.post.PostViewController;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
@@ -45,14 +45,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @AutoConfigureMockMvc(addFilters = false)
 class PostViewControllerTest {
 
-    private static final String GET_BY_ID_PATH = ApiConfig.Post.GET_BY_ID;
-    private static final String GET_REPLIES_BY_ID_PATH = ApiConfig.Post.GET_REPLIES_BY_ID;
-    private static final String HOMEPAGE_PATH = ApiConfig.Feed.HOMEPAGE;
-    private static final String DISCOVER_PATH = ApiConfig.Feed.DISCOVER;
-    private static final String POSTS_BY_PROFILE_ID_PATH = ApiConfig.Feed.POSTS_BY_PROFILE_ID;
-    private static final String REPLIES_BY_PROFILE_ID_PATH = ApiConfig.Feed.REPLIES_BY_PROFILE_ID;
-    private static final String LIKES_BY_PROFILE_ID_PATH = ApiConfig.Feed.LIKES_BY_PROFILE_ID;
-    private static final String MENTIONS_BY_PROFILE_ID_PATH = ApiConfig.Feed.MENTIONS_OF_PROFILE_ID;
+    private static final String BY_ID_PATH = ApiRoutes.POST.BY_ID;
+    private static final String REPLIES_PATH = ApiRoutes.POST.REPLIES;
+    private static final String HOMEPAGE_FEED_PATH = ApiRoutes.FEED.HOMEPAGE;
+    private static final String DISCOVER_FEED_PATH = ApiRoutes.FEED.DISCOVER;
+    private static final String POSTS_FEED_PATH = ApiRoutes.FEED.POSTS;
+    private static final String REPLIES_FEED_PATH = ApiRoutes.FEED.REPLIES;
+    private static final String LIKES_FEED_PATH = ApiRoutes.FEED.LIKES;
+    private static final String MENTIONS_FEED_PATH = ApiRoutes.FEED.MENTIONS;
 
     @Autowired
     private MockMvcTester mvc;
@@ -87,7 +87,7 @@ class PostViewControllerTest {
         when(postViewService.getPostById(id)).thenReturn(post);
 
         var response = mvc.get()
-            .uri(GET_BY_ID_PATH, id)
+            .uri(BY_ID_PATH, id)
             .exchange();
 
         assertThat(response)
@@ -111,7 +111,7 @@ class PostViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(GET_BY_ID_PATH, id)
+            .uri(BY_ID_PATH, id)
             .exchange();
 
         assertThat(response)
@@ -130,13 +130,13 @@ class PostViewControllerTest {
 
         Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> replies = new PageImpl<>(List.of(post), page, 1);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(replies, GET_REPLIES_BY_ID_PATH);
+        PageDTO<PostDTO> expected = PageMapper.toDTO(replies, REPLIES_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
 
         when(postViewService.getRepliesById(eq(id), any(Pageable.class))).thenReturn(expected);
 
         var response = mvc.get()
-            .uri(GET_REPLIES_BY_ID_PATH, id)
+            .uri(REPLIES_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -162,7 +162,7 @@ class PostViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(GET_REPLIES_BY_ID_PATH, id)
+            .uri(REPLIES_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -188,7 +188,7 @@ class PostViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(GET_REPLIES_BY_ID_PATH, id)
+            .uri(REPLIES_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -217,7 +217,7 @@ class PostViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(GET_REPLIES_BY_ID_PATH, id)
+            .uri(REPLIES_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -237,13 +237,13 @@ class PostViewControllerTest {
 
         Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, HOMEPAGE_PATH);
+        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, HOMEPAGE_FEED_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
 
         when(postViewService.getHomepagePosts(any(Pageable.class))).thenReturn(expected);
 
         var response = mvc.get()
-            .uri(HOMEPAGE_PATH)
+            .uri(HOMEPAGE_FEED_PATH)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -268,7 +268,7 @@ class PostViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(HOMEPAGE_PATH)
+            .uri(HOMEPAGE_FEED_PATH)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -293,7 +293,7 @@ class PostViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(HOMEPAGE_PATH)
+            .uri(HOMEPAGE_FEED_PATH)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -313,13 +313,13 @@ class PostViewControllerTest {
 
         Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, DISCOVER_PATH);
+        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, DISCOVER_FEED_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
 
         when(postViewService.getDiscoverPosts(any(Pageable.class))).thenReturn(expected);
 
         var response = mvc.get()
-            .uri(DISCOVER_PATH)
+            .uri(DISCOVER_FEED_PATH)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -344,7 +344,7 @@ class PostViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(DISCOVER_PATH)
+            .uri(DISCOVER_FEED_PATH)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -369,7 +369,7 @@ class PostViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(DISCOVER_PATH)
+            .uri(DISCOVER_FEED_PATH)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -390,13 +390,13 @@ class PostViewControllerTest {
 
         Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, POSTS_BY_PROFILE_ID_PATH);
+        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, POSTS_FEED_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
 
         when(postViewService.getPostsByAuthorId(eq(id), any(Pageable.class))).thenReturn(expected);
 
         var response = mvc.get()
-            .uri(POSTS_BY_PROFILE_ID_PATH, id)
+            .uri(POSTS_FEED_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -422,7 +422,7 @@ class PostViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(POSTS_BY_PROFILE_ID_PATH, id)
+            .uri(POSTS_FEED_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -448,7 +448,7 @@ class PostViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(POSTS_BY_PROFILE_ID_PATH, id)
+            .uri(POSTS_FEED_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -477,7 +477,7 @@ class PostViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(POSTS_BY_PROFILE_ID_PATH, id)
+            .uri(POSTS_FEED_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -498,13 +498,13 @@ class PostViewControllerTest {
 
         Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, REPLIES_BY_PROFILE_ID_PATH);
+        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, REPLIES_FEED_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
 
         when(postViewService.getRepliesByAuthorId(eq(id), any(Pageable.class))).thenReturn(expected);
 
         var response = mvc.get()
-            .uri(REPLIES_BY_PROFILE_ID_PATH, id)
+            .uri(REPLIES_FEED_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -530,7 +530,7 @@ class PostViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(REPLIES_BY_PROFILE_ID_PATH, id)
+            .uri(REPLIES_FEED_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -556,7 +556,7 @@ class PostViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(REPLIES_BY_PROFILE_ID_PATH, id)
+            .uri(REPLIES_FEED_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -585,7 +585,7 @@ class PostViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(REPLIES_BY_PROFILE_ID_PATH, id)
+            .uri(REPLIES_FEED_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -606,13 +606,13 @@ class PostViewControllerTest {
 
         Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, LIKES_BY_PROFILE_ID_PATH);
+        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, LIKES_FEED_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
 
         when(postViewService.getLikesByAuthorId(eq(id), any(Pageable.class))).thenReturn(expected);
 
         var response = mvc.get()
-            .uri(LIKES_BY_PROFILE_ID_PATH, id)
+            .uri(LIKES_FEED_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -638,7 +638,7 @@ class PostViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(LIKES_BY_PROFILE_ID_PATH, id)
+            .uri(LIKES_FEED_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -665,7 +665,7 @@ class PostViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(LIKES_BY_PROFILE_ID_PATH, id)
+            .uri(LIKES_FEED_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -695,7 +695,7 @@ class PostViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(LIKES_BY_PROFILE_ID_PATH, id)
+            .uri(LIKES_FEED_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -716,13 +716,13 @@ class PostViewControllerTest {
 
         Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, MENTIONS_BY_PROFILE_ID_PATH);
+        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, MENTIONS_FEED_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
 
         when(postViewService.getMentionsOfAuthorId(eq(id), any(Pageable.class))).thenReturn(expected);
 
         var response = mvc.get()
-            .uri(MENTIONS_BY_PROFILE_ID_PATH, id)
+            .uri(MENTIONS_FEED_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -748,7 +748,7 @@ class PostViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(MENTIONS_BY_PROFILE_ID_PATH, id)
+            .uri(MENTIONS_FEED_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -775,7 +775,7 @@ class PostViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(MENTIONS_BY_PROFILE_ID_PATH, id)
+            .uri(MENTIONS_FEED_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -805,7 +805,7 @@ class PostViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(MENTIONS_BY_PROFILE_ID_PATH, id)
+            .uri(MENTIONS_FEED_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();

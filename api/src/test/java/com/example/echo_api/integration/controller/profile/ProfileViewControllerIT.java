@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 
-import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.controller.profile.ProfileViewController;
 import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
@@ -26,10 +26,10 @@ import com.example.echo_api.persistence.repository.FollowRepository;
  */
 class ProfileViewControllerIT extends IntegrationTest {
 
-    private static final String ME_PATH = ApiConfig.Profile.ME;
-    private static final String GET_BY_USERNAME_PATH = ApiConfig.Profile.GET_BY_USERNAME;
-    private static final String GET_FOLLOWERS_BY_ID_PATH = ApiConfig.Profile.GET_FOLLOWERS_BY_ID;
-    private static final String GET_FOLLOWING_BY_ID_PATH = ApiConfig.Profile.GET_FOLLOWING_BY_ID;
+    private static final String ME_PATH = ApiRoutes.PROFILE.ME;
+    private static final String BY_USERNAME_PATH = ApiRoutes.PROFILE.BY_USERNAME;
+    private static final String FOLLOWERS_BY_ID_PATH = ApiRoutes.PROFILE.FOLLOWERS;
+    private static final String FOLLOWING_BY_ID_PATH = ApiRoutes.PROFILE.FOLLOWING;
 
     @Autowired
     private FollowRepository followRepository;
@@ -83,7 +83,7 @@ class ProfileViewControllerIT extends IntegrationTest {
         String username = MOCK_USER_USERNAME;
 
         ProfileDTO response = authenticatedClient.get()
-            .uri(GET_BY_USERNAME_PATH, username)
+            .uri(BY_USERNAME_PATH, username)
             .exchange()
             .expectStatus().isOk()
             .expectBody(ProfileDTO.class)
@@ -107,7 +107,7 @@ class ProfileViewControllerIT extends IntegrationTest {
             null);
 
         authenticatedClient.get()
-            .uri(GET_BY_USERNAME_PATH, nonExistingUsername)
+            .uri(BY_USERNAME_PATH, nonExistingUsername)
             .exchange()
             .expectStatus().isNotFound()
             .expectBody(ErrorDTO.class).isEqualTo(expected);
@@ -120,7 +120,7 @@ class ProfileViewControllerIT extends IntegrationTest {
         followProfile(authUser.getId(), profileId); // follow mock user
 
         PageDTO<SimplifiedProfileDTO> response = authenticatedClient.get()
-            .uri(GET_FOLLOWERS_BY_ID_PATH, profileId)
+            .uri(FOLLOWERS_BY_ID_PATH, profileId)
             .exchange()
             .expectStatus().isOk()
             .expectBody(new ParameterizedTypeReference<PageDTO<SimplifiedProfileDTO>>() {})
@@ -146,7 +146,7 @@ class ProfileViewControllerIT extends IntegrationTest {
             null);
 
         authenticatedClient.get()
-            .uri(GET_FOLLOWERS_BY_ID_PATH, nonExistingProfileId)
+            .uri(FOLLOWERS_BY_ID_PATH, nonExistingProfileId)
             .exchange()
             .expectStatus().isNotFound()
             .expectBody(ErrorDTO.class).isEqualTo(expected);
@@ -159,7 +159,7 @@ class ProfileViewControllerIT extends IntegrationTest {
         followProfile(profileId, mockUser.getId()); // follow mock user
 
         PageDTO<SimplifiedProfileDTO> response = authenticatedClient.get()
-            .uri(GET_FOLLOWING_BY_ID_PATH, profileId)
+            .uri(FOLLOWING_BY_ID_PATH, profileId)
             .exchange()
             .expectStatus().isOk()
             .expectBody(new ParameterizedTypeReference<PageDTO<SimplifiedProfileDTO>>() {})
@@ -185,7 +185,7 @@ class ProfileViewControllerIT extends IntegrationTest {
             null);
 
         authenticatedClient.get()
-            .uri(GET_FOLLOWING_BY_ID_PATH, nonExistingProfileId)
+            .uri(FOLLOWING_BY_ID_PATH, nonExistingProfileId)
             .exchange()
             .expectStatus().isNotFound()
             .expectBody(ErrorDTO.class).isEqualTo(expected);

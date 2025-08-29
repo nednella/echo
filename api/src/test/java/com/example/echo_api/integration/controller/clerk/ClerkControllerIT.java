@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 
-import com.example.echo_api.config.ApiConfig;
+import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.controller.clerk.ClerkController;
 import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.integration.util.ClerkTestUtils.Template;
@@ -16,7 +16,7 @@ import com.example.echo_api.persistence.model.user.User;
  */
 class ClerkControllerIT extends IntegrationTest {
 
-    private static final String ONBOARDING_PATH = ApiConfig.Clerk.ONBOARDING;
+    private static final String ONBOARDING_PATH = ApiRoutes.CLERK.ONBOARDING;
 
     @Test
     void clerkOnboarding_Returns201User_WhenExternalUserNotOnboarded() {

@@ -13,8 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.controller.post.PostInteractionController;
 import com.example.echo_api.exception.custom.conflict.AlreadyLikedException;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
@@ -28,7 +28,7 @@ import com.example.echo_api.service.post.interaction.PostInteractionService;
 @AutoConfigureMockMvc(addFilters = false)
 class PostInteractionControllerTest {
 
-    private static final String LIKE_PATH = ApiConfig.Post.LIKE;
+    private static final String LIKE_PATH = ApiRoutes.POST.LIKE;
 
     @Autowired
     private MockMvcTester mvc;

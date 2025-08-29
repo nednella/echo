@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.echo_api.config.ApiConfig;
+import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
 import com.example.echo_api.service.profile.management.ProfileManagementService;
 
@@ -20,7 +20,7 @@ public class ProfileManagementController {
 
     private final ProfileManagementService profileManagementService;
 
-    @PutMapping(ApiConfig.Profile.ME)
+    @PutMapping(ApiRoutes.PROFILE.ME)
     public ResponseEntity<Void> updateProfile(@RequestBody @Valid UpdateProfileDTO request) {
         profileManagementService.updateProfile(request);
         return ResponseEntity.noContent().build();

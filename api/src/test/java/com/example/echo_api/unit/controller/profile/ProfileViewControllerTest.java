@@ -21,9 +21,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.config.ValidationMessageConfig;
+import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.controller.profile.ProfileViewController;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
@@ -44,10 +44,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @AutoConfigureMockMvc(addFilters = false)
 class ProfileViewControllerTest {
 
-    private static final String ME_PATH = ApiConfig.Profile.ME;
-    private static final String GET_BY_USERNAME_PATH = ApiConfig.Profile.GET_BY_USERNAME;
-    private static final String GET_FOLLOWERS_BY_ID_PATH = ApiConfig.Profile.GET_FOLLOWERS_BY_ID;
-    private static final String GET_FOLLOWING_BY_ID_PATH = ApiConfig.Profile.GET_FOLLOWING_BY_ID;
+    private static final String ME_PATH = ApiRoutes.PROFILE.ME;
+    private static final String BY_USERNAME_PATH = ApiRoutes.PROFILE.BY_USERNAME;
+    private static final String FOLLOWERS_BY_ID_PATH = ApiRoutes.PROFILE.FOLLOWERS;
+    private static final String FOLLOWING_BY_ID_PATH = ApiRoutes.PROFILE.FOLLOWING;
 
     @Autowired
     private MockMvcTester mvc;
@@ -127,7 +127,7 @@ class ProfileViewControllerTest {
         when(profileViewService.getByUsername(username)).thenReturn(profile);
 
         var response = mvc.get()
-            .uri(GET_BY_USERNAME_PATH, username)
+            .uri(BY_USERNAME_PATH, username)
             .exchange();
 
         assertThat(response)
@@ -150,7 +150,7 @@ class ProfileViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(GET_BY_USERNAME_PATH, username)
+            .uri(BY_USERNAME_PATH, username)
             .exchange();
 
         assertThat(response)
@@ -169,13 +169,13 @@ class ProfileViewControllerTest {
 
         Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<SimplifiedProfileDTO> pageProfileDto = new PageImpl<>(List.of(simplifiedProfile), page, 1);
-        PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(pageProfileDto, GET_FOLLOWERS_BY_ID_PATH);
+        PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(pageProfileDto, FOLLOWERS_BY_ID_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
 
         when(profileViewService.getFollowers(eq(id), any(Pageable.class))).thenReturn(expected);
 
         var response = mvc.get()
-            .uri(GET_FOLLOWERS_BY_ID_PATH, id)
+            .uri(FOLLOWERS_BY_ID_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -204,7 +204,7 @@ class ProfileViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(GET_FOLLOWERS_BY_ID_PATH, id)
+            .uri(FOLLOWERS_BY_ID_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -230,7 +230,7 @@ class ProfileViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(GET_FOLLOWERS_BY_ID_PATH, id)
+            .uri(FOLLOWERS_BY_ID_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -256,7 +256,7 @@ class ProfileViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(GET_FOLLOWERS_BY_ID_PATH, id)
+            .uri(FOLLOWERS_BY_ID_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -277,13 +277,13 @@ class ProfileViewControllerTest {
 
         Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<SimplifiedProfileDTO> pageProfileDto = new PageImpl<>(List.of(simplifiedProfile), page, 1);
-        PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(pageProfileDto, GET_FOLLOWING_BY_ID_PATH);
+        PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(pageProfileDto, FOLLOWING_BY_ID_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
 
         when(profileViewService.getFollowing(eq(id), any(Pageable.class))).thenReturn(expected);
 
         var response = mvc.get()
-            .uri(GET_FOLLOWING_BY_ID_PATH, id)
+            .uri(FOLLOWING_BY_ID_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -312,7 +312,7 @@ class ProfileViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(GET_FOLLOWING_BY_ID_PATH, id)
+            .uri(FOLLOWING_BY_ID_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -338,7 +338,7 @@ class ProfileViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(GET_FOLLOWING_BY_ID_PATH, id)
+            .uri(FOLLOWING_BY_ID_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();
@@ -364,7 +364,7 @@ class ProfileViewControllerTest {
             null);
 
         var response = mvc.get()
-            .uri(GET_FOLLOWING_BY_ID_PATH, id)
+            .uri(FOLLOWING_BY_ID_PATH, id)
             .queryParam("offset", String.valueOf(offset))
             .queryParam("limit", String.valueOf(limit))
             .exchange();

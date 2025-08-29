@@ -8,9 +8,9 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
 
-import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.config.ValidationMessageConfig;
+import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.controller.profile.ProfileManagementController;
 import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
@@ -21,7 +21,7 @@ import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
  */
 class ProfileManagementControllerIT extends IntegrationTest {
 
-    private static final String ME_PATH = ApiConfig.Profile.ME;
+    private static final String ME_PATH = ApiRoutes.PROFILE.ME;
 
     @Test
     void updateProfile_Returns204NoContent_WhenPassesValidation() {

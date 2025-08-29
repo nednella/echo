@@ -18,9 +18,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.config.ValidationMessageConfig;
+import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.controller.post.PostManagementController;
 import com.example.echo_api.exception.custom.badrequest.InvalidParentIdException;
 import com.example.echo_api.exception.custom.forbidden.ResourceOwnershipException;
@@ -36,8 +36,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @AutoConfigureMockMvc(addFilters = false)
 class PostManagementControllerTest {
 
-    private static final String CREATE_PATH = ApiConfig.Post.CREATE;
-    private static final String GET_BY_ID_PATH = ApiConfig.Post.GET_BY_ID;
+    private static final String CREATE_PATH = ApiRoutes.POST.CREATE;
+    private static final String BY_ID_PATH = ApiRoutes.POST.BY_ID;
 
     @Autowired
     private MockMvcTester mvc;
@@ -132,7 +132,7 @@ class PostManagementControllerTest {
         UUID id = UUID.randomUUID();
 
         var response = mvc.delete()
-            .uri(GET_BY_ID_PATH, id)
+            .uri(BY_ID_PATH, id)
             .exchange();
 
         assertThat(response)
@@ -156,7 +156,7 @@ class PostManagementControllerTest {
             null);
 
         var response = mvc.delete()
-            .uri(GET_BY_ID_PATH, id)
+            .uri(BY_ID_PATH, id)
             .exchange();
 
         assertThat(response)
