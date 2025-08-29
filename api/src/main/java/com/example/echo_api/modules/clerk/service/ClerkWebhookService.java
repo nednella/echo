@@ -1,4 +1,4 @@
-package com.example.echo_api.service.clerk.webhook;
+package com.example.echo_api.modules.clerk.service;
 
 import org.springframework.http.HttpHeaders;
 

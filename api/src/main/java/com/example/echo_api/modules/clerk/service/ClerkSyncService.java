@@ -1,4 +1,4 @@
-package com.example.echo_api.service.clerk.sync;
+package com.example.echo_api.modules.clerk.service;
 
 import com.example.echo_api.exception.custom.internalserver.ClerkException;
 import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEvent;

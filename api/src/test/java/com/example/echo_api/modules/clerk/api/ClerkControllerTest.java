@@ -20,10 +20,10 @@ import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
 import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
+import com.example.echo_api.modules.clerk.service.ClerkSyncService;
+import com.example.echo_api.modules.clerk.service.ClerkWebhookService;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.persistence.model.user.User;
-import com.example.echo_api.service.clerk.sync.ClerkSyncService;
-import com.example.echo_api.service.clerk.webhook.ClerkWebhookService;
 
 /**
  * Unit test class for {@link ClerkController}.

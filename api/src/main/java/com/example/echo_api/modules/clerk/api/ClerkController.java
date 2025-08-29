@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.echo_api.constants.ApiRoutes;
+import com.example.echo_api.modules.clerk.service.ClerkSyncService;
+import com.example.echo_api.modules.clerk.service.ClerkWebhookService;
 import com.example.echo_api.persistence.model.user.User;
-import com.example.echo_api.service.clerk.sync.ClerkSyncService;
-import com.example.echo_api.service.clerk.webhook.ClerkWebhookService;
 
 import lombok.RequiredArgsConstructor;
 

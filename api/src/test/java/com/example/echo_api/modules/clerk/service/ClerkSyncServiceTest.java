@@ -1,4 +1,4 @@
-package com.example.echo_api.unit.service.clerk.sync;
+package com.example.echo_api.modules.clerk.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -21,8 +21,6 @@ import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEv
 import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserDelete;
 import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpsert;
 import com.example.echo_api.persistence.model.user.User;
-import com.example.echo_api.service.clerk.sdk.ClerkSdkService;
-import com.example.echo_api.service.clerk.sync.ClerkSyncServiceImpl;
 import com.example.echo_api.service.user.UserService;
 import com.example.echo_api.shared.service.SessionService;
 

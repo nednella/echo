@@ -1,4 +1,4 @@
-package com.example.echo_api.service.clerk.sync;
+package com.example.echo_api.modules.clerk.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,7 +9,6 @@ import com.example.echo_api.persistence.dto.request.clerk.webhook.ClerkWebhookEv
 import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserDelete;
 import com.example.echo_api.persistence.dto.request.clerk.webhook.data.UserUpsert;
 import com.example.echo_api.persistence.model.user.User;
-import com.example.echo_api.service.clerk.sdk.ClerkSdkService;
 import com.example.echo_api.service.user.UserService;
 import com.example.echo_api.shared.service.SessionService;
 
