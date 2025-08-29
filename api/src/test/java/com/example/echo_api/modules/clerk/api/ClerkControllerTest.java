@@ -1,4 +1,4 @@
-package com.example.echo_api.unit.controller.clerk;
+package com.example.echo_api.modules.clerk.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -18,7 +18,6 @@ import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
-import com.example.echo_api.controller.clerk.ClerkController;
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
 import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;

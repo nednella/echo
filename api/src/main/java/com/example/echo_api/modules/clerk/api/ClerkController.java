@@ -1,4 +1,4 @@
-package com.example.echo_api.controller.clerk;
+package com.example.echo_api.modules.clerk.api;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-public class ClerkController {
+class ClerkController {
 
     private final ClerkSyncService clerkSyncService;
     private final ClerkWebhookService clerkWebhookService;

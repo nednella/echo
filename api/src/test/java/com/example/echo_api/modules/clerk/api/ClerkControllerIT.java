@@ -1,4 +1,4 @@
-package com.example.echo_api.integration.controller.clerk;
+package com.example.echo_api.modules.clerk.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 
 import com.example.echo_api.constants.ApiRoutes;
-import com.example.echo_api.controller.clerk.ClerkController;
 import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.integration.util.ClerkTestUtils.Template;
 import com.example.echo_api.persistence.model.user.User;
