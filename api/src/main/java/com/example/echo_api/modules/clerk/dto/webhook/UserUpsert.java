@@ -8,4 +8,4 @@ public record UserUpsert(
     String id,
     String username,
     @JsonProperty("image_url") String imageUrl
-) implements ClerkWebhookEventData {}
+) implements ClerkWebhookData {}

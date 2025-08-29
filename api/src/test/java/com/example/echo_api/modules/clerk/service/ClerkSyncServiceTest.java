@@ -15,9 +15,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.echo_api.modules.clerk.dto.sdk.ClerkUserDTO;
-import com.example.echo_api.modules.clerk.dto.webhook.ClerkWebhookEvent;
-import com.example.echo_api.modules.clerk.dto.webhook.ClerkWebhookEventData;
-import com.example.echo_api.modules.clerk.dto.webhook.ClerkWebhookEventType;
+import com.example.echo_api.modules.clerk.dto.webhook.ClerkWebhook;
+import com.example.echo_api.modules.clerk.dto.webhook.ClerkWebhookData;
+import com.example.echo_api.modules.clerk.dto.webhook.ClerkWebhookType;
 import com.example.echo_api.modules.clerk.dto.webhook.UserDelete;
 import com.example.echo_api.modules.clerk.dto.webhook.UserUpsert;
 import com.example.echo_api.persistence.model.user.User;
@@ -95,9 +95,9 @@ class ClerkSyncServiceTest {
         String username = "username";
         String imageUrl = "imageUrl";
 
-        ClerkWebhookEventType type = ClerkWebhookEventType.USER_CREATED;
-        ClerkWebhookEventData data = new UserUpsert(externalId, username, imageUrl);
-        ClerkWebhookEvent event = new ClerkWebhookEvent(data, type);
+        ClerkWebhookType type = ClerkWebhookType.USER_CREATED;
+        ClerkWebhookData data = new UserUpsert(externalId, username, imageUrl);
+        ClerkWebhook event = new ClerkWebhook(data, type);
 
         // act
         clerkSyncService.handleWebhookEvent(event);
@@ -113,9 +113,9 @@ class ClerkSyncServiceTest {
         String username = "username";
         String imageUrl = "imageUrl";
 
-        ClerkWebhookEventType type = ClerkWebhookEventType.USER_UPDATED;
-        ClerkWebhookEventData data = new UserUpsert(externalId, username, imageUrl);
-        ClerkWebhookEvent event = new ClerkWebhookEvent(data, type);
+        ClerkWebhookType type = ClerkWebhookType.USER_UPDATED;
+        ClerkWebhookData data = new UserUpsert(externalId, username, imageUrl);
+        ClerkWebhook event = new ClerkWebhook(data, type);
 
         // act
         clerkSyncService.handleWebhookEvent(event);
@@ -129,9 +129,9 @@ class ClerkSyncServiceTest {
         // arrange
         String externalId = "user_someRandomStringThatIsUniqueApparently";
 
-        ClerkWebhookEventType type = ClerkWebhookEventType.USER_DELETED;
-        ClerkWebhookEventData data = new UserDelete(externalId, true);
-        ClerkWebhookEvent event = new ClerkWebhookEvent(data, type);
+        ClerkWebhookType type = ClerkWebhookType.USER_DELETED;
+        ClerkWebhookData data = new UserDelete(externalId, true);
+        ClerkWebhook event = new ClerkWebhook(data, type);
 
         // act
         clerkSyncService.handleWebhookEvent(event);

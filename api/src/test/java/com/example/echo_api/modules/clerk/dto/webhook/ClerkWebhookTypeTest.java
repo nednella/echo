@@ -7,9 +7,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /**
- * Unit test class for {@link ClerkWebhookEventType}.
+ * Unit test class for {@link ClerkWebhookType}.
  */
-class ClerkWebhookEventTypeTest {
+class ClerkWebhookTypeTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
@@ -17,7 +17,7 @@ class ClerkWebhookEventTypeTest {
         "user.deleted"
     })
     void fromString_CorrectlyConvertsToEnum(String value) {
-        assertDoesNotThrow(() -> ClerkWebhookEventType.fromString(value));
+        assertDoesNotThrow(() -> ClerkWebhookType.fromString(value));
     }
 
     @ParameterizedTest
@@ -28,7 +28,7 @@ class ClerkWebhookEventTypeTest {
         "some_random!String_%&^" // self explanatory
     })
     void fromString_ThrowsWhenUnsupportedEventType(String value) {
-        assertThrows(IllegalArgumentException.class, () -> ClerkWebhookEventType.fromString(value));
+        assertThrows(IllegalArgumentException.class, () -> ClerkWebhookType.fromString(value));
     }
 
 }

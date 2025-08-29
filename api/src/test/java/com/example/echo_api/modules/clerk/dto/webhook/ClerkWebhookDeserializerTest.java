@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Unit test class for {@link ClerkWebhookDeserializer}.
  */
-class ClerkWebhookEventDeserializerTest {
+class ClerkWebhookDeserializerTest {
 
   private ObjectMapper mapper = new ObjectMapper();
 
@@ -27,8 +27,8 @@ class ClerkWebhookEventDeserializerTest {
           }
       """;
 
-    ClerkWebhookEvent e = mapper.readValue(payload, ClerkWebhookEvent.class);
-    assertEquals(ClerkWebhookEventType.USER_CREATED, e.type());
+    ClerkWebhook e = mapper.readValue(payload, ClerkWebhook.class);
+    assertEquals(ClerkWebhookType.USER_CREATED, e.type());
 
     UserUpsert data = (UserUpsert) e.data();
     assertEquals("user_29w83sxmDNGwOuEthce5gg56FcC", data.id());
@@ -49,8 +49,8 @@ class ClerkWebhookEventDeserializerTest {
           }
       """;
 
-    ClerkWebhookEvent e = mapper.readValue(payload, ClerkWebhookEvent.class);
-    assertEquals(ClerkWebhookEventType.USER_UPDATED, e.type());
+    ClerkWebhook e = mapper.readValue(payload, ClerkWebhook.class);
+    assertEquals(ClerkWebhookType.USER_UPDATED, e.type());
 
     UserUpsert data = (UserUpsert) e.data();
     assertEquals("user_29w83sxmDNGwOuEthce5gg56FcC", data.id());
@@ -70,8 +70,8 @@ class ClerkWebhookEventDeserializerTest {
           }
       """;
 
-    ClerkWebhookEvent e = mapper.readValue(payload, ClerkWebhookEvent.class);
-    assertEquals(ClerkWebhookEventType.USER_DELETED, e.type());
+    ClerkWebhook e = mapper.readValue(payload, ClerkWebhook.class);
+    assertEquals(ClerkWebhookType.USER_DELETED, e.type());
 
     UserDelete data = (UserDelete) e.data();
     assertEquals(true, data.deleted());
@@ -90,7 +90,7 @@ class ClerkWebhookEventDeserializerTest {
       """;
 
     Exception ex = assertThrows(DeserializationException.class,
-      () -> mapper.readValue(payload, ClerkWebhookEvent.class));
+      () -> mapper.readValue(payload, ClerkWebhook.class));
 
     assertEquals("Unsupported event type: subscription.active", ex.getMessage());
   }
@@ -106,7 +106,7 @@ class ClerkWebhookEventDeserializerTest {
       """;
 
     Exception ex = assertThrows(DeserializationException.class,
-      () -> mapper.readValue(payload, ClerkWebhookEvent.class));
+      () -> mapper.readValue(payload, ClerkWebhook.class));
 
     assertEquals("Missing \"type\" field in JSON payload", ex.getMessage());
   }
@@ -120,7 +120,7 @@ class ClerkWebhookEventDeserializerTest {
       """;
 
     Exception ex = assertThrows(DeserializationException.class,
-      () -> mapper.readValue(payload, ClerkWebhookEvent.class));
+      () -> mapper.readValue(payload, ClerkWebhook.class));
 
     assertEquals("Missing \"data\" field in JSON payload", ex.getMessage());
   }

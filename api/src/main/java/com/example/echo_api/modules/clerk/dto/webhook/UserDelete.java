@@ -6,4 +6,4 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public record UserDelete(
     String id,
     boolean deleted
-) implements ClerkWebhookEventData {}
+) implements ClerkWebhookData {}

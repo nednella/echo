@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import com.clerk.backend_api.Clerk;
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
 import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
-import com.example.echo_api.modules.clerk.dto.webhook.ClerkWebhookEvent;
+import com.example.echo_api.modules.clerk.dto.webhook.ClerkWebhook;
 import com.example.echo_api.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.svix.Webhook;
@@ -43,16 +43,16 @@ class ClerkWebhookServiceImpl implements ClerkWebhookService {
 
     /**
      * Deserializes a webhook JSON payload string into an appropriate
-     * {@link ClerkWebhookEvent} based on its type information.
+     * {@link ClerkWebhook} based on its type information.
      * 
      * @param payload The JSON payload string to deserialize
-     * @return The mapped {@link ClerkWebhookEvent}
+     * @return The mapped {@link ClerkWebhook}
      * @throws DeserializationException If there was an issue when deserializing the
      *                                  JSON payload for whatever reason
      */
-    ClerkWebhookEvent deserializePayload(String payload) {
+    ClerkWebhook deserializePayload(String payload) {
         try {
-            return mapper.readValue(payload, ClerkWebhookEvent.class);
+            return mapper.readValue(payload, ClerkWebhook.class);
         } catch (Exception ex) {
             throw new DeserializationException(ex.getMessage());
         }

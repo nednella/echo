@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.clerk.backend_api.Clerk;
 import com.example.echo_api.modules.clerk.dto.sdk.ClerkUserDTO;
-import com.example.echo_api.modules.clerk.dto.webhook.ClerkWebhookEvent;
+import com.example.echo_api.modules.clerk.dto.webhook.ClerkWebhook;
 import com.example.echo_api.modules.clerk.dto.webhook.UserDelete;
 import com.example.echo_api.modules.clerk.dto.webhook.UserUpsert;
 import com.example.echo_api.persistence.model.user.User;
@@ -43,7 +43,7 @@ class ClerkSyncServiceImpl implements ClerkSyncService {
     }
 
     @Override
-    public void handleWebhookEvent(ClerkWebhookEvent event) {
+    public void handleWebhookEvent(ClerkWebhook event) {
         switch (event.type()) {
             case USER_CREATED, USER_UPDATED -> handleUserUpsert((UserUpsert) event.data());
             case USER_DELETED -> handleUserDelete((UserDelete) event.data());

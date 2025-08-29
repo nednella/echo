@@ -1,7 +1,7 @@
 package com.example.echo_api.modules.clerk.service;
 
 import com.example.echo_api.exception.custom.internalserver.ClerkException;
-import com.example.echo_api.modules.clerk.dto.webhook.ClerkWebhookEvent;
+import com.example.echo_api.modules.clerk.dto.webhook.ClerkWebhook;
 import com.example.echo_api.persistence.model.user.User;
 
 public interface ClerkSyncService {
@@ -32,11 +32,11 @@ public interface ClerkSyncService {
     User onboardAuthenticatedUser();
 
     /**
-     * Process a {@link ClerkWebhookEvent} according to its type, ensuring local
+     * Process a {@link ClerkWebhook} according to its type, ensuring local
      * references to Clerk users remain synchronised beyond initial onboarding.
      * 
-     * @param event the {@link ClerkWebhookEvent} to process
+     * @param event the {@link ClerkWebhook} to process
      */
-    void handleWebhookEvent(ClerkWebhookEvent event);
+    void handleWebhookEvent(ClerkWebhook event);
 
 }

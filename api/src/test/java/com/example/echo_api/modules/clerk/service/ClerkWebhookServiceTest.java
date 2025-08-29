@@ -14,7 +14,7 @@ import org.springframework.http.HttpHeaders;
 
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
 import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
-import com.example.echo_api.modules.clerk.dto.webhook.ClerkWebhookEvent;
+import com.example.echo_api.modules.clerk.dto.webhook.ClerkWebhook;
 import com.example.echo_api.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.svix.Webhook;
@@ -79,7 +79,7 @@ class ClerkWebhookServiceTest {
       """;
 
     assertDoesNotThrow(() -> clerkWebhookService.handleWebhook(payload));
-    verify(clerkSyncService).handleWebhookEvent(any(ClerkWebhookEvent.class));
+    verify(clerkSyncService).handleWebhookEvent(any(ClerkWebhook.class));
   }
 
   @Test
@@ -95,7 +95,7 @@ class ClerkWebhookServiceTest {
       """;
 
     assertDoesNotThrow(() -> clerkWebhookService.handleWebhook(payload));
-    verify(clerkSyncService).handleWebhookEvent(any(ClerkWebhookEvent.class));
+    verify(clerkSyncService).handleWebhookEvent(any(ClerkWebhook.class));
   }
 
   @Test
@@ -110,7 +110,7 @@ class ClerkWebhookServiceTest {
       """;
 
     assertDoesNotThrow(() -> clerkWebhookService.handleWebhook(payload));
-    verify(clerkSyncService).handleWebhookEvent(any(ClerkWebhookEvent.class));
+    verify(clerkSyncService).handleWebhookEvent(any(ClerkWebhook.class));
   }
 
   @Test
