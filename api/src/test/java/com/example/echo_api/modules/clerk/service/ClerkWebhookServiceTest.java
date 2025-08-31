@@ -14,7 +14,7 @@ import org.springframework.http.HttpHeaders;
 
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
 import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
-import com.example.echo_api.modules.clerk.dto.webhook.ClerkWebhook;
+import com.example.echo_api.modules.clerk.dto.ClerkUser;
 import com.example.echo_api.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.svix.Webhook;
@@ -31,10 +31,10 @@ class ClerkWebhookServiceTest {
   @Mock
   private Webhook svixWebhook;
 
-  private ObjectMapper mapper = new ObjectMapper();
-
   @InjectMocks
   private ClerkWebhookServiceImpl clerkWebhookService;
+
+  private ObjectMapper mapper = new ObjectMapper();
 
   @BeforeEach
   void setUp() {
@@ -72,14 +72,63 @@ class ClerkWebhookServiceTest {
           {
             "data": {
               "id": "user_29wBMCtzATuFJut8jO2VNTVekS4",
-              "username": null
+              "username": "SomeUsername",
+              "public_metadata": {}
             },
             "type": "user.created"
           }
       """;
 
     assertDoesNotThrow(() -> clerkWebhookService.handleWebhook(payload));
-    verify(clerkSyncService).handleWebhookEvent(any(ClerkWebhook.class));
+    verify(clerkSyncService).ingestUserUpserted(any(ClerkUser.class));
+  }
+
+  @Test
+  void handleWebhook_DeserializesAndThrows_WhenClerkUserCreatedEventMissingId() {
+    String payload = """
+          {
+            "data": {
+              "username": "SomeUsername",
+              "public_metadata": {}
+            },
+            "type": "user.created"
+          }
+      """;
+
+    assertThrows(IllegalArgumentException.class, () -> clerkWebhookService.handleWebhook(payload));
+    verify(clerkSyncService, never()).ingestUserUpserted(any(ClerkUser.class));
+  }
+
+  @Test
+  void handleWebhook_DeserializesAndThrows_WhenClerkUserCreatedEventMissingUsername() {
+    String payload = """
+          {
+            "data": {
+              "id": "user_29wBMCtzATuFJut8jO2VNTVekS4",
+              "public_metadata": {}
+            },
+            "type": "user.created"
+          }
+      """;
+
+    assertThrows(IllegalArgumentException.class, () -> clerkWebhookService.handleWebhook(payload));
+    verify(clerkSyncService, never()).ingestUserUpserted(any(ClerkUser.class));
+  }
+
+  @Test
+  void handleWebhook_DeserializesAndThrows_WhenClerkUserCreatedEventMissingPublicMetadata() {
+    String payload = """
+          {
+            "data": {
+              "id": "user_29wBMCtzATuFJut8jO2VNTVekS4",
+              "username": "SomeUsername"
+            },
+            "type": "user.created"
+          }
+      """;
+
+    assertThrows(IllegalArgumentException.class, () -> clerkWebhookService.handleWebhook(payload));
+    verify(clerkSyncService, never()).ingestUserUpserted(any(ClerkUser.class));
   }
 
   @Test
@@ -88,14 +137,63 @@ class ClerkWebhookServiceTest {
           {
             "data": {
               "id": "user_29wBMCtzATuFJut8jO2VNTVekS4",
-              "username": null
+              "username": "SomeUsername",
+              "public_metadata": {}
             },
             "type": "user.updated"
           }
       """;
 
     assertDoesNotThrow(() -> clerkWebhookService.handleWebhook(payload));
-    verify(clerkSyncService).handleWebhookEvent(any(ClerkWebhook.class));
+    verify(clerkSyncService).ingestUserUpserted(any(ClerkUser.class));
+  }
+
+  @Test
+  void handleWebhook_DeserializesAndThrows_WhenClerkUserUpdatedEventMissingId() {
+    String payload = """
+          {
+            "data": {
+              "username": "SomeUsername",
+              "public_metadata": {}
+            },
+            "type": "user.updated"
+          }
+      """;
+
+    assertThrows(IllegalArgumentException.class, () -> clerkWebhookService.handleWebhook(payload));
+    verify(clerkSyncService, never()).ingestUserUpserted(any(ClerkUser.class));
+  }
+
+  @Test
+  void handleWebhook_DeserializesAndThrows_WhenClerkUserUpdatedEventMissingUsername() {
+    String payload = """
+          {
+            "data": {
+              "id": "user_29wBMCtzATuFJut8jO2VNTVekS4",
+              "public_metadata": {}
+            },
+            "type": "user.updated"
+          }
+      """;
+
+    assertThrows(IllegalArgumentException.class, () -> clerkWebhookService.handleWebhook(payload));
+    verify(clerkSyncService, never()).ingestUserUpserted(any(ClerkUser.class));
+  }
+
+  @Test
+  void handleWebhook_DeserializesAndThrows_WhenClerkUserUpdatedEventMissingPublicMetadata() {
+    String payload = """
+          {
+            "data": {
+              "id": "user_29wBMCtzATuFJut8jO2VNTVekS4",
+              "username": "SomeUsername"
+            },
+            "type": "user.updated"
+          }
+      """;
+
+    assertThrows(IllegalArgumentException.class, () -> clerkWebhookService.handleWebhook(payload));
+    verify(clerkSyncService, never()).ingestUserUpserted(any(ClerkUser.class));
   }
 
   @Test
@@ -110,7 +208,7 @@ class ClerkWebhookServiceTest {
       """;
 
     assertDoesNotThrow(() -> clerkWebhookService.handleWebhook(payload));
-    verify(clerkSyncService).handleWebhookEvent(any(ClerkWebhook.class));
+    verify(clerkSyncService).ingestUserDeleted(anyString());
   }
 
   @Test
