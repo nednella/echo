@@ -15,7 +15,7 @@ import com.clerk.backend_api.models.operations.CreateUserResponse;
 import com.clerk.backend_api.models.operations.UpdateUserRequestBody;
 import com.example.echo_api.config.ClerkConfig;
 import com.example.echo_api.exception.custom.internalserver.ClerkException;
-import com.example.echo_api.modules.clerk.dto.sdk.ClerkUserDTO;
+import com.example.echo_api.modules.clerk.dto.ClerkUser;
 import com.example.echo_api.modules.clerk.mapper.ClerkUserMapper;
 
 @Component
@@ -44,7 +44,7 @@ public class ClerkTestUtils {
     @Autowired
     private Clerk clerk;
 
-    public ClerkUserDTO createUser(String email, String username) {
+    public ClerkUser createUser(String email, String username) {
         CreateUserRequestBody request = CreateUserRequestBody.builder()
             .emailAddress(List.of(email))
             .username(username)
@@ -53,7 +53,7 @@ public class ClerkTestUtils {
         try {
             CreateUserResponse response = clerk.users().create().request(request).call();
             User user = response.user().orElseThrow();
-            return ClerkUserMapper.toDTO(user);
+            return ClerkUserMapper.fromSDK(user);
         } catch (Exception ex) {
             throw new RuntimeException("Could not create Clerk user: " + username);
         }

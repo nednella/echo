@@ -20,9 +20,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.example.echo_api.integration.util.ClerkTestUtils.Template;
-import com.example.echo_api.modules.clerk.dto.sdk.ClerkUserDTO;
+import com.example.echo_api.modules.clerk.dto.ClerkUser;
+import com.example.echo_api.modules.clerk.service.ClerkDevService;
 import com.example.echo_api.persistence.model.user.User;
-import com.example.echo_api.service.dev.DevService;
 
 /**
  * Base class for full-stack integration tests.
@@ -48,7 +48,7 @@ public abstract class IntegrationTest {
 
     @Container
     @ServiceConnection
-    protected static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest");
+    private static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest");
 
     @Autowired
     protected DatabaseCleaner cleaner;
@@ -63,7 +63,7 @@ public abstract class IntegrationTest {
     protected ClerkTestUtils clerkTestUtils;
 
     @Autowired
-    private DevService devService;
+    private ClerkDevService clerkDevService;
 
     protected User authUser;
     protected User mockUser;
@@ -127,8 +127,8 @@ public abstract class IntegrationTest {
      * @return the persisted {@link User} entity
      */
     private User createTestUser(String email, String username) {
-        ClerkUserDTO clerkUser = clerkTestUtils.createUser(email, username);
-        return devService.persistClerkUser(clerkUser);
+        ClerkUser clerkUser = clerkTestUtils.createUser(email, username);
+        return clerkDevService.persistClerkUser(clerkUser);
     }
 
 }

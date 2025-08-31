@@ -20,7 +20,7 @@ import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
 import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
-import com.example.echo_api.modules.clerk.service.ClerkSyncService;
+import com.example.echo_api.modules.clerk.service.ClerkOnboardingService;
 import com.example.echo_api.modules.clerk.service.ClerkWebhookService;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.persistence.model.user.User;
@@ -40,7 +40,7 @@ class ClerkControllerTest {
     private MockMvcTester mvc;
 
     @MockitoBean
-    private ClerkSyncService clerkSyncService;
+    private ClerkOnboardingService clerkOnboardingService;
 
     @MockitoBean
     private ClerkWebhookService clerkWebhookService;
@@ -49,7 +49,7 @@ class ClerkControllerTest {
     void clerkOnboarding_Returns201User_WhenExternalUserInserted() {
         // api: POST /api/v1/clerk/onboarding ==> 201 Created : User
         User expected = User.forTest(UUID.randomUUID(), "user_someUniqueString");
-        when(clerkSyncService.onboardAuthenticatedUser()).thenReturn(expected);
+        when(clerkOnboardingService.onboardAuthenticatedUser()).thenReturn(expected);
 
         var response = mvc.post()
             .uri(ONBOARDING_PATH)
@@ -59,14 +59,14 @@ class ClerkControllerTest {
             .hasStatus(201)
             .bodyJson().convertTo(User.class).isEqualTo(expected);
 
-        verify(clerkSyncService).onboardAuthenticatedUser();
+        verify(clerkOnboardingService).onboardAuthenticatedUser();
     }
 
     @Test
     void clerkOnboarding_Returns201Empty_WhenExternalUserUpdated() {
         // api: POST /api/v1/clerk/onboarding ==> 201 Created : []
         User expected = null;
-        when(clerkSyncService.onboardAuthenticatedUser()).thenReturn(expected);
+        when(clerkOnboardingService.onboardAuthenticatedUser()).thenReturn(expected);
 
         var response = mvc.post()
             .uri(ONBOARDING_PATH)
@@ -76,7 +76,7 @@ class ClerkControllerTest {
             .hasStatus(201)
             .body().isEmpty();
 
-        verify(clerkSyncService).onboardAuthenticatedUser();
+        verify(clerkOnboardingService).onboardAuthenticatedUser();
     }
 
     @Test
