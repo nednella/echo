@@ -16,15 +16,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import com.example.echo_api.integration.util.RepositoryTest;
+import com.example.echo_api.modules.profile.entity.Profile;
+import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.persistence.dto.response.post.PostDTO;
 import com.example.echo_api.persistence.model.post.Post;
 import com.example.echo_api.persistence.model.post.like.PostLike;
-import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.persistence.repository.PostEntityRepository;
 import com.example.echo_api.persistence.repository.PostLikeRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
-import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.persistence.repository.UserRepository;
 import com.example.echo_api.util.PostEntityExtractor;
 

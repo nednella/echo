@@ -13,12 +13,12 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import com.example.echo_api.modules.profile.dto.ProfileRelationshipDTO;
+import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
 import com.example.echo_api.persistence.dto.response.post.PostDTO;
 import com.example.echo_api.persistence.dto.response.post.PostEntitiesDTO;
 import com.example.echo_api.persistence.dto.response.post.PostMetricsDTO;
 import com.example.echo_api.persistence.dto.response.post.PostRelationshipDTO;
-import com.example.echo_api.persistence.dto.response.profile.ProfileRelationshipDTO;
-import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;

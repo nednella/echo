@@ -1,4 +1,4 @@
-package com.example.echo_api.persistence.model.follow;
+package com.example.echo_api.modules.profile.entity;
 
 import java.util.Objects;
 import java.util.UUID;

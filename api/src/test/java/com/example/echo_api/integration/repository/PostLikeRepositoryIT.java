@@ -11,13 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.echo_api.integration.util.RepositoryTest;
+import com.example.echo_api.modules.profile.entity.Profile;
+import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.persistence.model.post.Post;
 import com.example.echo_api.persistence.model.post.like.PostLike;
-import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.model.user.User;
 import com.example.echo_api.persistence.repository.PostLikeRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
-import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.persistence.repository.UserRepository;
 
 /**

@@ -1,4 +1,4 @@
-package com.example.echo_api.persistence.dto.response.profile;
+package com.example.echo_api.modules.profile.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -19,7 +19,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param relationship the profile relationship between the requesting and the
  *                     requested profiles. Null if those profiles are the same
  */
-// @formatter:off
 public record ProfileDTO(
     String id,
     String username,
@@ -31,4 +30,3 @@ public record ProfileDTO(
     ProfileMetricsDTO metrics,
     @JsonInclude(Include.NON_NULL) ProfileRelationshipDTO relationship
 ) {}
-// @formatter:on

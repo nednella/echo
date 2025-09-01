@@ -1,12 +1,12 @@
-package com.example.echo_api.persistence.repository;
+package com.example.echo_api.modules.profile.repository;
 
 import java.util.UUID;
 
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.example.echo_api.persistence.model.follow.Follow;
-import com.example.echo_api.persistence.model.follow.FollowPK;
+import com.example.echo_api.modules.profile.entity.Follow;
+import com.example.echo_api.modules.profile.entity.FollowPK;
 
 @Repository
 public interface FollowRepository extends ListCrudRepository<Follow, FollowPK> {

@@ -18,13 +18,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
+import com.example.echo_api.modules.profile.dto.ProfileDTO;
+import com.example.echo_api.modules.profile.dto.ProfileMetricsDTO;
+import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
+import com.example.echo_api.modules.profile.entity.Profile;
+import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
-import com.example.echo_api.persistence.dto.response.profile.ProfileMetricsDTO;
-import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
-import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
 import com.example.echo_api.persistence.mapper.PageMapper;
-import com.example.echo_api.persistence.model.profile.Profile;
-import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.shared.service.SessionService;
 import com.example.echo_api.util.OffsetLimitRequest;
 

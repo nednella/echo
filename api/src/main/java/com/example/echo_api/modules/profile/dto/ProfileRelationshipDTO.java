@@ -1,4 +1,4 @@
-package com.example.echo_api.persistence.dto.response.profile;
+package com.example.echo_api.modules.profile.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -10,9 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param followedBy indicates if the requesting profile is followed by the
  *                   requested profile
  */
-// @formatter:off
 public record ProfileRelationshipDTO(
     boolean following,
     @JsonProperty("followed_by") boolean followedBy
 ) {}
-// @formatter:on

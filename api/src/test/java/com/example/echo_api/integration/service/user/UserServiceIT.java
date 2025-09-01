@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
 import com.example.echo_api.integration.util.RepositoryTest;
-import com.example.echo_api.persistence.model.profile.Profile;
+import com.example.echo_api.modules.profile.entity.Profile;
+import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.persistence.model.user.User;
-import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.persistence.repository.UserRepository;
 import com.example.echo_api.service.user.UserServiceImpl;
 

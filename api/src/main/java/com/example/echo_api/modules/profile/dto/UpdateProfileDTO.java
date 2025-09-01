@@ -1,4 +1,4 @@
-package com.example.echo_api.persistence.dto.request.profile;
+package com.example.echo_api.modules.profile.dto;
 
 import com.example.echo_api.config.ConstraintsConfig;
 import com.example.echo_api.config.ValidationMessageConfig;

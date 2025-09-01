@@ -1,6 +1,6 @@
 package com.example.echo_api.service.user;
 
-import com.example.echo_api.persistence.model.profile.Profile;
+import com.example.echo_api.modules.profile.entity.Profile;
 import com.example.echo_api.persistence.model.user.User;
 
 public interface UserService {

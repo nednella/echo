@@ -13,12 +13,12 @@ import org.springframework.http.HttpStatus;
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.integration.util.IntegrationTest;
+import com.example.echo_api.modules.profile.dto.ProfileDTO;
+import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
+import com.example.echo_api.modules.profile.entity.Follow;
+import com.example.echo_api.modules.profile.repository.FollowRepository;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
-import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
-import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
-import com.example.echo_api.persistence.model.follow.Follow;
-import com.example.echo_api.persistence.repository.FollowRepository;
 
 /**
  * Integration test class for {@link ProfileViewController}.

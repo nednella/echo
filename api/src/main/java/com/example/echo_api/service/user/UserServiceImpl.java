@@ -4,9 +4,9 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.echo_api.persistence.model.profile.Profile;
+import com.example.echo_api.modules.profile.entity.Profile;
+import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.persistence.model.user.User;
-import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.persistence.repository.UserRepository;
 import com.example.echo_api.util.Utils;
 

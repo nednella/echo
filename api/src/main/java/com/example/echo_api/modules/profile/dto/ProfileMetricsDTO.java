@@ -1,4 +1,4 @@
-package com.example.echo_api.persistence.dto.response.profile;
+package com.example.echo_api.modules.profile.dto;
 
 /**
  * Represents a standardised response format for profile metrics.
@@ -8,11 +8,9 @@ package com.example.echo_api.persistence.dto.response.profile;
  * @param posts     the number of posts this profile has made
  * @param media     the number of media items this profile has uploaded
  */
-// @formatter:off
 public record ProfileMetricsDTO(
     int followers,
     int following,
     int posts
-    // int media // TODO: implement post media
+// int media // TODO: implement post media
 ) {}
-// @formatter:on

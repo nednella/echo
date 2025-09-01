@@ -1,4 +1,4 @@
-package com.example.echo_api.persistence.repository.custom;
+package com.example.echo_api.modules.profile.repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,10 +13,10 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
-import com.example.echo_api.persistence.dto.response.profile.ProfileMetricsDTO;
-import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
-import com.example.echo_api.persistence.dto.response.profile.ProfileRelationshipDTO;
-import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
+import com.example.echo_api.modules.profile.dto.ProfileDTO;
+import com.example.echo_api.modules.profile.dto.ProfileMetricsDTO;
+import com.example.echo_api.modules.profile.dto.ProfileRelationshipDTO;
+import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -89,14 +89,14 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
      * count query to determine the total number of available profiles, returning a
      * constructed {@link PageImpl}.
      * 
-     * @param sql      The query related to fetching the paginated profiles.
-     * @param countSql The query related to obtaining a total count of available
-     *                 profiles.
+     * @param sql      the query related to fetching the paginated profiles
+     * @param countSql the query related to obtaining a total count of available
+     *                 profiles
      * @param params
-     * @param p        The pagination and sorting configuration.
-     * @return A {@link PageImpl} containing the list of
+     * @param p        the pagination and sorting configuration
+     * @return a {@link PageImpl} containing the list of
      *         {@link SimplifiedProfileDTO} objects, the current page details, and
-     *         the total number of available profiles.
+     *         the total number of available profiles
      */
     // @formatter:off
     private Page<SimplifiedProfileDTO> fetchPaginatedProfiles(

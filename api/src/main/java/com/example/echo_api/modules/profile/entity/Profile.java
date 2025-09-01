@@ -1,4 +1,4 @@
-package com.example.echo_api.persistence.model.profile;
+package com.example.echo_api.modules.profile.entity;
 
 import java.time.Instant;
 import java.util.UUID;

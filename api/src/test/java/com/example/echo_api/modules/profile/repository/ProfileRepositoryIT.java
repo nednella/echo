@@ -1,4 +1,4 @@
-package com.example.echo_api.integration.repository;
+package com.example.echo_api.modules.profile.repository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,15 +14,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.example.echo_api.integration.util.RepositoryTest;
-import com.example.echo_api.persistence.dto.response.profile.ProfileDTO;
-import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDTO;
-import com.example.echo_api.persistence.model.follow.Follow;
-import com.example.echo_api.persistence.model.profile.Profile;
+import com.example.echo_api.modules.profile.dto.ProfileDTO;
+import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
+import com.example.echo_api.modules.profile.entity.Follow;
+import com.example.echo_api.modules.profile.entity.Profile;
 import com.example.echo_api.persistence.model.user.User;
-import com.example.echo_api.persistence.repository.ProfileRepository;
 import com.example.echo_api.persistence.repository.UserRepository;
 import com.example.echo_api.util.OffsetLimitRequest;
-import com.example.echo_api.persistence.repository.FollowRepository;
 
 /**
  * Integration test class for {@link ProfileRepository}.

@@ -17,10 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.example.echo_api.exception.custom.conflict.AlreadyFollowingException;
 import com.example.echo_api.exception.custom.conflict.SelfActionException;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
-import com.example.echo_api.persistence.model.follow.Follow;
-import com.example.echo_api.persistence.model.profile.Profile;
-import com.example.echo_api.persistence.repository.FollowRepository;
-import com.example.echo_api.persistence.repository.ProfileRepository;
+import com.example.echo_api.modules.profile.entity.Follow;
+import com.example.echo_api.modules.profile.entity.Profile;
+import com.example.echo_api.modules.profile.repository.FollowRepository;
+import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.shared.service.SessionService;
 
 /**

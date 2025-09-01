@@ -3,8 +3,8 @@ package com.example.echo_api.modules.profile.service;
 import java.util.UUID;
 
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
-import com.example.echo_api.persistence.model.profile.Profile;
-import com.example.echo_api.persistence.repository.ProfileRepository;
+import com.example.echo_api.modules.profile.entity.Profile;
+import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.shared.service.SessionService;
 
 import lombok.AccessLevel;

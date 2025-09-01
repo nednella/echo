@@ -15,8 +15,8 @@ import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.config.ValidationMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
+import com.example.echo_api.modules.profile.dto.UpdateProfileDTO;
 import com.example.echo_api.modules.profile.service.ProfileManagementService;
-import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

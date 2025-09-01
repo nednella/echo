@@ -3,7 +3,9 @@ package com.example.echo_api.persistence.model.post.like;
 import java.time.Instant;
 import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
-import com.example.echo_api.persistence.model.profile.Profile;
+
+import com.example.echo_api.modules.profile.entity.Profile;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

@@ -1,4 +1,4 @@
-package com.example.echo_api.persistence.repository;
+package com.example.echo_api.modules.profile.repository;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -7,8 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import com.example.echo_api.persistence.model.profile.Profile;
-import com.example.echo_api.persistence.repository.custom.CustomProfileRepository;
+import com.example.echo_api.modules.profile.entity.Profile;
 
 @Repository
 public interface ProfileRepository
