@@ -1,4 +1,4 @@
-package com.example.echo_api.integration.controller.profile;
+package com.example.echo_api.modules.profile.api;
 
 import java.util.UUID;
 
@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
-import com.example.echo_api.controller.profile.ProfileInteractionController;
 import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 

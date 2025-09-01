@@ -1,4 +1,4 @@
-package com.example.echo_api.controller.profile;
+package com.example.echo_api.modules.profile.api;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
