@@ -105,7 +105,9 @@ public class User {
             return true;
         if (!(o instanceof User))
             return false;
+
         User that = (User) o;
+
         return Objects.equals(this.externalId, that.externalId);
     }
 
