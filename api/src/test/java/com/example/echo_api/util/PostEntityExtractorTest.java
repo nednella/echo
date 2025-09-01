@@ -1,4 +1,4 @@
-package com.example.echo_api.unit.util;
+package com.example.echo_api.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.echo_api.modules.post.entity.PostEntity;
 import com.example.echo_api.modules.post.entity.PostEntityType;
-import com.example.echo_api.util.PostEntityExtractor;
 
 /**
  * Unit test class for {@link PostEntityExtractor}.

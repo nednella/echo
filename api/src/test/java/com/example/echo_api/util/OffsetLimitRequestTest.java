@@ -1,4 +1,4 @@
-package com.example.echo_api.unit.util;
+package com.example.echo_api.util;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.assertThrows;
@@ -6,8 +6,6 @@ import static org.junit.Assert.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.data.domain.Pageable;
-
-import com.example.echo_api.util.OffsetLimitRequest;
 
 /**
  * Unit test class for {@link OffsetLimitRequest}.
