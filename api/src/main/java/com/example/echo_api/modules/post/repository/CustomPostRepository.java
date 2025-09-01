@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 
-import com.example.echo_api.modules.post.dto.PostDTO;
+import com.example.echo_api.modules.post.dto.response.PostDTO;
 
 public interface CustomPostRepository {
 

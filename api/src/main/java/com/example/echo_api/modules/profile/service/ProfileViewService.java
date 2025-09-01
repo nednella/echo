@@ -5,8 +5,8 @@ import java.util.UUID;
 import org.springframework.data.domain.Pageable;
 
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
-import com.example.echo_api.modules.profile.dto.ProfileDTO;
-import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
+import com.example.echo_api.modules.profile.dto.response.ProfileDTO;
+import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.example.echo_api.shared.dto.PageDTO;
 
 public interface ProfileViewService {

@@ -1,6 +1,6 @@
 package com.example.echo_api.modules.profile.service;
 
-import com.example.echo_api.modules.profile.dto.UpdateProfileDTO;
+import com.example.echo_api.modules.profile.dto.request.UpdateProfileDTO;
 
 public interface ProfileManagementService {
 

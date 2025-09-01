@@ -13,10 +13,10 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
-import com.example.echo_api.modules.profile.dto.ProfileDTO;
-import com.example.echo_api.modules.profile.dto.ProfileMetricsDTO;
-import com.example.echo_api.modules.profile.dto.ProfileRelationshipDTO;
-import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
+import com.example.echo_api.modules.profile.dto.response.ProfileDTO;
+import com.example.echo_api.modules.profile.dto.response.ProfileMetricsDTO;
+import com.example.echo_api.modules.profile.dto.response.ProfileRelationshipDTO;
+import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 
 import lombok.RequiredArgsConstructor;
 

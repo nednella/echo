@@ -15,7 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import com.example.echo_api.modules.post.dto.PostDTO;
+import com.example.echo_api.modules.post.dto.response.PostDTO;
 import com.example.echo_api.modules.post.entity.Post;
 import com.example.echo_api.modules.post.entity.PostLike;
 import com.example.echo_api.modules.profile.entity.Profile;

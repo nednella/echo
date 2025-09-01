@@ -7,8 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 
-import com.example.echo_api.modules.profile.dto.ProfileDTO;
-import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
+import com.example.echo_api.modules.profile.dto.response.ProfileDTO;
+import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 
 public interface CustomProfileRepository {
 

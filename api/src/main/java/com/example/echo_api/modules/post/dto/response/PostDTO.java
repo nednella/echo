@@ -1,6 +1,6 @@
-package com.example.echo_api.modules.post.dto;
+package com.example.echo_api.modules.post.dto.response;
 
-import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
+import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.echo_api.constants.ApiRoutes;
-import com.example.echo_api.modules.post.dto.CreatePostDTO;
+import com.example.echo_api.modules.post.dto.request.CreatePostDTO;
 import com.example.echo_api.modules.post.service.PostManagementService;
 
 import jakarta.validation.Valid;

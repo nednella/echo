@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.example.echo_api.modules.profile.dto.ProfileDTO;
-import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
+import com.example.echo_api.modules.profile.dto.response.ProfileDTO;
+import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.entity.Follow;
 import com.example.echo_api.modules.profile.entity.Profile;
 import com.example.echo_api.modules.user.entity.User;

@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
-import com.example.echo_api.modules.post.dto.PostDTO;
+import com.example.echo_api.modules.post.dto.response.PostDTO;
 import com.example.echo_api.modules.post.entity.Post;
 import com.example.echo_api.modules.post.entity.PostLike;
 import com.example.echo_api.modules.post.repository.PostEntityRepository;

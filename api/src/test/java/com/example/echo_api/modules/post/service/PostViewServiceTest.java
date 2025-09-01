@@ -18,13 +18,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
-import com.example.echo_api.modules.post.dto.PostDTO;
-import com.example.echo_api.modules.post.dto.PostEntitiesDTO;
-import com.example.echo_api.modules.post.dto.PostMetricsDTO;
-import com.example.echo_api.modules.post.dto.PostRelationshipDTO;
+import com.example.echo_api.modules.post.dto.response.PostDTO;
+import com.example.echo_api.modules.post.dto.response.PostEntitiesDTO;
+import com.example.echo_api.modules.post.dto.response.PostMetricsDTO;
+import com.example.echo_api.modules.post.dto.response.PostRelationshipDTO;
 import com.example.echo_api.modules.post.entity.Post;
 import com.example.echo_api.modules.post.repository.PostRepository;
-import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
+import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.entity.Profile;
 import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.shared.dto.PageDTO;

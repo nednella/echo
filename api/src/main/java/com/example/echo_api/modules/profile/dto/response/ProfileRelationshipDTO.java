@@ -1,4 +1,4 @@
-package com.example.echo_api.modules.profile.dto;
+package com.example.echo_api.modules.profile.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

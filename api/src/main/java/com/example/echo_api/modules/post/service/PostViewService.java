@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.springframework.data.domain.Pageable;
 
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
-import com.example.echo_api.modules.post.dto.PostDTO;
+import com.example.echo_api.modules.post.dto.response.PostDTO;
 import com.example.echo_api.shared.dto.PageDTO;
 
 public interface PostViewService {

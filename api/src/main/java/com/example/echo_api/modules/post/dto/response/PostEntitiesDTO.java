@@ -1,4 +1,4 @@
-package com.example.echo_api.modules.post.dto;
+package com.example.echo_api.modules.post.dto.response;
 
 import java.util.List;
 

@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import com.example.echo_api.exception.custom.badrequest.InvalidParentIdException;
 import com.example.echo_api.exception.custom.forbidden.ResourceOwnershipException;
-import com.example.echo_api.modules.post.dto.CreatePostDTO;
+import com.example.echo_api.modules.post.dto.request.CreatePostDTO;
 
 public interface PostManagementService {
 

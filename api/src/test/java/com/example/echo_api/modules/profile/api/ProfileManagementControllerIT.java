@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.config.ValidationMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
-import com.example.echo_api.modules.profile.dto.UpdateProfileDTO;
+import com.example.echo_api.modules.profile.dto.request.UpdateProfileDTO;
 import com.example.echo_api.shared.dto.ErrorDTO;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
 

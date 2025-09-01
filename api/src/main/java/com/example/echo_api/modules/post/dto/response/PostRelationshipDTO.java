@@ -1,4 +1,4 @@
-package com.example.echo_api.modules.post.dto;
+package com.example.echo_api.modules.post.dto.response;
 
 /**
  * Represents a standardised response format for post relationships.

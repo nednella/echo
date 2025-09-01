@@ -13,12 +13,12 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
-import com.example.echo_api.modules.post.dto.PostDTO;
-import com.example.echo_api.modules.post.dto.PostEntitiesDTO;
-import com.example.echo_api.modules.post.dto.PostMetricsDTO;
-import com.example.echo_api.modules.post.dto.PostRelationshipDTO;
-import com.example.echo_api.modules.profile.dto.ProfileRelationshipDTO;
-import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
+import com.example.echo_api.modules.post.dto.response.PostDTO;
+import com.example.echo_api.modules.post.dto.response.PostEntitiesDTO;
+import com.example.echo_api.modules.post.dto.response.PostMetricsDTO;
+import com.example.echo_api.modules.post.dto.response.PostRelationshipDTO;
+import com.example.echo_api.modules.profile.dto.response.ProfileRelationshipDTO;
+import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;

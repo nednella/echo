@@ -1,4 +1,4 @@
-package com.example.echo_api.modules.post.dto;
+package com.example.echo_api.modules.post.dto.request;
 
 import java.util.UUID;
 
@@ -18,8 +18,7 @@ import jakarta.validation.constraints.Size;
 // @formatter:off
 public record CreatePostDTO(
 
-    @JsonProperty("parent_id")
-    UUID parentId,
+    @JsonProperty("parent_id") UUID parentId,
 
     @NotBlank(message = ValidationMessageConfig.TEXT_NULL_OR_BLANK)
     @Size(max = ConstraintsConfig.Post.TEXT_MAX_LENGTH, message = ValidationMessageConfig.TEXT_TOO_LONG)

@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.echo_api.exception.custom.badrequest.InvalidParentIdException;
 import com.example.echo_api.exception.custom.forbidden.ResourceOwnershipException;
-import com.example.echo_api.modules.post.dto.CreatePostDTO;
+import com.example.echo_api.modules.post.dto.request.CreatePostDTO;
 import com.example.echo_api.modules.post.entity.Post;
 import com.example.echo_api.modules.post.entity.PostEntity;
 import com.example.echo_api.modules.post.repository.PostEntityRepository;

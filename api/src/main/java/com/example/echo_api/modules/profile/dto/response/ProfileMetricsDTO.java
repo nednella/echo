@@ -1,4 +1,4 @@
-package com.example.echo_api.modules.profile.dto;
+package com.example.echo_api.modules.profile.dto.response;
 
 /**
  * Represents a standardised response format for profile metrics.

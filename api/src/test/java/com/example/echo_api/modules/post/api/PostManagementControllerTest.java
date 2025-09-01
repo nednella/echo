@@ -23,7 +23,7 @@ import com.example.echo_api.config.ValidationMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.exception.custom.badrequest.InvalidParentIdException;
 import com.example.echo_api.exception.custom.forbidden.ResourceOwnershipException;
-import com.example.echo_api.modules.post.dto.CreatePostDTO;
+import com.example.echo_api.modules.post.dto.request.CreatePostDTO;
 import com.example.echo_api.modules.post.service.PostManagementService;
 import com.example.echo_api.shared.dto.ErrorDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
