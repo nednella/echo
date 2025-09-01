@@ -10,9 +10,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.example.echo_api.config.ApiConfig;
 import com.example.echo_api.config.ClerkConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.shared.constants.ApiRoutes;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -131,7 +131,7 @@ public class ClerkOnboardingFilter extends OncePerRequestFilter {
      * @return true if the request is to the onboarding endpoint, false otherwise
      */
     private boolean isOnboardingEndpoint(HttpServletRequest request) {
-        return request.getRequestURI().equals(ApiConfig.Clerk.ONBOARDING);
+        return request.getRequestURI().equals(ApiRoutes.CLERK.ONBOARDING);
     }
 
     /**

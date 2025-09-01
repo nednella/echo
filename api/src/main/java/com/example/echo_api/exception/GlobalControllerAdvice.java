@@ -18,8 +18,8 @@ import com.example.echo_api.exception.custom.forbidden.ForbiddenException;
 import com.example.echo_api.exception.custom.internalserver.InternalServerException;
 import com.example.echo_api.exception.custom.notfound.NotFoundException;
 import com.example.echo_api.exception.custom.unauthorised.UnauthorisedException;
-import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.security.ClerkOnboardingFilter;
+import com.example.echo_api.shared.dto.ErrorDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;

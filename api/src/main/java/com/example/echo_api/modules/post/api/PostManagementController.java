@@ -1,0 +1,39 @@
+package com.example.echo_api.modules.post.api;
+
+import java.util.UUID;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.echo_api.modules.post.dto.request.CreatePostDTO;
+import com.example.echo_api.modules.post.service.PostManagementService;
+import com.example.echo_api.shared.constants.ApiRoutes;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
+@Validated
+@RestController
+@RequiredArgsConstructor
+public class PostManagementController {
+
+    private final PostManagementService postManagementService;
+
+    @PostMapping(ApiRoutes.POST.CREATE)
+    public ResponseEntity<Void> create(@RequestBody @Valid CreatePostDTO request) {
+        postManagementService.create(request);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping(ApiRoutes.POST.BY_ID)
+    public ResponseEntity<Void> delete(@PathVariable("id") UUID id) {
+        postManagementService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+}
