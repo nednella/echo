@@ -1,4 +1,4 @@
-package com.example.echo_api.unit.validation;
+package com.example.echo_api.shared.validation;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -9,7 +9,7 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.example.echo_api.validation.pagination.annotations.Limit;
+import com.example.echo_api.shared.validation.pagination.annotations.Limit;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -18,7 +18,7 @@ import jakarta.validation.Validator;
 /**
  * Unit test class for {@link Limit} annotation.
  */
-class LimitAnnotationTest {
+class LimitValidationTest {
 
     private static Validator validator;
 

@@ -1,4 +1,4 @@
-package com.example.echo_api.validation.pagination.annotations;
+package com.example.echo_api.shared.validation.pagination.annotations;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.PARAMETER;
@@ -9,7 +9,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import com.example.echo_api.config.ValidationMessageConfig;
-import com.example.echo_api.validation.pagination.validators.OffsetValidator;
+import com.example.echo_api.shared.validation.pagination.validators.LimitValidator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -19,12 +19,12 @@ import jakarta.validation.Payload;
  *
  * <p>
  * The annotated {@link Integer} must meet the requirements for a valid
- * {@code offset} parameter in pagination.
+ * {@code limit} parameter in pagination.
  *
  * <p>
  * This annotation is intended to be used on method parameters or fields of type
  * {@link Integer}. When applied, it triggers the validation logic defined in
- * the associated {@link OffsetValidator} class.
+ * the associated {@link LimitValidator} class.
  *
  * <p>
  * Example usage:
@@ -33,8 +33,8 @@ import jakarta.validation.Payload;
  * {@code
  * GetMapping("/items")
  * public ResponseEntity<PageDTO<ItemDTO>> getItems(
- *     RequestParam @Offset int offset,
- *     RequestParam int limit
+ *     RequestParam int offset,
+ *     RequestParam @Limit int limit
  * ) {
  *     // Method implementation
  * }
@@ -47,13 +47,13 @@ import jakarta.validation.Payload;
 @Target({ FIELD, PARAMETER })
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = OffsetValidator.class)
-public @interface Offset {
+@Constraint(validatedBy = LimitValidator.class)
+public @interface Limit {
 
     /**
      * @return the error message template
      */
-    String message() default ValidationMessageConfig.INVALID_OFFSET;
+    String message() default ValidationMessageConfig.INVALID_LIMIT;
 
     /**
      * @return the groups the constraint belongs to
