@@ -2,8 +2,8 @@ package com.example.echo_api.modules.post.dto.request;
 
 import java.util.UUID;
 
-import com.example.echo_api.config.ConstraintsConfig;
 import com.example.echo_api.config.ValidationMessageConfig;
+import com.example.echo_api.modules.profile.constants.ProfileConstraints;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotBlank;
@@ -21,7 +21,7 @@ public record CreatePostDTO(
     @JsonProperty("parent_id") UUID parentId,
 
     @NotBlank(message = ValidationMessageConfig.TEXT_NULL_OR_BLANK)
-    @Size(max = ConstraintsConfig.Post.TEXT_MAX_LENGTH, message = ValidationMessageConfig.TEXT_TOO_LONG)
+    @Size(max = ProfileConstraints.TEXT_MAX_LENGTH, message = ValidationMessageConfig.TEXT_TOO_LONG)
     String text
 
 ) {}
