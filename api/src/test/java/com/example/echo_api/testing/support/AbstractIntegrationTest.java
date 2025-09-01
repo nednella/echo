@@ -1,4 +1,4 @@
-package com.example.echo_api.integration.util;
+package com.example.echo_api.testing.support;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -19,10 +19,10 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.example.echo_api.integration.util.ClerkTestUtils.Template;
 import com.example.echo_api.modules.clerk.dto.ClerkUser;
 import com.example.echo_api.modules.clerk.service.ClerkDevService;
 import com.example.echo_api.modules.user.entity.User;
+import com.example.echo_api.testing.support.ClerkTestUtils.Template;
 
 /**
  * Base class for full-stack integration tests.
@@ -41,7 +41,7 @@ import com.example.echo_api.modules.user.entity.User;
 @Import(DatabaseCleaner.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public abstract class IntegrationTest {
+public abstract class AbstractIntegrationTest {
 
     protected static final String AUTH_USER_USERNAME = "auth_user";
     protected static final String MOCK_USER_USERNAME = "mock_user";

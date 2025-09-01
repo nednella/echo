@@ -1,4 +1,4 @@
-package com.example.echo_api.integration.util;
+package com.example.echo_api.testing.support;
 
 import java.util.HashMap;
 import java.util.List;

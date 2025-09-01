@@ -6,17 +6,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
-import com.example.echo_api.integration.util.RepositoryTest;
 import com.example.echo_api.modules.profile.entity.Profile;
 import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.modules.user.entity.User;
 import com.example.echo_api.modules.user.repository.UserRepository;
+import com.example.echo_api.testing.support.AbstractRepositoryTest;
 
 /**
  * Integration test class for {@link UserServiceImpl}.
  */
 @Import(UserServiceImpl.class)
-class UserServiceIT extends RepositoryTest {
+class UserServiceIT extends AbstractRepositoryTest {
 
     @Autowired
     private UserServiceImpl userService;

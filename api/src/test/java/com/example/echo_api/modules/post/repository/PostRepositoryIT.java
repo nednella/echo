@@ -15,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import com.example.echo_api.integration.util.RepositoryTest;
 import com.example.echo_api.modules.post.dto.PostDTO;
 import com.example.echo_api.modules.post.entity.Post;
 import com.example.echo_api.modules.post.entity.PostLike;
@@ -23,6 +22,7 @@ import com.example.echo_api.modules.profile.entity.Profile;
 import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.modules.user.entity.User;
 import com.example.echo_api.modules.user.repository.UserRepository;
+import com.example.echo_api.testing.support.AbstractRepositoryTest;
 import com.example.echo_api.util.PostEntityExtractor;
 
 // TODO: finish JDocs
@@ -31,7 +31,7 @@ import com.example.echo_api.util.PostEntityExtractor;
  * Integration test class for {@link PostRepository}.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class PostRepositoryIT extends RepositoryTest {
+class PostRepositoryIT extends AbstractRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;

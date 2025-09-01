@@ -9,15 +9,15 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
-import com.example.echo_api.integration.util.IntegrationTest;
-import com.example.echo_api.integration.util.ClerkTestUtils.Template;
 import com.example.echo_api.shared.dto.ErrorDTO;
+import com.example.echo_api.testing.support.AbstractIntegrationTest;
+import com.example.echo_api.testing.support.ClerkTestUtils.Template;
 
 /**
  * Integration test class for {@link ClerkOnboardingFilter}.
  */
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-class ClerkOnboardingFilterIT extends IntegrationTest {
+class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
 
     private static final String PROTECTED_ENDPOINT = ApiRoutes.PROFILE.ME; // random protected endpoint
 

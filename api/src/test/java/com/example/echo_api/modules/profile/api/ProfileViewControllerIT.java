@@ -12,18 +12,18 @@ import org.springframework.http.HttpStatus;
 
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
-import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.modules.profile.dto.ProfileDTO;
 import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.entity.Follow;
 import com.example.echo_api.modules.profile.repository.FollowRepository;
 import com.example.echo_api.shared.dto.ErrorDTO;
 import com.example.echo_api.shared.dto.PageDTO;
+import com.example.echo_api.testing.support.AbstractIntegrationTest;
 
 /**
  * Integration test class for {@link ProfileViewController}.
  */
-class ProfileViewControllerIT extends IntegrationTest {
+class ProfileViewControllerIT extends AbstractIntegrationTest {
 
     private static final String ME_PATH = ApiRoutes.PROFILE.ME;
     private static final String BY_USERNAME_PATH = ApiRoutes.PROFILE.BY_USERNAME;

@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
-import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.modules.post.dto.PostDTO;
 import com.example.echo_api.modules.post.entity.Post;
 import com.example.echo_api.modules.post.entity.PostLike;
@@ -22,12 +21,13 @@ import com.example.echo_api.modules.post.repository.PostLikeRepository;
 import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.shared.dto.ErrorDTO;
 import com.example.echo_api.shared.dto.PageDTO;
+import com.example.echo_api.testing.support.AbstractIntegrationTest;
 import com.example.echo_api.util.PostEntityExtractor;
 
 /**
  * Integration test class for {@link PostViewController}.
  */
-class PostViewControllerIT extends IntegrationTest {
+class PostViewControllerIT extends AbstractIntegrationTest {
 
     private static final String BY_ID_PATH = ApiRoutes.POST.BY_ID;
     private static final String REPLIES_PATH = ApiRoutes.POST.REPLIES;

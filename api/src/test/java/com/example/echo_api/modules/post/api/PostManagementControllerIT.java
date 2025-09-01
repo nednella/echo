@@ -14,16 +14,16 @@ import org.springframework.http.HttpStatus;
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.config.ValidationMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
-import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.modules.post.dto.CreatePostDTO;
 import com.example.echo_api.modules.post.entity.Post;
 import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.shared.dto.ErrorDTO;
+import com.example.echo_api.testing.support.AbstractIntegrationTest;
 
 /**
  * Integration test class for {@link PostManagementController}.
  */
-class PostManagementControllerIT extends IntegrationTest {
+class PostManagementControllerIT extends AbstractIntegrationTest {
 
     private static final String CREATE_PATH = ApiRoutes.POST.CREATE;
     private static final String BY_ID_PATH = ApiRoutes.POST.BY_ID;

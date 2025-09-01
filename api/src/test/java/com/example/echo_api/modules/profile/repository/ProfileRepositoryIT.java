@@ -13,20 +13,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.example.echo_api.integration.util.RepositoryTest;
 import com.example.echo_api.modules.profile.dto.ProfileDTO;
 import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.entity.Follow;
 import com.example.echo_api.modules.profile.entity.Profile;
 import com.example.echo_api.modules.user.entity.User;
 import com.example.echo_api.modules.user.repository.UserRepository;
+import com.example.echo_api.testing.support.AbstractRepositoryTest;
 import com.example.echo_api.util.OffsetLimitRequest;
 
 /**
  * Integration test class for {@link ProfileRepository}.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ProfileRepositoryIT extends RepositoryTest {
+class ProfileRepositoryIT extends AbstractRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;

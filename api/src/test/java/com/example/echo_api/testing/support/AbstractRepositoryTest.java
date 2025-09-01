@@ -1,4 +1,4 @@
-package com.example.echo_api.integration.util;
+package com.example.echo_api.testing.support;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,7 +20,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public abstract class RepositoryTest {
+public abstract class AbstractRepositoryTest {
 
     @Container
     @ServiceConnection

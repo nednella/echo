@@ -8,13 +8,13 @@ import org.springframework.http.HttpStatus;
 
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
-import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.shared.dto.ErrorDTO;
+import com.example.echo_api.testing.support.AbstractIntegrationTest;
 
 /**
  * Integration test class for {@link ProfileInteractionController}.
  */
-class ProfileInteractionControllerIT extends IntegrationTest {
+class ProfileInteractionControllerIT extends AbstractIntegrationTest {
 
     private static final String FOLLOW_PATH = ApiRoutes.PROFILE.FOLLOW;
 

@@ -11,16 +11,16 @@ import org.springframework.http.HttpStatus;
 
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
-import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.modules.post.entity.Post;
 import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.shared.dto.ErrorDTO;
+import com.example.echo_api.testing.support.AbstractIntegrationTest;
 
 /**
  * Integration test class for {@link PostInteractionController}.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class PostInteractionControllerIT extends IntegrationTest {
+class PostInteractionControllerIT extends AbstractIntegrationTest {
 
     private static final String LIKE_PATH = ApiRoutes.POST.LIKE;
 

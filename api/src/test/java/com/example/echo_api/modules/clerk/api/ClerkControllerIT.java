@@ -6,14 +6,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 
 import com.example.echo_api.constants.ApiRoutes;
-import com.example.echo_api.integration.util.IntegrationTest;
-import com.example.echo_api.integration.util.ClerkTestUtils.Template;
 import com.example.echo_api.modules.user.entity.User;
+import com.example.echo_api.testing.support.AbstractIntegrationTest;
+import com.example.echo_api.testing.support.ClerkTestUtils.Template;
 
 /**
  * Integration test class for {@link ClerkController}.
  */
-class ClerkControllerIT extends IntegrationTest {
+class ClerkControllerIT extends AbstractIntegrationTest {
 
     private static final String ONBOARDING_PATH = ApiRoutes.CLERK.ONBOARDING;
 
