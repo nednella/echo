@@ -9,7 +9,7 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.example.echo_api.shared.validation.pagination.annotations.Offset;
+import com.example.echo_api.shared.validation.annotations.Offset;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;

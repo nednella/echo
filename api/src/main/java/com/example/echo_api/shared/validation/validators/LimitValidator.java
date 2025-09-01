@@ -1,7 +1,7 @@
-package com.example.echo_api.shared.validation.pagination.validators;
+package com.example.echo_api.shared.validation.validators;
 
 import com.example.echo_api.shared.constants.PaginationConstraints;
-import com.example.echo_api.shared.validation.pagination.annotations.Limit;
+import com.example.echo_api.shared.validation.annotations.Limit;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

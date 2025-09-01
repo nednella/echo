@@ -16,8 +16,8 @@ import com.example.echo_api.modules.profile.service.ProfileViewService;
 import com.example.echo_api.shared.constants.ApiRoutes;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
 import com.example.echo_api.shared.pagination.PageDTO;
-import com.example.echo_api.shared.validation.pagination.annotations.Limit;
-import com.example.echo_api.shared.validation.pagination.annotations.Offset;
+import com.example.echo_api.shared.validation.annotations.Limit;
+import com.example.echo_api.shared.validation.annotations.Offset;
 
 import lombok.RequiredArgsConstructor;
 
