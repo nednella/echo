@@ -17,8 +17,8 @@ import com.example.echo_api.modules.profile.dto.ProfileDTO;
 import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.entity.Follow;
 import com.example.echo_api.modules.profile.repository.FollowRepository;
-import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
-import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
+import com.example.echo_api.shared.dto.ErrorDTO;
+import com.example.echo_api.shared.dto.PageDTO;
 
 /**
  * Integration test class for {@link ProfileViewController}.

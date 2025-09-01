@@ -1,4 +1,4 @@
-package com.example.echo_api.unit.persistence.mapper;
+package com.example.echo_api.shared.mapper;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -11,8 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageImpl;
 
-import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
-import com.example.echo_api.persistence.mapper.PageMapper;
+import com.example.echo_api.shared.dto.PageDTO;
 import com.example.echo_api.util.OffsetLimitRequest;
 
 /**

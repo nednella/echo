@@ -27,8 +27,8 @@ import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.entity.Profile;
 import com.example.echo_api.modules.profile.repository.ProfileRepository;
-import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
-import com.example.echo_api.persistence.mapper.PageMapper;
+import com.example.echo_api.shared.dto.PageDTO;
+import com.example.echo_api.shared.mapper.PageMapper;
 import com.example.echo_api.shared.service.SessionService;
 import com.example.echo_api.util.OffsetLimitRequest;
 

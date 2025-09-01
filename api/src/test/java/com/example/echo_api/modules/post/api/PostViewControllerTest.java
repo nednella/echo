@@ -31,9 +31,9 @@ import com.example.echo_api.modules.post.dto.PostMetricsDTO;
 import com.example.echo_api.modules.post.dto.PostRelationshipDTO;
 import com.example.echo_api.modules.post.service.PostViewService;
 import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
-import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
-import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
-import com.example.echo_api.persistence.mapper.PageMapper;
+import com.example.echo_api.shared.dto.ErrorDTO;
+import com.example.echo_api.shared.dto.PageDTO;
+import com.example.echo_api.shared.mapper.PageMapper;
 import com.example.echo_api.util.OffsetLimitRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

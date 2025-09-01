@@ -1,4 +1,4 @@
-package com.example.echo_api.persistence.dto.response.error;
+package com.example.echo_api.shared.dto;
 
 import java.time.Instant;
 import java.util.Objects;

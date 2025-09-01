@@ -20,8 +20,8 @@ import com.example.echo_api.modules.post.entity.PostLike;
 import com.example.echo_api.modules.post.repository.PostEntityRepository;
 import com.example.echo_api.modules.post.repository.PostLikeRepository;
 import com.example.echo_api.modules.post.repository.PostRepository;
-import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
-import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
+import com.example.echo_api.shared.dto.ErrorDTO;
+import com.example.echo_api.shared.dto.PageDTO;
 import com.example.echo_api.util.PostEntityExtractor;
 
 /**

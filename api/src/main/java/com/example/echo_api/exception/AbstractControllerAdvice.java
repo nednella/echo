@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
-import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
+import com.example.echo_api.shared.dto.ErrorDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
 

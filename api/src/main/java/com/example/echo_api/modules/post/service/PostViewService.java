@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.modules.post.dto.PostDTO;
-import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
+import com.example.echo_api.shared.dto.PageDTO;
 
 public interface PostViewService {
 

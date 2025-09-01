@@ -1,4 +1,4 @@
-package com.example.echo_api.persistence.dto.response.pagination;
+package com.example.echo_api.shared.dto;
 
 import java.net.URI;
 import java.util.List;

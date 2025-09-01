@@ -18,7 +18,7 @@ import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.exception.custom.conflict.AlreadyLikedException;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.modules.post.service.PostInteractionService;
-import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
+import com.example.echo_api.shared.dto.ErrorDTO;
 
 /**
  * Unit test class for {@link PostInteractionController}.

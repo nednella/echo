@@ -19,7 +19,7 @@ import com.example.echo_api.exception.custom.conflict.AlreadyFollowingException;
 import com.example.echo_api.exception.custom.conflict.SelfActionException;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.modules.profile.service.ProfileInteractionService;
-import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
+import com.example.echo_api.shared.dto.ErrorDTO;
 
 /**
  * Unit test class for {@link ProfileInteractionController}.

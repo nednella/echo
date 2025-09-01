@@ -14,7 +14,7 @@ import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.modules.post.entity.Post;
 import com.example.echo_api.modules.post.repository.PostRepository;
-import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
+import com.example.echo_api.shared.dto.ErrorDTO;
 
 /**
  * Integration test class for {@link PostInteractionController}.
