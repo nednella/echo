@@ -87,7 +87,7 @@ public class ProfileViewServiceImpl extends BaseProfileService implements Profil
      * Internal method for obtaining the current HTTP request URI, to be returned as
      * part of a {@link PageDTO} response.
      * 
-     * @return The current request's URI as a string.
+     * @return the current request URI as a string
      */
     private String getCurrentRequestUri() {
         return httpServletRequest.getRequestURI();

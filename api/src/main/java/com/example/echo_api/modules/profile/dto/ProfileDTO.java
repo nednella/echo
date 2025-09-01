@@ -16,8 +16,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param createdAt    the timestamp when the profile was created (ISO-8601
  *                     format)
  * @param metrics      the profile metrics
- * @param relationship the profile relationship between the requesting and the
- *                     requested profiles. Null if those profiles are the same
+ * @param relationship the relationships between the profile and the
+ *                     authenticated user, null if same user id
  */
 public record ProfileDTO(
     String id,

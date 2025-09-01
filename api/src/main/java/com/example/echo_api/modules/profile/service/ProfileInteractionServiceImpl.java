@@ -56,9 +56,9 @@ public class ProfileInteractionServiceImpl extends BaseProfileService implements
     /**
      * Validate that the action is not being performed on self.
      * 
-     * @param source The source profile id.
-     * @param target The target profile id.
-     * @throws SelfActionException If the the source and target ids match.
+     * @param source the source profile id
+     * @param target the target profile id
+     * @throws SelfActionException if the the source and target ids match
      */
     private void validateNoSelfAction(UUID source, UUID target) {
         if (Objects.equals(source, target)) {

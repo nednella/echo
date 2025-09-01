@@ -24,27 +24,24 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler accessDeniedHandler;
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
 
-    @Bean // @formatter:off
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sm -> sm
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(req -> req
                 .requestMatchers("/public").permitAll()
                 .requestMatchers("/api/v1/dev/**").permitAll()
                 .requestMatchers(HttpMethod.POST, ApiRoutes.CLERK.WEBHOOK).permitAll()
-                .anyRequest().authenticated()
-            )
+                .anyRequest().authenticated())
             .oauth2ResourceServer(oauth -> oauth
                 .jwt(Customizer.withDefaults())
                 .accessDeniedHandler(accessDeniedHandler)
-                .authenticationEntryPoint(authenticationEntryPoint)
-            )
+                .authenticationEntryPoint(authenticationEntryPoint))
             .addFilterBefore(new ClerkOnboardingFilter(), AuthorizationFilter.class);
 
         return http.build();
-    } // @formatter:on 
+    }
 
 }

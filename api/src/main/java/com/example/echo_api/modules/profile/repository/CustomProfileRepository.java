@@ -38,10 +38,10 @@ public interface CustomProfileRepository {
      * Retrieves a paginated list of {@link SimplifiedProfileDTO} for users who
      * follow the profile with the specified ID.
      *
-     * @param id         The id of the profile to query
-     * @param authUserId The id of the authenticated user, required for building
+     * @param id         the id of the profile to query
+     * @param authUserId the id of the authenticated user, required for building
      *                   user relationships
-     * @param pageable   The pagination and sorting configuration
+     * @param pageable   the pagination and sorting configuration
      * @return a {@link Page} of {@link SimplifiedProfileDTO} ordered by follow date
      *         (newest first)
      */
@@ -51,12 +51,12 @@ public interface CustomProfileRepository {
      * Retrieves a paginated list of {@link SimplifiedProfileDTO} for users who are
      * followed by the profile with the specified ID.
      *
-     * @param id         The id of the profile to query
-     * @param authUserId The id of the authenticated user, required for building
+     * @param id         the id of the profile to query
+     * @param authUserId the id of the authenticated user, required for building
      *                   user relationships
-     * @param pageable   The pagination and sorting configuration
+     * @param pageable   the pagination and sorting configuration
      * @return a {@link Page} of {@link SimplifiedProfileDTO} ordered by follow date
-     *         (newest first).
+     *         (newest first)
      */
     Page<SimplifiedProfileDTO> findFollowingDtosById(@NonNull UUID id, @NonNull UUID authUserId, @NonNull Pageable p);
 

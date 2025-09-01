@@ -37,7 +37,7 @@ public class CorsConfig {
      * policy for the application.
      * 
      * @return the configured {@link CorsConfigurationSource} bean that is
-     *         automatically picked up by Spring Security.
+     *         automatically picked up by Spring Security
      */
     @Bean
     CorsConfigurationSource corsConfigurationSource() {

@@ -20,6 +20,12 @@ public class BasePostService {
     protected final SessionService sessionService;
     protected final PostRepository postRepository;
 
+    /**
+     * Protected method for obtaining the {@link UUID} associated to the
+     * authenticated user.
+     * 
+     * @return the {@link UUID}
+     */
     protected UUID getAuthenticatedUserId() {
         return sessionService.getAuthenticatedUserId();
     }

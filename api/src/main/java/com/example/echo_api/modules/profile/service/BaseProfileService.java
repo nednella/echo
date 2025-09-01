@@ -20,6 +20,12 @@ public abstract class BaseProfileService {
     protected final SessionService sessionService;
     protected final ProfileRepository profileRepository;
 
+    /**
+     * Protected method for obtaining the {@link UUID} associated to the
+     * authenticated user.
+     * 
+     * @return the {@link UUID}
+     */
     protected UUID getAuthenticatedUserId() {
         return sessionService.getAuthenticatedUserId();
     }
@@ -28,7 +34,7 @@ public abstract class BaseProfileService {
      * Protected method for obtaining the {@link Profile} associated to the
      * authenticated user.
      * 
-     * @return The found {@link Profile}.
+     * @return the found {@link Profile}
      */
     protected Profile getAuthenticatedUserProfile() {
         return getProfileEntityById(getAuthenticatedUserId());
@@ -38,9 +44,9 @@ public abstract class BaseProfileService {
      * Protected method for obtaining a {@link Profile} via {@code id} from
      * {@link ProfileRepository}.
      * 
-     * @param id The id of the profile.
-     * @return The {@link Profile} entity.
-     * @throws ResourceNotFoundException If no profile by that id exists.
+     * @param id the id of the profile
+     * @return the {@link Profile} entity
+     * @throws ResourceNotFoundException if no profile by that id exists
      */
     protected Profile getProfileEntityById(UUID id) throws ResourceNotFoundException {
         return profileRepository.findById(id)
@@ -51,9 +57,9 @@ public abstract class BaseProfileService {
      * Protected method for obtaining a {@link Profile} via {@code username} from
      * {@link ProfileRepository}.
      * 
-     * @param username The username of the profile.
-     * @return The {@link Profile} entity.
-     * @throws ResourceNotFoundException If no profile by that username exists.
+     * @param username the username of the profile
+     * @return the {@link Profile} entity
+     * @throws ResourceNotFoundException if no profile by that username exists
      */
     protected Profile getProfileEntityByUsername(String username) throws ResourceNotFoundException {
         return profileRepository.findByUsername(username)
