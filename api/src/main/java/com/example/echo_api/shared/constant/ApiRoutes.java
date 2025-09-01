@@ -1,4 +1,4 @@
-package com.example.echo_api.shared.constants;
+package com.example.echo_api.shared.constant;
 
 import static lombok.AccessLevel.PRIVATE;
 

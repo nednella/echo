@@ -30,7 +30,7 @@ import com.example.echo_api.modules.post.dto.response.PostMetricsDTO;
 import com.example.echo_api.modules.post.dto.response.PostRelationshipDTO;
 import com.example.echo_api.modules.post.service.PostViewService;
 import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
-import com.example.echo_api.shared.constants.ApiRoutes;
+import com.example.echo_api.shared.constant.ApiRoutes;
 import com.example.echo_api.shared.dto.ErrorDTO;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
 import com.example.echo_api.shared.pagination.PageDTO;

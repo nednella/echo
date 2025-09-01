@@ -29,7 +29,7 @@ import com.example.echo_api.modules.profile.dto.response.ProfileMetricsDTO;
 import com.example.echo_api.modules.profile.dto.response.ProfileRelationshipDTO;
 import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.service.ProfileViewService;
-import com.example.echo_api.shared.constants.ApiRoutes;
+import com.example.echo_api.shared.constant.ApiRoutes;
 import com.example.echo_api.shared.dto.ErrorDTO;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
 import com.example.echo_api.shared.pagination.PageDTO;

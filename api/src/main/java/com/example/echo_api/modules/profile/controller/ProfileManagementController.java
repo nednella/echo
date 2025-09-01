@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.echo_api.modules.profile.dto.request.UpdateProfileDTO;
 import com.example.echo_api.modules.profile.service.ProfileManagementService;
-import com.example.echo_api.shared.constants.ApiRoutes;
+import com.example.echo_api.shared.constant.ApiRoutes;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

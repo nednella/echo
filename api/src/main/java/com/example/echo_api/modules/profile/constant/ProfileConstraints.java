@@ -1,4 +1,4 @@
-package com.example.echo_api.modules.profile.constants;
+package com.example.echo_api.modules.profile.constant;
 
 import static lombok.AccessLevel.PRIVATE;
 

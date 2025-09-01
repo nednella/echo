@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 
 import com.example.echo_api.modules.user.entity.User;
-import com.example.echo_api.shared.constants.ApiRoutes;
+import com.example.echo_api.shared.constant.ApiRoutes;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
 import com.example.echo_api.testing.support.ClerkTestUtils.Template;
 

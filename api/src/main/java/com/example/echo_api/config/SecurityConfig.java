@@ -14,7 +14,7 @@ import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import com.example.echo_api.security.ClerkOnboardingFilter;
 import com.example.echo_api.security.JwtAccessDeniedHandler;
 import com.example.echo_api.security.JwtAuthenticationEntryPoint;
-import com.example.echo_api.shared.constants.ApiRoutes;
+import com.example.echo_api.shared.constant.ApiRoutes;
 
 import lombok.RequiredArgsConstructor;
 

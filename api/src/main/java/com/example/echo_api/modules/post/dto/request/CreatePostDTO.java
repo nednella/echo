@@ -3,7 +3,7 @@ package com.example.echo_api.modules.post.dto.request;
 import java.util.UUID;
 
 import com.example.echo_api.config.ValidationMessageConfig;
-import com.example.echo_api.modules.profile.constants.ProfileConstraints;
+import com.example.echo_api.modules.profile.constant.ProfileConstraints;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotBlank;
