@@ -1,4 +1,4 @@
-package com.example.echo_api.integration.security;
+package com.example.echo_api.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,7 +11,6 @@ import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
-import com.example.echo_api.security.ClerkOnboardingFilter;
 import com.example.echo_api.integration.util.ClerkTestUtils.Template;
 
 /**

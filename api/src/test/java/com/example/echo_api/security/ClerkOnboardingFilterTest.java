@@ -1,4 +1,4 @@
-package com.example.echo_api.unit.security;
+package com.example.echo_api.security;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -29,7 +29,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import com.example.echo_api.config.ClerkConfig;
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
-import com.example.echo_api.security.ClerkOnboardingFilter;
 
 import jakarta.servlet.FilterChain;
 
