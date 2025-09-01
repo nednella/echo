@@ -61,7 +61,6 @@ class ProfileInteractionControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
             null);
 
         var response = mvc.post()
@@ -84,7 +83,6 @@ class ProfileInteractionControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.CONFLICT,
             ErrorMessageConfig.Conflict.SELF_ACTION,
-            null,
             null);
 
         var response = mvc.post()
@@ -107,7 +105,6 @@ class ProfileInteractionControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.CONFLICT,
             ErrorMessageConfig.Conflict.ALREADY_FOLLOWING,
-            null,
             null);
 
         var response = mvc.post()

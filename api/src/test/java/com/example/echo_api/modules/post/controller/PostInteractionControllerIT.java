@@ -60,7 +60,6 @@ class PostInteractionControllerIT extends AbstractIntegrationTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
             null);
 
         authenticatedClient.post()
@@ -78,7 +77,6 @@ class PostInteractionControllerIT extends AbstractIntegrationTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.CONFLICT,
             ErrorMessageConfig.Conflict.ALREADY_LIKED,
-            null,
             null);
 
         // 1st like request --> 204

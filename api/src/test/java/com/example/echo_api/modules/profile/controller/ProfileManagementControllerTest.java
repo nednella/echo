@@ -13,7 +13,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import com.example.echo_api.config.ErrorMessageConfig;
-import com.example.echo_api.config.ValidationMessageConfig;
 import com.example.echo_api.modules.profile.dto.request.UpdateProfileDTO;
 import com.example.echo_api.modules.profile.service.ProfileManagementService;
 import com.example.echo_api.shared.constant.ApiRoutes;
@@ -67,7 +66,6 @@ class ProfileManagementControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            ValidationMessageConfig.NAME_TOO_LONG,
             null);
 
         var response = mvc.put()
@@ -93,7 +91,6 @@ class ProfileManagementControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            ValidationMessageConfig.BIO_TOO_LONG,
             null);
 
         var response = mvc.put()
@@ -119,7 +116,6 @@ class ProfileManagementControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            ValidationMessageConfig.LOCATION_TOO_LONG,
             null);
 
         var response = mvc.put()

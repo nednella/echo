@@ -31,7 +31,6 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.FORBIDDEN,
             ErrorMessageConfig.Forbidden.ONBOARDED_CLAIM_MISSING,
-            null,
             null);
 
         unauthenticatedClient.get()
@@ -52,7 +51,6 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.FORBIDDEN,
             ErrorMessageConfig.Forbidden.ONBOARDED_CLAIM_MALFORMED,
-            null,
             null);
 
         unauthenticatedClient.get()
@@ -73,7 +71,6 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.FORBIDDEN,
             ErrorMessageConfig.Forbidden.ECHO_ID_CLAIM_MISSING,
-            null,
             null);
 
         unauthenticatedClient.get()
@@ -94,7 +91,6 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.FORBIDDEN,
             ErrorMessageConfig.Forbidden.ECHO_ID_CLAIM_MALFORMED,
-            null,
             null);
 
         unauthenticatedClient.get()
@@ -115,7 +111,6 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.FORBIDDEN,
             ErrorMessageConfig.Forbidden.ONBOARDING_NOT_COMPLETED,
-            null,
             null);
 
         unauthenticatedClient.get()

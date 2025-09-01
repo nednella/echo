@@ -22,7 +22,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import com.example.echo_api.config.ErrorMessageConfig;
-import com.example.echo_api.config.ValidationMessageConfig;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.modules.profile.dto.response.ProfileDTO;
 import com.example.echo_api.modules.profile.dto.response.ProfileMetricsDTO;
@@ -105,7 +104,6 @@ class ProfileViewControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
             null);
 
         var response = mvc.get()
@@ -145,7 +143,6 @@ class ProfileViewControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
             null);
 
         var response = mvc.get()
@@ -199,7 +196,6 @@ class ProfileViewControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
             null);
 
         var response = mvc.get()
@@ -225,7 +221,6 @@ class ProfileViewControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            ValidationMessageConfig.INVALID_OFFSET,
             null);
 
         var response = mvc.get()
@@ -251,7 +246,6 @@ class ProfileViewControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            ValidationMessageConfig.INVALID_LIMIT,
             null);
 
         var response = mvc.get()
@@ -307,7 +301,6 @@ class ProfileViewControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
             null);
 
         var response = mvc.get()
@@ -333,7 +326,6 @@ class ProfileViewControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            ValidationMessageConfig.INVALID_OFFSET,
             null);
 
         var response = mvc.get()
@@ -359,7 +351,6 @@ class ProfileViewControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            ValidationMessageConfig.INVALID_LIMIT,
             null);
 
         var response = mvc.get()

@@ -102,7 +102,6 @@ class ProfileViewControllerIT extends AbstractIntegrationTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
             null);
 
         authenticatedClient.get()
@@ -141,7 +140,6 @@ class ProfileViewControllerIT extends AbstractIntegrationTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
             null);
 
         authenticatedClient.get()
@@ -180,7 +178,6 @@ class ProfileViewControllerIT extends AbstractIntegrationTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
             null);
 
         authenticatedClient.get()

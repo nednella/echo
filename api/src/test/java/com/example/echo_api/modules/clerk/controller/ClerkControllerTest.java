@@ -104,7 +104,6 @@ class ClerkControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.UNAUTHORIZED,
             ErrorMessageConfig.Unauthorised.INVALID_WEBHOOK_SIGNATURE,
-            null,
             null);
 
         var response = mvc.post()
@@ -129,7 +128,6 @@ class ClerkControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             "Unsupported event type: subscription.active",
-            null,
             null);
 
         var response = mvc.post()

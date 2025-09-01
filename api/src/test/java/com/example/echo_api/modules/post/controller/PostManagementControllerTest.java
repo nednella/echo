@@ -82,7 +82,6 @@ class PostManagementControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            expectedDetails,
             null);
 
         var response = mvc.post()
@@ -109,7 +108,6 @@ class PostManagementControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            ValidationMessageConfig.INVALID_PARENT_ID,
             null);
 
         var response = mvc.post()
@@ -151,7 +149,6 @@ class PostManagementControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.FORBIDDEN,
             ErrorMessageConfig.Forbidden.RESOURCE_OWNERSHIP_REQUIRED,
-            null,
             null);
 
         var response = mvc.delete()

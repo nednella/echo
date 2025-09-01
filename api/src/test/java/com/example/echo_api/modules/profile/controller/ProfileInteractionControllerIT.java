@@ -43,7 +43,6 @@ class ProfileInteractionControllerIT extends AbstractIntegrationTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
             null);
 
         authenticatedClient.post()
@@ -61,7 +60,6 @@ class ProfileInteractionControllerIT extends AbstractIntegrationTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.CONFLICT,
             ErrorMessageConfig.Conflict.SELF_ACTION,
-            null,
             null);
 
         authenticatedClient.post()
@@ -79,7 +77,6 @@ class ProfileInteractionControllerIT extends AbstractIntegrationTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.CONFLICT,
             ErrorMessageConfig.Conflict.ALREADY_FOLLOWING,
-            null,
             null);
 
         // 1st follow request --> 204

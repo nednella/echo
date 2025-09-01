@@ -74,7 +74,6 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            expectedDetails,
             null);
 
         authenticatedClient.post()
@@ -94,7 +93,6 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            ValidationMessageConfig.INVALID_PARENT_ID,
             null);
 
         authenticatedClient.post()
@@ -137,7 +135,6 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.FORBIDDEN,
             ErrorMessageConfig.Forbidden.RESOURCE_OWNERSHIP_REQUIRED,
-            null,
             null);
 
         authenticatedClient.delete()

@@ -61,7 +61,6 @@ class PostInteractionControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
             null);
 
         var response = mvc.post()
@@ -85,7 +84,6 @@ class PostInteractionControllerTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.CONFLICT,
             ErrorMessageConfig.Conflict.ALREADY_LIKED,
-            null,
             null);
 
         var response = mvc.post()

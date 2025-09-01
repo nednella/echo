@@ -48,7 +48,6 @@ class ProfileManagementControllerIT extends AbstractIntegrationTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            expectedDetails,
             null);
 
         authenticatedClient.put()
@@ -72,7 +71,6 @@ class ProfileManagementControllerIT extends AbstractIntegrationTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            expectedDetails,
             null);
 
         authenticatedClient.put()
@@ -96,7 +94,6 @@ class ProfileManagementControllerIT extends AbstractIntegrationTest {
         ErrorDTO expected = new ErrorDTO(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            expectedDetails,
             null);
 
         authenticatedClient.put()
