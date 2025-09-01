@@ -1,4 +1,4 @@
-package com.example.echo_api.modules.clerk.api;
+package com.example.echo_api.modules.clerk.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

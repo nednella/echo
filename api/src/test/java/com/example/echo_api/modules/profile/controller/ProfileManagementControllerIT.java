@@ -1,4 +1,4 @@
-package com.example.echo_api.modules.profile.api;
+package com.example.echo_api.modules.profile.controller;
 
 import java.util.stream.Stream;
 

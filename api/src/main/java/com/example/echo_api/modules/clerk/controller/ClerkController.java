@@ -1,4 +1,4 @@
-package com.example.echo_api.modules.clerk.api;
+package com.example.echo_api.modules.clerk.controller;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

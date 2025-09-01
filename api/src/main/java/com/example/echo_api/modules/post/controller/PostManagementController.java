@@ -1,4 +1,4 @@
-package com.example.echo_api.modules.post.api;
+package com.example.echo_api.modules.post.controller;
 
 import java.util.UUID;
 

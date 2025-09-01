@@ -1,4 +1,4 @@
-package com.example.echo_api.modules.profile.api;
+package com.example.echo_api.modules.post.controller;
 
 import java.util.UUID;
 
@@ -8,26 +8,26 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.echo_api.modules.profile.service.ProfileInteractionService;
+import com.example.echo_api.modules.post.service.PostInteractionService;
 import com.example.echo_api.shared.constants.ApiRoutes;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-public class ProfileInteractionController {
+public class PostInteractionController {
 
-    private final ProfileInteractionService profileInteractionService;
+    private final PostInteractionService postInteractionService;
 
-    @PostMapping(ApiRoutes.PROFILE.FOLLOW)
-    public ResponseEntity<Void> followById(@PathVariable("id") UUID id) {
-        profileInteractionService.follow(id);
+    @PostMapping(ApiRoutes.POST.LIKE)
+    public ResponseEntity<Void> like(@PathVariable("id") UUID id) {
+        postInteractionService.like(id);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(ApiRoutes.PROFILE.FOLLOW)
-    public ResponseEntity<Void> unfollowById(@PathVariable("id") UUID id) {
-        profileInteractionService.unfollow(id);
+    @DeleteMapping(ApiRoutes.POST.LIKE)
+    public ResponseEntity<Void> unlike(@PathVariable("id") UUID id) {
+        postInteractionService.unlike(id);
         return ResponseEntity.noContent().build();
     }
 
