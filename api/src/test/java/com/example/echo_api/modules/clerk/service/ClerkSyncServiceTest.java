@@ -40,6 +40,7 @@ class ClerkSyncServiceTest {
         Map<String, Object> metadata = new HashMap<>();
         ClerkUser clerkUser = new ClerkUser(externalId, username, null, imageUrl, metadata);
         User expected = User.forTest(id, externalId);
+        when(userService.upsertFromExternalSource(externalId, username, imageUrl)).thenReturn(expected);
 
         // act
         User actual = clerkSyncService.ingestUserUpserted(clerkUser);
