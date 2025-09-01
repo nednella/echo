@@ -12,6 +12,7 @@ import com.clerk.backend_api.models.components.User;
 import com.clerk.backend_api.models.operations.CreateSessionRequestBody;
 import com.clerk.backend_api.models.operations.CreateUserRequestBody;
 import com.clerk.backend_api.models.operations.CreateUserResponse;
+import com.clerk.backend_api.models.operations.GetUserListResponse;
 import com.clerk.backend_api.models.operations.UpdateUserRequestBody;
 import com.example.echo_api.config.ClerkConfig;
 import com.example.echo_api.exception.custom.internalserver.ClerkException;
@@ -44,6 +45,16 @@ public class ClerkTestUtils {
     @Autowired
     private Clerk clerk;
 
+    public void deleteAllExistingUsers() {
+        try {
+            GetUserListResponse res = clerk.users().list().call();
+            List<User> users = res.userList().orElseThrow();
+            users.forEach(this::deleteUser);
+        } catch (Exception ex) {
+            throw new RuntimeException("There was an issue cleaning the Clerk user db: " + ex.getMessage());
+        }
+    }
+
     public ClerkUser createUser(String email, String username) {
         CreateUserRequestBody request = CreateUserRequestBody.builder()
             .emailAddress(List.of(email))
@@ -56,14 +67,6 @@ public class ClerkTestUtils {
             return ClerkUserMapper.fromSDK(user);
         } catch (Exception ex) {
             throw new RuntimeException("Could not create Clerk user: " + username);
-        }
-    }
-
-    public void deleteUser(String clerkUserId) {
-        try {
-            clerk.users().delete(clerkUserId);
-        } catch (Exception ex) {
-            throw new RuntimeException("Could not delete Clerk user: " + clerkUserId);
         }
     }
 
@@ -96,6 +99,16 @@ public class ClerkTestUtils {
             return createTokenResponse.object().get().jwt().orElseThrow();
         } catch (Exception ex) {
             throw new RuntimeException("Could not generate token for Clerk user: " + clerkUserId);
+        }
+    }
+
+    // ---- helpers ----
+
+    private void deleteUser(User user) {
+        try {
+            clerk.users().delete(user.id().get());
+        } catch (Exception ex) {
+            throw new RuntimeException("Could not delete Clerk user: " + user.username().get());
         }
     }
 

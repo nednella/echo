@@ -2,7 +2,6 @@ package com.example.echo_api.testing.support;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -90,6 +89,7 @@ public abstract class AbstractIntegrationTest {
      */
     @BeforeAll
     void integrationTestSetup() {
+        clerkTestUtils.deleteAllExistingUsers(); // begin with a clean user db
         authUser = createTestUser("test1@echo.app", AUTH_USER_USERNAME);
         mockUser = createTestUser("test2@echo.app", MOCK_USER_USERNAME);
 
@@ -99,19 +99,6 @@ public abstract class AbstractIntegrationTest {
         authenticatedClient = authenticatedClient.mutate()
             .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token)
             .build();
-    }
-
-    /**
-     * Clean up the integration test environment:
-     * 
-     * <ul>
-     * <li>Remove any Clerk users that were created as part of the test suite
-     * </ul>
-     */
-    @AfterAll
-    void integrationTestCleanup() {
-        clerkTestUtils.deleteUser(authUser.getExternalId());
-        clerkTestUtils.deleteUser(mockUser.getExternalId());
     }
 
     /**
