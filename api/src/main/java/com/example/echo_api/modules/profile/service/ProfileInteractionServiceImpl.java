@@ -1,4 +1,4 @@
-package com.example.echo_api.service.profile.interaction;
+package com.example.echo_api.modules.profile.service;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -11,7 +11,6 @@ import com.example.echo_api.exception.custom.conflict.SelfActionException;
 import com.example.echo_api.persistence.model.follow.Follow;
 import com.example.echo_api.persistence.repository.FollowRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
-import com.example.echo_api.service.profile.BaseProfileService;
 import com.example.echo_api.shared.service.SessionService;
 
 /**

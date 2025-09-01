@@ -1,4 +1,4 @@
-package com.example.echo_api.unit.service.profile;
+package com.example.echo_api.modules.profile.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -16,8 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
-import com.example.echo_api.service.profile.management.ProfileManagementService;
-import com.example.echo_api.service.profile.management.ProfileManagementServiceImpl;
 import com.example.echo_api.shared.service.SessionService;
 
 /**

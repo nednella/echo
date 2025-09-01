@@ -1,4 +1,4 @@
-package com.example.echo_api.unit.service.profile;
+package com.example.echo_api.modules.profile.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -25,8 +25,6 @@ import com.example.echo_api.persistence.dto.response.profile.SimplifiedProfileDT
 import com.example.echo_api.persistence.mapper.PageMapper;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
-import com.example.echo_api.service.profile.view.ProfileViewService;
-import com.example.echo_api.service.profile.view.ProfileViewServiceImpl;
 import com.example.echo_api.shared.service.SessionService;
 import com.example.echo_api.util.OffsetLimitRequest;
 

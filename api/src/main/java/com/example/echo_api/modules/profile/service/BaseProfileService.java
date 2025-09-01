@@ -1,4 +1,4 @@
-package com.example.echo_api.service.profile;
+package com.example.echo_api.modules.profile.service;
 
 import java.util.UUID;
 

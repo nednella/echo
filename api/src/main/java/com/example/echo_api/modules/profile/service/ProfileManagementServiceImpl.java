@@ -1,11 +1,10 @@
-package com.example.echo_api.service.profile.management;
+package com.example.echo_api.modules.profile.service;
 
 import org.springframework.stereotype.Service;
 
 import com.example.echo_api.persistence.dto.request.profile.UpdateProfileDTO;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.ProfileRepository;
-import com.example.echo_api.service.profile.BaseProfileService;
 import com.example.echo_api.shared.service.SessionService;
 
 /**

@@ -1,4 +1,4 @@
-package com.example.echo_api.unit.service.profile;
+package com.example.echo_api.modules.profile.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -21,8 +21,6 @@ import com.example.echo_api.persistence.model.follow.Follow;
 import com.example.echo_api.persistence.model.profile.Profile;
 import com.example.echo_api.persistence.repository.FollowRepository;
 import com.example.echo_api.persistence.repository.ProfileRepository;
-import com.example.echo_api.service.profile.interaction.ProfileInteractionService;
-import com.example.echo_api.service.profile.interaction.ProfileInteractionServiceImpl;
 import com.example.echo_api.shared.service.SessionService;
 
 /**
