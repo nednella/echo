@@ -1,6 +1,6 @@
 package com.example.echo_api.shared.validation.validators;
 
-import com.example.echo_api.shared.constants.PaginationConstraints;
+import com.example.echo_api.shared.constant.PaginationConstraints;
 import com.example.echo_api.shared.validation.annotations.Offset;
 
 import jakarta.validation.ConstraintValidator;

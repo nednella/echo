@@ -1,7 +1,7 @@
 package com.example.echo_api.modules.profile.dto.request;
 
 import com.example.echo_api.config.ValidationMessageConfig;
-import com.example.echo_api.modules.post.constants.PostConstraints;
+import com.example.echo_api.modules.post.constant.PostConstraints;
 
 import jakarta.validation.constraints.Size;
 
