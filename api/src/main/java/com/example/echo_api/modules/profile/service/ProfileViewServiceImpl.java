@@ -22,7 +22,7 @@ import jakarta.servlet.http.HttpServletRequest;
  * presentation operations.
  */
 @Service
-public class ProfileViewServiceImpl extends BaseProfileService implements ProfileViewService {
+class ProfileViewServiceImpl extends BaseProfileService implements ProfileViewService {
 
     private final HttpServletRequest httpServletRequest;
 

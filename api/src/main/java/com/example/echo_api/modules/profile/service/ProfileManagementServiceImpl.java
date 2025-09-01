@@ -12,7 +12,7 @@ import com.example.echo_api.shared.service.SessionService;
  * information related to the authenticated user.
  */
 @Service
-public class ProfileManagementServiceImpl extends BaseProfileService implements ProfileManagementService {
+class ProfileManagementServiceImpl extends BaseProfileService implements ProfileManagementService {
 
     // @formatter:off
     public ProfileManagementServiceImpl(

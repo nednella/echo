@@ -19,7 +19,7 @@ import com.example.echo_api.shared.service.SessionService;
  */
 @Service
 @Transactional // TODO: remove all class-level transactional
-public class ProfileInteractionServiceImpl extends BaseProfileService implements ProfileInteractionService {
+class ProfileInteractionServiceImpl extends BaseProfileService implements ProfileInteractionService {
 
     private final FollowRepository followRepository;
 

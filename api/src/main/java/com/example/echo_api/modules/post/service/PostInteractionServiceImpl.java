@@ -17,7 +17,7 @@ import com.example.echo_api.shared.service.SessionService;
  * and {@link Post} entities.
  */
 @Service
-public class PostInteractionServiceImpl extends BasePostService implements PostInteractionService {
+class PostInteractionServiceImpl extends BasePostService implements PostInteractionService {
 
     private final PostLikeRepository likeRepository;
 

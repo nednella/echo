@@ -23,7 +23,7 @@ import jakarta.servlet.http.HttpServletRequest;
  * operations associated with singular and paginated post objects.
  */
 @Service
-public class PostViewServiceImpl extends BasePostService implements PostViewService {
+class PostViewServiceImpl extends BasePostService implements PostViewService {
 
     private final ProfileRepository profileRepository;
 

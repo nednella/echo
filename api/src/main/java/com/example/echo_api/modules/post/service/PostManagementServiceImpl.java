@@ -23,7 +23,7 @@ import com.example.echo_api.util.PostEntityExtractor;
  * information related to the authenticated user.
  */
 @Service
-public class PostManagementServiceImpl extends BasePostService implements PostManagementService {
+class PostManagementServiceImpl extends BasePostService implements PostManagementService {
 
     private final PostEntityRepository postEntityRepository;
 

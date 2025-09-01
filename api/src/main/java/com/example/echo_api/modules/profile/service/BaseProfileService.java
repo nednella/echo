@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
  * {@link Profile} entities.
  */
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class BaseProfileService {
+abstract class BaseProfileService {
 
     protected final SessionService sessionService;
     protected final ProfileRepository profileRepository;

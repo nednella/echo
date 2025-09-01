@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
  * {@link Post} entities.
  */
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class BasePostService {
+class BasePostService {
 
     protected final SessionService sessionService;
     protected final PostRepository postRepository;
