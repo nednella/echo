@@ -21,7 +21,7 @@ class ClerkSyncServiceImpl implements ClerkSyncService {
 
     @Override
     public User ingestUserUpserted(ClerkUser user) {
-        return userService.upsertFromExternalSource(user.externalId(), user.username(), user.imageUrl());
+        return userService.upsertFromExternalSource(user.id(), user.username(), user.imageUrl());
     }
 
     @Override
