@@ -1,4 +1,4 @@
-package com.example.echo_api.security;
+package com.example.echo_api.config;
 
 import java.util.List;
 

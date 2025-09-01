@@ -1,4 +1,4 @@
-package com.example.echo_api.security;
+package com.example.echo_api.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +11,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 
+import com.example.echo_api.security.ClerkOnboardingFilter;
+import com.example.echo_api.security.JwtAccessDeniedHandler;
+import com.example.echo_api.security.JwtAuthenticationEntryPoint;
 import com.example.echo_api.shared.constants.ApiRoutes;
 
 import lombok.RequiredArgsConstructor;
