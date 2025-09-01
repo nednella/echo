@@ -22,8 +22,8 @@ import com.example.echo_api.exception.custom.badrequest.DeserializationException
 import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
 import com.example.echo_api.modules.clerk.service.ClerkOnboardingService;
 import com.example.echo_api.modules.clerk.service.ClerkWebhookService;
+import com.example.echo_api.modules.user.entity.User;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
-import com.example.echo_api.persistence.model.user.User;
 
 /**
  * Unit test class for {@link ClerkController}.

@@ -1,7 +1,7 @@
 package com.example.echo_api.modules.clerk.service;
 
 import com.example.echo_api.exception.custom.internalserver.ClerkException;
-import com.example.echo_api.persistence.model.user.User;
+import com.example.echo_api.modules.user.entity.User;
 
 public interface ClerkOnboardingService {
 

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.echo_api.modules.clerk.dto.ClerkUser;
-import com.example.echo_api.persistence.model.user.User;
+import com.example.echo_api.modules.user.entity.User;
 
 import lombok.RequiredArgsConstructor;
 

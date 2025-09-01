@@ -18,8 +18,8 @@ import com.example.echo_api.modules.profile.dto.ProfileDTO;
 import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.entity.Follow;
 import com.example.echo_api.modules.profile.entity.Profile;
-import com.example.echo_api.persistence.model.user.User;
-import com.example.echo_api.persistence.repository.UserRepository;
+import com.example.echo_api.modules.user.entity.User;
+import com.example.echo_api.modules.user.repository.UserRepository;
 import com.example.echo_api.util.OffsetLimitRequest;
 
 /**

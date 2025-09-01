@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service;
 
 import com.clerk.backend_api.Clerk;
 import com.example.echo_api.modules.clerk.dto.ClerkUser;
-import com.example.echo_api.persistence.model.user.User;
-import com.example.echo_api.service.user.UserService;
+import com.example.echo_api.modules.user.entity.User;
+import com.example.echo_api.modules.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 

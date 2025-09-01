@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.modules.clerk.service.ClerkDevService;
-import com.example.echo_api.persistence.model.user.User;
+import com.example.echo_api.modules.user.entity.User;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,4 +1,4 @@
-package com.example.echo_api.integration.service.user;
+package com.example.echo_api.modules.user.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -9,9 +9,8 @@ import org.springframework.context.annotation.Import;
 import com.example.echo_api.integration.util.RepositoryTest;
 import com.example.echo_api.modules.profile.entity.Profile;
 import com.example.echo_api.modules.profile.repository.ProfileRepository;
-import com.example.echo_api.persistence.model.user.User;
-import com.example.echo_api.persistence.repository.UserRepository;
-import com.example.echo_api.service.user.UserServiceImpl;
+import com.example.echo_api.modules.user.entity.User;
+import com.example.echo_api.modules.user.repository.UserRepository;
 
 /**
  * Integration test class for {@link UserServiceImpl}.

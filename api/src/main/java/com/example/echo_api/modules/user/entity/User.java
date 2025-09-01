@@ -1,4 +1,4 @@
-package com.example.echo_api.persistence.model.user;
+package com.example.echo_api.modules.user.entity;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -56,7 +56,7 @@ public class User {
      * 
      * @param externalId the unique identifier from the external source
      * @return new {@link User} instance
-     * @throws IllegalArgumentException If {@code externalId} is null
+     * @throws IllegalArgumentException if {@code externalId} is null
      */
     public static User fromExternalSource(String externalId) {
         return User.builder()
@@ -116,9 +116,9 @@ public class User {
      * <p>
      * Two equal {@link User} objects will always generate an equal
      * {@code hashCode}, but two equal hashcodes do not guarantee that the
-     * {@link User} objects are also equal.
+     * {@link User} objects are also equal
      * 
-     * @return hashcode value based on the externalId
+     * @return hashcode value based on {@code externalId}
      */
     @Override
     public int hashCode() {

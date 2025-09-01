@@ -22,7 +22,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import com.example.echo_api.integration.util.ClerkTestUtils.Template;
 import com.example.echo_api.modules.clerk.dto.ClerkUser;
 import com.example.echo_api.modules.clerk.service.ClerkDevService;
-import com.example.echo_api.persistence.model.user.User;
+import com.example.echo_api.modules.user.entity.User;
 
 /**
  * Base class for full-stack integration tests.

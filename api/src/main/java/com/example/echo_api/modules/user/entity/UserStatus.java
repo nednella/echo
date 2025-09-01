@@ -1,4 +1,4 @@
-package com.example.echo_api.persistence.model.user;
+package com.example.echo_api.modules.user.entity;
 
 public enum UserStatus {
     ACTIVE,

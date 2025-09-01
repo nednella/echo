@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.echo_api.modules.clerk.dto.ClerkUser;
-import com.example.echo_api.persistence.model.user.User;
+import com.example.echo_api.modules.user.entity.User;
 import com.example.echo_api.shared.service.SessionService;
 
 /**

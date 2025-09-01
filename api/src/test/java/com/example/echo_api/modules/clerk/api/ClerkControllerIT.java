@@ -8,7 +8,7 @@ import org.springframework.http.HttpHeaders;
 import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.integration.util.ClerkTestUtils.Template;
-import com.example.echo_api.persistence.model.user.User;
+import com.example.echo_api.modules.user.entity.User;
 
 /**
  * Integration test class for {@link ClerkController}.
