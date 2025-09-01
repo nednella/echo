@@ -1,4 +1,4 @@
-package com.example.echo_api.unit.service.post;
+package com.example.echo_api.modules.post.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -18,8 +18,6 @@ import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.model.post.Post;
 import com.example.echo_api.persistence.repository.PostLikeRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
-import com.example.echo_api.service.post.interaction.PostInteractionService;
-import com.example.echo_api.service.post.interaction.PostInteractionServiceImpl;
 import com.example.echo_api.shared.service.SessionService;
 
 /**

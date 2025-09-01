@@ -1,4 +1,4 @@
-package com.example.echo_api.service.post.management;
+package com.example.echo_api.modules.post.service;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,7 +15,6 @@ import com.example.echo_api.persistence.model.post.Post;
 import com.example.echo_api.persistence.model.post.entity.PostEntity;
 import com.example.echo_api.persistence.repository.PostEntityRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
-import com.example.echo_api.service.post.BasePostService;
 import com.example.echo_api.shared.service.SessionService;
 import com.example.echo_api.util.PostEntityExtractor;
 
@@ -59,7 +58,7 @@ public class PostManagementServiceImpl extends BasePostService implements PostMa
         Optional<Post> optPost = postRepository.findById(id);
 
         if (optPost.isEmpty())
-            return; // treat not found as idempotent operation
+            return; // treat not found as idempotent
 
         Post post = optPost.get();
         validatePostOwnership(authenticatedUserId, post.getAuthorId());
@@ -69,8 +68,8 @@ public class PostManagementServiceImpl extends BasePostService implements PostMa
     /**
      * Validate that a {@link Post} exists by the supplied {@code id}.
      * 
-     * @param parentId The id of the post the validate.
-     * @throws InvalidParentIdException If no post by that id exists.
+     * @param parentId the id of the post the validate
+     * @throws InvalidParentIdException if no post by that id exists
      */
     private void validatePostExistsByParentId(UUID parentId) throws InvalidParentIdException {
         if (parentId == null)
@@ -85,10 +84,10 @@ public class PostManagementServiceImpl extends BasePostService implements PostMa
      * Validate that the authenticated user is allowed to perform the requested
      * action on the given post.
      * 
-     * @param authenticatedUserId The authenticated user id.
-     * @param authorId            The author id of the post in question.
-     * @throws ResourceOwnershipException If the requesting user and the resource
-     *                                    owner do not match.
+     * @param authenticatedUserId the authenticated user id
+     * @param authorId            the author id of the post in question
+     * @throws ResourceOwnershipException if the requesting user and the resource
+     *                                    owner do not match
      */
     private void validatePostOwnership(UUID authenticatedUserId, UUID authorId) throws ResourceOwnershipException {
         if (!Objects.equals(authenticatedUserId, authorId)) {

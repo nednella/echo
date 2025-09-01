@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.echo_api.constants.ApiRoutes;
-import com.example.echo_api.service.post.interaction.PostInteractionService;
+import com.example.echo_api.modules.post.service.PostInteractionService;
 
 import lombok.RequiredArgsConstructor;
 

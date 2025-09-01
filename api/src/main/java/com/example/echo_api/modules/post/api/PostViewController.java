@@ -8,9 +8,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.echo_api.constants.ApiRoutes;
+import com.example.echo_api.modules.post.service.PostViewService;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
 import com.example.echo_api.persistence.dto.response.post.PostDTO;
-import com.example.echo_api.service.post.view.PostViewService;
 import com.example.echo_api.util.OffsetLimitRequest;
 import com.example.echo_api.validation.pagination.annotations.Limit;
 import com.example.echo_api.validation.pagination.annotations.Offset;

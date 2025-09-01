@@ -1,4 +1,4 @@
-package com.example.echo_api.service.post.interaction;
+package com.example.echo_api.modules.post.service;
 
 import java.util.UUID;
 
@@ -10,7 +10,6 @@ import com.example.echo_api.persistence.model.post.Post;
 import com.example.echo_api.persistence.model.post.like.PostLike;
 import com.example.echo_api.persistence.repository.PostLikeRepository;
 import com.example.echo_api.persistence.repository.PostRepository;
-import com.example.echo_api.service.post.BasePostService;
 import com.example.echo_api.shared.service.SessionService;
 
 /**

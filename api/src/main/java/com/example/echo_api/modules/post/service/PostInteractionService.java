@@ -1,4 +1,4 @@
-package com.example.echo_api.service.post.interaction;
+package com.example.echo_api.modules.post.service;
 
 import java.util.UUID;
 
@@ -10,17 +10,17 @@ public interface PostInteractionService {
     /**
      * Like a post by {@code id}.
      * 
-     * @param id The id of the post to like.
-     * @throws ResourceNotFoundException If no post by that id exists.
-     * @throws AlreadyLikedException     If the authenticated user already likes
-     *                                   the post with that id.
+     * @param id the id of the post to like
+     * @throws ResourceNotFoundException if no post by that id exists
+     * @throws AlreadyLikedException     if the authenticated user already likes the
+     *                                   post with that id
      */
     public void like(UUID id);
 
     /**
      * Unlike a post by {@code id}. This operation is idempotent.
      * 
-     * @param id The id of the post to unlike.
+     * @param id the id of the post to unlike
      */
     public void unlike(UUID id);
 

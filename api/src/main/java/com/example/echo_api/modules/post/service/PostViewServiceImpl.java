@@ -1,4 +1,4 @@
-package com.example.echo_api.service.post.view;
+package com.example.echo_api.modules.post.service;
 
 import java.util.UUID;
 
@@ -14,7 +14,6 @@ import com.example.echo_api.persistence.dto.response.post.PostDTO;
 import com.example.echo_api.persistence.mapper.PageMapper;
 import com.example.echo_api.persistence.model.post.Post;
 import com.example.echo_api.persistence.repository.PostRepository;
-import com.example.echo_api.service.post.BasePostService;
 import com.example.echo_api.shared.service.SessionService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -129,9 +128,9 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
      * Private method for obtaining a {@link Profile} via {@code id} from
      * {@link ProfileRepository}.
      * 
-     * @param id The id of the profile.
-     * @return The {@link Profile} entity.
-     * @throws ResourceNotFoundException If no profile by that id exists.
+     * @param id the id of the profile
+     * @return the {@link Profile} entity
+     * @throws ResourceNotFoundException if no profile by that id exists
      */
     private Profile getProfileEntityById(UUID id) throws ResourceNotFoundException {
         return profileRepository.findById(id)
@@ -142,7 +141,7 @@ public class PostViewServiceImpl extends BasePostService implements PostViewServ
      * Private method for obtaining the current HTTP request URI, to be returned as
      * part of a {@link PageDTO} response.
      * 
-     * @return The current request's URI as a string.
+     * @return the current request URI as a string
      */
     private String getCurrentRequestUri() {
         return httpServletRequest.getRequestURI();

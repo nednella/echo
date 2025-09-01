@@ -25,6 +25,7 @@ import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.config.ValidationMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
+import com.example.echo_api.modules.post.service.PostViewService;
 import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
@@ -33,7 +34,6 @@ import com.example.echo_api.persistence.dto.response.post.PostEntitiesDTO;
 import com.example.echo_api.persistence.dto.response.post.PostMetricsDTO;
 import com.example.echo_api.persistence.dto.response.post.PostRelationshipDTO;
 import com.example.echo_api.persistence.mapper.PageMapper;
-import com.example.echo_api.service.post.view.PostViewService;
 import com.example.echo_api.util.OffsetLimitRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

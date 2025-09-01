@@ -1,4 +1,4 @@
-package com.example.echo_api.service.post;
+package com.example.echo_api.modules.post.service;
 
 import java.util.UUID;
 
@@ -28,9 +28,9 @@ public class BasePostService {
      * Protected method for obtaining a {@link Post} via it's {@code id} from
      * {@link PostRepository}.
      * 
-     * @param id The id of the post.
-     * @return The {@link Post} entity.
-     * @throws ResourceNotFoundException If no post by that id exists.
+     * @param id the id of the post
+     * @return the {@link Post} entity
+     * @throws ResourceNotFoundException If no post by that id exists
      */
     protected Post getPostEntityById(UUID id) {
         return postRepository.findById(id)
