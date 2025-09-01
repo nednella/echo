@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.modules.profile.dto.response.ProfileDTO;
 import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.service.ProfileViewService;
+import com.example.echo_api.shared.constants.ApiRoutes;
 import com.example.echo_api.shared.dto.PageDTO;
 import com.example.echo_api.shared.validation.pagination.annotations.Limit;
 import com.example.echo_api.shared.validation.pagination.annotations.Offset;

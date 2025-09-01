@@ -12,13 +12,13 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 
 import com.example.echo_api.config.ErrorMessageConfig;
-import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.modules.post.dto.response.PostDTO;
 import com.example.echo_api.modules.post.entity.Post;
 import com.example.echo_api.modules.post.entity.PostLike;
 import com.example.echo_api.modules.post.repository.PostEntityRepository;
 import com.example.echo_api.modules.post.repository.PostLikeRepository;
 import com.example.echo_api.modules.post.repository.PostRepository;
+import com.example.echo_api.shared.constants.ApiRoutes;
 import com.example.echo_api.shared.dto.ErrorDTO;
 import com.example.echo_api.shared.dto.PageDTO;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;

@@ -11,7 +11,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 
-import com.example.echo_api.constants.ApiRoutes;
+import com.example.echo_api.shared.constants.ApiRoutes;
 
 import lombok.RequiredArgsConstructor;
 

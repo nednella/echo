@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.modules.clerk.service.ClerkDevService;
 import com.example.echo_api.modules.user.entity.User;
+import com.example.echo_api.shared.constants.ApiRoutes;
 
 import lombok.RequiredArgsConstructor;
 

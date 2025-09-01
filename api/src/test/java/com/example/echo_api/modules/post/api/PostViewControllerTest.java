@@ -23,7 +23,6 @@ import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.config.ValidationMessageConfig;
-import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.modules.post.dto.response.PostDTO;
 import com.example.echo_api.modules.post.dto.response.PostEntitiesDTO;
@@ -31,6 +30,7 @@ import com.example.echo_api.modules.post.dto.response.PostMetricsDTO;
 import com.example.echo_api.modules.post.dto.response.PostRelationshipDTO;
 import com.example.echo_api.modules.post.service.PostViewService;
 import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
+import com.example.echo_api.shared.constants.ApiRoutes;
 import com.example.echo_api.shared.dto.ErrorDTO;
 import com.example.echo_api.shared.dto.PageDTO;
 import com.example.echo_api.shared.mapper.PageMapper;
