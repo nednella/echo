@@ -1,4 +1,4 @@
-package com.example.echo_api.integration.controller.post;
+package com.example.echo_api.modules.post.api;
 
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.config.ValidationMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
-import com.example.echo_api.controller.post.PostManagementController;
 import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.persistence.dto.request.post.CreatePostDTO;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;

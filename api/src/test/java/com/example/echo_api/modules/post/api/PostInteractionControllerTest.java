@@ -1,4 +1,4 @@
-package com.example.echo_api.unit.controller.post;
+package com.example.echo_api.modules.post.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -15,7 +15,6 @@ import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
-import com.example.echo_api.controller.post.PostInteractionController;
 import com.example.echo_api.exception.custom.conflict.AlreadyLikedException;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;

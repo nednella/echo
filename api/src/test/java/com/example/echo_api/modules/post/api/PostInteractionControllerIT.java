@@ -1,4 +1,4 @@
-package com.example.echo_api.integration.controller.post;
+package com.example.echo_api.modules.post.api;
 
 import java.util.UUID;
 
@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
-import com.example.echo_api.controller.post.PostInteractionController;
 import com.example.echo_api.integration.util.IntegrationTest;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.persistence.model.post.Post;
