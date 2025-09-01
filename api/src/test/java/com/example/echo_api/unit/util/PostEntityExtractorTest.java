@@ -11,8 +11,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.example.echo_api.persistence.model.post.entity.PostEntity;
-import com.example.echo_api.persistence.model.post.entity.PostEntityType;
+import com.example.echo_api.modules.post.entity.PostEntity;
+import com.example.echo_api.modules.post.entity.PostEntityType;
 import com.example.echo_api.util.PostEntityExtractor;
 
 /**

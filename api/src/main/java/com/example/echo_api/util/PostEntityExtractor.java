@@ -8,8 +8,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.example.echo_api.exception.custom.internalserver.TwitterTextEnumException;
-import com.example.echo_api.persistence.model.post.entity.PostEntity;
-import com.example.echo_api.persistence.model.post.entity.PostEntityType;
+import com.example.echo_api.modules.post.entity.PostEntity;
+import com.example.echo_api.modules.post.entity.PostEntityType;
 import com.twitter.twittertext.Extractor;
 
 import lombok.NoArgsConstructor;

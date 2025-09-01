@@ -14,14 +14,14 @@ import org.springframework.http.HttpStatus;
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.constants.ApiRoutes;
 import com.example.echo_api.integration.util.IntegrationTest;
+import com.example.echo_api.modules.post.dto.PostDTO;
+import com.example.echo_api.modules.post.entity.Post;
+import com.example.echo_api.modules.post.entity.PostLike;
+import com.example.echo_api.modules.post.repository.PostEntityRepository;
+import com.example.echo_api.modules.post.repository.PostLikeRepository;
+import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.persistence.dto.response.error.ErrorDTO;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
-import com.example.echo_api.persistence.dto.response.post.PostDTO;
-import com.example.echo_api.persistence.model.post.Post;
-import com.example.echo_api.persistence.model.post.like.PostLike;
-import com.example.echo_api.persistence.repository.PostEntityRepository;
-import com.example.echo_api.persistence.repository.PostLikeRepository;
-import com.example.echo_api.persistence.repository.PostRepository;
 import com.example.echo_api.util.PostEntityExtractor;
 
 /**

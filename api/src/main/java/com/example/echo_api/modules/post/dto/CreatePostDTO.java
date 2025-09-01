@@ -1,4 +1,4 @@
-package com.example.echo_api.persistence.dto.request.post;
+package com.example.echo_api.modules.post.dto;
 
 import java.util.UUID;
 
@@ -12,8 +12,8 @@ import jakarta.validation.constraints.Size;
 /**
  * Represents a request to create a post.
  * 
- * @param parentId the id of the parent post. Null if not a reply
- * @param text     tThe text content of the post. Required field
+ * @param parentId the id of the parent post, null if not a reply
+ * @param text     the text content of the post (required)
  */
 // @formatter:off
 public record CreatePostDTO(

@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.echo_api.exception.custom.conflict.AlreadyLikedException;
-import com.example.echo_api.persistence.model.post.Post;
-import com.example.echo_api.persistence.model.post.like.PostLike;
-import com.example.echo_api.persistence.repository.PostLikeRepository;
-import com.example.echo_api.persistence.repository.PostRepository;
+import com.example.echo_api.modules.post.entity.Post;
+import com.example.echo_api.modules.post.entity.PostLike;
+import com.example.echo_api.modules.post.repository.PostLikeRepository;
+import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.shared.service.SessionService;
 
 /**

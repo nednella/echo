@@ -1,12 +1,12 @@
-package com.example.echo_api.persistence.repository;
+package com.example.echo_api.modules.post.repository;
 
 import java.util.UUID;
 
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.example.echo_api.persistence.model.post.like.PostLike;
-import com.example.echo_api.persistence.model.post.like.PostLikePK;
+import com.example.echo_api.modules.post.entity.PostLike;
+import com.example.echo_api.modules.post.entity.PostLikePK;
 
 @Repository
 public interface PostLikeRepository extends ListCrudRepository<PostLike, PostLikePK> {

@@ -1,4 +1,4 @@
-package com.example.echo_api.persistence.dto.response.post;
+package com.example.echo_api.modules.post.dto;
 
 /**
  * Represents a standardised response format for post engagement metrics.
@@ -7,10 +7,8 @@ package com.example.echo_api.persistence.dto.response.post;
  * @param replies the number of replies the post has
  * @param shares  the number of shares the post has
  */
-// @formatter:off
 public record PostMetricsDTO(
     int likes,
     int replies
-    // int shares // TODO: implement post shares
+// int shares // TODO: implement post shares
 ) {}
-// @formatter:on

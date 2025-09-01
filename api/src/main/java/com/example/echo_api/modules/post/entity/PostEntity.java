@@ -1,4 +1,4 @@
-package com.example.echo_api.persistence.model.post.entity;
+package com.example.echo_api.modules.post.entity;
 
 import java.time.Instant;
 import java.util.Objects;

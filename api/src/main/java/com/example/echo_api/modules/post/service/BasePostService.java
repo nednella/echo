@@ -3,8 +3,8 @@ package com.example.echo_api.modules.post.service;
 import java.util.UUID;
 
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
-import com.example.echo_api.persistence.model.post.Post;
-import com.example.echo_api.persistence.repository.PostRepository;
+import com.example.echo_api.modules.post.entity.Post;
+import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.shared.service.SessionService;
 
 import lombok.AccessLevel;
@@ -25,12 +25,12 @@ public class BasePostService {
     }
 
     /**
-     * Protected method for obtaining a {@link Post} via it's {@code id} from
+     * Protected method for obtaining a {@link Post} via {@code id} from
      * {@link PostRepository}.
      * 
      * @param id the id of the post
      * @return the {@link Post} entity
-     * @throws ResourceNotFoundException If no post by that id exists
+     * @throws ResourceNotFoundException if no post by that id exists
      */
     protected Post getPostEntityById(UUID id) {
         return postRepository.findById(id)

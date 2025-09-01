@@ -15,9 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.echo_api.exception.custom.conflict.AlreadyLikedException;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
-import com.example.echo_api.persistence.model.post.Post;
-import com.example.echo_api.persistence.repository.PostLikeRepository;
-import com.example.echo_api.persistence.repository.PostRepository;
+import com.example.echo_api.modules.post.entity.Post;
+import com.example.echo_api.modules.post.repository.PostLikeRepository;
+import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.shared.service.SessionService;
 
 /**

@@ -1,4 +1,4 @@
-package com.example.echo_api.persistence.repository.custom;
+package com.example.echo_api.modules.post.repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,12 +13,12 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import com.example.echo_api.modules.post.dto.PostDTO;
+import com.example.echo_api.modules.post.dto.PostEntitiesDTO;
+import com.example.echo_api.modules.post.dto.PostMetricsDTO;
+import com.example.echo_api.modules.post.dto.PostRelationshipDTO;
 import com.example.echo_api.modules.profile.dto.ProfileRelationshipDTO;
 import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
-import com.example.echo_api.persistence.dto.response.post.PostDTO;
-import com.example.echo_api.persistence.dto.response.post.PostEntitiesDTO;
-import com.example.echo_api.persistence.dto.response.post.PostMetricsDTO;
-import com.example.echo_api.persistence.dto.response.post.PostRelationshipDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;

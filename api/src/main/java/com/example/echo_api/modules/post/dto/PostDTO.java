@@ -1,4 +1,4 @@
-package com.example.echo_api.persistence.dto.response.post;
+package com.example.echo_api.modules.post.dto;
 
 import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,7 +20,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param entities       the entities related to the post text (e.g., urls, user
  *                       mentions, hashtags)
  */
-// @formatter:off
 public record PostDTO(
     String id,
     @JsonProperty("parent_id") String parentId,
@@ -32,4 +31,3 @@ public record PostDTO(
     PostRelationshipDTO relationship,
     PostEntitiesDTO entities
 ) {}
-// @formatter:on

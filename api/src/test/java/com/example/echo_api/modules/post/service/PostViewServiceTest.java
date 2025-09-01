@@ -18,17 +18,17 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
+import com.example.echo_api.modules.post.dto.PostDTO;
+import com.example.echo_api.modules.post.dto.PostEntitiesDTO;
+import com.example.echo_api.modules.post.dto.PostMetricsDTO;
+import com.example.echo_api.modules.post.dto.PostRelationshipDTO;
+import com.example.echo_api.modules.post.entity.Post;
+import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.modules.profile.dto.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.entity.Profile;
 import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
-import com.example.echo_api.persistence.dto.response.post.PostDTO;
-import com.example.echo_api.persistence.dto.response.post.PostEntitiesDTO;
-import com.example.echo_api.persistence.dto.response.post.PostMetricsDTO;
-import com.example.echo_api.persistence.dto.response.post.PostRelationshipDTO;
 import com.example.echo_api.persistence.mapper.PageMapper;
-import com.example.echo_api.persistence.model.post.Post;
-import com.example.echo_api.persistence.repository.PostRepository;
 import com.example.echo_api.shared.service.SessionService;
 import com.example.echo_api.util.OffsetLimitRequest;
 

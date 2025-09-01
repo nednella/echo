@@ -5,8 +5,8 @@ import java.util.UUID;
 import org.springframework.data.domain.Pageable;
 
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
+import com.example.echo_api.modules.post.dto.PostDTO;
 import com.example.echo_api.persistence.dto.response.pagination.PageDTO;
-import com.example.echo_api.persistence.dto.response.post.PostDTO;
 
 public interface PostViewService {
 
@@ -87,7 +87,7 @@ public interface PostViewService {
      * Fetch a {@link PageDTO} of {@link PostDTO} for posts from all users.
      * 
      * @param page the {@link Pageable} containing the pagination parameters
-     * @return s {@link PageDTO} of {@link PostDTO} for matches, otherwise empty
+     * @return a {@link PageDTO} of {@link PostDTO} for matches, otherwise empty
      */
     public PageDTO<PostDTO> getDiscoverPosts(Pageable page);
 
