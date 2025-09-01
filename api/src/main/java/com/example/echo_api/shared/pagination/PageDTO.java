@@ -1,4 +1,4 @@
-package com.example.echo_api.shared.dto;
+package com.example.echo_api.shared.pagination;
 
 import java.net.URI;
 import java.util.List;

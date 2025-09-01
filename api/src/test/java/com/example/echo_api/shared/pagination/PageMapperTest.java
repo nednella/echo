@@ -1,4 +1,4 @@
-package com.example.echo_api.shared.mapper;
+package com.example.echo_api.shared.pagination;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -10,9 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageImpl;
-
-import com.example.echo_api.shared.dto.PageDTO;
-import com.example.echo_api.util.OffsetLimitRequest;
 
 /**
  * Unit test class for {@link PageMapper}.

@@ -23,10 +23,10 @@ import com.example.echo_api.modules.profile.dto.response.ProfileMetricsDTO;
 import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.entity.Profile;
 import com.example.echo_api.modules.profile.repository.ProfileRepository;
-import com.example.echo_api.shared.dto.PageDTO;
-import com.example.echo_api.shared.mapper.PageMapper;
+import com.example.echo_api.shared.pagination.OffsetLimitRequest;
+import com.example.echo_api.shared.pagination.PageDTO;
+import com.example.echo_api.shared.pagination.PageMapper;
 import com.example.echo_api.shared.service.SessionService;
-import com.example.echo_api.util.OffsetLimitRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 

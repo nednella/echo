@@ -19,8 +19,8 @@ import com.example.echo_api.modules.profile.entity.Follow;
 import com.example.echo_api.modules.profile.entity.Profile;
 import com.example.echo_api.modules.user.entity.User;
 import com.example.echo_api.modules.user.repository.UserRepository;
+import com.example.echo_api.shared.pagination.OffsetLimitRequest;
 import com.example.echo_api.testing.support.AbstractRepositoryTest;
-import com.example.echo_api.util.OffsetLimitRequest;
 
 /**
  * Integration test class for {@link ProfileRepository}.

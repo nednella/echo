@@ -1,4 +1,4 @@
-package com.example.echo_api.util;
+package com.example.echo_api.shared.pagination;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.assertThrows;

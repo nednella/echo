@@ -1,4 +1,4 @@
-package com.example.echo_api.shared.mapper;
+package com.example.echo_api.shared.pagination;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -6,8 +6,6 @@ import java.net.URI;
 
 import org.springframework.data.domain.Page;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import com.example.echo_api.shared.dto.PageDTO;
 
 import lombok.NoArgsConstructor;
 

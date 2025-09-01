@@ -20,7 +20,7 @@ import com.example.echo_api.modules.post.repository.PostLikeRepository;
 import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.shared.constants.ApiRoutes;
 import com.example.echo_api.shared.dto.ErrorDTO;
-import com.example.echo_api.shared.dto.PageDTO;
+import com.example.echo_api.shared.pagination.PageDTO;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
 import com.example.echo_api.util.PostEntityExtractor;
 

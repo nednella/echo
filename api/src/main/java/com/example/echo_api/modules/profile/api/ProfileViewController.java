@@ -14,10 +14,10 @@ import com.example.echo_api.modules.profile.dto.response.ProfileDTO;
 import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.service.ProfileViewService;
 import com.example.echo_api.shared.constants.ApiRoutes;
-import com.example.echo_api.shared.dto.PageDTO;
+import com.example.echo_api.shared.pagination.OffsetLimitRequest;
+import com.example.echo_api.shared.pagination.PageDTO;
 import com.example.echo_api.shared.validation.pagination.annotations.Limit;
 import com.example.echo_api.shared.validation.pagination.annotations.Offset;
-import com.example.echo_api.util.OffsetLimitRequest;
 
 import lombok.RequiredArgsConstructor;
 
