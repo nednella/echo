@@ -14,14 +14,14 @@ import org.springframework.http.HttpStatus;
  * @param path      the request path that triggered the error
  */
 public record ErrorDTO(
-    String timestamp,
+    Instant timestamp,
     int status,
     String message,
     String path
 ) {
 
     public ErrorDTO(HttpStatus status, String message, String path) {
-        this(Instant.now().toString(), status.value(), message, path);
+        this(Instant.now(), status.value(), message, path);
     }
 
     /**
