@@ -10,10 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.modules.post.entity.Post;
 import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
 
 /**
@@ -57,7 +57,7 @@ class PostInteractionControllerIT extends AbstractIntegrationTest {
         // api: POST /api/v1/post/{id}/like ==> 404 Not Found : ErrorDTO
         UUID nonExistingPostId = UUID.randomUUID();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null);
@@ -66,7 +66,7 @@ class PostInteractionControllerIT extends AbstractIntegrationTest {
             .uri(LIKE_PATH, nonExistingPostId)
             .exchange()
             .expectStatus().isNotFound()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
@@ -74,7 +74,7 @@ class PostInteractionControllerIT extends AbstractIntegrationTest {
         // api: POST /api/v1/post/{id}/like ==> 409 Conflict : ErrorDTO
         UUID postId = post.getId();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.CONFLICT,
             ErrorMessageConfig.Conflict.ALREADY_LIKED,
             null);
@@ -91,7 +91,7 @@ class PostInteractionControllerIT extends AbstractIntegrationTest {
             .uri(LIKE_PATH, postId)
             .exchange()
             .expectStatus().isEqualTo(409)
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test

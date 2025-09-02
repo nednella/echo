@@ -17,13 +17,13 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.exception.custom.badrequest.DeserializationException;
 import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
 import com.example.echo_api.modules.clerk.service.ClerkOnboardingService;
 import com.example.echo_api.modules.clerk.service.ClerkWebhookService;
 import com.example.echo_api.modules.user.entity.User;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 
 /**
  * Unit test class for {@link ClerkController}.
@@ -101,7 +101,7 @@ class ClerkControllerTest {
         doThrow(new WebhookVerificationException())
             .when(clerkWebhookService).verify(any(HttpHeaders.class), eq(WEBHOOK_PAYLOAD));
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.UNAUTHORIZED,
             ErrorMessageConfig.Unauthorised.INVALID_WEBHOOK_SIGNATURE,
             null);
@@ -113,7 +113,7 @@ class ClerkControllerTest {
 
         assertThat(response)
             .hasStatus(401)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(clerkWebhookService).verify(any(HttpHeaders.class), eq(WEBHOOK_PAYLOAD));
         verify(clerkWebhookService, never()).handleWebhook(WEBHOOK_PAYLOAD);
@@ -125,7 +125,7 @@ class ClerkControllerTest {
         doThrow(new DeserializationException("Unsupported event type: subscription.active"))
             .when(clerkWebhookService).handleWebhook(WEBHOOK_PAYLOAD);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             "Unsupported event type: subscription.active",
             null);
@@ -137,7 +137,7 @@ class ClerkControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(clerkWebhookService).verify(any(HttpHeaders.class), eq(WEBHOOK_PAYLOAD));
         verify(clerkWebhookService).handleWebhook(WEBHOOK_PAYLOAD);

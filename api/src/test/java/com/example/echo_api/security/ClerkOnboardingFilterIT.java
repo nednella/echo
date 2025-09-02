@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
 import com.example.echo_api.testing.support.ClerkTestUtils.Template;
 
@@ -28,7 +28,7 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
 
         assertThat(token).isNotBlank();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.FORBIDDEN,
             ErrorMessageConfig.Forbidden.ONBOARDED_CLAIM_MISSING,
             null);
@@ -38,7 +38,7 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
             .header(HttpHeaders.AUTHORIZATION, new StringBuilder("Bearer ").append(token).toString())
             .exchange()
             .expectStatus().isForbidden()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
@@ -48,7 +48,7 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
 
         assertThat(token).isNotBlank();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.FORBIDDEN,
             ErrorMessageConfig.Forbidden.ONBOARDED_CLAIM_MALFORMED,
             null);
@@ -58,7 +58,7 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
             .header(HttpHeaders.AUTHORIZATION, new StringBuilder("Bearer ").append(token).toString())
             .exchange()
             .expectStatus().isForbidden()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
@@ -68,7 +68,7 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
 
         assertThat(token).isNotBlank();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.FORBIDDEN,
             ErrorMessageConfig.Forbidden.ECHO_ID_CLAIM_MISSING,
             null);
@@ -78,7 +78,7 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
             .header(HttpHeaders.AUTHORIZATION, new StringBuilder("Bearer ").append(token).toString())
             .exchange()
             .expectStatus().isForbidden()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
@@ -88,7 +88,7 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
 
         assertThat(token).isNotBlank();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.FORBIDDEN,
             ErrorMessageConfig.Forbidden.ECHO_ID_CLAIM_MALFORMED,
             null);
@@ -98,7 +98,7 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
             .header(HttpHeaders.AUTHORIZATION, new StringBuilder("Bearer ").append(token).toString())
             .exchange()
             .expectStatus().isForbidden()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
@@ -108,7 +108,7 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
 
         assertThat(token).isNotBlank();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.FORBIDDEN,
             ErrorMessageConfig.Forbidden.ONBOARDING_NOT_COMPLETED,
             null);
@@ -118,7 +118,7 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
             .header(HttpHeaders.AUTHORIZATION, new StringBuilder("Bearer ").append(token).toString())
             .exchange()
             .expectStatus().isForbidden()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
 }

@@ -20,12 +20,12 @@ import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.config.ValidationMessageConfig;
+import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.exception.custom.badrequest.InvalidParentIdException;
 import com.example.echo_api.exception.custom.forbidden.ResourceOwnershipException;
 import com.example.echo_api.modules.post.dto.request.CreatePostDTO;
 import com.example.echo_api.modules.post.service.PostManagementService;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -79,7 +79,7 @@ class PostManagementControllerTest {
         CreatePostDTO post = new CreatePostDTO(null, text);
         String body = objectMapper.writeValueAsString(post);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -92,7 +92,7 @@ class PostManagementControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postManagementService, never()).create(post);
     }
@@ -105,7 +105,7 @@ class PostManagementControllerTest {
 
         doThrow(new InvalidParentIdException()).when(postManagementService).create(post);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -118,7 +118,7 @@ class PostManagementControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postManagementService).create(post);
     }
@@ -146,7 +146,7 @@ class PostManagementControllerTest {
 
         doThrow(new ResourceOwnershipException()).when(postManagementService).delete(id);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.FORBIDDEN,
             ErrorMessageConfig.Forbidden.RESOURCE_OWNERSHIP_REQUIRED,
             null);
@@ -157,7 +157,7 @@ class PostManagementControllerTest {
 
         assertThat(response)
             .hasStatus(403)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postManagementService).delete(id);
     }

@@ -22,6 +22,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.modules.post.dto.response.PostDTO;
 import com.example.echo_api.modules.post.dto.response.PostEntitiesDTO;
@@ -30,7 +31,6 @@ import com.example.echo_api.modules.post.dto.response.PostRelationshipDTO;
 import com.example.echo_api.modules.post.service.PostViewService;
 import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
 import com.example.echo_api.shared.pagination.PageDTO;
 import com.example.echo_api.shared.pagination.PageMapper;
@@ -102,7 +102,7 @@ class PostViewControllerTest {
 
         when(postViewService.getPostById(id)).thenThrow(new ResourceNotFoundException());
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null);
@@ -113,7 +113,7 @@ class PostViewControllerTest {
 
         assertThat(response)
             .hasStatus(404)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postViewService).getPostById(id);
     }
@@ -152,7 +152,7 @@ class PostViewControllerTest {
         int offset = -1;
         int limit = 20;
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -165,7 +165,7 @@ class PostViewControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postViewService, never()).getRepliesById(eq(id), any(Pageable.class));
     }
@@ -177,7 +177,7 @@ class PostViewControllerTest {
         int offset = 0;
         int limit = 51;
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -190,7 +190,7 @@ class PostViewControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postViewService, never()).getRepliesById(eq(id), any(Pageable.class));
     }
@@ -205,7 +205,7 @@ class PostViewControllerTest {
         when(postViewService.getRepliesById(eq(id), any(Pageable.class)))
             .thenThrow(new ResourceNotFoundException());
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null);
@@ -218,7 +218,7 @@ class PostViewControllerTest {
 
         assertThat(response)
             .hasStatus(404)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postViewService).getRepliesById(eq(id), any(Pageable.class));
     }
@@ -255,7 +255,7 @@ class PostViewControllerTest {
         int offset = -1;
         int limit = 20;
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -268,7 +268,7 @@ class PostViewControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postViewService, never()).getHomepagePosts(any(Pageable.class));
     }
@@ -279,7 +279,7 @@ class PostViewControllerTest {
         int offset = 0;
         int limit = 51;
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -292,7 +292,7 @@ class PostViewControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postViewService, never()).getHomepagePosts(any(Pageable.class));
     }
@@ -329,7 +329,7 @@ class PostViewControllerTest {
         int offset = -1;
         int limit = 20;
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -342,7 +342,7 @@ class PostViewControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postViewService, never()).getDiscoverPosts(any(Pageable.class));
     }
@@ -353,7 +353,7 @@ class PostViewControllerTest {
         int offset = 0;
         int limit = 51;
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -366,7 +366,7 @@ class PostViewControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postViewService, never()).getDiscoverPosts(any(Pageable.class));
     }
@@ -405,7 +405,7 @@ class PostViewControllerTest {
         int offset = -1;
         int limit = 20;
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -418,7 +418,7 @@ class PostViewControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postViewService, never()).getPostsByAuthorId(eq(id), any(Pageable.class));
     }
@@ -430,7 +430,7 @@ class PostViewControllerTest {
         int offset = 0;
         int limit = 51;
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -443,7 +443,7 @@ class PostViewControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postViewService, never()).getPostsByAuthorId(eq(id), any(Pageable.class));
     }
@@ -458,7 +458,7 @@ class PostViewControllerTest {
         when(postViewService.getPostsByAuthorId(eq(id), any(Pageable.class)))
             .thenThrow(new ResourceNotFoundException());
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null);
@@ -471,7 +471,7 @@ class PostViewControllerTest {
 
         assertThat(response)
             .hasStatus(404)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postViewService).getPostsByAuthorId(eq(id), any(Pageable.class));
     }
@@ -510,7 +510,7 @@ class PostViewControllerTest {
         int offset = -1;
         int limit = 20;
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -523,7 +523,7 @@ class PostViewControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postViewService, never()).getRepliesByAuthorId(eq(id), any(Pageable.class));
     }
@@ -535,7 +535,7 @@ class PostViewControllerTest {
         int offset = 0;
         int limit = 51;
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -548,7 +548,7 @@ class PostViewControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postViewService, never()).getRepliesByAuthorId(eq(id), any(Pageable.class));
     }
@@ -563,7 +563,7 @@ class PostViewControllerTest {
         when(postViewService.getRepliesByAuthorId(eq(id), any(Pageable.class)))
             .thenThrow(new ResourceNotFoundException());
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null);
@@ -576,7 +576,7 @@ class PostViewControllerTest {
 
         assertThat(response)
             .hasStatus(404)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postViewService).getRepliesByAuthorId(eq(id), any(Pageable.class));
     }
@@ -615,7 +615,7 @@ class PostViewControllerTest {
         int offset = -1;
         int limit = 20;
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -628,7 +628,7 @@ class PostViewControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postViewService, never()).getLikesByAuthorId(eq(id),
             any(Pageable.class));
@@ -641,7 +641,7 @@ class PostViewControllerTest {
         int offset = 0;
         int limit = 61;
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -654,7 +654,7 @@ class PostViewControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postViewService, never()).getLikesByAuthorId(eq(id),
             any(Pageable.class));
@@ -670,7 +670,7 @@ class PostViewControllerTest {
         when(postViewService.getLikesByAuthorId(eq(id), any(Pageable.class)))
             .thenThrow(new ResourceNotFoundException());
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null);
@@ -683,7 +683,7 @@ class PostViewControllerTest {
 
         assertThat(response)
             .hasStatus(404)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postViewService).getLikesByAuthorId(eq(id), any(Pageable.class));
     }
@@ -722,7 +722,7 @@ class PostViewControllerTest {
         int offset = -1;
         int limit = 20;
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -735,7 +735,7 @@ class PostViewControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postViewService, never()).getMentionsOfAuthorId(eq(id),
             any(Pageable.class));
@@ -748,7 +748,7 @@ class PostViewControllerTest {
         int offset = 0;
         int limit = 51;
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -761,7 +761,7 @@ class PostViewControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postViewService, never()).getMentionsOfAuthorId(eq(id),
             any(Pageable.class));
@@ -777,7 +777,7 @@ class PostViewControllerTest {
         when(postViewService.getMentionsOfAuthorId(eq(id), any(Pageable.class)))
             .thenThrow(new ResourceNotFoundException());
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null);
@@ -790,7 +790,7 @@ class PostViewControllerTest {
 
         assertThat(response)
             .hasStatus(404)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postViewService).getMentionsOfAuthorId(eq(id), any(Pageable.class));
     }

@@ -14,12 +14,12 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.exception.custom.conflict.AlreadyFollowingException;
 import com.example.echo_api.exception.custom.conflict.SelfActionException;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.modules.profile.service.ProfileInteractionService;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 
 /**
  * Unit test class for {@link ProfileInteractionController}.
@@ -58,7 +58,7 @@ class ProfileInteractionControllerTest {
         UUID id = UUID.randomUUID();
         doThrow(new ResourceNotFoundException()).when(profileInteractionService).follow(id);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null);
@@ -69,7 +69,7 @@ class ProfileInteractionControllerTest {
 
         assertThat(response)
             .hasStatus(404)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(profileInteractionService).follow(id);
     }
@@ -80,7 +80,7 @@ class ProfileInteractionControllerTest {
         UUID id = UUID.randomUUID();
         doThrow(new SelfActionException()).when(profileInteractionService).follow(id);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.CONFLICT,
             ErrorMessageConfig.Conflict.SELF_ACTION,
             null);
@@ -91,7 +91,7 @@ class ProfileInteractionControllerTest {
 
         assertThat(response)
             .hasStatus(409)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(profileInteractionService).follow(id);
     }
@@ -102,7 +102,7 @@ class ProfileInteractionControllerTest {
         UUID id = UUID.randomUUID();
         doThrow(new AlreadyFollowingException()).when(profileInteractionService).follow(id);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.CONFLICT,
             ErrorMessageConfig.Conflict.ALREADY_FOLLOWING,
             null);
@@ -113,7 +113,7 @@ class ProfileInteractionControllerTest {
 
         assertThat(response)
             .hasStatus(409)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(profileInteractionService).follow(id);
     }

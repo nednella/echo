@@ -14,11 +14,11 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.exception.custom.conflict.AlreadyLikedException;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.modules.post.service.PostInteractionService;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 
 /**
  * Unit test class for {@link PostInteractionController}.
@@ -58,7 +58,7 @@ class PostInteractionControllerTest {
 
         doThrow(new ResourceNotFoundException()).when(postInteractionService).like(id);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null);
@@ -69,7 +69,7 @@ class PostInteractionControllerTest {
 
         assertThat(response)
             .hasStatus(404)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postInteractionService).like(id);
     }
@@ -81,7 +81,7 @@ class PostInteractionControllerTest {
 
         doThrow(new AlreadyLikedException()).when(postInteractionService).like(id);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.CONFLICT,
             ErrorMessageConfig.Conflict.ALREADY_LIKED,
             null);
@@ -92,7 +92,7 @@ class PostInteractionControllerTest {
 
         assertThat(response)
             .hasStatus(409)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postInteractionService).like(id);
     }

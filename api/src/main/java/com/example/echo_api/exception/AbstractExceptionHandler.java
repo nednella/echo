@@ -4,8 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 
-import com.example.echo_api.shared.dto.ErrorDTO;
-
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -14,7 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public abstract class AbstractExceptionHandler {
 
     /**
-     * Creates and returns an {@link ErrorDTO}, providing uniform JSON error
+     * Creates and returns an {@link ErrorResponse}, providing uniform JSON error
      * responses across the application.
      * 
      * <p>
@@ -32,17 +30,17 @@ public abstract class AbstractExceptionHandler {
      * @param request the incoming HTTP request that resulted in the exception
      * @param status  the HTTP status code associated with the error
      * @param message a short description for the cause of the error
-     * @return a {@link ResponseEntity} containing an {@link ErrorDTO} with the
+     * @return a {@link ResponseEntity} containing an {@link ErrorResponse} with the
      *         generated error details
      * 
-     * @see ErrorDTO
+     * @see ErrorResponse
      */
-    protected ResponseEntity<ErrorDTO> handleException(
+    protected ResponseEntity<ErrorResponse> handleException(
         @NonNull HttpServletRequest request,
         @NonNull HttpStatus status,
         @NonNull String message) {
 
-        ErrorDTO error = new ErrorDTO(
+        ErrorResponse error = new ErrorResponse(
             status,
             message,
             request.getRequestURI());

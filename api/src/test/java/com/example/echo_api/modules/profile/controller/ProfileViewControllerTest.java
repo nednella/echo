@@ -22,6 +22,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.modules.profile.dto.response.ProfileDTO;
 import com.example.echo_api.modules.profile.dto.response.ProfileMetricsDTO;
@@ -29,7 +30,6 @@ import com.example.echo_api.modules.profile.dto.response.ProfileRelationshipDTO;
 import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.service.ProfileViewService;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
 import com.example.echo_api.shared.pagination.PageDTO;
 import com.example.echo_api.shared.pagination.PageMapper;
@@ -101,7 +101,7 @@ class ProfileViewControllerTest {
         // api: GET /api/v1/profile/me ==> 404 Not Found : ErrorDTO
         when(profileViewService.getMe()).thenThrow(new ResourceNotFoundException());
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null);
@@ -112,7 +112,7 @@ class ProfileViewControllerTest {
 
         assertThat(response)
             .hasStatus(404)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(profileViewService).getMe();
     }
@@ -140,7 +140,7 @@ class ProfileViewControllerTest {
         String username = "non-existent-user";
         when(profileViewService.getByUsername(username)).thenThrow(new ResourceNotFoundException());
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null);
@@ -151,7 +151,7 @@ class ProfileViewControllerTest {
 
         assertThat(response)
             .hasStatus(404)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(profileViewService).getByUsername(username);
     }
@@ -193,7 +193,7 @@ class ProfileViewControllerTest {
         when(profileViewService.getFollowers(eq(id), any(Pageable.class)))
             .thenThrow(new ResourceNotFoundException());
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null);
@@ -206,7 +206,7 @@ class ProfileViewControllerTest {
 
         assertThat(response)
             .hasStatus(404)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(profileViewService).getFollowers(eq(id), any(Pageable.class));
     }
@@ -218,7 +218,7 @@ class ProfileViewControllerTest {
         int offset = -1;
         int limit = 20;
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -231,7 +231,7 @@ class ProfileViewControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(profileViewService, never()).getFollowers(eq(id), any(Pageable.class));
     }
@@ -243,7 +243,7 @@ class ProfileViewControllerTest {
         int offset = 0;
         int limit = 0;
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -256,7 +256,7 @@ class ProfileViewControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(profileViewService, never()).getFollowers(eq(id), any(Pageable.class));
     }
@@ -298,7 +298,7 @@ class ProfileViewControllerTest {
         when(profileViewService.getFollowing(eq(id), any(Pageable.class)))
             .thenThrow(new ResourceNotFoundException());
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null);
@@ -311,7 +311,7 @@ class ProfileViewControllerTest {
 
         assertThat(response)
             .hasStatus(404)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(profileViewService).getFollowing(eq(id), any(Pageable.class));
     }
@@ -323,7 +323,7 @@ class ProfileViewControllerTest {
         int offset = -1;
         int limit = 1;
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -336,7 +336,7 @@ class ProfileViewControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(profileViewService, never()).getFollowing(eq(id), any(Pageable.class));
     }
@@ -348,7 +348,7 @@ class ProfileViewControllerTest {
         int offset = 0;
         int limit = 0;
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -361,7 +361,7 @@ class ProfileViewControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(profileViewService, never()).getFollowing(eq(id), any(Pageable.class));
     }

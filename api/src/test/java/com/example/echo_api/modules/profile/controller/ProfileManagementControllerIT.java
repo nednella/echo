@@ -10,9 +10,9 @@ import org.springframework.http.HttpStatus;
 
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.config.ValidationMessageConfig;
+import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.modules.profile.dto.request.UpdateProfileDTO;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
 
 /**
@@ -45,7 +45,7 @@ class ProfileManagementControllerIT extends AbstractIntegrationTest {
         // api: PUT /api/v1/profile/me/info ==> 204 No Content
         var body = new UpdateProfileDTO(name, "x", "location");
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -55,7 +55,7 @@ class ProfileManagementControllerIT extends AbstractIntegrationTest {
             .bodyValue(body)
             .exchange()
             .expectStatus().isBadRequest()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     static Stream<Arguments> invalidBioCases() {
@@ -68,7 +68,7 @@ class ProfileManagementControllerIT extends AbstractIntegrationTest {
         // api: PUT /api/v1/profile/me/info ==> 204 No Content
         var body = new UpdateProfileDTO("name", bio, "location");
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -78,7 +78,7 @@ class ProfileManagementControllerIT extends AbstractIntegrationTest {
             .bodyValue(body)
             .exchange()
             .expectStatus().isBadRequest()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     static Stream<Arguments> invalidLocationCases() {
@@ -91,7 +91,7 @@ class ProfileManagementControllerIT extends AbstractIntegrationTest {
         // api: PUT /api/v1/profile/me/info ==> 204 No Content
         var body = new UpdateProfileDTO("name", "bio", loc);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -101,7 +101,7 @@ class ProfileManagementControllerIT extends AbstractIntegrationTest {
             .bodyValue(body)
             .exchange()
             .expectStatus().isBadRequest()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
 }

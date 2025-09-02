@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
 
 /**
@@ -40,7 +40,7 @@ class ProfileInteractionControllerIT extends AbstractIntegrationTest {
         // api: POST /api/v1/profile/{id}/follow ==> 404 Not Found : ErrorDTO
         UUID nonExistingProfileId = UUID.randomUUID();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null);
@@ -49,7 +49,7 @@ class ProfileInteractionControllerIT extends AbstractIntegrationTest {
             .uri(FOLLOW_PATH, nonExistingProfileId)
             .exchange()
             .expectStatus().isNotFound()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
@@ -57,7 +57,7 @@ class ProfileInteractionControllerIT extends AbstractIntegrationTest {
         // api: POST /api/v1/profile/{id}/follow ==> 409 Conflict : ErrorDTO
         UUID myProfileId = authUser.getId();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.CONFLICT,
             ErrorMessageConfig.Conflict.SELF_ACTION,
             null);
@@ -66,7 +66,7 @@ class ProfileInteractionControllerIT extends AbstractIntegrationTest {
             .uri(FOLLOW_PATH, myProfileId)
             .exchange()
             .expectStatus().isEqualTo(409)
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
@@ -74,7 +74,7 @@ class ProfileInteractionControllerIT extends AbstractIntegrationTest {
         // api: POST /api/v1/profile/{id}/follow ==> 409 Conflict : ErrorDTO
         UUID profileId = mockUser.getId();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.CONFLICT,
             ErrorMessageConfig.Conflict.ALREADY_FOLLOWING,
             null);
@@ -91,7 +91,7 @@ class ProfileInteractionControllerIT extends AbstractIntegrationTest {
             .uri(FOLLOW_PATH, profileId)
             .exchange()
             .expectStatus().isEqualTo(409)
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test

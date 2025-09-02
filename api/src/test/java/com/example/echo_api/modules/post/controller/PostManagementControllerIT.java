@@ -13,11 +13,11 @@ import org.springframework.http.HttpStatus;
 
 import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.config.ValidationMessageConfig;
+import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.modules.post.dto.request.CreatePostDTO;
 import com.example.echo_api.modules.post.entity.Post;
 import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
 
 /**
@@ -71,7 +71,7 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
         // api: POST /api/v1/post ==> 400 Bad Request : ErrorDTO
         var body = new CreatePostDTO(null, text);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -81,7 +81,7 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
             .bodyValue(body)
             .exchange()
             .expectStatus().isBadRequest()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
@@ -90,7 +90,7 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
         UUID invalidParentId = UUID.randomUUID();
         var body = new CreatePostDTO(invalidParentId, "Test post.");
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -100,7 +100,7 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
             .bodyValue(body)
             .exchange()
             .expectStatus().isBadRequest()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
@@ -132,7 +132,7 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
         // api: DELETE /api/v1/post/{id} ==> 403 Forbidden : ErrorDTO
         UUID notMyPostId = notSelfPost.getId();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.FORBIDDEN,
             ErrorMessageConfig.Forbidden.RESOURCE_OWNERSHIP_REQUIRED,
             null);
@@ -141,7 +141,7 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
             .uri(BY_ID_PATH, notMyPostId)
             .exchange()
             .expectStatus().isForbidden()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
 }

@@ -12,6 +12,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.modules.post.dto.response.PostDTO;
 import com.example.echo_api.modules.post.entity.Post;
 import com.example.echo_api.modules.post.entity.PostLike;
@@ -19,7 +20,6 @@ import com.example.echo_api.modules.post.repository.PostEntityRepository;
 import com.example.echo_api.modules.post.repository.PostLikeRepository;
 import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 import com.example.echo_api.shared.pagination.PageDTO;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
 import com.example.echo_api.util.PostEntityExtractor;
@@ -120,7 +120,7 @@ class PostViewControllerIT extends AbstractIntegrationTest {
         // api: GET /api/v1/post/{id} ==> 404 Not Found : ErrorDTO
         UUID nonExistingPostId = UUID.randomUUID();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null);
@@ -129,7 +129,7 @@ class PostViewControllerIT extends AbstractIntegrationTest {
             .uri(BY_ID_PATH, nonExistingPostId)
             .exchange()
             .expectStatus().isNotFound()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
@@ -159,7 +159,7 @@ class PostViewControllerIT extends AbstractIntegrationTest {
         // api: GET /api/v1/post/{id}/replies ==> 404 Not Found : ErrorDTO
         UUID nonExistingPostId = UUID.randomUUID();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null);
@@ -168,7 +168,7 @@ class PostViewControllerIT extends AbstractIntegrationTest {
             .uri(REPLIES_PATH, nonExistingPostId)
             .exchange()
             .expectStatus().isNotFound()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
@@ -243,7 +243,7 @@ class PostViewControllerIT extends AbstractIntegrationTest {
         // api: GET /api/v1/feed/profile/{id}/posts ==> 404 Not Found : ErrorDTO
         UUID nonExistingProfileId = UUID.randomUUID();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null);
@@ -252,7 +252,7 @@ class PostViewControllerIT extends AbstractIntegrationTest {
             .uri(POSTS_FEED_PATH, nonExistingProfileId)
             .exchange()
             .expectStatus().isNotFound()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
@@ -285,7 +285,7 @@ class PostViewControllerIT extends AbstractIntegrationTest {
         // api: GET /api/v1/feed/profile/{id}/replies ==> 404 Not Found : ErrorDTO
         UUID nonExistingProfileId = UUID.randomUUID();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null);
@@ -294,7 +294,7 @@ class PostViewControllerIT extends AbstractIntegrationTest {
             .uri(REPLIES_FEED_PATH, nonExistingProfileId)
             .exchange()
             .expectStatus().isNotFound()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
@@ -327,7 +327,7 @@ class PostViewControllerIT extends AbstractIntegrationTest {
         // api: GET /api/v1/feed/profile/{id}/likes ==> 404 Not Found : ErrorDTO
         UUID nonExistingProfileId = UUID.randomUUID();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null);
@@ -336,7 +336,7 @@ class PostViewControllerIT extends AbstractIntegrationTest {
             .uri(LIKES_FEED_PATH, nonExistingProfileId)
             .exchange()
             .expectStatus().isNotFound()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
@@ -368,7 +368,7 @@ class PostViewControllerIT extends AbstractIntegrationTest {
         // api: GET /api/v1/feed/profile/{id}/mentions ==> 404 Not Found : ErrorDTO
         UUID nonExistingProfileId = UUID.randomUUID();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
             ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
             null);
@@ -377,7 +377,7 @@ class PostViewControllerIT extends AbstractIntegrationTest {
             .uri(MENTIONS_FEED_PATH, nonExistingProfileId)
             .exchange()
             .expectStatus().isNotFound()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
 }

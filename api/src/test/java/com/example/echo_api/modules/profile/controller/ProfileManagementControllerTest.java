@@ -13,10 +13,10 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.modules.profile.dto.request.UpdateProfileDTO;
 import com.example.echo_api.modules.profile.service.ProfileManagementService;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -63,7 +63,7 @@ class ProfileManagementControllerTest {
         var request = new UpdateProfileDTO(invalidName, "bio", "location");
         String body = objectMapper.writeValueAsString(request);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -76,7 +76,7 @@ class ProfileManagementControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(profileManagementService, never()).updateProfile(request);
     }
@@ -88,7 +88,7 @@ class ProfileManagementControllerTest {
         var request = new UpdateProfileDTO("name", invalidBio, "location");
         String body = objectMapper.writeValueAsString(request);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -101,7 +101,7 @@ class ProfileManagementControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(profileManagementService, never()).updateProfile(request);
     }
@@ -113,7 +113,7 @@ class ProfileManagementControllerTest {
         var request = new UpdateProfileDTO("name", "bio", invalidLocation);
         String body = objectMapper.writeValueAsString(request);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
             ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             null);
@@ -126,7 +126,7 @@ class ProfileManagementControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(profileManagementService, never()).updateProfile(request);
     }
