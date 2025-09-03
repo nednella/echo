@@ -21,13 +21,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.exception.ErrorResponse;
-import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.modules.profile.dto.response.ProfileDTO;
 import com.example.echo_api.modules.profile.dto.response.ProfileMetricsDTO;
 import com.example.echo_api.modules.profile.dto.response.ProfileRelationshipDTO;
 import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
+import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
 import com.example.echo_api.modules.profile.service.ProfileViewService;
 import com.example.echo_api.shared.constant.ApiRoutes;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
@@ -99,11 +98,13 @@ class ProfileViewControllerTest {
     @Test
     void getMe_Throw404ResourceNotFound_WhenIDoNotExist() {
         // api: GET /api/v1/profile/me ==> 404 Not Found : ErrorDTO
-        when(profileViewService.getMe()).thenThrow(new ResourceNotFoundException());
+        ProfileErrorCode errorCode = ProfileErrorCode.ID_NOT_FOUND;
+
+        when(profileViewService.getMe()).thenThrow(errorCode.buildAsException("?"));
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            errorCode.formatMessage("?"),
             null);
 
         var response = mvc.get()
@@ -137,12 +138,14 @@ class ProfileViewControllerTest {
     @Test
     void getByUsername_Returns404NotFound_WhenProfileByUsernameDoesNotExist() {
         // api: GET /api/v1/profile/{username} ==> 404 Not Found : ErrorDTO
+        ProfileErrorCode errorCode = ProfileErrorCode.USERNAME_NOT_FOUND;
+
         String username = "non-existent-user";
-        when(profileViewService.getByUsername(username)).thenThrow(new ResourceNotFoundException());
+        when(profileViewService.getByUsername(username)).thenThrow(errorCode.buildAsException(username));
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            errorCode.formatMessage(username),
             null);
 
         var response = mvc.get()
@@ -186,16 +189,16 @@ class ProfileViewControllerTest {
     @Test
     void getFollowers_Returns404NotFound_WhenProfileByIdDoesNotExist() {
         // api: GET /api/v1/profile/{id}/followers ==> 404 Not Found : ErrorDTO
+        ProfileErrorCode errorCode = ProfileErrorCode.ID_NOT_FOUND;
+
         UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 1;
-
-        when(profileViewService.getFollowers(eq(id), any(Pageable.class)))
-            .thenThrow(new ResourceNotFoundException());
+        when(profileViewService.getFollowers(eq(id), any(Pageable.class))).thenThrow(errorCode.buildAsException(id));
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            errorCode.formatMessage(id),
             null);
 
         var response = mvc.get()
@@ -220,7 +223,7 @@ class ProfileViewControllerTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            "Offset index must not be negative",
             null);
 
         var response = mvc.get()
@@ -245,7 +248,7 @@ class ProfileViewControllerTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            "Limit must be in the range 1 to 50",
             null);
 
         var response = mvc.get()
@@ -291,16 +294,17 @@ class ProfileViewControllerTest {
     @Test
     void getFollowing_Returns404NotFound_WhenProfileByIdDoesNotExist() {
         // api: GET /api/v1/profile/{id}/following ==> 404 Not Found : ErrorDTO
+        ProfileErrorCode errorCode = ProfileErrorCode.ID_NOT_FOUND;
+
         UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 1;
 
-        when(profileViewService.getFollowing(eq(id), any(Pageable.class)))
-            .thenThrow(new ResourceNotFoundException());
+        when(profileViewService.getFollowing(eq(id), any(Pageable.class))).thenThrow(errorCode.buildAsException(id));
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            errorCode.formatMessage(id),
             null);
 
         var response = mvc.get()
@@ -325,7 +329,7 @@ class ProfileViewControllerTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            "Offset index must not be negative",
             null);
 
         var response = mvc.get()
@@ -350,7 +354,7 @@ class ProfileViewControllerTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            "Limit must be in the range 1 to 50",
             null);
 
         var response = mvc.get()

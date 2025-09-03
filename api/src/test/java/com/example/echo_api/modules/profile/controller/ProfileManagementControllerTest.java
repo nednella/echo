@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.modules.profile.dto.request.UpdateProfileDTO;
 import com.example.echo_api.modules.profile.service.ProfileManagementService;
@@ -65,7 +64,7 @@ class ProfileManagementControllerTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            "Name must not exceed 50 characters",
             null);
 
         var response = mvc.put()
@@ -90,7 +89,7 @@ class ProfileManagementControllerTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            "Bio must not exceed 160 characters",
             null);
 
         var response = mvc.put()
@@ -115,7 +114,7 @@ class ProfileManagementControllerTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            "Location must not exceed 30 characters",
             null);
 
         var response = mvc.put()

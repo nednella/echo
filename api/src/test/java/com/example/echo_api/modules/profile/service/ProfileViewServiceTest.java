@@ -1,5 +1,6 @@
 package com.example.echo_api.modules.profile.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -17,11 +18,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
+import com.example.echo_api.exception.ApplicationException;
 import com.example.echo_api.modules.profile.dto.response.ProfileDTO;
 import com.example.echo_api.modules.profile.dto.response.ProfileMetricsDTO;
 import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.entity.Profile;
+import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
 import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
 import com.example.echo_api.shared.pagination.PageDTO;
@@ -91,14 +93,14 @@ class ProfileViewServiceTest {
     }
 
     @Test
-    void getMe_ThrowsResourceNotFound_WhenIDoNotExist() {
+    void getMe_ThrowsApplicationException_WhenIDoNotExist() {
         // arrange
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(profileRepository.findProfileDtoById(authenticatedUserId, authenticatedUserId))
             .thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(ResourceNotFoundException.class, () -> profileViewService.getMe());
+        assertThrows(ApplicationException.class, () -> profileViewService.getMe());
         verify(sessionService).getAuthenticatedUserId();
         verify(profileRepository).findProfileDtoById(authenticatedUserId, authenticatedUserId);
     }
@@ -123,8 +125,9 @@ class ProfileViewServiceTest {
     }
 
     @Test
-    void getById_ThrowsResourceNotFound_WhenProfileByIdDoesNotExist() {
+    void getById_ThrowsApplicationException_WhenProfileByIdDoesNotExist() {
         // arrange
+        ProfileErrorCode errorCode = ProfileErrorCode.ID_NOT_FOUND;
         UUID id = UUID.randomUUID();
 
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
@@ -132,7 +135,9 @@ class ProfileViewServiceTest {
             .thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(ResourceNotFoundException.class, () -> profileViewService.getById(id));
+        var ex = assertThrows(ApplicationException.class, () -> profileViewService.getById(id));
+        assertThat(ex.getMessage()).isEqualTo(errorCode.formatMessage(id));
+
         verify(sessionService).getAuthenticatedUserId();
         verify(profileRepository).findProfileDtoById(id, authenticatedUserId);
 
@@ -158,8 +163,9 @@ class ProfileViewServiceTest {
     }
 
     @Test
-    void getByUsername_ThrowsResourceNotFound_WhenProfileByUsernameDoesNotExist() {
+    void getByUsername_ThrowsApplicationException_WhenProfileByUsernameDoesNotExist() {
         // arrange
+        ProfileErrorCode errorCode = ProfileErrorCode.USERNAME_NOT_FOUND;
         String username = "test";
 
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
@@ -167,7 +173,9 @@ class ProfileViewServiceTest {
             .thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(ResourceNotFoundException.class, () -> profileViewService.getByUsername(username));
+        var ex = assertThrows(ApplicationException.class, () -> profileViewService.getByUsername(username));
+        assertThat(ex.getMessage()).isEqualTo(errorCode.formatMessage(username));
+
         verify(sessionService).getAuthenticatedUserId();
         verify(profileRepository).findProfileDtoByUsername(username, authenticatedUserId);
     }
@@ -201,8 +209,9 @@ class ProfileViewServiceTest {
     }
 
     @Test
-    void getFollowers_ThrowsResourceNotFound_WhenProfileByIdDoesNotExist() {
+    void getFollowers_ThrowsApplicationException_WhenProfileByIdDoesNotExist() {
         // arrange
+        ProfileErrorCode errorCode = ProfileErrorCode.ID_NOT_FOUND;
         UUID id = UUID.randomUUID();
 
         int offset = 0;
@@ -212,7 +221,8 @@ class ProfileViewServiceTest {
         when(profileRepository.findById(id)).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(ResourceNotFoundException.class, () -> profileViewService.getFollowers(id, page));
+        var ex = assertThrows(ApplicationException.class, () -> profileViewService.getFollowers(id, page));
+        assertThat(ex.getMessage()).isEqualTo(errorCode.formatMessage(id));
     }
 
     @Test
@@ -244,8 +254,9 @@ class ProfileViewServiceTest {
     }
 
     @Test
-    void getFollowing_ThrowsResourceNotFound_WhenProfileByIdDoesNotExist() {
+    void getFollowing_ThrowsApplicationException_WhenProfileByIdDoesNotExist() {
         // arrange
+        ProfileErrorCode errorCode = ProfileErrorCode.ID_NOT_FOUND;
         UUID id = UUID.randomUUID();
 
         int offset = 0;
@@ -255,7 +266,8 @@ class ProfileViewServiceTest {
         when(profileRepository.findById(id)).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(ResourceNotFoundException.class, () -> profileViewService.getFollowing(id, page));
+        var ex = assertThrows(ApplicationException.class, () -> profileViewService.getFollowing(id, page));
+        assertThat(ex.getMessage()).isEqualTo(errorCode.formatMessage(id));
     }
 
 }

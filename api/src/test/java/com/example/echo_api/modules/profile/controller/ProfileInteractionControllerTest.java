@@ -13,11 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.exception.ErrorResponse;
-import com.example.echo_api.exception.custom.conflict.AlreadyFollowingException;
-import com.example.echo_api.exception.custom.conflict.SelfActionException;
-import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
+import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
 import com.example.echo_api.modules.profile.service.ProfileInteractionService;
 import com.example.echo_api.shared.constant.ApiRoutes;
 
@@ -55,12 +52,14 @@ class ProfileInteractionControllerTest {
     @Test
     void follow_Returns404NotFound_WhenProfileByIdDoesNotExist() {
         // api: POST /api/v1/profile/{id}/follow ==> 404 Not Found : ErrorDTO
+        ProfileErrorCode errorCode = ProfileErrorCode.ID_NOT_FOUND;
+
         UUID id = UUID.randomUUID();
-        doThrow(new ResourceNotFoundException()).when(profileInteractionService).follow(id);
+        doThrow(errorCode.buildAsException(id)).when(profileInteractionService).follow(id);
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            errorCode.formatMessage(id),
             null);
 
         var response = mvc.post()
@@ -77,12 +76,14 @@ class ProfileInteractionControllerTest {
     @Test
     void follow_Returns409Conflict_WhenProfileByIdIsYou() {
         // api: POST /api/v1/profile/{id}/follow ==> 409 Conflict : ErrorDTO
+        ProfileErrorCode errorCode = ProfileErrorCode.SELF_ACTION;
+
         UUID id = UUID.randomUUID();
-        doThrow(new SelfActionException()).when(profileInteractionService).follow(id);
+        doThrow(errorCode.buildAsException()).when(profileInteractionService).follow(id);
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.CONFLICT,
-            ErrorMessageConfig.Conflict.SELF_ACTION,
+            errorCode.formatMessage(),
             null);
 
         var response = mvc.post()
@@ -99,12 +100,14 @@ class ProfileInteractionControllerTest {
     @Test
     void follow_Returns409Conflict_WhenProfileByIdAlreadyFollowedByYou() {
         // api: POST /api/v1/profile/{id}/follow ==> 409 Conflict : ErrorDTO
+        ProfileErrorCode errorCode = ProfileErrorCode.ALREADY_FOLLOWING;
+
         UUID id = UUID.randomUUID();
-        doThrow(new AlreadyFollowingException()).when(profileInteractionService).follow(id);
+        doThrow(errorCode.buildAsException(id)).when(profileInteractionService).follow(id);
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.CONFLICT,
-            ErrorMessageConfig.Conflict.ALREADY_FOLLOWING,
+            errorCode.formatMessage(id),
             null);
 
         var response = mvc.post()
