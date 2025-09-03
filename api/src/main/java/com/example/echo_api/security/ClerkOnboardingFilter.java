@@ -11,7 +11,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.echo_api.config.ClerkConfig;
-import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.shared.constant.ApiRoutes;
 
 import jakarta.servlet.FilterChain;
@@ -100,7 +99,7 @@ public class ClerkOnboardingFilter extends OncePerRequestFilter {
      */
     private Jwt validateAuthenticationPrincipal(Authentication authentication) {
         if (!(authentication.getPrincipal() instanceof Jwt)) {
-            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.INVALID_AUTH_PRINCIPAL);
+            throw new AccessDeniedException("Authentication principal is missing or invalid");
         }
 
         return (Jwt) authentication.getPrincipal();
@@ -116,10 +115,10 @@ public class ClerkOnboardingFilter extends OncePerRequestFilter {
      */
     private void validateExpectedClaimsArePresent(Jwt jwt) {
         if (!jwt.hasClaim(ClerkConfig.JWT_ONBOARDED_CLAIM)) {
-            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ONBOARDED_CLAIM_MISSING);
+            throw new AccessDeniedException("Required token claim 'onboarded' is missing");
         }
         if (!jwt.hasClaim(ClerkConfig.JWT_ECHO_ID_CLAIM)) {
-            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ECHO_ID_CLAIM_MISSING);
+            throw new AccessDeniedException("Required token claim 'echo_id' is missing");
         }
     }
 
@@ -145,10 +144,10 @@ public class ClerkOnboardingFilter extends OncePerRequestFilter {
     private void validateOnboardingStatus(Jwt jwt) {
         Object onboarded = jwt.getClaim(ClerkConfig.JWT_ONBOARDED_CLAIM);
         if (!(onboarded instanceof Boolean)) {
-            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ONBOARDED_CLAIM_MALFORMED);
+            throw new AccessDeniedException("Token claim 'onboarded' contains an unexpected value");
         }
         if (!Boolean.TRUE.equals(onboarded)) {
-            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ONBOARDING_NOT_COMPLETED);
+            throw new AccessDeniedException("User has not completed the onboarding process");
         }
     }
 
@@ -161,7 +160,7 @@ public class ClerkOnboardingFilter extends OncePerRequestFilter {
     private void validateEchoId(Jwt jwt) {
         String echoId = jwt.getClaimAsString(ClerkConfig.JWT_ECHO_ID_CLAIM);
         if (echoId == null || !isValidUUID(echoId)) {
-            throw new AccessDeniedException(ErrorMessageConfig.Forbidden.ECHO_ID_CLAIM_MALFORMED);
+            throw new AccessDeniedException("Token claim 'echo_id' contains an unexpected value");
         }
     }
 

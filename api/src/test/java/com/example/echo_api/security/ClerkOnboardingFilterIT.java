@@ -7,7 +7,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 
-import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.shared.constant.ApiRoutes;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
@@ -30,7 +29,7 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.FORBIDDEN,
-            ErrorMessageConfig.Forbidden.ONBOARDED_CLAIM_MISSING,
+            "Required token claim 'onboarded' is missing",
             null);
 
         unauthenticatedClient.get()
@@ -50,7 +49,7 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.FORBIDDEN,
-            ErrorMessageConfig.Forbidden.ONBOARDED_CLAIM_MALFORMED,
+            "Token claim 'onboarded' contains an unexpected value",
             null);
 
         unauthenticatedClient.get()
@@ -70,7 +69,7 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.FORBIDDEN,
-            ErrorMessageConfig.Forbidden.ECHO_ID_CLAIM_MISSING,
+            "Required token claim 'echo_id' is missing",
             null);
 
         unauthenticatedClient.get()
@@ -90,7 +89,7 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.FORBIDDEN,
-            ErrorMessageConfig.Forbidden.ECHO_ID_CLAIM_MALFORMED,
+            "Token claim 'echo_id' contains an unexpected value",
             null);
 
         unauthenticatedClient.get()
@@ -110,7 +109,7 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.FORBIDDEN,
-            ErrorMessageConfig.Forbidden.ONBOARDING_NOT_COMPLETED,
+            "User has not completed the onboarding process",
             null);
 
         unauthenticatedClient.get()
