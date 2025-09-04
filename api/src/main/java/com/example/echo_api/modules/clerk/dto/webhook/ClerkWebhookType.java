@@ -16,7 +16,7 @@ public enum ClerkWebhookType {
         try {
             return ClerkWebhookType.valueOf(normaliseString(str));
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Unsupported event type: " + str);
+            throw new IllegalArgumentException("Unsupported webhook event type: " + str);
         }
     }
 

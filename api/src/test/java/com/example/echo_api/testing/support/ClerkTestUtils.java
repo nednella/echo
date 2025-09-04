@@ -15,7 +15,6 @@ import com.clerk.backend_api.models.operations.CreateUserResponse;
 import com.clerk.backend_api.models.operations.GetUserListResponse;
 import com.clerk.backend_api.models.operations.UpdateUserRequestBody;
 import com.example.echo_api.config.ClerkConfig;
-import com.example.echo_api.exception.custom.internalserver.ClerkException;
 import com.example.echo_api.modules.clerk.dto.ClerkUser;
 import com.example.echo_api.modules.clerk.mapper.ClerkUserMapper;
 
@@ -82,7 +81,7 @@ public class ClerkTestUtils {
                     .publicMetadata(metadata)
                     .build());
         } catch (Exception ex) {
-            throw new ClerkException(ex.getMessage());
+            throw new RuntimeException("Could not complete onboarding for Clerk user: " + clerkUserId);
         }
     }
 

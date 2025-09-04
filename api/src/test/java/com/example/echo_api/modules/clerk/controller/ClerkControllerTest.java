@@ -16,10 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.exception.ErrorResponse;
-import com.example.echo_api.exception.custom.badrequest.DeserializationException;
-import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
+import com.example.echo_api.modules.clerk.exception.ClerkErrorCode;
 import com.example.echo_api.modules.clerk.service.ClerkOnboardingService;
 import com.example.echo_api.modules.clerk.service.ClerkWebhookService;
 import com.example.echo_api.modules.user.entity.User;
@@ -98,12 +96,14 @@ class ClerkControllerTest {
     @Test
     void clerkEvent_Returns401Unauthorised_WhenWebhookCannotBeVerified() {
         // api: POST /api/v1/clerk/webhook ==> 401 Unauthorised : ErrorDTO
-        doThrow(new WebhookVerificationException())
+        ClerkErrorCode errorCode = ClerkErrorCode.WEBHOOK_SIGNATURE_INVALID;
+
+        doThrow(errorCode.buildAsException())
             .when(clerkWebhookService).verify(any(HttpHeaders.class), eq(WEBHOOK_PAYLOAD));
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.UNAUTHORIZED,
-            ErrorMessageConfig.Unauthorised.INVALID_WEBHOOK_SIGNATURE,
+            errorCode.formatMessage(),
             null);
 
         var response = mvc.post()
@@ -122,12 +122,14 @@ class ClerkControllerTest {
     @Test
     void clerkEvent_Returns400BadRequest_WhenWebhookEventCannotBeDeserialized() {
         // api: POST /api/v1/clerk/webhook ==> 400 Bad Request
-        doThrow(new DeserializationException("Unsupported event type: subscription.active"))
+        ClerkErrorCode errorCode = ClerkErrorCode.WEBHOOK_PAYLOAD_INVALID;
+
+        doThrow(errorCode.buildAsException("Some exception message"))
             .when(clerkWebhookService).handleWebhook(WEBHOOK_PAYLOAD);
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            "Unsupported event type: subscription.active",
+            "Some exception message",
             null);
 
         var response = mvc.post()

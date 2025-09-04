@@ -4,11 +4,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import com.clerk.backend_api.Clerk;
-import com.example.echo_api.exception.custom.badrequest.DeserializationException;
-import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
+import com.example.echo_api.exception.ApplicationException;
 import com.example.echo_api.modules.clerk.dto.webhook.ClerkWebhook;
 import com.example.echo_api.modules.clerk.dto.webhook.UserDelete;
 import com.example.echo_api.modules.clerk.dto.webhook.UserUpsert;
+import com.example.echo_api.modules.clerk.exception.ClerkErrorCode;
 import com.example.echo_api.modules.clerk.mapper.ClerkUserMapper;
 import com.example.echo_api.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,7 +34,7 @@ class ClerkWebhookServiceImpl implements ClerkWebhookService {
         try {
             svixWebhook.verify(payload, Utils.convertHeaders(headers));
         } catch (Exception ex) {
-            throw new WebhookVerificationException();
+            throw ClerkErrorCode.WEBHOOK_SIGNATURE_INVALID.buildAsException();
         }
     }
 
@@ -53,14 +53,14 @@ class ClerkWebhookServiceImpl implements ClerkWebhookService {
      * 
      * @param payload The JSON payload string to deserialize
      * @return The mapped {@link ClerkWebhook}
-     * @throws DeserializationException If there was an issue when deserializing the
-     *                                  JSON payload for whatever reason
+     * @throws ApplicationException If there was an issue when deserializing the
+     *                              JSON payload for whatever reason
      */
     ClerkWebhook deserialize(String payload) {
         try {
             return mapper.readValue(payload, ClerkWebhook.class);
         } catch (Exception ex) {
-            throw new DeserializationException(ex.getMessage());
+            throw ClerkErrorCode.WEBHOOK_PAYLOAD_INVALID.buildAsException(ex.getMessage());
         }
     }
 

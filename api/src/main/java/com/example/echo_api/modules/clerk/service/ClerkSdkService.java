@@ -3,7 +3,7 @@ package com.example.echo_api.modules.clerk.service;
 import java.util.List;
 
 import com.clerk.backend_api.models.components.User;
-import com.example.echo_api.exception.custom.internalserver.ClerkException;
+import com.example.echo_api.exception.ApplicationException;
 import com.example.echo_api.modules.clerk.dto.ClerkUser;
 
 interface ClerkSdkService {
@@ -13,8 +13,8 @@ interface ClerkSdkService {
      * 
      * @param clerkUserId the unique identifier for the Clerk user
      * @return the retrieved Clerk {@link User} mapped to {@link ClerkUser}
-     * @throws IllegalArgumentException if {@code user} is null
-     * @throws ClerkException           if the user data retrieval fails for
+     * @throws IllegalArgumentException if {@code clerkUserId} is null
+     * @throws ApplicationException     if the user data retrieval fails for
      *                                  whatever reason
      */
     ClerkUser getUser(String clerkUserId);
@@ -22,9 +22,9 @@ interface ClerkSdkService {
     /**
      * Retrieves all users from Clerk.
      * 
-     * @return the retrieved {@link List} of Clerk {@link User} mapped to
-     *         {@link ClerkUser}
-     * @throws ClerkException if the user data retrieval fails for whatever reason
+     * @return {@link List} of Clerk {@link User} mapped to {@link ClerkUser}
+     * @throws ApplicationException if the user data retrieval fails for whatever
+     *                              reason
      */
     List<ClerkUser> getAllUsers();
 
@@ -37,7 +37,7 @@ interface ClerkSdkService {
      * @param externalId the local application UUID for that Clerk user
      * @throws IllegalArgumentException if {@code user} or {@code externalId} is
      *                                  null
-     * @throws ClerkException           if the update operation fails for whatever
+     * @throws ApplicationException     if the update operation fails for whatever
      *                                  reason
      */
     void completeOnboarding(ClerkUser user, String externalId);
@@ -49,7 +49,7 @@ interface ClerkSdkService {
      * 
      * @param user the Clerk user (represented by an internal DTO)
      * @throws IllegalArgumentException if {@code user} is null
-     * @throws ClerkException           if the update operation fails for whatever
+     * @throws ApplicationException     if the update operation fails for whatever
      *                                  reason
      */
     void revertOnboarding(ClerkUser user);

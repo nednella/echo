@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import com.example.echo_api.exception.custom.badrequest.DeserializationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -89,10 +88,10 @@ class ClerkWebhookDeserializerTest {
           }
       """;
 
-    Exception ex = assertThrows(DeserializationException.class,
+    Exception ex = assertThrows(IllegalArgumentException.class,
       () -> mapper.readValue(payload, ClerkWebhook.class));
 
-    assertEquals("Unsupported event type: subscription.active", ex.getMessage());
+    assertEquals("Unsupported webhook event type: subscription.active", ex.getMessage());
   }
 
   @Test
@@ -105,7 +104,7 @@ class ClerkWebhookDeserializerTest {
           }
       """;
 
-    Exception ex = assertThrows(DeserializationException.class,
+    Exception ex = assertThrows(IllegalArgumentException.class,
       () -> mapper.readValue(payload, ClerkWebhook.class));
 
     assertEquals("Missing \"type\" field in JSON payload", ex.getMessage());
@@ -119,7 +118,7 @@ class ClerkWebhookDeserializerTest {
           }
       """;
 
-    Exception ex = assertThrows(DeserializationException.class,
+    Exception ex = assertThrows(IllegalArgumentException.class,
       () -> mapper.readValue(payload, ClerkWebhook.class));
 
     assertEquals("Missing \"data\" field in JSON payload", ex.getMessage());

@@ -1,5 +1,6 @@
 package com.example.echo_api.modules.clerk.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -12,9 +13,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 
-import com.example.echo_api.exception.custom.badrequest.DeserializationException;
-import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
+import com.example.echo_api.exception.ApplicationException;
 import com.example.echo_api.modules.clerk.dto.ClerkUser;
+import com.example.echo_api.modules.clerk.exception.ClerkErrorCode;
 import com.example.echo_api.util.Utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.svix.Webhook;
@@ -53,8 +54,10 @@ class ClerkWebhookServiceTest {
   }
 
   @Test
-  void verify_ThrowsWhenWebhookInvalid() throws com.svix.exceptions.WebhookVerificationException {
+  void verify_ThrowsWhenWebhookSignatureInvalid() throws com.svix.exceptions.WebhookVerificationException {
     // arrange
+    ClerkErrorCode errorCode = ClerkErrorCode.WEBHOOK_SIGNATURE_INVALID;
+
     HttpHeaders headers = HttpHeaders.EMPTY;
     String payload = "a_string_placeholder_for_webhook_payload";
 
@@ -63,7 +66,8 @@ class ClerkWebhookServiceTest {
       .when(svixWebhook).verify(payload, Utils.convertHeaders(headers));
 
     // act & assert
-    assertThrows(WebhookVerificationException.class, () -> clerkWebhookService.verify(headers, payload));
+    var ex = assertThrows(ApplicationException.class, () -> clerkWebhookService.verify(headers, payload));
+    assertThat(ex.getMessage()).isEqualTo(errorCode.formatMessage());
   }
 
   @Test
@@ -215,7 +219,7 @@ class ClerkWebhookServiceTest {
   void handleWebhook_ThrowsWhenDeserializationFails() {
     String payload = "";
 
-    assertThrows(DeserializationException.class, () -> clerkWebhookService.handleWebhook(payload));
+    assertThrows(ApplicationException.class, () -> clerkWebhookService.handleWebhook(payload));
   }
 
 }
