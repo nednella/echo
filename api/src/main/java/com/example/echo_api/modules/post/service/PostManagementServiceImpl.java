@@ -72,6 +72,7 @@ class PostManagementServiceImpl extends BasePostService implements PostManagemen
      * @throws ApplicationException if no post by that id exists
      */
     private void validatePostExistsByParentId(UUID parentId) {
+        // TODO: update return value to UUID so it validates and returns, if it exists
         if (parentId == null)
             return;
 

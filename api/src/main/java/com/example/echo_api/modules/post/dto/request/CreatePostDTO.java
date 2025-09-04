@@ -17,6 +17,8 @@ import jakarta.validation.constraints.Size;
 // @formatter:off
 public record CreatePostDTO(
 
+    // TODO: validate is a UUID
+    // TODO: change to Optional<UUID>
     @JsonProperty("parent_id") UUID parentId,
 
     @NotBlank(message = "Post text cannot be null or blank")
