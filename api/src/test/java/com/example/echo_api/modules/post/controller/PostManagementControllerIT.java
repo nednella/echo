@@ -137,7 +137,7 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.FORBIDDEN,
-            errorCode.formatMessage(notMyPostId),
+            errorCode.formatMessage(),
             null);
 
         authenticatedClient.delete()

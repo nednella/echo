@@ -61,7 +61,7 @@ class ProfileInteractionControllerIT extends AbstractIntegrationTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.CONFLICT,
-            errorCode.formatMessage(myProfileId),
+            errorCode.formatMessage(),
             null);
 
         authenticatedClient.post()
