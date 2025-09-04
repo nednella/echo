@@ -8,11 +8,11 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.echo_api.exception.custom.badrequest.InvalidParentIdException;
-import com.example.echo_api.exception.custom.forbidden.ResourceOwnershipException;
+import com.example.echo_api.exception.ApplicationException;
 import com.example.echo_api.modules.post.dto.request.CreatePostDTO;
 import com.example.echo_api.modules.post.entity.Post;
 import com.example.echo_api.modules.post.entity.PostEntity;
+import com.example.echo_api.modules.post.exception.PostErrorCode;
 import com.example.echo_api.modules.post.repository.PostEntityRepository;
 import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.shared.service.SessionService;
@@ -66,17 +66,17 @@ class PostManagementServiceImpl extends BasePostService implements PostManagemen
     }
 
     /**
-     * Validate that a {@link Post} exists by the supplied {@code id}.
+     * Validate that a {@link Post} exists by the given {@code id}.
      * 
-     * @param parentId the id of the post the validate
-     * @throws InvalidParentIdException if no post by that id exists
+     * @param parentId the post id
+     * @throws ApplicationException if no post by that id exists
      */
-    private void validatePostExistsByParentId(UUID parentId) throws InvalidParentIdException {
+    private void validatePostExistsByParentId(UUID parentId) {
         if (parentId == null)
             return;
 
         if (!postRepository.existsById(parentId)) {
-            throw new InvalidParentIdException();
+            throw PostErrorCode.INVALID_PARENT_ID.buildAsException(parentId);
         }
     }
 
@@ -85,13 +85,13 @@ class PostManagementServiceImpl extends BasePostService implements PostManagemen
      * action on the given post.
      * 
      * @param authenticatedUserId the authenticated user id
-     * @param authorId            the author id of the post in question
-     * @throws ResourceOwnershipException if the requesting user and the resource
-     *                                    owner do not match
+     * @param authorId            the post author id
+     * @throws ApplicationException if the requesting user id and the post author id
+     *                              do not match
      */
-    private void validatePostOwnership(UUID authenticatedUserId, UUID authorId) throws ResourceOwnershipException {
+    private void validatePostOwnership(UUID authenticatedUserId, UUID authorId) {
         if (!Objects.equals(authenticatedUserId, authorId)) {
-            throw new ResourceOwnershipException();
+            throw PostErrorCode.POST_NOT_OWNED.buildAsException();
         }
     }
 

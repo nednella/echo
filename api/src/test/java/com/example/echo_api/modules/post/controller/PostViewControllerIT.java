@@ -11,14 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 
-import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.modules.post.dto.response.PostDTO;
 import com.example.echo_api.modules.post.entity.Post;
 import com.example.echo_api.modules.post.entity.PostLike;
+import com.example.echo_api.modules.post.exception.PostErrorCode;
 import com.example.echo_api.modules.post.repository.PostEntityRepository;
 import com.example.echo_api.modules.post.repository.PostLikeRepository;
 import com.example.echo_api.modules.post.repository.PostRepository;
+import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
 import com.example.echo_api.shared.constant.ApiRoutes;
 import com.example.echo_api.shared.pagination.PageDTO;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
@@ -118,11 +119,12 @@ class PostViewControllerIT extends AbstractIntegrationTest {
     @Test
     void getPostById_Returns404NotFound_WhenPostByIdDoesNotExist() {
         // api: GET /api/v1/post/{id} ==> 404 Not Found : ErrorDTO
+        PostErrorCode errorCode = PostErrorCode.ID_NOT_FOUND;
         UUID nonExistingPostId = UUID.randomUUID();
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            errorCode.formatMessage(nonExistingPostId),
             null);
 
         authenticatedClient.get()
@@ -133,7 +135,7 @@ class PostViewControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
-    void getRepliesById_Returns200PageDtoOfPostDto_WhenPostByIdExists() {
+    void getRepliesByPostId_Returns200PageDtoOfPostDto_WhenPostByIdExists() {
         // api: GET /api/v1/post/{id}/replies ==> 200 OK : PageDTO<PostDTO>
         Post post = createPost(null, authUser.getId(), "Test post.");
         Post reply1 = createPost(post.getId(), mockUser.getId(), "Test reply 1.");
@@ -155,13 +157,14 @@ class PostViewControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
-    void getRepliesById_Returns404NotFound_WhenPostByIdDoesNotExist() {
+    void getRepliesByPostId_Returns404NotFound_WhenPostByIdDoesNotExist() {
         // api: GET /api/v1/post/{id}/replies ==> 404 Not Found : ErrorDTO
+        PostErrorCode errorCode = PostErrorCode.ID_NOT_FOUND;
         UUID nonExistingPostId = UUID.randomUUID();
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            errorCode.formatMessage(nonExistingPostId),
             null);
 
         authenticatedClient.get()
@@ -241,11 +244,12 @@ class PostViewControllerIT extends AbstractIntegrationTest {
     @Test
     void getPostsByProfileId_Returns404NotFound_WhenProfileByIdDoesNotExist() {
         // api: GET /api/v1/feed/profile/{id}/posts ==> 404 Not Found : ErrorDTO
+        ProfileErrorCode errorCode = ProfileErrorCode.ID_NOT_FOUND;
         UUID nonExistingProfileId = UUID.randomUUID();
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            errorCode.formatMessage(nonExistingProfileId),
             null);
 
         authenticatedClient.get()
@@ -283,11 +287,12 @@ class PostViewControllerIT extends AbstractIntegrationTest {
     @Test
     void getRepliesByProfileId_Returns404NotFound_WhenProfileByIdDoesNotExist() {
         // api: GET /api/v1/feed/profile/{id}/replies ==> 404 Not Found : ErrorDTO
+        ProfileErrorCode errorCode = ProfileErrorCode.ID_NOT_FOUND;
         UUID nonExistingProfileId = UUID.randomUUID();
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            errorCode.formatMessage(nonExistingProfileId),
             null);
 
         authenticatedClient.get()
@@ -325,11 +330,12 @@ class PostViewControllerIT extends AbstractIntegrationTest {
     @Test
     void getLikesByProfileId_Returns404NotFound_WhenProfileByIdDoesNotExist() {
         // api: GET /api/v1/feed/profile/{id}/likes ==> 404 Not Found : ErrorDTO
+        ProfileErrorCode errorCode = ProfileErrorCode.ID_NOT_FOUND;
         UUID nonExistingProfileId = UUID.randomUUID();
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            errorCode.formatMessage(nonExistingProfileId),
             null);
 
         authenticatedClient.get()
@@ -366,11 +372,12 @@ class PostViewControllerIT extends AbstractIntegrationTest {
     @Test
     void getMentionsOfProfileId_Returns404NotFound_WhenProfileByIdDoesNotExist() {
         // api: GET /api/v1/feed/profile/{id}/mentions ==> 404 Not Found : ErrorDTO
+        ProfileErrorCode errorCode = ProfileErrorCode.ID_NOT_FOUND;
         UUID nonExistingProfileId = UUID.randomUUID();
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            errorCode.formatMessage(nonExistingProfileId),
             null);
 
         authenticatedClient.get()

@@ -1,5 +1,6 @@
 package com.example.echo_api.modules.post.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -13,9 +14,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.example.echo_api.exception.custom.conflict.AlreadyLikedException;
-import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
+import com.example.echo_api.exception.ApplicationException;
 import com.example.echo_api.modules.post.entity.Post;
+import com.example.echo_api.modules.post.exception.PostErrorCode;
 import com.example.echo_api.modules.post.repository.PostLikeRepository;
 import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.shared.service.SessionService;
@@ -63,22 +64,26 @@ class PostInteractionServiceTest {
     }
 
     @Test
-    void like_ThrowsResourceNotFound_WhenPostByIdDoesNotExist() {
+    void like_ThrowsApplicationException_WhenPostByIdDoesNotExist() {
         // arrange
+        PostErrorCode errorCode = PostErrorCode.ID_NOT_FOUND;
         UUID id = post.getId();
 
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.findById(id)).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(ResourceNotFoundException.class, () -> postInteractionService.like(id));
+        var ex = assertThrows(ApplicationException.class, () -> postInteractionService.like(id));
+        assertThat(ex.getMessage()).isEqualTo(errorCode.formatMessage(id));
+
         verify(postRepository).findById(id);
         verify(likeRepository, never()).existsByPostIdAndAuthorId(id, authenticatedUserId);
     }
 
     @Test
-    void like_ThrowsAlreadyLiked_WhenPostByIdAlreadyLikedByYou() {
+    void like_ThrowsApplicationException_WhenPostByIdAlreadyLikedByYou() {
         // arrange
+        PostErrorCode errorCode = PostErrorCode.ALREADY_LIKED;
         UUID id = post.getId();
 
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
@@ -86,7 +91,9 @@ class PostInteractionServiceTest {
         when(likeRepository.existsByPostIdAndAuthorId(id, authenticatedUserId)).thenReturn(true);
 
         // act & assert
-        assertThrows(AlreadyLikedException.class, () -> postInteractionService.like(id));
+        var ex = assertThrows(ApplicationException.class, () -> postInteractionService.like(id));
+        assertThat(ex.getMessage()).isEqualTo(errorCode.formatMessage(id));
+
         verify(postRepository).findById(id);
         verify(likeRepository).existsByPostIdAndAuthorId(id, authenticatedUserId);
     }

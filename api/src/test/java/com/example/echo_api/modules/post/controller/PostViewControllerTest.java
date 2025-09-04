@@ -21,15 +21,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.exception.ErrorResponse;
-import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.modules.post.dto.response.PostDTO;
 import com.example.echo_api.modules.post.dto.response.PostEntitiesDTO;
 import com.example.echo_api.modules.post.dto.response.PostMetricsDTO;
 import com.example.echo_api.modules.post.dto.response.PostRelationshipDTO;
+import com.example.echo_api.modules.post.exception.PostErrorCode;
 import com.example.echo_api.modules.post.service.PostViewService;
 import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
+import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
 import com.example.echo_api.shared.constant.ApiRoutes;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
 import com.example.echo_api.shared.pagination.PageDTO;
@@ -98,13 +98,14 @@ class PostViewControllerTest {
     @Test
     void getPostById_Returns404NotFound_WhenPostByIdDoesNotExist() {
         // api: GET /api/v1/post/{id} ==> 404 Not Found : ErrorDTO
-        UUID id = UUID.randomUUID();
+        PostErrorCode errorCode = PostErrorCode.ID_NOT_FOUND;
 
-        when(postViewService.getPostById(id)).thenThrow(new ResourceNotFoundException());
+        UUID id = UUID.randomUUID();
+        when(postViewService.getPostById(id)).thenThrow(errorCode.buildAsException(id));
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            errorCode.formatMessage(id),
             null);
 
         var response = mvc.get()
@@ -119,7 +120,7 @@ class PostViewControllerTest {
     }
 
     @Test
-    void getRepliesById_Returns200PageDtoOfPostDto_WhenPostByIdExists() throws Exception {
+    void getRepliesByPostId_Returns200PageDtoOfPostDto_WhenPostByIdExists() throws Exception {
         // api: GET /api/v1/post/{id}/replies ==> 200 OK : PageDTO<PostDTO>
         UUID id = UUID.randomUUID();
         int offset = 0;
@@ -130,7 +131,7 @@ class PostViewControllerTest {
         PageDTO<PostDTO> expected = PageMapper.toDTO(replies, REPLIES_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
 
-        when(postViewService.getRepliesById(eq(id), any(Pageable.class))).thenReturn(expected);
+        when(postViewService.getRepliesByPostId(eq(id), any(Pageable.class))).thenReturn(expected);
 
         var response = mvc.get()
             .uri(REPLIES_PATH, id)
@@ -142,11 +143,11 @@ class PostViewControllerTest {
             .hasStatus(200)
             .bodyJson().isEqualTo(expectedJson);
 
-        verify(postViewService).getRepliesById(eq(id), any(Pageable.class));
+        verify(postViewService).getRepliesByPostId(eq(id), any(Pageable.class));
     }
 
     @Test
-    void getRepliesById_Returns400BadRequest_WhenInvalidOffsetSupplied() {
+    void getRepliesByPostId_Returns400BadRequest_WhenInvalidOffsetSupplied() {
         // api: GET /api/v1/post/{id}/replies ==> 400 Bad Request : ErrorDTO
         UUID id = UUID.randomUUID();
         int offset = -1;
@@ -154,7 +155,7 @@ class PostViewControllerTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            "Offset index must not be negative",
             null);
 
         var response = mvc.get()
@@ -167,11 +168,11 @@ class PostViewControllerTest {
             .hasStatus(400)
             .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
-        verify(postViewService, never()).getRepliesById(eq(id), any(Pageable.class));
+        verify(postViewService, never()).getRepliesByPostId(eq(id), any(Pageable.class));
     }
 
     @Test
-    void getRepliesById_Returns400BadRequest_WhenInvalidLimitSupplied() {
+    void getRepliesByPostId_Returns400BadRequest_WhenInvalidLimitSupplied() {
         // api: GET /api/v1/post/{id}/replies ==> 400 Bad Request : ErrorDTO
         UUID id = UUID.randomUUID();
         int offset = 0;
@@ -179,7 +180,7 @@ class PostViewControllerTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            "Limit must be in the range 1 to 50",
             null);
 
         var response = mvc.get()
@@ -192,22 +193,24 @@ class PostViewControllerTest {
             .hasStatus(400)
             .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
-        verify(postViewService, never()).getRepliesById(eq(id), any(Pageable.class));
+        verify(postViewService, never()).getRepliesByPostId(eq(id), any(Pageable.class));
     }
 
     @Test
-    void getRepliesById_Returns404NotFound_WhenPostByIdDoesNotExist() {
+    void getRepliesByPostId_Returns404NotFound_WhenPostByIdDoesNotExist() {
         // api: GET /api/v1/post/{id}/replies ==> 404 Not Found : ErrorDTO
+        PostErrorCode errorCode = PostErrorCode.ID_NOT_FOUND;
+
         UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 20;
 
-        when(postViewService.getRepliesById(eq(id), any(Pageable.class)))
-            .thenThrow(new ResourceNotFoundException());
+        when(postViewService.getRepliesByPostId(eq(id), any(Pageable.class)))
+            .thenThrow(errorCode.buildAsException(id));
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            errorCode.formatMessage(id),
             null);
 
         var response = mvc.get()
@@ -220,7 +223,7 @@ class PostViewControllerTest {
             .hasStatus(404)
             .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
-        verify(postViewService).getRepliesById(eq(id), any(Pageable.class));
+        verify(postViewService).getRepliesByPostId(eq(id), any(Pageable.class));
     }
 
     @Test
@@ -257,7 +260,7 @@ class PostViewControllerTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            "Offset index must not be negative",
             null);
 
         var response = mvc.get()
@@ -281,7 +284,7 @@ class PostViewControllerTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            "Limit must be in the range 1 to 50",
             null);
 
         var response = mvc.get()
@@ -331,7 +334,7 @@ class PostViewControllerTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            "Offset index must not be negative",
             null);
 
         var response = mvc.get()
@@ -355,7 +358,7 @@ class PostViewControllerTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            "Limit must be in the range 1 to 50",
             null);
 
         var response = mvc.get()
@@ -407,7 +410,7 @@ class PostViewControllerTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            "Offset index must not be negative",
             null);
 
         var response = mvc.get()
@@ -432,7 +435,7 @@ class PostViewControllerTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            "Limit must be in the range 1 to 50",
             null);
 
         var response = mvc.get()
@@ -451,16 +454,18 @@ class PostViewControllerTest {
     @Test
     void getPostsByProfileId_Returns404NotFound_WhenProfileByIdDoesNotExist() {
         // api: GET /api/v1/feed/profile/{id}/posts ==> 404 Not Found : ErrorDTO
+        ProfileErrorCode errorCode = ProfileErrorCode.ID_NOT_FOUND;
+
         UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 20;
 
         when(postViewService.getPostsByAuthorId(eq(id), any(Pageable.class)))
-            .thenThrow(new ResourceNotFoundException());
+            .thenThrow(errorCode.buildAsException(id));
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            errorCode.formatMessage(id),
             null);
 
         var response = mvc.get()
@@ -512,7 +517,7 @@ class PostViewControllerTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            "Offset index must not be negative",
             null);
 
         var response = mvc.get()
@@ -537,7 +542,7 @@ class PostViewControllerTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            "Limit must be in the range 1 to 50",
             null);
 
         var response = mvc.get()
@@ -556,16 +561,18 @@ class PostViewControllerTest {
     @Test
     void getRepliesByProfileId_Returns404NotFound_WhenProfileByIdDoesNotExist() {
         // api: GET /api/v1/feed/profile/{id}/replies ==> 404 Not Found : ErrorDTO
+        ProfileErrorCode errorCode = ProfileErrorCode.ID_NOT_FOUND;
+
         UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 20;
 
         when(postViewService.getRepliesByAuthorId(eq(id), any(Pageable.class)))
-            .thenThrow(new ResourceNotFoundException());
+            .thenThrow(errorCode.buildAsException(id));
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            errorCode.formatMessage(id),
             null);
 
         var response = mvc.get()
@@ -617,7 +624,7 @@ class PostViewControllerTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            "Offset index must not be negative",
             null);
 
         var response = mvc.get()
@@ -643,7 +650,7 @@ class PostViewControllerTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            "Limit must be in the range 1 to 50",
             null);
 
         var response = mvc.get()
@@ -663,16 +670,18 @@ class PostViewControllerTest {
     @Test
     void getLikesByProfileId_Returns404NotFound_WhenProfileByIdDoesNotExist() {
         // api: GET /api/v1/feed/profile/{id}/likes ==> 404 Not Found : ErrorDTO
+        ProfileErrorCode errorCode = ProfileErrorCode.ID_NOT_FOUND;
+
         UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 20;
 
         when(postViewService.getLikesByAuthorId(eq(id), any(Pageable.class)))
-            .thenThrow(new ResourceNotFoundException());
+            .thenThrow(errorCode.buildAsException(id));
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            errorCode.formatMessage(id),
             null);
 
         var response = mvc.get()
@@ -700,7 +709,7 @@ class PostViewControllerTest {
         PageDTO<PostDTO> expected = PageMapper.toDTO(posts, MENTIONS_FEED_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
 
-        when(postViewService.getMentionsOfAuthorId(eq(id), any(Pageable.class))).thenReturn(expected);
+        when(postViewService.getMentionsOfProfileId(eq(id), any(Pageable.class))).thenReturn(expected);
 
         var response = mvc.get()
             .uri(MENTIONS_FEED_PATH, id)
@@ -712,7 +721,7 @@ class PostViewControllerTest {
             .hasStatus(200)
             .bodyJson().isEqualTo(expectedJson);
 
-        verify(postViewService).getMentionsOfAuthorId(eq(id), any(Pageable.class));
+        verify(postViewService).getMentionsOfProfileId(eq(id), any(Pageable.class));
     }
 
     @Test
@@ -724,7 +733,7 @@ class PostViewControllerTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            "Offset index must not be negative",
             null);
 
         var response = mvc.get()
@@ -737,7 +746,7 @@ class PostViewControllerTest {
             .hasStatus(400)
             .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
-        verify(postViewService, never()).getMentionsOfAuthorId(eq(id),
+        verify(postViewService, never()).getMentionsOfProfileId(eq(id),
             any(Pageable.class));
     }
 
@@ -750,7 +759,7 @@ class PostViewControllerTest {
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
+            "Limit must be in the range 1 to 50",
             null);
 
         var response = mvc.get()
@@ -763,23 +772,25 @@ class PostViewControllerTest {
             .hasStatus(400)
             .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
-        verify(postViewService, never()).getMentionsOfAuthorId(eq(id),
+        verify(postViewService, never()).getMentionsOfProfileId(eq(id),
             any(Pageable.class));
     }
 
     @Test
     void getMentionsOfProfileId_Returns404NotFound_WhenProfileByIdDoesNotExist() {
         // api: GET /api/v1/feed/profile/{id}/mentions ==> 404 Not Found : ErrorDTO
+        ProfileErrorCode errorCode = ProfileErrorCode.ID_NOT_FOUND;
+
         UUID id = UUID.randomUUID();
         int offset = 0;
         int limit = 20;
 
-        when(postViewService.getMentionsOfAuthorId(eq(id), any(Pageable.class)))
-            .thenThrow(new ResourceNotFoundException());
+        when(postViewService.getMentionsOfProfileId(eq(id), any(Pageable.class)))
+            .thenThrow(errorCode.buildAsException(id));
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            errorCode.formatMessage(id),
             null);
 
         var response = mvc.get()
@@ -792,7 +803,7 @@ class PostViewControllerTest {
             .hasStatus(404)
             .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
-        verify(postViewService).getMentionsOfAuthorId(eq(id), any(Pageable.class));
+        verify(postViewService).getMentionsOfProfileId(eq(id), any(Pageable.class));
     }
 
 }

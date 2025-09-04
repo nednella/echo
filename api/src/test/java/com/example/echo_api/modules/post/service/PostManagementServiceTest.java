@@ -1,5 +1,6 @@
 package com.example.echo_api.modules.post.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -18,12 +19,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.example.echo_api.exception.custom.badrequest.InvalidParentIdException;
-import com.example.echo_api.exception.custom.forbidden.ResourceOwnershipException;
+import com.example.echo_api.exception.ApplicationException;
 import com.example.echo_api.modules.post.dto.request.CreatePostDTO;
 import com.example.echo_api.modules.post.entity.Post;
 import com.example.echo_api.modules.post.entity.PostEntity;
 import com.example.echo_api.modules.post.entity.PostEntityType;
+import com.example.echo_api.modules.post.exception.PostErrorCode;
 import com.example.echo_api.modules.post.repository.PostEntityRepository;
 import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.shared.service.SessionService;
@@ -112,18 +113,23 @@ class PostManagementServiceTest {
     }
 
     @Test
-    void create_ThrowsInvalidParentId_WhenPostByParentIdDoesNotExist() {
+    void create_ThrowsApplicationException_WhenPostByParentIdDoesNotExist() {
+        PostErrorCode errorCode = PostErrorCode.INVALID_PARENT_ID;
+        UUID parentId = UUID.randomUUID();
+
         var request = new CreatePostDTO(
-            UUID.randomUUID(),
+            parentId,
             "Test post.");
 
         // arrange
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
-        when(postRepository.existsById(request.parentId())).thenReturn(false);
+        when(postRepository.existsById(parentId)).thenReturn(false);
 
         // act & assert
-        assertThrows(InvalidParentIdException.class, () -> postManagementService.create(request));
-        verify(postRepository).existsById(request.parentId());
+        var ex = assertThrows(ApplicationException.class, () -> postManagementService.create(request));
+        assertThat(ex.getMessage()).isEqualTo(errorCode.formatMessage(parentId));
+
+        verify(postRepository).existsById(parentId);
         verify(postEntityRepository, never()).saveAll(anyList());
     }
 
@@ -165,8 +171,9 @@ class PostManagementServiceTest {
     }
 
     @Test
-    void delete_ThrowResourceOwnership_WhenPostByIdNotOwnedByYou() {
+    void delete_ThrowApplicationException_WhenPostByIdNotOwnedByYou() {
         // arrange
+        PostErrorCode errorCode = PostErrorCode.POST_NOT_OWNED;
         var id = UUID.randomUUID();
         var post = new Post(UUID.randomUUID(), "Test post."); // post belonging to another user
 
@@ -174,7 +181,9 @@ class PostManagementServiceTest {
         when(postRepository.findById(id)).thenReturn(Optional.of(post));
 
         // act & assert
-        assertThrows(ResourceOwnershipException.class, () -> postManagementService.delete(id));
+        var ex = assertThrows(ApplicationException.class, () -> postManagementService.delete(id));
+        assertThat(ex.getMessage()).isEqualTo(errorCode.formatMessage());
+
         verify(postRepository).findById(id);
     }
 

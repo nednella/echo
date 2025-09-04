@@ -9,9 +9,9 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.modules.post.entity.Post;
+import com.example.echo_api.modules.post.exception.PostErrorCode;
 import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.shared.constant.ApiRoutes;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
@@ -55,11 +55,12 @@ class PostInteractionControllerIT extends AbstractIntegrationTest {
     @Test
     void like_Returns404NotFound_WhenPostByIdDoesNotExist() {
         // api: POST /api/v1/post/{id}/like ==> 404 Not Found : ErrorDTO
+        PostErrorCode errorCode = PostErrorCode.ID_NOT_FOUND;
         UUID nonExistingPostId = UUID.randomUUID();
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
+            errorCode.formatMessage(nonExistingPostId),
             null);
 
         authenticatedClient.post()
@@ -72,11 +73,12 @@ class PostInteractionControllerIT extends AbstractIntegrationTest {
     @Test
     void like_Returns409Conflict_WhenPostByIdAlreadyLiked() {
         // api: POST /api/v1/post/{id}/like ==> 409 Conflict : ErrorDTO
+        PostErrorCode errorCode = PostErrorCode.ALREADY_LIKED;
         UUID postId = post.getId();
 
         ErrorResponse expected = new ErrorResponse(
             HttpStatus.CONFLICT,
-            ErrorMessageConfig.Conflict.ALREADY_LIKED,
+            errorCode.formatMessage(postId),
             null);
 
         // 1st like request --> 204
