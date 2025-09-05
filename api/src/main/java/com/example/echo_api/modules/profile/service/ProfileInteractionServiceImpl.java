@@ -18,7 +18,6 @@ import com.example.echo_api.shared.service.SessionService;
  * entities.
  */
 @Service
-@Transactional // TODO: remove all class-level transactional
 class ProfileInteractionServiceImpl extends BaseProfileService implements ProfileInteractionService {
 
     private final FollowRepository followRepository;
@@ -35,6 +34,7 @@ class ProfileInteractionServiceImpl extends BaseProfileService implements Profil
     // @formatter:on
 
     @Override
+    @Transactional
     public void follow(UUID id) {
         UUID source = getAuthenticatedUserId();
         UUID target = getProfileEntityById(id).getId(); // validate existence of id
@@ -48,6 +48,7 @@ class ProfileInteractionServiceImpl extends BaseProfileService implements Profil
     }
 
     @Override
+    @Transactional
     public void unfollow(UUID id) {
         UUID authenticatedUserId = getAuthenticatedUserId();
         followRepository.deleteByFollowerIdAndFollowedId(authenticatedUserId, id);

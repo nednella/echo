@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
  * associated {@link Profile}.
  */
 @Service
-@Transactional
 @RequiredArgsConstructor
 class UserServiceImpl implements UserService {
 
@@ -25,6 +24,7 @@ class UserServiceImpl implements UserService {
     private final ProfileRepository profileRepository;
 
     @Override
+    @Transactional
     public User upsertFromExternalSource(String externalId, String username, String imageUrl) {
         Utils.checkNotNull(externalId, "External ID");
         Utils.checkNotNull(username, "Username");
@@ -37,6 +37,7 @@ class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public int deleteFromExternalSource(String externalId) {
         return userRepository.deleteByExternalId(externalId);
     }
