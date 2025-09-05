@@ -8,7 +8,6 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.example.echo_api.config.ValidationMessageConfig;
 import com.example.echo_api.shared.validation.validators.LimitValidator;
 
 import jakarta.validation.Constraint;
@@ -53,7 +52,7 @@ public @interface Limit {
     /**
      * @return the error message template
      */
-    String message() default ValidationMessageConfig.INVALID_LIMIT;
+    String message() default "Limit must be in the range 1 to 50";
 
     /**
      * @return the groups the constraint belongs to

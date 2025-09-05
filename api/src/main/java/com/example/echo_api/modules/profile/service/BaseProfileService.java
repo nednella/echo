@@ -2,8 +2,9 @@ package com.example.echo_api.modules.profile.service;
 
 import java.util.UUID;
 
-import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
+import com.example.echo_api.exception.ApplicationException;
 import com.example.echo_api.modules.profile.entity.Profile;
+import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
 import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.shared.service.SessionService;
 
@@ -21,8 +22,7 @@ abstract class BaseProfileService {
     protected final ProfileRepository profileRepository;
 
     /**
-     * Protected method for obtaining the {@link UUID} associated to the
-     * authenticated user.
+     * Fetch the {@link UUID} associated with the authenticated user.
      * 
      * @return the {@link UUID}
      */
@@ -31,39 +31,36 @@ abstract class BaseProfileService {
     }
 
     /**
-     * Protected method for obtaining the {@link Profile} associated to the
-     * authenticated user.
+     * Fetch the profile associated with the authenticated user.
      * 
-     * @return the found {@link Profile}
+     * @return the {@link Profile} entity
      */
     protected Profile getAuthenticatedUserProfile() {
         return getProfileEntityById(getAuthenticatedUserId());
     }
 
     /**
-     * Protected method for obtaining a {@link Profile} via {@code id} from
-     * {@link ProfileRepository}.
+     * Fetch a profile by {@code id} from {@link ProfileRepository}.
      * 
-     * @param id the id of the profile
+     * @param id the profile id
      * @return the {@link Profile} entity
-     * @throws ResourceNotFoundException if no profile by that id exists
+     * @throws ApplicationException if no profile with the given id exists
      */
-    protected Profile getProfileEntityById(UUID id) throws ResourceNotFoundException {
+    protected Profile getProfileEntityById(UUID id) {
         return profileRepository.findById(id)
-            .orElseThrow(ResourceNotFoundException::new);
+            .orElseThrow(() -> ProfileErrorCode.ID_NOT_FOUND.buildAsException(id));
     }
 
     /**
-     * Protected method for obtaining a {@link Profile} via {@code username} from
-     * {@link ProfileRepository}.
+     * Fetch a profile by {@code username} from {@link ProfileRepository}.
      * 
-     * @param username the username of the profile
+     * @param username the profile username
      * @return the {@link Profile} entity
-     * @throws ResourceNotFoundException if no profile by that username exists
+     * @throws ApplicationException if no profile with the given username exists
      */
-    protected Profile getProfileEntityByUsername(String username) throws ResourceNotFoundException {
+    protected Profile getProfileEntityByUsername(String username) {
         return profileRepository.findByUsername(username)
-            .orElseThrow(ResourceNotFoundException::new);
+            .orElseThrow(() -> ProfileErrorCode.USERNAME_NOT_FOUND.buildAsException(username));
     }
 
 }

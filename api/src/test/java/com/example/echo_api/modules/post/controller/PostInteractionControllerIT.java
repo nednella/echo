@@ -9,11 +9,11 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.modules.post.entity.Post;
+import com.example.echo_api.modules.post.exception.PostErrorCode;
 import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
 
 /**
@@ -55,30 +55,30 @@ class PostInteractionControllerIT extends AbstractIntegrationTest {
     @Test
     void like_Returns404NotFound_WhenPostByIdDoesNotExist() {
         // api: POST /api/v1/post/{id}/like ==> 404 Not Found : ErrorDTO
+        PostErrorCode errorCode = PostErrorCode.ID_NOT_FOUND;
         UUID nonExistingPostId = UUID.randomUUID();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
+            errorCode.formatMessage(nonExistingPostId),
             null);
 
         authenticatedClient.post()
             .uri(LIKE_PATH, nonExistingPostId)
             .exchange()
             .expectStatus().isNotFound()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
     void like_Returns409Conflict_WhenPostByIdAlreadyLiked() {
         // api: POST /api/v1/post/{id}/like ==> 409 Conflict : ErrorDTO
+        PostErrorCode errorCode = PostErrorCode.ALREADY_LIKED;
         UUID postId = post.getId();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.CONFLICT,
-            ErrorMessageConfig.Conflict.ALREADY_LIKED,
-            null,
+            errorCode.formatMessage(postId),
             null);
 
         // 1st like request --> 204
@@ -93,7 +93,7 @@ class PostInteractionControllerIT extends AbstractIntegrationTest {
             .uri(LIKE_PATH, postId)
             .exchange()
             .expectStatus().isEqualTo(409)
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test

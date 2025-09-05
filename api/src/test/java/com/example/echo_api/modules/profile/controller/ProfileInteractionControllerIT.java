@@ -6,9 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.exception.ErrorResponse;
+import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
 
 /**
@@ -38,48 +38,48 @@ class ProfileInteractionControllerIT extends AbstractIntegrationTest {
     @Test
     void follow_Returns404NotFound_WhenProfileByIdDoesNotExist() {
         // api: POST /api/v1/profile/{id}/follow ==> 404 Not Found : ErrorDTO
+        ProfileErrorCode errorCode = ProfileErrorCode.ID_NOT_FOUND;
         UUID nonExistingProfileId = UUID.randomUUID();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
+            errorCode.formatMessage(nonExistingProfileId),
             null);
 
         authenticatedClient.post()
             .uri(FOLLOW_PATH, nonExistingProfileId)
             .exchange()
             .expectStatus().isNotFound()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
     void follow_Returns409Conflict_WhenProfileByIdIsYou() {
         // api: POST /api/v1/profile/{id}/follow ==> 409 Conflict : ErrorDTO
+        ProfileErrorCode errorCode = ProfileErrorCode.SELF_ACTION;
         UUID myProfileId = authUser.getId();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.CONFLICT,
-            ErrorMessageConfig.Conflict.SELF_ACTION,
-            null,
+            errorCode.formatMessage(),
             null);
 
         authenticatedClient.post()
             .uri(FOLLOW_PATH, myProfileId)
             .exchange()
             .expectStatus().isEqualTo(409)
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
     void follow_Returns409Conflict_WhenProfileByIdAlreadyFollowedByYou() {
         // api: POST /api/v1/profile/{id}/follow ==> 409 Conflict : ErrorDTO
+        ProfileErrorCode errorCode = ProfileErrorCode.ALREADY_FOLLOWING;
         UUID profileId = mockUser.getId();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.CONFLICT,
-            ErrorMessageConfig.Conflict.ALREADY_FOLLOWING,
-            null,
+            errorCode.formatMessage(profileId),
             null);
 
         // 1st follow request --> 204
@@ -94,7 +94,7 @@ class ProfileInteractionControllerIT extends AbstractIntegrationTest {
             .uri(FOLLOW_PATH, profileId)
             .exchange()
             .expectStatus().isEqualTo(409)
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test

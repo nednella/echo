@@ -5,9 +5,9 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.echo_api.exception.custom.conflict.AlreadyLikedException;
 import com.example.echo_api.modules.post.entity.Post;
 import com.example.echo_api.modules.post.entity.PostLike;
+import com.example.echo_api.modules.post.exception.PostErrorCode;
 import com.example.echo_api.modules.post.repository.PostLikeRepository;
 import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.shared.service.SessionService;
@@ -38,7 +38,7 @@ class PostInteractionServiceImpl extends BasePostService implements PostInteract
         Post post = getPostEntityById(id); // validate existence of id
 
         if (likeRepository.existsByPostIdAndAuthorId(post.getId(), authenticatedUserId)) {
-            throw new AlreadyLikedException();
+            throw PostErrorCode.ALREADY_LIKED.buildAsException(post.getId());
         }
 
         PostLike like = new PostLike(post.getId(), authenticatedUserId);

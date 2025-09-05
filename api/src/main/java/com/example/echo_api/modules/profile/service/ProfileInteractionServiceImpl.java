@@ -6,9 +6,9 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.echo_api.exception.custom.conflict.AlreadyFollowingException;
-import com.example.echo_api.exception.custom.conflict.SelfActionException;
+import com.example.echo_api.exception.ApplicationException;
 import com.example.echo_api.modules.profile.entity.Follow;
+import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
 import com.example.echo_api.modules.profile.repository.FollowRepository;
 import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.shared.service.SessionService;
@@ -41,7 +41,7 @@ class ProfileInteractionServiceImpl extends BaseProfileService implements Profil
 
         validateNoSelfAction(source, target);
         if (followRepository.existsByFollowerIdAndFollowedId(source, target)) {
-            throw new AlreadyFollowingException();
+            throw ProfileErrorCode.ALREADY_FOLLOWING.buildAsException(target);
         }
 
         followRepository.save(new Follow(source, target));
@@ -58,11 +58,11 @@ class ProfileInteractionServiceImpl extends BaseProfileService implements Profil
      * 
      * @param source the source profile id
      * @param target the target profile id
-     * @throws SelfActionException if the the source and target ids match
+     * @throws ApplicationException if the the source and target ids match
      */
     private void validateNoSelfAction(UUID source, UUID target) {
         if (Objects.equals(source, target)) {
-            throw new SelfActionException();
+            throw ProfileErrorCode.SELF_ACTION.buildAsException();
         }
     }
 

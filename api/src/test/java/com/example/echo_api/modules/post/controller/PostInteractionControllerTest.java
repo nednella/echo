@@ -13,12 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-import com.example.echo_api.config.ErrorMessageConfig;
-import com.example.echo_api.exception.custom.conflict.AlreadyLikedException;
-import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
+import com.example.echo_api.exception.ErrorResponse;
+import com.example.echo_api.modules.post.exception.PostErrorCode;
 import com.example.echo_api.modules.post.service.PostInteractionService;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 
 /**
  * Unit test class for {@link PostInteractionController}.
@@ -54,14 +52,15 @@ class PostInteractionControllerTest {
     @Test
     void like_Returns404NotFound_WhenPostByIdDoesNotExist() {
         // api: POST /api/v1/post/{id}/like ==> 404 Not Found : ErrorDTO
+        PostErrorCode errorCode = PostErrorCode.ID_NOT_FOUND;
+
         UUID id = UUID.randomUUID();
 
-        doThrow(new ResourceNotFoundException()).when(postInteractionService).like(id);
+        doThrow(errorCode.buildAsException(id)).when(postInteractionService).like(id);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
+            errorCode.formatMessage(id),
             null);
 
         var response = mvc.post()
@@ -70,7 +69,7 @@ class PostInteractionControllerTest {
 
         assertThat(response)
             .hasStatus(404)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postInteractionService).like(id);
     }
@@ -78,14 +77,15 @@ class PostInteractionControllerTest {
     @Test
     void like_Returns409Conflict_WhenPostByIdAlreadyLiked() {
         // api: POST /api/v1/post/{id}/like ==> 409 Conflict : ErrorDTO
+        PostErrorCode errorCode = PostErrorCode.ALREADY_LIKED;
+
         UUID id = UUID.randomUUID();
 
-        doThrow(new AlreadyLikedException()).when(postInteractionService).like(id);
+        doThrow(errorCode.buildAsException(id)).when(postInteractionService).like(id);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.CONFLICT,
-            ErrorMessageConfig.Conflict.ALREADY_LIKED,
-            null,
+            errorCode.formatMessage(id),
             null);
 
         var response = mvc.post()
@@ -94,7 +94,7 @@ class PostInteractionControllerTest {
 
         assertThat(response)
             .hasStatus(409)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postInteractionService).like(id);
     }

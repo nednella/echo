@@ -10,13 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 
-import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.modules.profile.dto.response.ProfileDTO;
 import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.entity.Follow;
+import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
 import com.example.echo_api.modules.profile.repository.FollowRepository;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 import com.example.echo_api.shared.pagination.PageDTO;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
 
@@ -97,19 +97,19 @@ class ProfileViewControllerIT extends AbstractIntegrationTest {
     @Test
     void getByUsername_Returns404NotFound_WhenProfileByUsernameDoesNotExist() {
         // api: GET /api/v1/profile/{username} ==> 404 Not Found : ErrorDTO
+        ProfileErrorCode errorCode = ProfileErrorCode.USERNAME_NOT_FOUND;
         String nonExistingUsername = "i_dont_exist";
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
+            errorCode.formatMessage(nonExistingUsername),
             null);
 
         authenticatedClient.get()
             .uri(BY_USERNAME_PATH, nonExistingUsername)
             .exchange()
             .expectStatus().isNotFound()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
@@ -136,19 +136,19 @@ class ProfileViewControllerIT extends AbstractIntegrationTest {
     @Test
     void getFollowers_Returns404NotFound_WhenProfileByIdDoesNotExist() {
         // api: GET /api/v1/profile/{id}/followers ==> 404 Not Found : ErrorDTO
+        ProfileErrorCode errorCode = ProfileErrorCode.ID_NOT_FOUND;
         UUID nonExistingProfileId = UUID.randomUUID();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
+            errorCode.formatMessage(nonExistingProfileId),
             null);
 
         authenticatedClient.get()
             .uri(FOLLOWERS_BY_ID_PATH, nonExistingProfileId)
             .exchange()
             .expectStatus().isNotFound()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
@@ -175,19 +175,19 @@ class ProfileViewControllerIT extends AbstractIntegrationTest {
     @Test
     void getFollowing_Returns404NotFound_WhenProfileByIdDoesNotExist() {
         // api: GET /api/v1/profile/{id}/following ==> 404 Not Found : ErrorDTO
+        ProfileErrorCode errorCode = ProfileErrorCode.ID_NOT_FOUND;
         UUID nonExistingProfileId = UUID.randomUUID();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
+            errorCode.formatMessage(nonExistingProfileId),
             null);
 
         authenticatedClient.get()
             .uri(FOLLOWING_BY_ID_PATH, nonExistingProfileId)
             .exchange()
             .expectStatus().isNotFound()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
 }

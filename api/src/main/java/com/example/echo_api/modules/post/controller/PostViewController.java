@@ -34,13 +34,13 @@ public class PostViewController {
 
     // @formatter:off
     @GetMapping(ApiRoutes.POST.REPLIES)
-    public ResponseEntity<PageDTO<PostDTO>> getRepliesById(
+    public ResponseEntity<PageDTO<PostDTO>> getRepliesByPostId(
         @PathVariable("id") UUID id,
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
     ) {
         Pageable page = OffsetLimitRequest.of(offset, limit);
-        return ResponseEntity.ok(postViewService.getRepliesById(id, page));
+        return ResponseEntity.ok(postViewService.getRepliesByPostId(id, page));
     } // @formatter:on
 
     // @formatter:off
@@ -104,7 +104,7 @@ public class PostViewController {
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
     ) {
         Pageable page = OffsetLimitRequest.of(offset, limit);
-        return ResponseEntity.ok(postViewService.getMentionsOfAuthorId(id, page));
+        return ResponseEntity.ok(postViewService.getMentionsOfProfileId(id, page));
     } // @formatter:on
 
 }

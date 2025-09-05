@@ -6,11 +6,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
+import com.example.echo_api.exception.ApplicationException;
 import com.example.echo_api.modules.post.dto.response.PostDTO;
 import com.example.echo_api.modules.post.entity.Post;
+import com.example.echo_api.modules.post.exception.PostErrorCode;
 import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.modules.profile.entity.Profile;
+import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
 import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.shared.pagination.PageDTO;
 import com.example.echo_api.shared.pagination.PageMapper;
@@ -42,15 +44,15 @@ class PostViewServiceImpl extends BasePostService implements PostViewService {
     // @formatter:on
 
     @Override
-    public PostDTO getPostById(UUID id) throws ResourceNotFoundException {
+    public PostDTO getPostById(UUID id) {
         UUID authenticatedUserId = getAuthenticatedUserId();
 
         return postRepository.findPostDtoById(id, authenticatedUserId)
-            .orElseThrow(ResourceNotFoundException::new);
+            .orElseThrow(() -> PostErrorCode.ID_NOT_FOUND.buildAsException(id));
     }
 
     @Override
-    public PageDTO<PostDTO> getRepliesById(UUID id, Pageable page) throws ResourceNotFoundException {
+    public PageDTO<PostDTO> getRepliesByPostId(UUID id, Pageable page) {
         UUID authenticatedUserId = getAuthenticatedUserId();
         UUID postId = getPostEntityById(id).getId(); // validate existence of id
 
@@ -94,7 +96,7 @@ class PostViewServiceImpl extends BasePostService implements PostViewService {
     }
 
     @Override
-    public PageDTO<PostDTO> getMentionsOfAuthorId(UUID id, Pageable page) {
+    public PageDTO<PostDTO> getMentionsOfProfileId(UUID id, Pageable page) {
         UUID authenticatedUserId = getAuthenticatedUserId();
         UUID authorId = getProfileEntityById(id).getId(); // validate existence of author
 
@@ -125,21 +127,20 @@ class PostViewServiceImpl extends BasePostService implements PostViewService {
     }
 
     /**
-     * Private method for obtaining a {@link Profile} via {@code id} from
-     * {@link ProfileRepository}.
+     * Fetch a profile by {@code id} from {@link ProfileRepository}.
      * 
-     * @param id the id of the profile
+     * @param id the profile id
      * @return the {@link Profile} entity
-     * @throws ResourceNotFoundException if no profile by that id exists
+     * @throws ApplicationException if no profile with the given id exists
      */
-    private Profile getProfileEntityById(UUID id) throws ResourceNotFoundException {
+    protected Profile getProfileEntityById(UUID id) {
         return profileRepository.findById(id)
-            .orElseThrow(ResourceNotFoundException::new);
+            .orElseThrow(() -> ProfileErrorCode.ID_NOT_FOUND.buildAsException(id));
     }
 
     /**
-     * Private method for obtaining the current HTTP request URI, to be returned as
-     * part of a {@link PageDTO} response.
+     * Fetch current HTTP request URI, to be returned as part of a {@link PageDTO}
+     * response.
      * 
      * @return the current request URI as a string
      */

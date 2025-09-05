@@ -1,6 +1,6 @@
 package com.example.echo_api.modules.clerk.service;
 
-import com.example.echo_api.exception.custom.internalserver.ClerkException;
+import com.example.echo_api.exception.ApplicationException;
 import com.example.echo_api.modules.user.entity.User;
 
 public interface ClerkOnboardingService {
@@ -25,8 +25,8 @@ public interface ClerkOnboardingService {
      * 
      * @return the persisted {@link User}, or {@code null} if the authenticated user
      *         is already indicated as having been onboarded
-     * @throws ClerkException if there is an issue when communicating with the Clerk
-     *                        SDK
+     * @throws ApplicationException if there is an issue when communicating with the
+     *                              Clerk SDK
      */
     User onboardAuthenticatedUser();
 

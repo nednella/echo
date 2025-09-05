@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Pageable;
 
-import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
+import com.example.echo_api.exception.ApplicationException;
 import com.example.echo_api.modules.profile.dto.response.ProfileDTO;
 import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.example.echo_api.shared.pagination.PageDTO;
@@ -21,43 +21,43 @@ public interface ProfileViewService {
     /**
      * Fetch a {@link ProfileDTO} by {@code id}.
      * 
-     * @param id the id of the profile to query
+     * @param id the profile id
      * @return a {@link ProfileDTO} resembling the queried profile
-     * @throws ResourceNotFoundException if no profile by that id exists
+     * @throws ApplicationException if no profile with the given id exists
      */
-    public ProfileDTO getById(UUID id) throws ResourceNotFoundException;
+    public ProfileDTO getById(UUID id);
 
     /**
      * Fetch a {@link ProfileDTO} by {@code username}.
      * 
-     * @param username the username of the profile to query
+     * @param username the profile username
      * @return a {@link ProfileDTO} resembling the queried profile
-     * @throws ResourceNotFoundException if no profile by that username exists
+     * @throws ApplicationException if no profile with the given username exists
      */
-    public ProfileDTO getByUsername(String username) throws ResourceNotFoundException;
+    public ProfileDTO getByUsername(String username);
 
     /**
      * Fetch a {@link PageDTO} of {@link SimplifiedProfileDTO} for the followers
      * list of the supplied {@code id} and {@code page} parameters.
      * 
-     * @param id   the id of the profile to query
+     * @param id   the profile id
      * @param page the {@link Pageable} containing the pagination parameters
      * @return a {@link PageDTO} of {@link SimplifiedProfileDTO} for matches,
      *         otherwise empty
-     * @throws ResourceNotFoundException if no profile by that id exists
+     * @throws ApplicationException if no profile with the given id exists
      */
-    public PageDTO<SimplifiedProfileDTO> getFollowers(UUID id, Pageable page) throws ResourceNotFoundException;
+    public PageDTO<SimplifiedProfileDTO> getFollowers(UUID id, Pageable page);
 
     /**
      * Fetch a {@link PageDTO} of {@link SimplifiedProfileDTO} for the following
      * list of the supplied {@code id} and {@code page} parameters.
      * 
-     * @param id   the id of the profile to query
+     * @param id   the profile id
      * @param page the {@link Pageable} containing the pagination parameters
      * @return a {@link PageDTO} of {@link SimplifiedProfileDTO} for matches,
      *         otherwise empty
-     * @throws ResourceNotFoundException if no profile by that id exists
+     * @throws ApplicationException if no profile with the given id exists
      */
-    public PageDTO<SimplifiedProfileDTO> getFollowing(UUID id, Pageable page) throws ResourceNotFoundException;
+    public PageDTO<SimplifiedProfileDTO> getFollowing(UUID id, Pageable page);
 
 }

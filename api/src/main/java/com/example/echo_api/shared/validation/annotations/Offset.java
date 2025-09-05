@@ -8,7 +8,6 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import com.example.echo_api.config.ValidationMessageConfig;
 import com.example.echo_api.shared.validation.validators.OffsetValidator;
 
 import jakarta.validation.Constraint;
@@ -53,7 +52,7 @@ public @interface Offset {
     /**
      * @return the error message template
      */
-    String message() default ValidationMessageConfig.INVALID_OFFSET;
+    String message() default "Offset index must not be negative";
 
     /**
      * @return the groups the constraint belongs to

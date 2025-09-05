@@ -34,7 +34,6 @@ public class SecurityConfig {
             .sessionManagement(sm -> sm
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(req -> req
-                .requestMatchers("/public").permitAll()
                 .requestMatchers("/api/v1/dev/**").permitAll()
                 .requestMatchers(HttpMethod.POST, ApiRoutes.CLERK.WEBHOOK).permitAll()
                 .anyRequest().authenticated())

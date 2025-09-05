@@ -1,6 +1,8 @@
 package com.example.echo_api.security;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 import java.util.Collections;
@@ -27,7 +29,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import com.example.echo_api.config.ClerkConfig;
-import com.example.echo_api.config.ErrorMessageConfig;
 import com.example.echo_api.shared.constant.ApiRoutes;
 
 import jakarta.servlet.FilterChain;
@@ -143,7 +144,7 @@ class ClerkOnboardingFilterTest {
         Exception ex = assertThrows(AccessDeniedException.class,
             () -> onboardingFilter.doFilter(request, response, filterChain));
 
-        assertEquals(ErrorMessageConfig.Forbidden.INVALID_AUTH_PRINCIPAL, ex.getMessage());
+        assertThat(ex.getMessage()).isEqualTo("Authentication principal is missing or invalid");
         verify(filterChain, never()).doFilter(request, response);
     }
 
@@ -157,7 +158,7 @@ class ClerkOnboardingFilterTest {
         Exception ex = assertThrows(AccessDeniedException.class,
             () -> onboardingFilter.doFilter(request, response, filterChain));
 
-        assertEquals(ErrorMessageConfig.Forbidden.ONBOARDED_CLAIM_MISSING, ex.getMessage());
+        assertThat(ex.getMessage()).isEqualTo("Required token claim 'onboarded' is missing");
         verify(filterChain, never()).doFilter(request, response);
     }
 
@@ -172,7 +173,7 @@ class ClerkOnboardingFilterTest {
         Exception ex = assertThrows(AccessDeniedException.class,
             () -> onboardingFilter.doFilter(request, response, filterChain));
 
-        assertEquals(ErrorMessageConfig.Forbidden.ECHO_ID_CLAIM_MISSING, ex.getMessage());
+        assertThat(ex.getMessage()).isEqualTo("Required token claim 'echo_id' is missing");
         verify(filterChain, never()).doFilter(request, response);
     }
 
@@ -189,7 +190,7 @@ class ClerkOnboardingFilterTest {
         Exception ex = assertThrows(AccessDeniedException.class,
             () -> onboardingFilter.doFilter(request, response, filterChain));
 
-        assertEquals(ErrorMessageConfig.Forbidden.ONBOARDED_CLAIM_MALFORMED, ex.getMessage());
+        assertThat(ex.getMessage()).isEqualTo("Token claim 'onboarded' contains an unexpected value");
         verify(filterChain, never()).doFilter(request, response);
     }
 
@@ -206,7 +207,7 @@ class ClerkOnboardingFilterTest {
         Exception ex = assertThrows(AccessDeniedException.class,
             () -> onboardingFilter.doFilter(request, response, filterChain));
 
-        assertEquals(ErrorMessageConfig.Forbidden.ONBOARDING_NOT_COMPLETED, ex.getMessage());
+        assertThat(ex.getMessage()).isEqualTo("User has not completed the onboarding process");
         verify(filterChain, never()).doFilter(request, response);
     }
 
@@ -226,7 +227,7 @@ class ClerkOnboardingFilterTest {
         Exception ex = assertThrows(AccessDeniedException.class,
             () -> onboardingFilter.doFilter(request, response, filterChain));
 
-        assertEquals(ErrorMessageConfig.Forbidden.ECHO_ID_CLAIM_MALFORMED, ex.getMessage());
+        assertThat(ex.getMessage()).isEqualTo("Token claim 'echo_id' contains an unexpected value");
         verify(filterChain, never()).doFilter(request, response);
     }
 

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import com.example.echo_api.exception.custom.internalserver.TwitterTextEnumException;
 import com.example.echo_api.modules.post.entity.PostEntity;
 import com.example.echo_api.modules.post.entity.PostEntityType;
 import com.twitter.twittertext.Extractor;
@@ -50,7 +49,7 @@ public class PostEntityExtractor {
         try {
             type = PostEntityType.valueOf(twEntity.getType().name());
         } catch (Exception ex) {
-            throw new TwitterTextEnumException(
+            throw new IllegalArgumentException(
                 "Could not convert TwitterText entity enum type: " + twEntity.getType().name());
         }
 

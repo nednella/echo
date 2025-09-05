@@ -11,13 +11,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import com.example.echo_api.config.ErrorMessageConfig;
-import com.example.echo_api.config.ValidationMessageConfig;
+import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.modules.post.dto.request.CreatePostDTO;
 import com.example.echo_api.modules.post.entity.Post;
+import com.example.echo_api.modules.post.exception.PostErrorCode;
 import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
 
 /**
@@ -60,9 +59,9 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
 
     static Stream<Arguments> invalidTextCases() {
         return Stream.of(
-            Arguments.of(null, ValidationMessageConfig.TEXT_NULL_OR_BLANK),
-            Arguments.of(" ", ValidationMessageConfig.TEXT_NULL_OR_BLANK),
-            Arguments.of("x".repeat(281), ValidationMessageConfig.TEXT_TOO_LONG));
+            Arguments.of(null, "Post text cannot be null or blank"),
+            Arguments.of(" ", "Post text cannot be null or blank"),
+            Arguments.of("x".repeat(281), "Post text must not exceed 280 characters"));
     }
 
     @ParameterizedTest(name = "create_Returns400BadRequest_WhenPostTextFieldIsInvalid: \"{0}\"")
@@ -71,9 +70,8 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
         // api: POST /api/v1/post ==> 400 Bad Request : ErrorDTO
         var body = new CreatePostDTO(null, text);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             expectedDetails,
             null);
 
@@ -82,19 +80,20 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
             .bodyValue(body)
             .exchange()
             .expectStatus().isBadRequest()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
     void create_Returns400BadRequest_WhenPostByParentIdDoesNotExist() {
         // api: POST /api/v1/post ==> 400 Bad Request : ErrorDTO
+        PostErrorCode errorCode = PostErrorCode.INVALID_PARENT_ID;
+
         UUID invalidParentId = UUID.randomUUID();
         var body = new CreatePostDTO(invalidParentId, "Test post.");
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            ValidationMessageConfig.INVALID_PARENT_ID,
+            errorCode.formatMessage(invalidParentId),
             null);
 
         authenticatedClient.post()
@@ -102,7 +101,7 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
             .bodyValue(body)
             .exchange()
             .expectStatus().isBadRequest()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
@@ -132,19 +131,20 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
     @Test
     void delete_Returns403Forbidden_WhenPostByIdExistsAndIsNotOwnedByYou() {
         // api: DELETE /api/v1/post/{id} ==> 403 Forbidden : ErrorDTO
+        PostErrorCode errorCode = PostErrorCode.POST_NOT_OWNED;
+
         UUID notMyPostId = notSelfPost.getId();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.FORBIDDEN,
-            ErrorMessageConfig.Forbidden.RESOURCE_OWNERSHIP_REQUIRED,
-            null,
+            errorCode.formatMessage(),
             null);
 
         authenticatedClient.delete()
             .uri(BY_ID_PATH, notMyPostId)
             .exchange()
             .expectStatus().isForbidden()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
 }

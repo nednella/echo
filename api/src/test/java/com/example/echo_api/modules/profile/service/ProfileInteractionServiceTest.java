@@ -1,5 +1,6 @@
 package com.example.echo_api.modules.profile.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -14,11 +15,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.example.echo_api.exception.custom.conflict.AlreadyFollowingException;
-import com.example.echo_api.exception.custom.conflict.SelfActionException;
-import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
+import com.example.echo_api.exception.ApplicationException;
 import com.example.echo_api.modules.profile.entity.Follow;
 import com.example.echo_api.modules.profile.entity.Profile;
+import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
 import com.example.echo_api.modules.profile.repository.FollowRepository;
 import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.shared.service.SessionService;
@@ -66,34 +66,41 @@ class ProfileInteractionServiceTest {
     }
 
     @Test
-    void follow_ThrowsResourceNotFound_WhenProfileByIdDoesNotExist() {
+    void follow_ThrowsApplicationException_WhenProfileByIdDoesNotExist() {
         // arrange
+        ProfileErrorCode errorCode = ProfileErrorCode.ID_NOT_FOUND;
         UUID id = UUID.randomUUID();
 
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(profileRepository.findById(id)).thenReturn(Optional.empty());
 
         // act & assert
-        assertThrows(ResourceNotFoundException.class, () -> profileInteractionService.follow(id));
+        var ex = assertThrows(ApplicationException.class, () -> profileInteractionService.follow(id));
+        assertThat(ex.getMessage()).isEqualTo(errorCode.formatMessage(id));
+
         verify(followRepository, never()).save(any(Follow.class));
     }
 
     @Test
-    void follow_ThrowsSelfAction_WhenProfileByIdIsYou() {
+    void follow_ThrowsApplicationException_WhenProfileByIdIsYou() {
         // arrange
+        ProfileErrorCode errorCode = ProfileErrorCode.SELF_ACTION;
         UUID id = target.getId();
 
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(profileRepository.findById(id)).thenReturn(Optional.of(authenticatedUserProfile));
 
         // act & assert
-        assertThrows(SelfActionException.class, () -> profileInteractionService.follow(id));
+        var ex = assertThrows(ApplicationException.class, () -> profileInteractionService.follow(id));
+        assertThat(ex.getMessage()).isEqualTo(errorCode.formatMessage());
+
         verify(followRepository, never()).save(any(Follow.class));
     }
 
     @Test
-    void follow_ThrowsAlreadyFollowing_WhenProfileByIdAlreadyFollowedByYou() {
+    void follow_ThrowsApplicationException_WhenProfileByIdAlreadyFollowedByYou() {
         // arrange
+        ProfileErrorCode errorCode = ProfileErrorCode.ALREADY_FOLLOWING;
         UUID id = target.getId();
 
         when(profileRepository.findById(id)).thenReturn(Optional.of(target));
@@ -101,7 +108,9 @@ class ProfileInteractionServiceTest {
         when(followRepository.existsByFollowerIdAndFollowedId(authenticatedUserId, id)).thenReturn(true);
 
         // act & assert
-        assertThrows(AlreadyFollowingException.class, () -> profileInteractionService.follow(id));
+        var ex = assertThrows(ApplicationException.class, () -> profileInteractionService.follow(id));
+        assertThat(ex.getMessage()).isEqualTo(errorCode.formatMessage(id));
+
         verify(followRepository, never()).save(any(Follow.class));
     }
 

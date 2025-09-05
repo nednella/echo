@@ -18,14 +18,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-import com.example.echo_api.config.ErrorMessageConfig;
-import com.example.echo_api.config.ValidationMessageConfig;
-import com.example.echo_api.exception.custom.badrequest.InvalidParentIdException;
-import com.example.echo_api.exception.custom.forbidden.ResourceOwnershipException;
+import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.modules.post.dto.request.CreatePostDTO;
+import com.example.echo_api.modules.post.exception.PostErrorCode;
 import com.example.echo_api.modules.post.service.PostManagementService;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -68,9 +65,9 @@ class PostManagementControllerTest {
 
     static Stream<Arguments> invalidTextCases() {
         return Stream.of(
-            Arguments.of(null, ValidationMessageConfig.TEXT_NULL_OR_BLANK),
-            Arguments.of(" ", ValidationMessageConfig.TEXT_NULL_OR_BLANK),
-            Arguments.of("x".repeat(281), ValidationMessageConfig.TEXT_TOO_LONG));
+            Arguments.of(null, "Post text cannot be null or blank"),
+            Arguments.of(" ", "Post text cannot be null or blank"),
+            Arguments.of("x".repeat(281), "Post text must not exceed 280 characters"));
     }
 
     @ParameterizedTest(name = "create_Returns400BadRequest_WhenPostTextFieldIsInvalid: \"{0}\"")
@@ -79,9 +76,8 @@ class PostManagementControllerTest {
         CreatePostDTO post = new CreatePostDTO(null, text);
         String body = objectMapper.writeValueAsString(post);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
             expectedDetails,
             null);
 
@@ -93,7 +89,7 @@ class PostManagementControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postManagementService, never()).create(post);
     }
@@ -101,15 +97,17 @@ class PostManagementControllerTest {
     @Test
     void create_Returns400BadRequest_WhenPostByParentIdDoesNotExist() throws Exception {
         // api: POST /api/v1/post ==> 400 Bad Request : ErrorDTO
-        CreatePostDTO post = new CreatePostDTO(UUID.randomUUID(), "This is a new post with a parent id.");
+        PostErrorCode errorCode = PostErrorCode.INVALID_PARENT_ID;
+
+        UUID invalidParentId = UUID.randomUUID();
+        CreatePostDTO post = new CreatePostDTO(invalidParentId, "This is a new post with a parent id.");
         String body = objectMapper.writeValueAsString(post);
 
-        doThrow(new InvalidParentIdException()).when(postManagementService).create(post);
+        doThrow(errorCode.buildAsException(invalidParentId)).when(postManagementService).create(post);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            ValidationMessageConfig.INVALID_PARENT_ID,
+            errorCode.formatMessage(invalidParentId),
             null);
 
         var response = mvc.post()
@@ -120,7 +118,7 @@ class PostManagementControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postManagementService).create(post);
     }
@@ -144,14 +142,15 @@ class PostManagementControllerTest {
     @Test
     void delete_Returns403Forbidden_WhenPostByIdExistsAndIsNotOwnedByYou() {
         // api: DELETE /api/v1/post/{id} ==> 403 Forbidden : ErrorDTO
+        PostErrorCode errorCode = PostErrorCode.POST_NOT_OWNED;
+
         UUID id = UUID.randomUUID();
 
-        doThrow(new ResourceOwnershipException()).when(postManagementService).delete(id);
+        doThrow(errorCode.buildAsException()).when(postManagementService).delete(id);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.FORBIDDEN,
-            ErrorMessageConfig.Forbidden.RESOURCE_OWNERSHIP_REQUIRED,
-            null,
+            errorCode.formatMessage(),
             null);
 
         var response = mvc.delete()
@@ -160,7 +159,7 @@ class PostManagementControllerTest {
 
         assertThat(response)
             .hasStatus(403)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postManagementService).delete(id);
     }

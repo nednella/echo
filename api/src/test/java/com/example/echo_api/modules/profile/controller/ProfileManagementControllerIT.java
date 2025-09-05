@@ -1,18 +1,11 @@
 package com.example.echo_api.modules.profile.controller;
 
-import java.util.stream.Stream;
-
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
 
-import com.example.echo_api.config.ErrorMessageConfig;
-import com.example.echo_api.config.ValidationMessageConfig;
+import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.modules.profile.dto.request.UpdateProfileDTO;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
 
 /**
@@ -35,20 +28,14 @@ class ProfileManagementControllerIT extends AbstractIntegrationTest {
             .expectBody().isEmpty();
     }
 
-    static Stream<Arguments> invalidNameCases() {
-        return Stream.of(Arguments.of("x".repeat(51), ValidationMessageConfig.NAME_TOO_LONG));
-    }
-
-    @ParameterizedTest(name = "updateProfile_Returns400BadRequest_WhenProfileNameFieldIsInvalid: \"{0}\"")
-    @MethodSource("invalidNameCases")
-    void updateProfile_Returns400BadRequest_WhenProfileNameFieldIsInvalid(String name, String expectedDetails) {
+    void updateProfile_Returns400BadRequest_WhenProfileNameFieldIsInvalid() {
         // api: PUT /api/v1/profile/me/info ==> 204 No Content
-        var body = new UpdateProfileDTO(name, "x", "location");
+        String invalidName = "x".repeat(51);
+        var body = new UpdateProfileDTO(invalidName, "x", "location");
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            expectedDetails,
+            "Name must not exceed 50 characters",
             null);
 
         authenticatedClient.put()
@@ -56,23 +43,17 @@ class ProfileManagementControllerIT extends AbstractIntegrationTest {
             .bodyValue(body)
             .exchange()
             .expectStatus().isBadRequest()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
-    static Stream<Arguments> invalidBioCases() {
-        return Stream.of(Arguments.of("x".repeat(161), ValidationMessageConfig.BIO_TOO_LONG));
-    }
-
-    @ParameterizedTest(name = "updateProfile_Returns400BadRequest_WhenProfileBioFieldIsInvalid: \"{0}\"")
-    @MethodSource("invalidBioCases")
-    void updateProfile_Returns400BadRequest_WhenProfileBioFieldIsInvalid(String bio, String expectedDetails) {
+    void updateProfile_Returns400BadRequest_WhenProfileBioFieldIsInvalid() {
         // api: PUT /api/v1/profile/me/info ==> 204 No Content
-        var body = new UpdateProfileDTO("name", bio, "location");
+        String invalidBio = "x".repeat(161);
+        var body = new UpdateProfileDTO("name", invalidBio, "location");
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            expectedDetails,
+            "Bio must not exceed 160 characters",
             null);
 
         authenticatedClient.put()
@@ -80,23 +61,17 @@ class ProfileManagementControllerIT extends AbstractIntegrationTest {
             .bodyValue(body)
             .exchange()
             .expectStatus().isBadRequest()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
-    static Stream<Arguments> invalidLocationCases() {
-        return Stream.of(Arguments.of("x".repeat(31), ValidationMessageConfig.LOCATION_TOO_LONG));
-    }
-
-    @ParameterizedTest(name = "updateProfile_Returns400BadRequest_WhenProfileLocationFieldIsInvalid: \"{0}\"")
-    @MethodSource("invalidLocationCases")
-    void updateProfile_Returns400BadRequest_WhenProfileLocationFieldIsInvalid(String loc, String expectedDetails) {
+    void updateProfile_Returns400BadRequest_WhenProfileLocationFieldIsInvalid() {
         // api: PUT /api/v1/profile/me/info ==> 204 No Content
-        var body = new UpdateProfileDTO("name", "bio", loc);
+        String invalidLocation = "x".repeat(31);
+        var body = new UpdateProfileDTO("name", "bio", invalidLocation);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            expectedDetails,
+            "Location must not exceed 30 characters",
             null);
 
         authenticatedClient.put()
@@ -104,7 +79,7 @@ class ProfileManagementControllerIT extends AbstractIntegrationTest {
             .bodyValue(body)
             .exchange()
             .expectStatus().isBadRequest()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
 }

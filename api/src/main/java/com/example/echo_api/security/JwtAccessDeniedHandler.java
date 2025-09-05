@@ -12,7 +12,6 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Custom {@link AccessDeniedHandler}, which should be called by
@@ -25,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
  * <li>https://docs.spring.io/spring-security/reference/servlet/architecture.html#servlet-exceptiontranslationfilter
  * </ul>
  */
-@Slf4j
 @Component
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 
@@ -35,17 +33,13 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         this.resolver = resolver;
     }
 
-    @Override // @formatter:off
+    // @formatter:off
+    @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException ex)
             throws IOException, ServletException
     {
-        log.debug("Handling Spring Security AccessDeniedException: {}", ex.getMessage());
-
-        /**
-         * Delegate AccessDenied filter chain exceptions to the global controller advice
-         * handlers.
-         */
         resolver.resolveException(request, response, null, ex);
-    } // @formatter:on
+    }
+    // @formatter:on
 
 }

@@ -45,6 +45,8 @@ public class Post {
 
     // ---- production constructors ----
 
+    // TODO: static methods asReply, etc.
+
     public Post(UUID parentId, UUID authorId, String text) {
         this.parentId = parentId;
         this.authorId = authorId;

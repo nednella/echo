@@ -6,10 +6,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
 import com.example.echo_api.modules.profile.dto.response.ProfileDTO;
 import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.entity.Profile;
+import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
 import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.shared.pagination.PageDTO;
 import com.example.echo_api.shared.pagination.PageMapper;
@@ -39,30 +39,30 @@ class ProfileViewServiceImpl extends BaseProfileService implements ProfileViewSe
 
     @Override
     public ProfileDTO getMe() {
-        UUID authUserId = getAuthenticatedUserId();
+        UUID id = getAuthenticatedUserId();
 
-        return profileRepository.findProfileDtoById(authUserId, authUserId)
-            .orElseThrow(ResourceNotFoundException::new);
+        return profileRepository.findProfileDtoById(id, id)
+            .orElseThrow(() -> ProfileErrorCode.ID_NOT_FOUND.buildAsException(id));
     }
 
     @Override
-    public ProfileDTO getById(UUID id) throws ResourceNotFoundException {
+    public ProfileDTO getById(UUID id) {
         UUID authUserId = getAuthenticatedUserId();
 
         return profileRepository.findProfileDtoById(id, authUserId)
-            .orElseThrow(ResourceNotFoundException::new);
+            .orElseThrow(() -> ProfileErrorCode.ID_NOT_FOUND.buildAsException(id));
     }
 
     @Override
-    public ProfileDTO getByUsername(String username) throws ResourceNotFoundException {
+    public ProfileDTO getByUsername(String username) {
         UUID authUserId = getAuthenticatedUserId();
 
         return profileRepository.findProfileDtoByUsername(username, authUserId)
-            .orElseThrow(ResourceNotFoundException::new);
+            .orElseThrow(() -> ProfileErrorCode.USERNAME_NOT_FOUND.buildAsException(username));
     }
 
     @Override
-    public PageDTO<SimplifiedProfileDTO> getFollowers(UUID id, Pageable page) throws ResourceNotFoundException {
+    public PageDTO<SimplifiedProfileDTO> getFollowers(UUID id, Pageable page) {
         UUID authUserId = getAuthenticatedUserId();
         UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
 
@@ -73,7 +73,7 @@ class ProfileViewServiceImpl extends BaseProfileService implements ProfileViewSe
     }
 
     @Override
-    public PageDTO<SimplifiedProfileDTO> getFollowing(UUID id, Pageable page) throws ResourceNotFoundException {
+    public PageDTO<SimplifiedProfileDTO> getFollowing(UUID id, Pageable page) {
         UUID authUserId = getAuthenticatedUserId();
         UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
 

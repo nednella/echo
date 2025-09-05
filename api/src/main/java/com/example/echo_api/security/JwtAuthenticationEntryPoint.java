@@ -12,7 +12,6 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Custom {@link AuthenticationEntryPoint}, which should be called by
@@ -26,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
  * <li>https://docs.spring.io/spring-security/reference/servlet/architecture.html#servlet-exceptiontranslationfilter
  * </ul>
  */
-@Slf4j
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
@@ -36,17 +34,13 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         this.resolver = resolver;
     }
 
-    @Override // @formatter:off
+    // @formatter:off
+    @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException ex)
         throws IOException, ServletException
     {
-        log.debug("Handling Spring Security AuthenticationException: {}", ex.getMessage());
-
-        /**
-         * Delegate Authentication filter chain exceptions to the global controller
-         * advice handlers.
-         */
         resolver.resolveException(request, response, null, ex);
-    } // @formatter:on
+    }
+    // @formatter:on
 
 }

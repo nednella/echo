@@ -5,18 +5,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
 
-import com.example.echo_api.config.ErrorMessageConfig;
+import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
 import com.example.echo_api.testing.support.ClerkTestUtils.Template;
 
 /**
  * Integration test class for {@link ClerkOnboardingFilter}.
  */
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
 
     private static final String PROTECTED_ENDPOINT = ApiRoutes.PROFILE.ME; // random protected endpoint
@@ -28,10 +25,9 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
 
         assertThat(token).isNotBlank();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.FORBIDDEN,
-            ErrorMessageConfig.Forbidden.ONBOARDED_CLAIM_MISSING,
-            null,
+            "Required token claim 'onboarded' is missing",
             null);
 
         unauthenticatedClient.get()
@@ -39,7 +35,7 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
             .header(HttpHeaders.AUTHORIZATION, new StringBuilder("Bearer ").append(token).toString())
             .exchange()
             .expectStatus().isForbidden()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
@@ -49,10 +45,9 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
 
         assertThat(token).isNotBlank();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.FORBIDDEN,
-            ErrorMessageConfig.Forbidden.ONBOARDED_CLAIM_MALFORMED,
-            null,
+            "Token claim 'onboarded' contains an unexpected value",
             null);
 
         unauthenticatedClient.get()
@@ -60,7 +55,7 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
             .header(HttpHeaders.AUTHORIZATION, new StringBuilder("Bearer ").append(token).toString())
             .exchange()
             .expectStatus().isForbidden()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
@@ -70,10 +65,9 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
 
         assertThat(token).isNotBlank();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.FORBIDDEN,
-            ErrorMessageConfig.Forbidden.ECHO_ID_CLAIM_MISSING,
-            null,
+            "Required token claim 'echo_id' is missing",
             null);
 
         unauthenticatedClient.get()
@@ -81,7 +75,7 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
             .header(HttpHeaders.AUTHORIZATION, new StringBuilder("Bearer ").append(token).toString())
             .exchange()
             .expectStatus().isForbidden()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
@@ -91,10 +85,9 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
 
         assertThat(token).isNotBlank();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.FORBIDDEN,
-            ErrorMessageConfig.Forbidden.ECHO_ID_CLAIM_MALFORMED,
-            null,
+            "Token claim 'echo_id' contains an unexpected value",
             null);
 
         unauthenticatedClient.get()
@@ -102,7 +95,7 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
             .header(HttpHeaders.AUTHORIZATION, new StringBuilder("Bearer ").append(token).toString())
             .exchange()
             .expectStatus().isForbidden()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
     @Test
@@ -112,10 +105,9 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
 
         assertThat(token).isNotBlank();
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.FORBIDDEN,
-            ErrorMessageConfig.Forbidden.ONBOARDING_NOT_COMPLETED,
-            null,
+            "User has not completed the onboarding process",
             null);
 
         unauthenticatedClient.get()
@@ -123,7 +115,7 @@ class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
             .header(HttpHeaders.AUTHORIZATION, new StringBuilder("Bearer ").append(token).toString())
             .exchange()
             .expectStatus().isForbidden()
-            .expectBody(ErrorDTO.class).isEqualTo(expected);
+            .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
 }

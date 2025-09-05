@@ -2,8 +2,9 @@ package com.example.echo_api.modules.post.service;
 
 import java.util.UUID;
 
-import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
+import com.example.echo_api.exception.ApplicationException;
 import com.example.echo_api.modules.post.entity.Post;
+import com.example.echo_api.modules.post.exception.PostErrorCode;
 import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.shared.service.SessionService;
 
@@ -21,8 +22,7 @@ class BasePostService {
     protected final PostRepository postRepository;
 
     /**
-     * Protected method for obtaining the {@link UUID} associated to the
-     * authenticated user.
+     * Fetch the {@link UUID} associated with the authenticated user.
      * 
      * @return the {@link UUID}
      */
@@ -31,16 +31,15 @@ class BasePostService {
     }
 
     /**
-     * Protected method for obtaining a {@link Post} via {@code id} from
-     * {@link PostRepository}.
+     * Fetch a post via {@code id} from {@link PostRepository}.
      * 
-     * @param id the id of the post
+     * @param id the post id
      * @return the {@link Post} entity
-     * @throws ResourceNotFoundException if no post by that id exists
+     * @throws ApplicationException if no post with the given id exists
      */
     protected Post getPostEntityById(UUID id) {
         return postRepository.findById(id)
-            .orElseThrow(ResourceNotFoundException::new);
+            .orElseThrow(() -> PostErrorCode.ID_NOT_FOUND.buildAsException(id));
     }
 
 }

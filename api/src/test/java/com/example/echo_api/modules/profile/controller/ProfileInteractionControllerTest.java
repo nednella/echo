@@ -13,13 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-import com.example.echo_api.config.ErrorMessageConfig;
-import com.example.echo_api.exception.custom.conflict.AlreadyFollowingException;
-import com.example.echo_api.exception.custom.conflict.SelfActionException;
-import com.example.echo_api.exception.custom.notfound.ResourceNotFoundException;
+import com.example.echo_api.exception.ErrorResponse;
+import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
 import com.example.echo_api.modules.profile.service.ProfileInteractionService;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 
 /**
  * Unit test class for {@link ProfileInteractionController}.
@@ -55,13 +52,14 @@ class ProfileInteractionControllerTest {
     @Test
     void follow_Returns404NotFound_WhenProfileByIdDoesNotExist() {
         // api: POST /api/v1/profile/{id}/follow ==> 404 Not Found : ErrorDTO
-        UUID id = UUID.randomUUID();
-        doThrow(new ResourceNotFoundException()).when(profileInteractionService).follow(id);
+        ProfileErrorCode errorCode = ProfileErrorCode.ID_NOT_FOUND;
 
-        ErrorDTO expected = new ErrorDTO(
+        UUID id = UUID.randomUUID();
+        doThrow(errorCode.buildAsException(id)).when(profileInteractionService).follow(id);
+
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.NOT_FOUND,
-            ErrorMessageConfig.NotFound.RESOURCE_NOT_FOUND,
-            null,
+            errorCode.formatMessage(id),
             null);
 
         var response = mvc.post()
@@ -70,7 +68,7 @@ class ProfileInteractionControllerTest {
 
         assertThat(response)
             .hasStatus(404)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(profileInteractionService).follow(id);
     }
@@ -78,13 +76,14 @@ class ProfileInteractionControllerTest {
     @Test
     void follow_Returns409Conflict_WhenProfileByIdIsYou() {
         // api: POST /api/v1/profile/{id}/follow ==> 409 Conflict : ErrorDTO
-        UUID id = UUID.randomUUID();
-        doThrow(new SelfActionException()).when(profileInteractionService).follow(id);
+        ProfileErrorCode errorCode = ProfileErrorCode.SELF_ACTION;
 
-        ErrorDTO expected = new ErrorDTO(
+        UUID id = UUID.randomUUID();
+        doThrow(errorCode.buildAsException()).when(profileInteractionService).follow(id);
+
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.CONFLICT,
-            ErrorMessageConfig.Conflict.SELF_ACTION,
-            null,
+            errorCode.formatMessage(),
             null);
 
         var response = mvc.post()
@@ -93,7 +92,7 @@ class ProfileInteractionControllerTest {
 
         assertThat(response)
             .hasStatus(409)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(profileInteractionService).follow(id);
     }
@@ -101,13 +100,14 @@ class ProfileInteractionControllerTest {
     @Test
     void follow_Returns409Conflict_WhenProfileByIdAlreadyFollowedByYou() {
         // api: POST /api/v1/profile/{id}/follow ==> 409 Conflict : ErrorDTO
-        UUID id = UUID.randomUUID();
-        doThrow(new AlreadyFollowingException()).when(profileInteractionService).follow(id);
+        ProfileErrorCode errorCode = ProfileErrorCode.ALREADY_FOLLOWING;
 
-        ErrorDTO expected = new ErrorDTO(
+        UUID id = UUID.randomUUID();
+        doThrow(errorCode.buildAsException(id)).when(profileInteractionService).follow(id);
+
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.CONFLICT,
-            ErrorMessageConfig.Conflict.ALREADY_FOLLOWING,
-            null,
+            errorCode.formatMessage(id),
             null);
 
         var response = mvc.post()
@@ -116,7 +116,7 @@ class ProfileInteractionControllerTest {
 
         assertThat(response)
             .hasStatus(409)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(profileInteractionService).follow(id);
     }

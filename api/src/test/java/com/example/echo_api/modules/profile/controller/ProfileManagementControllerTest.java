@@ -12,12 +12,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-import com.example.echo_api.config.ErrorMessageConfig;
-import com.example.echo_api.config.ValidationMessageConfig;
+import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.modules.profile.dto.request.UpdateProfileDTO;
 import com.example.echo_api.modules.profile.service.ProfileManagementService;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -64,10 +62,9 @@ class ProfileManagementControllerTest {
         var request = new UpdateProfileDTO(invalidName, "bio", "location");
         String body = objectMapper.writeValueAsString(request);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            ValidationMessageConfig.NAME_TOO_LONG,
+            "Name must not exceed 50 characters",
             null);
 
         var response = mvc.put()
@@ -78,7 +75,7 @@ class ProfileManagementControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(profileManagementService, never()).updateProfile(request);
     }
@@ -90,10 +87,9 @@ class ProfileManagementControllerTest {
         var request = new UpdateProfileDTO("name", invalidBio, "location");
         String body = objectMapper.writeValueAsString(request);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            ValidationMessageConfig.BIO_TOO_LONG,
+            "Bio must not exceed 160 characters",
             null);
 
         var response = mvc.put()
@@ -104,7 +100,7 @@ class ProfileManagementControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(profileManagementService, never()).updateProfile(request);
     }
@@ -116,10 +112,9 @@ class ProfileManagementControllerTest {
         var request = new UpdateProfileDTO("name", "bio", invalidLocation);
         String body = objectMapper.writeValueAsString(request);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            ErrorMessageConfig.BadRequest.INVALID_REQUEST,
-            ValidationMessageConfig.LOCATION_TOO_LONG,
+            "Location must not exceed 30 characters",
             null);
 
         var response = mvc.put()
@@ -130,7 +125,7 @@ class ProfileManagementControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(profileManagementService, never()).updateProfile(request);
     }

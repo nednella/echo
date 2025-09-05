@@ -2,8 +2,7 @@ package com.example.echo_api.modules.clerk.service;
 
 import org.springframework.http.HttpHeaders;
 
-import com.example.echo_api.exception.custom.badrequest.DeserializationException;
-import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
+import com.example.echo_api.exception.ApplicationException;
 
 public interface ClerkWebhookService {
 
@@ -17,8 +16,7 @@ public interface ClerkWebhookService {
      * 
      * @param headers The HTTP headers containing the Svix webhook metadata
      * @param payload The raw webhook JSON payload string
-     * @throws WebhookVerificationException If the webhook signature verification
-     *                                      fails
+     * @throws ApplicationException If the webhook signature verification fails
      */
     void verify(HttpHeaders headers, String payload);
 
@@ -28,8 +26,8 @@ public interface ClerkWebhookService {
      * 
      * @param headers HTTP headers containing Svix signature metadata
      * @param payload Raw JSON payload string
-     * @throws DeserializationException If there was an issue when deserializing the
-     *                                  JSON payload for whatever reason
+     * @throws ApplicationException If there was an issue when deserializing the
+     *                              JSON payload for whatever reason
      */
     void handleWebhook(String payload);
 

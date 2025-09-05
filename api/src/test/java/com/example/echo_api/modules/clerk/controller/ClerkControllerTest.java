@@ -16,14 +16,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
-import com.example.echo_api.config.ErrorMessageConfig;
-import com.example.echo_api.exception.custom.badrequest.DeserializationException;
-import com.example.echo_api.exception.custom.unauthorised.WebhookVerificationException;
+import com.example.echo_api.exception.ErrorResponse;
+import com.example.echo_api.modules.clerk.exception.ClerkErrorCode;
 import com.example.echo_api.modules.clerk.service.ClerkOnboardingService;
 import com.example.echo_api.modules.clerk.service.ClerkWebhookService;
 import com.example.echo_api.modules.user.entity.User;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.dto.ErrorDTO;
 
 /**
  * Unit test class for {@link ClerkController}.
@@ -98,13 +96,14 @@ class ClerkControllerTest {
     @Test
     void clerkEvent_Returns401Unauthorised_WhenWebhookCannotBeVerified() {
         // api: POST /api/v1/clerk/webhook ==> 401 Unauthorised : ErrorDTO
-        doThrow(new WebhookVerificationException())
+        ClerkErrorCode errorCode = ClerkErrorCode.WEBHOOK_SIGNATURE_INVALID;
+
+        doThrow(errorCode.buildAsException())
             .when(clerkWebhookService).verify(any(HttpHeaders.class), eq(WEBHOOK_PAYLOAD));
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.UNAUTHORIZED,
-            ErrorMessageConfig.Unauthorised.INVALID_WEBHOOK_SIGNATURE,
-            null,
+            errorCode.formatMessage(),
             null);
 
         var response = mvc.post()
@@ -114,7 +113,7 @@ class ClerkControllerTest {
 
         assertThat(response)
             .hasStatus(401)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(clerkWebhookService).verify(any(HttpHeaders.class), eq(WEBHOOK_PAYLOAD));
         verify(clerkWebhookService, never()).handleWebhook(WEBHOOK_PAYLOAD);
@@ -123,13 +122,14 @@ class ClerkControllerTest {
     @Test
     void clerkEvent_Returns400BadRequest_WhenWebhookEventCannotBeDeserialized() {
         // api: POST /api/v1/clerk/webhook ==> 400 Bad Request
-        doThrow(new DeserializationException("Unsupported event type: subscription.active"))
+        ClerkErrorCode errorCode = ClerkErrorCode.WEBHOOK_PAYLOAD_INVALID;
+
+        doThrow(errorCode.buildAsException("Some exception message"))
             .when(clerkWebhookService).handleWebhook(WEBHOOK_PAYLOAD);
 
-        ErrorDTO expected = new ErrorDTO(
+        ErrorResponse expected = new ErrorResponse(
             HttpStatus.BAD_REQUEST,
-            "Unsupported event type: subscription.active",
-            null,
+            "Some exception message",
             null);
 
         var response = mvc.post()
@@ -139,7 +139,7 @@ class ClerkControllerTest {
 
         assertThat(response)
             .hasStatus(400)
-            .bodyJson().convertTo(ErrorDTO.class).isEqualTo(expected);
+            .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(clerkWebhookService).verify(any(HttpHeaders.class), eq(WEBHOOK_PAYLOAD));
         verify(clerkWebhookService).handleWebhook(WEBHOOK_PAYLOAD);
