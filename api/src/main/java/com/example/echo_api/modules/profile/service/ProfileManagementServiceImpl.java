@@ -25,10 +25,11 @@ class ProfileManagementServiceImpl extends BaseProfileService implements Profile
 
     @Override
     public void updateProfile(UpdateProfileDTO request) {
-        Profile me = getAuthenticatedUserProfile();
+        Profile me = getProfileEntityById(getAuthenticatedUserId());
         me.setName(request.name());
         me.setBio(request.bio());
         me.setLocation(request.location());
+
         profileRepository.save(me);
     }
 

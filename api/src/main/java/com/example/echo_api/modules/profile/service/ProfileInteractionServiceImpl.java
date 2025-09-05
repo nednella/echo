@@ -36,34 +36,46 @@ class ProfileInteractionServiceImpl extends BaseProfileService implements Profil
     @Override
     @Transactional
     public void follow(UUID id) {
-        UUID source = getAuthenticatedUserId();
-        UUID target = getProfileEntityById(id).getId(); // validate existence of id
+        validateProfileExists(id);
 
-        validateNoSelfAction(source, target);
-        if (followRepository.existsByFollowerIdAndFollowedId(source, target)) {
-            throw ProfileErrorCode.ALREADY_FOLLOWING.buildAsException(target);
-        }
+        UUID authUserId = getAuthenticatedUserId();
+        validateNoSelfAction(authUserId, id);
+        validateFollowDoesNotExist(authUserId, id);
 
-        followRepository.save(new Follow(source, target));
+        followRepository.save(new Follow(authUserId, id));
     }
 
     @Override
     @Transactional
     public void unfollow(UUID id) {
-        UUID authenticatedUserId = getAuthenticatedUserId();
-        followRepository.deleteByFollowerIdAndFollowedId(authenticatedUserId, id);
+        UUID authUserId = getAuthenticatedUserId();
+        followRepository.deleteByFollowerIdAndFollowedId(authUserId, id);
     }
 
     /**
-     * Validate that the action is not being performed on self.
+     * Throws if {@code source} and {@code target} are equal.
      * 
-     * @param source the source profile id
-     * @param target the target profile id
+     * @param source
+     * @param target
      * @throws ApplicationException if the the source and target ids match
      */
     private void validateNoSelfAction(UUID source, UUID target) {
         if (Objects.equals(source, target)) {
             throw ProfileErrorCode.SELF_ACTION.buildAsException();
+        }
+    }
+
+    /**
+     * Throws if a {@link Follow} exists with the given {@code followerId} and
+     * {@code followedId}.
+     * 
+     * @param followerId
+     * @param followedId
+     * @throws ApplicationException if a follow already exists
+     */
+    private void validateFollowDoesNotExist(UUID followerId, UUID followedId) {
+        if (followRepository.existsByFollowerIdAndFollowedId(followerId, followedId)) {
+            throw ProfileErrorCode.ALREADY_FOLLOWING.buildAsException(followedId);
         }
     }
 

@@ -31,15 +31,6 @@ abstract class BaseProfileService {
     }
 
     /**
-     * Fetch the profile associated with the authenticated user.
-     * 
-     * @return the {@link Profile} entity
-     */
-    protected Profile getAuthenticatedUserProfile() {
-        return getProfileEntityById(getAuthenticatedUserId());
-    }
-
-    /**
      * Fetch a profile by {@code id} from {@link ProfileRepository}.
      * 
      * @param id the profile id
@@ -52,15 +43,29 @@ abstract class BaseProfileService {
     }
 
     /**
-     * Fetch a profile by {@code username} from {@link ProfileRepository}.
+     * Throws if a {@link Profile} does not exist with the given {@code id}.
      * 
-     * @param username the profile username
-     * @return the {@link Profile} entity
-     * @throws ApplicationException if no profile with the given username exists
+     * @param id
+     * @throws ApplicationException if no profile with the given id exists
+     * 
      */
-    protected Profile getProfileEntityByUsername(String username) {
-        return profileRepository.findByUsername(username)
-            .orElseThrow(() -> ProfileErrorCode.USERNAME_NOT_FOUND.buildAsException(username));
+    protected void validateProfileExists(UUID id) {
+        if (!profileRepository.existsById(id)) {
+            throw ProfileErrorCode.ID_NOT_FOUND.buildAsException(id);
+        }
+    }
+
+    /**
+     * Throws if a {@link Profile} does not exist with the given {@code username}.
+     * 
+     * @param username
+     * @throws ApplicationException if no profile with the given username exists
+     * 
+     */
+    protected void validateProfileExists(String username) {
+        if (!profileRepository.existsByUsername(username)) {
+            throw ProfileErrorCode.USERNAME_NOT_FOUND.buildAsException(username);
+        }
     }
 
 }
