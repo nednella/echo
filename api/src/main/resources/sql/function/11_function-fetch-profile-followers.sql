@@ -35,7 +35,7 @@ AS
             sp.rel_followed_by
         FROM (
             SELECT follower_id
-            FROM follow
+            FROM profile_follow
             WHERE followed_id = p_profile_id
             ORDER BY created_at DESC
             OFFSET p_offset

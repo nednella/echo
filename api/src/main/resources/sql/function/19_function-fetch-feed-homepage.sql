@@ -40,7 +40,7 @@ AS
             SELECT
                 p.id
             FROM post p
-            LEFT JOIN follow f ON p.author_id = f.followed_id
+            LEFT JOIN profile_follow f ON p.author_id = f.followed_id
             WHERE p.parent_id IS NULL
             AND (f.follower_id = p_authenticated_user_id
             OR p.author_id = p_authenticated_user_id)

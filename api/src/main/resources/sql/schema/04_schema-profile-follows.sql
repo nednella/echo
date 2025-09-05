@@ -1,5 +1,5 @@
 CREATE TABLE
-    IF NOT EXISTS "follow" (
+    IF NOT EXISTS "profile_follow" (
         follower_id    UUID NOT NULL,
         followed_id    UUID NOT NULL,
         created_at     TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -10,9 +10,9 @@ CREATE TABLE
     );
 
 CREATE INDEX 
-    IF NOT EXISTS idx_follow_follower_id
-        ON "follow"(follower_id);
+    IF NOT EXISTS idx_profile_follow_follower_id
+        ON "profile_follow"(follower_id);
 
 CREATE INDEX 
-    IF NOT EXISTS idx_follow_followed_id
-        ON "follow"(followed_id);
+    IF NOT EXISTS idx_profile_follow_followed_id
+        ON "profile_follow"(followed_id);

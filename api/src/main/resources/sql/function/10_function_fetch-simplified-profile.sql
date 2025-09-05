@@ -37,14 +37,14 @@ AS
             SELECT
                 CASE WHEN pd.is_self THEN NULL
                     ELSE EXISTS(
-                        SELECT 1 FROM follow
+                        SELECT 1 FROM profile_follow
                         WHERE follower_id = p_authenticated_user_id
                         AND followed_id = pd.id
                     )
                 END AS rel_following,
                 CASE WHEN pd.is_self THEN NULL
                     ELSE EXISTS(
-                        SELECT 1 FROM follow
+                        SELECT 1 FROM profile_follow
                         WHERE follower_id = pd.id
                         AND followed_id = p_authenticated_user_id
                     )

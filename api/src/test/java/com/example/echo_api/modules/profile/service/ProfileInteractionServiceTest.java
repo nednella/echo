@@ -16,10 +16,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.echo_api.exception.ApplicationException;
-import com.example.echo_api.modules.profile.entity.Follow;
+import com.example.echo_api.modules.profile.entity.ProfileFollow;
 import com.example.echo_api.modules.profile.entity.Profile;
 import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
-import com.example.echo_api.modules.profile.repository.FollowRepository;
+import com.example.echo_api.modules.profile.repository.ProfileFollowRepository;
 import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.shared.service.SessionService;
 
@@ -39,7 +39,7 @@ class ProfileInteractionServiceTest {
     private ProfileRepository profileRepository;
 
     @Mock
-    private FollowRepository followRepository;
+    private ProfileFollowRepository profileFollowRepository;
 
     private static UUID authenticatedUserId;
     private static Profile authenticatedUserProfile;
@@ -62,7 +62,7 @@ class ProfileInteractionServiceTest {
 
         // act & assert
         assertDoesNotThrow(() -> profileInteractionService.follow(id));
-        verify(followRepository).save(any(Follow.class));
+        verify(profileFollowRepository).save(any(ProfileFollow.class));
     }
 
     @Test
@@ -78,7 +78,7 @@ class ProfileInteractionServiceTest {
         var ex = assertThrows(ApplicationException.class, () -> profileInteractionService.follow(id));
         assertThat(ex.getMessage()).isEqualTo(errorCode.formatMessage(id));
 
-        verify(followRepository, never()).save(any(Follow.class));
+        verify(profileFollowRepository, never()).save(any(ProfileFollow.class));
     }
 
     @Test
@@ -94,7 +94,7 @@ class ProfileInteractionServiceTest {
         var ex = assertThrows(ApplicationException.class, () -> profileInteractionService.follow(id));
         assertThat(ex.getMessage()).isEqualTo(errorCode.formatMessage());
 
-        verify(followRepository, never()).save(any(Follow.class));
+        verify(profileFollowRepository, never()).save(any(ProfileFollow.class));
     }
 
     @Test
@@ -105,13 +105,13 @@ class ProfileInteractionServiceTest {
 
         when(profileRepository.findById(id)).thenReturn(Optional.of(target));
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
-        when(followRepository.existsByFollowerIdAndFollowedId(authenticatedUserId, id)).thenReturn(true);
+        when(profileFollowRepository.existsByFollowerIdAndFollowedId(authenticatedUserId, id)).thenReturn(true);
 
         // act & assert
         var ex = assertThrows(ApplicationException.class, () -> profileInteractionService.follow(id));
         assertThat(ex.getMessage()).isEqualTo(errorCode.formatMessage(id));
 
-        verify(followRepository, never()).save(any(Follow.class));
+        verify(profileFollowRepository, never()).save(any(ProfileFollow.class));
     }
 
     @Test
