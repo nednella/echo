@@ -26,7 +26,7 @@ public interface UserService {
      * @throws IllegalArgumentException if {@code externalId} or {@code username} is
      *                                  null
      */
-    public User upsertFromExternalSource(String externalId, String username, String imageUrl);
+    User upsertFromExternalSource(String externalId, String username, String imageUrl);
 
     /**
      * Deletes a local {@link User} and its associated data based on the external
@@ -42,6 +42,6 @@ public interface UserService {
      * @param externalId the unique identifier from the IDP
      * @return the number of affected records (0 or 1)
      */
-    public int deleteFromExternalSource(String externalId);
+    int deleteFromExternalSource(String externalId);
 
 }

@@ -16,7 +16,7 @@ public interface ProfileViewService {
      * 
      * @return a {@link ProfileDTO} resembling the users profile
      */
-    public ProfileDTO getMe();
+    ProfileDTO getMe();
 
     /**
      * Fetch a {@link ProfileDTO} by {@code id}.
@@ -25,7 +25,7 @@ public interface ProfileViewService {
      * @return a {@link ProfileDTO} resembling the queried profile
      * @throws ApplicationException if no profile with the given id exists
      */
-    public ProfileDTO getById(UUID id);
+    ProfileDTO getById(UUID id);
 
     /**
      * Fetch a {@link ProfileDTO} by {@code username}.
@@ -34,7 +34,7 @@ public interface ProfileViewService {
      * @return a {@link ProfileDTO} resembling the queried profile
      * @throws ApplicationException if no profile with the given username exists
      */
-    public ProfileDTO getByUsername(String username);
+    ProfileDTO getByUsername(String username);
 
     /**
      * Fetch a {@link PageDTO} of {@link SimplifiedProfileDTO} for the followers
@@ -46,7 +46,7 @@ public interface ProfileViewService {
      *         otherwise empty
      * @throws ApplicationException if no profile with the given id exists
      */
-    public PageDTO<SimplifiedProfileDTO> getFollowers(UUID id, Pageable page);
+    PageDTO<SimplifiedProfileDTO> getFollowers(UUID id, Pageable page);
 
     /**
      * Fetch a {@link PageDTO} of {@link SimplifiedProfileDTO} for the following
@@ -58,6 +58,6 @@ public interface ProfileViewService {
      *         otherwise empty
      * @throws ApplicationException if no profile with the given id exists
      */
-    public PageDTO<SimplifiedProfileDTO> getFollowing(UUID id, Pageable page);
+    PageDTO<SimplifiedProfileDTO> getFollowing(UUID id, Pageable page);
 
 }

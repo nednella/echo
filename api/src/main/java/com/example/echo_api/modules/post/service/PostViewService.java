@@ -17,7 +17,7 @@ public interface PostViewService {
      * @return a {@link PostDTO} resembling the queried post
      * @throws ApplicationException if no post with the given id exists
      */
-    public PostDTO getPostById(UUID id);
+    PostDTO getPostById(UUID id);
 
     /**
      * Fetch a {@link PageDTO} of {@link PostDTO} for the posts that are in reply to
@@ -28,7 +28,7 @@ public interface PostViewService {
      * @return a {@link PageDTO} of {@link PostDTO} for matches, otherwise empty
      * @throws ApplicationException if no post with the given id exists
      */
-    public PageDTO<PostDTO> getRepliesByPostId(UUID id, Pageable page); // TODO: refactor to getConversationByPostId
+    PageDTO<PostDTO> getRepliesByPostId(UUID id, Pageable page); // TODO: refactor to getConversationByPostId
 
     /**
      * Fetch a {@link PageDTO} of {@link PostDTO} for posts from the user with the
@@ -39,7 +39,7 @@ public interface PostViewService {
      * @return a {@link PageDTO} of {@link PostDTO} for matches, otherwise empty
      * @throws ApplicationException if no profile with the given id exists
      */
-    public PageDTO<PostDTO> getPostsByAuthorId(UUID id, Pageable page);
+    PageDTO<PostDTO> getPostsByAuthorId(UUID id, Pageable page);
 
     /**
      * Fetch a {@link PageDTO} of {@link PostDTO} for posts from the user with the
@@ -50,7 +50,7 @@ public interface PostViewService {
      * @return a {@link PageDTO} of {@link PostDTO} for matches, otherwise empty
      * @throws ApplicationException if no profile with the given id exists
      */
-    public PageDTO<PostDTO> getRepliesByAuthorId(UUID id, Pageable page);
+    PageDTO<PostDTO> getRepliesByAuthorId(UUID id, Pageable page);
 
     /**
      * Fetch a {@link PageDTO} of {@link PostDTO} for posts liked by the user with
@@ -61,7 +61,7 @@ public interface PostViewService {
      * @return a {@link PageDTO} of {@link PostDTO} for matches, otherwise empty
      * @throws ApplicationException if no profile with the given id exists
      */
-    public PageDTO<PostDTO> getLikesByAuthorId(UUID id, Pageable page);
+    PageDTO<PostDTO> getLikesByAuthorId(UUID id, Pageable page);
 
     /**
      * Fetch a {@link PageDTO} of {@link PostDTO} for posts that contain a mention
@@ -72,7 +72,7 @@ public interface PostViewService {
      * @return a {@link PageDTO} of {@link PostDTO} for matches, otherwise empty
      * @throws ApplicationException if no profile with the given id exists
      */
-    public PageDTO<PostDTO> getMentionsOfProfileId(UUID id, Pageable page);
+    PageDTO<PostDTO> getMentionsOfProfileId(UUID id, Pageable page);
 
     /**
      * Fetch a {@link PageDTO} of {@link PostDTO} for posts from the authenticated
@@ -81,7 +81,7 @@ public interface PostViewService {
      * @param page the {@link Pageable} containing the pagination parameters
      * @return a {@link PageDTO} of {@link PostDTO} for matches, otherwise empty
      */
-    public PageDTO<PostDTO> getHomepagePosts(Pageable page);
+    PageDTO<PostDTO> getHomepagePosts(Pageable page);
 
     /**
      * Fetch a {@link PageDTO} of {@link PostDTO} for posts from all users.
@@ -89,6 +89,6 @@ public interface PostViewService {
      * @param page the {@link Pageable} containing the pagination parameters
      * @return a {@link PageDTO} of {@link PostDTO} for matches, otherwise empty
      */
-    public PageDTO<PostDTO> getDiscoverPosts(Pageable page);
+    PageDTO<PostDTO> getDiscoverPosts(Pageable page);
 
 }

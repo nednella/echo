@@ -16,7 +16,7 @@ public interface SessionService {
      * 
      * @return The UUID of the authenticated user
      */
-    public UUID getAuthenticatedUserId();
+    UUID getAuthenticatedUserId();
 
     /**
      * Retrieve the authenticated user Clerk ID from the authenticated Clerk token.
@@ -27,7 +27,7 @@ public interface SessionService {
      * 
      * @return The Clerk ID of the authenticated user
      */
-    public String getAuthenticatedUserClerkId();
+    String getAuthenticatedUserClerkId();
 
     /**
      * Retrieve the authenticated user onboarding status from the authenticated
@@ -39,6 +39,6 @@ public interface SessionService {
      * 
      * @return A boolean representing the {@code onboarded} claim
      */
-    public boolean isAuthenticatedUserOnboarded();
+    boolean isAuthenticatedUserOnboarded();
 
 }
