@@ -12,6 +12,6 @@ public interface ProfileManagementService {
      * 
      * @param request the request DTO containing the updated profile information
      */
-    public void updateProfile(UpdateProfileDTO request);
+    void updateProfile(UpdateProfileDTO request);
 
 }

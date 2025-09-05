@@ -14,7 +14,7 @@ public interface ProfileInteractionService {
      * @throws ApplicationException if attempting to follow self profile
      * @throws ApplicationException if already following the profile
      */
-    public void follow(UUID id);
+    void follow(UUID id);
 
     /**
      * Unfollows a profile by {@code id}.
@@ -24,6 +24,6 @@ public interface ProfileInteractionService {
      * 
      * @param id the profile id
      */
-    public void unfollow(UUID id);
+    void unfollow(UUID id);
 
 }

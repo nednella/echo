@@ -13,7 +13,7 @@ public interface PostInteractionService {
      * @throws ApplicationException if no post with the given id exists
      * @throws ApplicationException if already liked the post
      */
-    public void like(UUID id);
+    void like(UUID id);
 
     /**
      * Unlike a post by {@code id}.
@@ -23,6 +23,6 @@ public interface PostInteractionService {
      * 
      * @param id the id of the post to unlike
      */
-    public void unlike(UUID id);
+    void unlike(UUID id);
 
 }

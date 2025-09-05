@@ -15,7 +15,7 @@ public interface PostManagementService {
      * @throws ApplicationException if the parent id is present and no post with the
      *                              given id exists
      */
-    public void create(CreatePostDTO request);
+    void create(CreatePostDTO request);
 
     /**
      * Delete a {@link Post} via {@code id} for the authenticated user.
@@ -24,6 +24,6 @@ public interface PostManagementService {
      * @throws ApplicationException if the authenticated user is not the author if
      *                              the post given by id if it exists
      */
-    public void delete(UUID id);
+    void delete(UUID id);
 
 }
