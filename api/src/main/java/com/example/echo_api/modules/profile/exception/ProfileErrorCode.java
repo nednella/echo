@@ -11,9 +11,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ProfileErrorCode implements ErrorCode {
 
-    ID_NOT_FOUND(HttpStatus.NOT_FOUND, "Profile with id %s not found", 1),
-    USERNAME_NOT_FOUND(HttpStatus.NOT_FOUND, "Profile with username %s not found", 1),
-    ALREADY_FOLLOWING(HttpStatus.CONFLICT, "Already following profile with id %s", 1),
+    ID_NOT_FOUND(HttpStatus.NOT_FOUND, "Profile with id '%s' not found", 1),
+    USERNAME_NOT_FOUND(HttpStatus.NOT_FOUND, "Profile with username '%s' not found", 1),
+    ALREADY_FOLLOWING(HttpStatus.CONFLICT, "Already following profile with id '%s'", 1),
     SELF_ACTION(HttpStatus.CONFLICT, "You cannot perform this action on your own profile", 0);
 
     private final HttpStatus status;
