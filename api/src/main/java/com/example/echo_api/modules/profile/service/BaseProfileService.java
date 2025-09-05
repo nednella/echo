@@ -37,7 +37,7 @@ abstract class BaseProfileService {
      * @return the {@link Profile} entity
      * @throws ApplicationException if no profile with the given id exists
      */
-    protected Profile getProfileEntityById(UUID id) {
+    protected Profile getProfile(UUID id) {
         return profileRepository.findById(id)
             .orElseThrow(() -> ProfileErrorCode.ID_NOT_FOUND.buildAsException(id));
     }
