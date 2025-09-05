@@ -45,29 +45,28 @@ class PostViewServiceImpl extends BasePostService implements PostViewService {
 
     @Override
     public PostDTO getPostById(UUID id) {
-        UUID authenticatedUserId = getAuthenticatedUserId();
+        UUID authUserId = getAuthenticatedUserId();
 
-        return postRepository.findPostDtoById(id, authenticatedUserId)
+        return postRepository.findPostDtoById(id, authUserId)
             .orElseThrow(() -> PostErrorCode.ID_NOT_FOUND.buildAsException(id));
     }
 
     @Override
     public PageDTO<PostDTO> getRepliesByPostId(UUID id, Pageable page) {
-        UUID authenticatedUserId = getAuthenticatedUserId();
-        UUID postId = getPostEntityById(id).getId(); // validate existence of id
+        validatePostExists(id);
+        UUID authUserId = getAuthenticatedUserId();
 
-        Page<PostDTO> query = postRepository.findRepliesById(postId, authenticatedUserId, page);
+        Page<PostDTO> query = postRepository.findRepliesById(id, authUserId, page);
         String uri = getCurrentRequestUri();
-
         return PageMapper.toDTO(query, uri);
     }
 
     @Override
     public PageDTO<PostDTO> getPostsByAuthorId(UUID id, Pageable page) {
-        UUID authenticatedUserId = getAuthenticatedUserId();
+        UUID authUserId = getAuthenticatedUserId();
         UUID authorId = getProfileEntityById(id).getId(); // validate existence of author
 
-        Page<PostDTO> query = postRepository.findPostsByProfileId(authorId, authenticatedUserId, page);
+        Page<PostDTO> query = postRepository.findPostsByProfileId(authorId, authUserId, page);
         String uri = getCurrentRequestUri();
 
         return PageMapper.toDTO(query, uri);
@@ -75,10 +74,10 @@ class PostViewServiceImpl extends BasePostService implements PostViewService {
 
     @Override
     public PageDTO<PostDTO> getRepliesByAuthorId(UUID id, Pageable page) {
-        UUID authenticatedUserId = getAuthenticatedUserId();
+        UUID authUserId = getAuthenticatedUserId();
         UUID authorId = getProfileEntityById(id).getId(); // validate existence of author
 
-        Page<PostDTO> query = postRepository.findRepliesByProfileId(authorId, authenticatedUserId, page);
+        Page<PostDTO> query = postRepository.findRepliesByProfileId(authorId, authUserId, page);
         String uri = getCurrentRequestUri();
 
         return PageMapper.toDTO(query, uri);
@@ -86,10 +85,10 @@ class PostViewServiceImpl extends BasePostService implements PostViewService {
 
     @Override
     public PageDTO<PostDTO> getLikesByAuthorId(UUID id, Pageable page) {
-        UUID authenticatedUserId = getAuthenticatedUserId();
+        UUID authUserId = getAuthenticatedUserId();
         UUID authorId = getProfileEntityById(id).getId(); // validate existence of author
 
-        Page<PostDTO> query = postRepository.findPostsLikedByProfileId(authorId, authenticatedUserId, page);
+        Page<PostDTO> query = postRepository.findPostsLikedByProfileId(authorId, authUserId, page);
         String uri = getCurrentRequestUri();
 
         return PageMapper.toDTO(query, uri);
@@ -97,10 +96,10 @@ class PostViewServiceImpl extends BasePostService implements PostViewService {
 
     @Override
     public PageDTO<PostDTO> getMentionsOfProfileId(UUID id, Pageable page) {
-        UUID authenticatedUserId = getAuthenticatedUserId();
+        UUID authUserId = getAuthenticatedUserId();
         UUID authorId = getProfileEntityById(id).getId(); // validate existence of author
 
-        Page<PostDTO> query = postRepository.findPostsMentioningProfileId(authorId, authenticatedUserId, page);
+        Page<PostDTO> query = postRepository.findPostsMentioningProfileId(authorId, authUserId, page);
         String uri = getCurrentRequestUri();
 
         return PageMapper.toDTO(query, uri);
@@ -108,9 +107,9 @@ class PostViewServiceImpl extends BasePostService implements PostViewService {
 
     @Override
     public PageDTO<PostDTO> getHomepagePosts(Pageable page) {
-        UUID authenticatedUserId = getAuthenticatedUserId();
+        UUID authUserId = getAuthenticatedUserId();
 
-        Page<PostDTO> query = postRepository.findHomepagePosts(authenticatedUserId, page);
+        Page<PostDTO> query = postRepository.findHomepagePosts(authUserId, page);
         String uri = getCurrentRequestUri();
 
         return PageMapper.toDTO(query, uri);
@@ -118,9 +117,9 @@ class PostViewServiceImpl extends BasePostService implements PostViewService {
 
     @Override
     public PageDTO<PostDTO> getDiscoverPosts(Pageable page) {
-        UUID authenticatedUserId = getAuthenticatedUserId();
+        UUID authUserId = getAuthenticatedUserId();
 
-        Page<PostDTO> query = postRepository.findDiscoverPosts(authenticatedUserId, page);
+        Page<PostDTO> query = postRepository.findDiscoverPosts(authUserId, page);
         String uri = getCurrentRequestUri();
 
         return PageMapper.toDTO(query, uri);
@@ -139,8 +138,7 @@ class PostViewServiceImpl extends BasePostService implements PostViewService {
     }
 
     /**
-     * Fetch current HTTP request URI, to be returned as part of a {@link PageDTO}
-     * response.
+     * Fetch the current HTTP request URI.
      * 
      * @return the current request URI as a string
      */

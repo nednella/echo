@@ -1,6 +1,5 @@
 package com.example.echo_api.modules.post.service;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -11,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.echo_api.exception.ApplicationException;
 import com.example.echo_api.modules.post.dto.request.CreatePostDTO;
 import com.example.echo_api.modules.post.entity.Post;
-import com.example.echo_api.modules.post.entity.PostEntity;
 import com.example.echo_api.modules.post.exception.PostErrorCode;
 import com.example.echo_api.modules.post.repository.PostEntityRepository;
 import com.example.echo_api.modules.post.repository.PostRepository;
@@ -40,55 +38,49 @@ class PostManagementServiceImpl extends BasePostService implements PostManagemen
     @Override
     @Transactional
     public void create(CreatePostDTO request) {
-        UUID parentId = request.parentId() != null ? request.parentId() : null;
+        UUID parentId = validateAndReturnParentId(request.parentId());
         UUID authorId = getAuthenticatedUserId();
         String text = request.text();
 
-        validatePostExistsByParentId(parentId);
         Post post = postRepository.save(new Post(parentId, authorId, text));
-
-        List<PostEntity> entities = PostEntityExtractor.extract(post.getId(), text);
-        postEntityRepository.saveAll(entities);
+        postEntityRepository.saveAll(PostEntityExtractor.extract(post.getId(), text));
     }
 
     @Override
     @Transactional
     public void delete(UUID id) {
-        UUID authenticatedUserId = getAuthenticatedUserId();
         Optional<Post> optPost = postRepository.findById(id);
-
-        if (optPost.isEmpty())
+        if (optPost.isEmpty()) {
             return; // treat not found as idempotent
+        }
 
+        UUID authenticatedUserId = getAuthenticatedUserId();
         Post post = optPost.get();
         validatePostOwnership(authenticatedUserId, post.getAuthorId());
         postRepository.delete(post);
     }
 
     /**
-     * Validate that a {@link Post} exists by the given {@code id}.
+     * Validate that a {@link Post} exists by the given {@code parentId}.
      * 
-     * @param parentId the post id
+     * @param parentId
      * @throws ApplicationException if no post by that id exists
      */
-    private void validatePostExistsByParentId(UUID parentId) {
-        // TODO: update return value to UUID so it validates and returns, if it exists
-        if (parentId == null)
-            return;
-
-        if (!postRepository.existsById(parentId)) {
-            throw PostErrorCode.INVALID_PARENT_ID.buildAsException(parentId);
+    private UUID validateAndReturnParentId(UUID parentId) {
+        if (parentId == null) {
+            return parentId;
         }
+
+        validatePostExists(parentId);
+        return parentId;
     }
 
     /**
-     * Validate that the authenticated user is allowed to perform the requested
-     * action on the given post.
+     * Throws if {@code authenticatedUserId} and {@code authorId} are equal.
      * 
-     * @param authenticatedUserId the authenticated user id
-     * @param authorId            the post author id
-     * @throws ApplicationException if the requesting user id and the post author id
-     *                              do not match
+     * @param authenticatedUserId
+     * @param authorId
+     * @throws ApplicationException if the ids match
      */
     private void validatePostOwnership(UUID authenticatedUserId, UUID authorId) {
         if (!Objects.equals(authenticatedUserId, authorId)) {
