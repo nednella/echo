@@ -1,5 +1,7 @@
 package com.example.echo_api.exception.handler;
 
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -12,6 +14,7 @@ import com.example.echo_api.exception.ErrorResponseFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
+@Order(Ordered.LOWEST_PRECEDENCE)
 @Slf4j
 @ControllerAdvice
 public class ApplicationExceptionHandler {
@@ -22,7 +25,7 @@ public class ApplicationExceptionHandler {
      */
     @ExceptionHandler(ApplicationException.class)
     ResponseEntity<ErrorResponse> handleApplicationException(HttpServletRequest request, ApplicationException ex) {
-        log.debug("Handling application exception: {}", ex.getMessage());
+        log.debug("Handling exception: {}", ex.getMessage());
 
         return ErrorResponseFactory.build(
             request,
