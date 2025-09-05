@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.annotation.DirtiesContext;
 
 import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.shared.constant.ApiRoutes;
@@ -15,7 +14,6 @@ import com.example.echo_api.testing.support.ClerkTestUtils.Template;
 /**
  * Integration test class for {@link ClerkOnboardingFilter}.
  */
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ClerkOnboardingFilterIT extends AbstractIntegrationTest {
 
     private static final String PROTECTED_ENDPOINT = ApiRoutes.PROFILE.ME; // random protected endpoint
