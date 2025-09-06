@@ -26,6 +26,7 @@ import com.example.echo_api.testing.support.AbstractRepositoryTest;
 import com.example.echo_api.util.PostEntityExtractor;
 
 // TODO: finish JDocs
+// TODO: SQL query testing for metrics/relationships
 
 /**
  * Integration test class for {@link PostRepository}.

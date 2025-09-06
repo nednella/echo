@@ -22,6 +22,8 @@ import com.example.echo_api.modules.user.repository.UserRepository;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
 import com.example.echo_api.testing.support.AbstractRepositoryTest;
 
+// TODO: SQL query testing for metrics/relationships
+
 /**
  * Integration test class for {@link ProfileRepository}.
  */
