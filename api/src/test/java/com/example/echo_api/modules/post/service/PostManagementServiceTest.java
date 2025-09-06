@@ -63,8 +63,8 @@ class PostManagementServiceTest {
         var request = new CreatePostDTO(UUID.randomUUID(), "Test post.");
         Post post = Post.forTest(UUID.randomUUID(), request.parentId(), authenticatedUserId, request.text());
 
-        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.existsById(request.parentId())).thenReturn(true);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.save(any(Post.class))).thenReturn(post);
 
         // act & assert
@@ -100,13 +100,12 @@ class PostManagementServiceTest {
 
     @Test
     void create_ThrowsApplicationException_WhenPostByParentIdDoesNotExist() {
-        PostErrorCode errorCode = PostErrorCode.INVALID_PARENT_ID;
+        PostErrorCode errorCode = PostErrorCode.ID_NOT_FOUND;
         UUID invalidParentId = UUID.randomUUID();
 
         var request = new CreatePostDTO(invalidParentId, "Test post.");
 
         // arrange
-        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.existsById(invalidParentId)).thenReturn(false);
 
         // act & assert
@@ -122,11 +121,9 @@ class PostManagementServiceTest {
         // arrange
         String text = null;
         var request = new CreatePostDTO(UUID.randomUUID(), text);
-        Post post = Post.forTest(UUID.randomUUID(), request.parentId(), authenticatedUserId, request.text());
 
-        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.existsById(request.parentId())).thenReturn(true);
-        when(postRepository.save(any(Post.class))).thenReturn(post);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
 
         // act & assert
         assertThrows(IllegalArgumentException.class, () -> postManagementService.create(request));

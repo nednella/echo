@@ -95,9 +95,9 @@ class PostManagementControllerTest {
     }
 
     @Test
-    void create_Returns400BadRequest_WhenPostByParentIdDoesNotExist() throws Exception {
+    void create_Returns404NotFound_WhenPostByParentIdDoesNotExist() throws Exception {
         // api: POST /api/v1/post ==> 400 Bad Request : ErrorDTO
-        PostErrorCode errorCode = PostErrorCode.INVALID_PARENT_ID;
+        PostErrorCode errorCode = PostErrorCode.ID_NOT_FOUND;
 
         UUID invalidParentId = UUID.randomUUID();
         CreatePostDTO post = new CreatePostDTO(invalidParentId, "This is a new post with a parent id.");
@@ -106,7 +106,7 @@ class PostManagementControllerTest {
         doThrow(errorCode.buildAsException(invalidParentId)).when(postManagementService).create(post);
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.BAD_REQUEST,
+            HttpStatus.NOT_FOUND,
             errorCode.formatMessage(invalidParentId),
             null);
 
@@ -117,7 +117,7 @@ class PostManagementControllerTest {
             .exchange();
 
         assertThat(response)
-            .hasStatus(400)
+            .hasStatus(404)
             .bodyJson().convertTo(ErrorResponse.class).isEqualTo(expected);
 
         verify(postManagementService).create(post);

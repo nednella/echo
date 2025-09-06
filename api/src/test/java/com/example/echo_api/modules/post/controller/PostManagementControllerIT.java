@@ -81,9 +81,9 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
-    void create_Returns400BadRequest_WhenPostByParentIdDoesNotExist() {
+    void create_Returns404NotFound_WhenPostByParentIdDoesNotExist() {
         // api: POST /api/v1/post ==> 400 Bad Request : ErrorDTO
-        PostErrorCode errorCode = PostErrorCode.INVALID_PARENT_ID;
+        PostErrorCode errorCode = PostErrorCode.ID_NOT_FOUND;
 
         UUID invalidParentId = UUID.randomUUID();
         var body = new CreatePostDTO(invalidParentId, "Test post.");
