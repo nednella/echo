@@ -51,7 +51,7 @@ AS
             SELECT
                 (SELECT COUNT(*) FROM profile_follow WHERE followed_id = pd.id) AS followers_count,
                 (SELECT COUNT(*) FROM profile_follow WHERE follower_id = pd.id) AS following_count,
-                0::BIGINT AS post_count,
+                (SELECT COUNT(*) FROM post WHERE author_id = pd.id) AS post_count,
                 0::BIGINT AS media_count
             FROM profile_data pd
         ),
