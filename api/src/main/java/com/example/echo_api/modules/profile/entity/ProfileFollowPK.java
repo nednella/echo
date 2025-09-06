@@ -7,11 +7,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * ID class representing a composite primary key for {@link Follow} entity.
+ * ID class representing a composite primary key for {@link ProfileFollow}
+ * entity.
  */
 @Getter
 @NoArgsConstructor
-public class FollowPK {
+public class ProfileFollowPK {
 
     private UUID followerId;
 
@@ -21,10 +22,10 @@ public class FollowPK {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof FollowPK))
+        if (!(o instanceof ProfileFollowPK))
             return false;
 
-        FollowPK that = (FollowPK) o;
+        ProfileFollowPK that = (ProfileFollowPK) o;
 
         return this.followerId.equals(that.followerId) &&
             this.followedId.equals(that.followedId);

@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.echo_api.exception.ApplicationException;
-import com.example.echo_api.modules.profile.entity.Follow;
+import com.example.echo_api.modules.profile.entity.ProfileFollow;
 import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
-import com.example.echo_api.modules.profile.repository.FollowRepository;
+import com.example.echo_api.modules.profile.repository.ProfileFollowRepository;
 import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.shared.service.SessionService;
 
@@ -18,51 +18,64 @@ import com.example.echo_api.shared.service.SessionService;
  * entities.
  */
 @Service
-@Transactional // TODO: remove all class-level transactional
 class ProfileInteractionServiceImpl extends BaseProfileService implements ProfileInteractionService {
 
-    private final FollowRepository followRepository;
+    private final ProfileFollowRepository profileFollowRepository;
 
     // @formatter:off
     public ProfileInteractionServiceImpl(
         SessionService sessionService,
         ProfileRepository profileRepository,
-        FollowRepository followRepository
+        ProfileFollowRepository profileFollowRepository
     ) {
         super(sessionService, profileRepository);
-        this.followRepository = followRepository;
+        this.profileFollowRepository = profileFollowRepository;
     }
     // @formatter:on
 
     @Override
+    @Transactional
     public void follow(UUID id) {
-        UUID source = getAuthenticatedUserId();
-        UUID target = getProfileEntityById(id).getId(); // validate existence of id
+        validateProfileExists(id);
 
-        validateNoSelfAction(source, target);
-        if (followRepository.existsByFollowerIdAndFollowedId(source, target)) {
-            throw ProfileErrorCode.ALREADY_FOLLOWING.buildAsException(target);
-        }
+        UUID authUserId = getAuthenticatedUserId();
+        validateNoSelfAction(authUserId, id);
+        validateFollowDoesNotExist(authUserId, id);
 
-        followRepository.save(new Follow(source, target));
+        profileFollowRepository.save(new ProfileFollow(authUserId, id));
     }
 
     @Override
+    @Transactional
     public void unfollow(UUID id) {
-        UUID authenticatedUserId = getAuthenticatedUserId();
-        followRepository.deleteByFollowerIdAndFollowedId(authenticatedUserId, id);
+        UUID authUserId = getAuthenticatedUserId();
+        profileFollowRepository.deleteByFollowerIdAndFollowedId(authUserId, id);
     }
 
     /**
-     * Validate that the action is not being performed on self.
+     * Throws if {@code source} and {@code target} are equal.
      * 
-     * @param source the source profile id
-     * @param target the target profile id
+     * @param source
+     * @param target
      * @throws ApplicationException if the the source and target ids match
      */
     private void validateNoSelfAction(UUID source, UUID target) {
         if (Objects.equals(source, target)) {
             throw ProfileErrorCode.SELF_ACTION.buildAsException();
+        }
+    }
+
+    /**
+     * Throws if a {@link ProfileFollow} exists with the given {@code followerId}
+     * and {@code followedId}.
+     * 
+     * @param followerId
+     * @param followedId
+     * @throws ApplicationException if a follow already exists
+     */
+    private void validateFollowDoesNotExist(UUID followerId, UUID followedId) {
+        if (profileFollowRepository.existsByFollowerIdAndFollowedId(followerId, followedId)) {
+            throw ProfileErrorCode.ALREADY_FOLLOWING.buildAsException(followedId);
         }
     }
 

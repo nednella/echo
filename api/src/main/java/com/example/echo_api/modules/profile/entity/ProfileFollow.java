@@ -13,15 +13,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Entity class representing a {@link Profile} following relationship in the
- * application.
+ * Entity class representing a follow relationship between two {@link Profile}
+ * in the application.
  */
 @Entity
-@Table
+@Table(name = "profile_follow")
 @Getter
 @NoArgsConstructor
-@IdClass(FollowPK.class)
-public class Follow {
+@IdClass(ProfileFollowPK.class)
+public class ProfileFollow {
 
     @Id
     @Column(name = "follower_id", nullable = false, updatable = false)
@@ -35,7 +35,7 @@ public class Follow {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
-    public Follow(UUID source, UUID target) {
+    public ProfileFollow(UUID source, UUID target) {
         this.followerId = source;
         this.followedId = target;
     }

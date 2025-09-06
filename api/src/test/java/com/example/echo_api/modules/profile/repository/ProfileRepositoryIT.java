@@ -15,12 +15,14 @@ import org.springframework.data.domain.Pageable;
 
 import com.example.echo_api.modules.profile.dto.response.ProfileDTO;
 import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
-import com.example.echo_api.modules.profile.entity.Follow;
+import com.example.echo_api.modules.profile.entity.ProfileFollow;
 import com.example.echo_api.modules.profile.entity.Profile;
 import com.example.echo_api.modules.user.entity.User;
 import com.example.echo_api.modules.user.repository.UserRepository;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
 import com.example.echo_api.testing.support.AbstractRepositoryTest;
+
+// TODO: SQL query testing for metrics/relationships
 
 /**
  * Integration test class for {@link ProfileRepository}.
@@ -35,7 +37,7 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
     private ProfileRepository profileRepository;
 
     @Autowired
-    private FollowRepository followRepository;
+    private ProfileFollowRepository profileFollowRepository;
 
     private Profile source;
     private Profile target;
@@ -51,8 +53,8 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
         profileRepository.saveAll(List.of(source, target));
 
         // save a follow to db
-        Follow follow = new Follow(source.getId(), target.getId());
-        followRepository.save(follow);
+        ProfileFollow follow = new ProfileFollow(source.getId(), target.getId());
+        profileFollowRepository.save(follow);
     }
 
     /**

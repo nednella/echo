@@ -8,14 +8,13 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatus;
 
 import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.modules.profile.dto.response.ProfileDTO;
 import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
-import com.example.echo_api.modules.profile.entity.Follow;
+import com.example.echo_api.modules.profile.entity.ProfileFollow;
 import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
-import com.example.echo_api.modules.profile.repository.FollowRepository;
+import com.example.echo_api.modules.profile.repository.ProfileFollowRepository;
 import com.example.echo_api.shared.constant.ApiRoutes;
 import com.example.echo_api.shared.pagination.PageDTO;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
@@ -31,16 +30,17 @@ class ProfileViewControllerIT extends AbstractIntegrationTest {
     private static final String FOLLOWING_BY_ID_PATH = ApiRoutes.PROFILE.FOLLOWING;
 
     @Autowired
-    private FollowRepository followRepository;
+    private ProfileFollowRepository profileFollowRepository;
 
     /**
-     * Create and persist a new {@link Follow} between the supplied profiles by ID.
+     * Create and persist a new {@link ProfileFollow} between the supplied profiles
+     * by ID.
      * 
      * @param yourId  your profile ID
      * @param theirId the profile ID of the user you want to follow
      */
     private void followProfile(UUID yourId, UUID theirId) {
-        followRepository.save(new Follow(yourId, theirId));
+        profileFollowRepository.save(new ProfileFollow(yourId, theirId));
     }
 
     /**
@@ -101,7 +101,7 @@ class ProfileViewControllerIT extends AbstractIntegrationTest {
         String nonExistingUsername = "i_dont_exist";
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.NOT_FOUND,
+            errorCode.getStatus(),
             errorCode.formatMessage(nonExistingUsername),
             null);
 
@@ -140,7 +140,7 @@ class ProfileViewControllerIT extends AbstractIntegrationTest {
         UUID nonExistingProfileId = UUID.randomUUID();
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.NOT_FOUND,
+            errorCode.getStatus(),
             errorCode.formatMessage(nonExistingProfileId),
             null);
 
@@ -179,7 +179,7 @@ class ProfileViewControllerIT extends AbstractIntegrationTest {
         UUID nonExistingProfileId = UUID.randomUUID();
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.NOT_FOUND,
+            errorCode.getStatus(),
             errorCode.formatMessage(nonExistingProfileId),
             null);
 

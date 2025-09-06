@@ -32,79 +32,13 @@ public class PostViewController {
         return ResponseEntity.ok(postViewService.getPostById(id));
     }
 
-    // @formatter:off
     @GetMapping(ApiRoutes.POST.REPLIES)
     public ResponseEntity<PageDTO<PostDTO>> getRepliesByPostId(
         @PathVariable("id") UUID id,
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
-        @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
-    ) {
+        @RequestParam(name = "limit", defaultValue = "20") @Limit int limit) {
         Pageable page = OffsetLimitRequest.of(offset, limit);
         return ResponseEntity.ok(postViewService.getRepliesByPostId(id, page));
-    } // @formatter:on
-
-    // @formatter:off
-    @GetMapping(ApiRoutes.FEED.HOMEPAGE)
-    public ResponseEntity<PageDTO<PostDTO>> getHomepagePosts(
-        @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
-        @RequestParam(name = "limit", defaultValue = "20") @Limit int limit)
-    {
-        Pageable page = OffsetLimitRequest.of(offset, limit);
-        return ResponseEntity.ok(postViewService.getHomepagePosts(page));
-    } // @formatter:on
-
-    // @formatter:off
-    @GetMapping(ApiRoutes.FEED.DISCOVER)
-    public ResponseEntity<PageDTO<PostDTO>> getDiscoverPosts(
-        @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
-        @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
-    ) {
-        Pageable page = OffsetLimitRequest.of(offset, limit);
-        return ResponseEntity.ok(postViewService.getDiscoverPosts(page));
-    } // @formatter:on
-
-    // @formatter:off
-    @GetMapping(ApiRoutes.FEED.POSTS)
-    public ResponseEntity<PageDTO<PostDTO>> getPostsByProfileId(
-        @PathVariable("id") UUID id,
-        @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
-        @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
-    ) {
-        Pageable page = OffsetLimitRequest.of(offset, limit);
-        return ResponseEntity.ok(postViewService.getPostsByAuthorId(id, page));
-    } // @formatter:on
-
-    // @formatter:off
-    @GetMapping(ApiRoutes.FEED.REPLIES)
-    public ResponseEntity<PageDTO<PostDTO>> getRepliesByProfileId(
-        @PathVariable("id") UUID id,
-        @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
-        @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
-    ) {
-        Pageable page = OffsetLimitRequest.of(offset, limit);
-        return ResponseEntity.ok(postViewService.getRepliesByAuthorId(id, page));
-    } // @formatter:on
-
-    // @formatter:off
-    @GetMapping(ApiRoutes.FEED.LIKES)
-    public ResponseEntity<PageDTO<PostDTO>> getLikesByProfileId(
-        @PathVariable("id") UUID id,
-        @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
-        @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
-    ) {
-        Pageable page = OffsetLimitRequest.of(offset, limit);
-        return ResponseEntity.ok(postViewService.getLikesByAuthorId(id, page));
-    } // @formatter:on
-
-    // @formatter:off
-    @GetMapping(ApiRoutes.FEED.MENTIONS)
-    public ResponseEntity<PageDTO<PostDTO>> getMentionsOfProfileId(
-        @PathVariable("id") UUID id,
-        @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
-        @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
-    ) {
-        Pageable page = OffsetLimitRequest.of(offset, limit);
-        return ResponseEntity.ok(postViewService.getMentionsOfProfileId(id, page));
-    } // @formatter:on
+    }
 
 }

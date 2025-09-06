@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
@@ -58,7 +57,7 @@ class ProfileInteractionControllerTest {
         doThrow(errorCode.buildAsException(id)).when(profileInteractionService).follow(id);
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.NOT_FOUND,
+            errorCode.getStatus(),
             errorCode.formatMessage(id),
             null);
 
@@ -82,7 +81,7 @@ class ProfileInteractionControllerTest {
         doThrow(errorCode.buildAsException()).when(profileInteractionService).follow(id);
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.CONFLICT,
+            errorCode.getStatus(),
             errorCode.formatMessage(),
             null);
 
@@ -106,7 +105,7 @@ class ProfileInteractionControllerTest {
         doThrow(errorCode.buildAsException(id)).when(profileInteractionService).follow(id);
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.CONFLICT,
+            errorCode.getStatus(),
             errorCode.formatMessage(id),
             null);
 

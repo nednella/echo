@@ -5,11 +5,11 @@ import java.util.UUID;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.example.echo_api.modules.profile.entity.Follow;
-import com.example.echo_api.modules.profile.entity.FollowPK;
+import com.example.echo_api.modules.profile.entity.ProfileFollow;
+import com.example.echo_api.modules.profile.entity.ProfileFollowPK;
 
 @Repository
-public interface FollowRepository extends ListCrudRepository<Follow, FollowPK> {
+public interface ProfileFollowRepository extends ListCrudRepository<ProfileFollow, ProfileFollowPK> {
 
     /**
      * Check if a unidirectional follow exists from the follower to the followed

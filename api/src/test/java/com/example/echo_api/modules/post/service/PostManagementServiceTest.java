@@ -60,18 +60,11 @@ class PostManagementServiceTest {
     @Test
     void create_SavesNoEntities_WhenPostTextContainsNoEntities() {
         // arrange
-        var request = new CreatePostDTO(
-            UUID.randomUUID(),
-            "Test post.");
+        var request = new CreatePostDTO(UUID.randomUUID(), "Test post.");
+        Post post = Post.forTest(UUID.randomUUID(), request.parentId(), authenticatedUserId, request.text());
 
-        var post = new Post(
-            UUID.randomUUID(),
-            request.parentId(),
-            authenticatedUserId,
-            request.text());
-
-        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.existsById(request.parentId())).thenReturn(true);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.save(any(Post.class))).thenReturn(post);
 
         // act & assert
@@ -83,15 +76,8 @@ class PostManagementServiceTest {
     @Test
     void create_SavesMultipleEntities_WhenPostTextContainsMultipleEntities() {
         // arrange
-        var request = new CreatePostDTO(
-            UUID.randomUUID(),
-            "Test post with a @Valid_Mention and a #ValidHashtag!");
-
-        var post = new Post(
-            UUID.randomUUID(),
-            request.parentId(),
-            authenticatedUserId,
-            request.text());
+        var request = new CreatePostDTO(UUID.randomUUID(), "Test post with a @Valid_Mention and a #ValidHashtag!");
+        Post post = Post.forTest(UUID.randomUUID(), request.parentId(), authenticatedUserId, request.text());
 
         List<PostEntity> entities = List.of(
             new PostEntity(post.getId(), PostEntityType.MENTION, 17, 31, "Valid_Mention"),
@@ -114,41 +100,30 @@ class PostManagementServiceTest {
 
     @Test
     void create_ThrowsApplicationException_WhenPostByParentIdDoesNotExist() {
-        PostErrorCode errorCode = PostErrorCode.INVALID_PARENT_ID;
-        UUID parentId = UUID.randomUUID();
+        PostErrorCode errorCode = PostErrorCode.ID_NOT_FOUND;
+        UUID invalidParentId = UUID.randomUUID();
 
-        var request = new CreatePostDTO(
-            parentId,
-            "Test post.");
+        var request = new CreatePostDTO(invalidParentId, "Test post.");
 
         // arrange
-        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
-        when(postRepository.existsById(parentId)).thenReturn(false);
+        when(postRepository.existsById(invalidParentId)).thenReturn(false);
 
         // act & assert
         var ex = assertThrows(ApplicationException.class, () -> postManagementService.create(request));
-        assertThat(ex.getMessage()).isEqualTo(errorCode.formatMessage(parentId));
+        assertThat(ex.getMessage()).isEqualTo(errorCode.formatMessage(invalidParentId));
 
-        verify(postRepository).existsById(parentId);
+        verify(postRepository).existsById(invalidParentId);
         verify(postEntityRepository, never()).saveAll(anyList());
     }
 
     @Test
     void create_ThrowIllegalArgument_WhenPostTextIsNull() {
         // arrange
-        var request = new CreatePostDTO(
-            UUID.randomUUID(),
-            null);
+        String text = null;
+        var request = new CreatePostDTO(UUID.randomUUID(), text);
 
-        var post = new Post(
-            UUID.randomUUID(),
-            request.parentId(),
-            authenticatedUserId,
-            request.text());
-
-        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.existsById(request.parentId())).thenReturn(true);
-        when(postRepository.save(any(Post.class))).thenReturn(post);
+        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
 
         // act & assert
         assertThrows(IllegalArgumentException.class, () -> postManagementService.create(request));
@@ -159,8 +134,8 @@ class PostManagementServiceTest {
     @Test
     void delete_ReturnVoid_WhenPostSuccessfullyDeleted() {
         // arrange
-        var id = UUID.randomUUID();
-        var post = new Post(authenticatedUserId, "Test post."); // post belonging to authenticatedUser
+        UUID id = UUID.randomUUID();
+        Post post = Post.forTest(id, null, authenticatedUserId, "Test post.");  // post belonging to authenticatedUser
 
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.findById(id)).thenReturn(Optional.of(post));
@@ -174,8 +149,8 @@ class PostManagementServiceTest {
     void delete_ThrowApplicationException_WhenPostByIdNotOwnedByYou() {
         // arrange
         PostErrorCode errorCode = PostErrorCode.POST_NOT_OWNED;
-        var id = UUID.randomUUID();
-        var post = new Post(UUID.randomUUID(), "Test post."); // post belonging to another user
+        UUID id = UUID.randomUUID();
+        Post post = Post.forTest(id, null, UUID.randomUUID(), "Test post.");  // post belonging to another user
 
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.findById(id)).thenReturn(Optional.of(post));

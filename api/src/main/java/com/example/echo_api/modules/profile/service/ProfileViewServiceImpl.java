@@ -2,7 +2,6 @@ package com.example.echo_api.modules.profile.service;
 
 import java.util.UUID;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -63,29 +62,26 @@ class ProfileViewServiceImpl extends BaseProfileService implements ProfileViewSe
 
     @Override
     public PageDTO<SimplifiedProfileDTO> getFollowers(UUID id, Pageable page) {
+        validateProfileExists(id);
         UUID authUserId = getAuthenticatedUserId();
-        UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
 
-        Page<SimplifiedProfileDTO> query = profileRepository.findFollowerDtosById(profileId, authUserId, page);
+        var query = profileRepository.findFollowerDtosById(id, authUserId, page);
         String uri = getCurrentRequestUri();
-
         return PageMapper.toDTO(query, uri);
     }
 
     @Override
     public PageDTO<SimplifiedProfileDTO> getFollowing(UUID id, Pageable page) {
+        validateProfileExists(id);
         UUID authUserId = getAuthenticatedUserId();
-        UUID profileId = getProfileEntityById(id).getId(); // validate existence of id
 
-        Page<SimplifiedProfileDTO> query = profileRepository.findFollowingDtosById(profileId, authUserId, page);
+        var query = profileRepository.findFollowingDtosById(id, authUserId, page);
         String uri = getCurrentRequestUri();
-
         return PageMapper.toDTO(query, uri);
     }
 
     /**
-     * Internal method for obtaining the current HTTP request URI, to be returned as
-     * part of a {@link PageDTO} response.
+     * Fetch the current HTTP request URI.
      * 
      * @return the current request URI as a string
      */

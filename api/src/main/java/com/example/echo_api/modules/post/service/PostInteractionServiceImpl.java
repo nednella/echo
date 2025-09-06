@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.echo_api.exception.ApplicationException;
 import com.example.echo_api.modules.post.entity.Post;
 import com.example.echo_api.modules.post.entity.PostLike;
 import com.example.echo_api.modules.post.exception.PostErrorCode;
@@ -19,37 +20,48 @@ import com.example.echo_api.shared.service.SessionService;
 @Service
 class PostInteractionServiceImpl extends BasePostService implements PostInteractionService {
 
-    private final PostLikeRepository likeRepository;
+    private final PostLikeRepository postLikeRepository;
 
     // @formatter:off
     protected PostInteractionServiceImpl(
         SessionService sessionService,
         PostRepository postRepository,
-        PostLikeRepository likeRepository) {
+        PostLikeRepository postLikeRepository) {
         super(sessionService, postRepository);
-        this.likeRepository = likeRepository;
+        this.postLikeRepository = postLikeRepository;
     }
     // @formatter:on
 
     @Override
     @Transactional
     public void like(UUID id) {
-        UUID authenticatedUserId = getAuthenticatedUserId();
-        Post post = getPostEntityById(id); // validate existence of id
+        validatePostExists(id);
 
-        if (likeRepository.existsByPostIdAndAuthorId(post.getId(), authenticatedUserId)) {
-            throw PostErrorCode.ALREADY_LIKED.buildAsException(post.getId());
-        }
+        UUID authUserId = getAuthenticatedUserId();
+        validateLikeDoesNotExist(id, authUserId);
 
-        PostLike like = new PostLike(post.getId(), authenticatedUserId);
-        likeRepository.save(like);
+        postLikeRepository.save(new PostLike(id, authUserId));
     }
 
     @Override
     @Transactional
     public void unlike(UUID id) {
-        UUID authenticatedUserId = getAuthenticatedUserId();
-        likeRepository.deleteByPostIdAndAuthorId(id, authenticatedUserId);
+        UUID authUserId = getAuthenticatedUserId();
+        postLikeRepository.deleteByPostIdAndAuthorId(id, authUserId);
+    }
+
+    /**
+     * Throws if a {@link PostLike} exists with the given {@code postId} and
+     * {@code authorId}.
+     * 
+     * @param postId
+     * @param authorId
+     * @throws ApplicationException if a like already exists
+     */
+    private void validateLikeDoesNotExist(UUID postId, UUID authorId) {
+        if (postLikeRepository.existsByPostIdAndAuthorId(postId, authorId)) {
+            throw PostErrorCode.ALREADY_LIKED.buildAsException(postId);
+        }
     }
 
 }

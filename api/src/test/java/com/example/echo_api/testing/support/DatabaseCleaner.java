@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @TestComponent
 public class DatabaseCleaner {
 
-    private static final List<String> PROFILE_INTERACTION_TABLES = List.of("follow");
+    private static final List<String> PROFILE_INTERACTION_TABLES = List.of("profile_follow");
 
     private static final List<String> ALL_POST_TABLES = List.of("post", "post_like", "post_entity");
     private static final List<String> POST_INTERACTION_TABLES = List.of("post_like");

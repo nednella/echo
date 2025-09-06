@@ -21,4 +21,12 @@ public interface ProfileRepository
      */
     Optional<Profile> findByUsername(String username);
 
+    /**
+     * Returns whether a {@link Profile} with the given {@code username} exists.
+     * 
+     * @param username
+     * @return {@code true} if exists, else {@code false}
+     */
+    boolean existsByUsername(String username);
+
 }

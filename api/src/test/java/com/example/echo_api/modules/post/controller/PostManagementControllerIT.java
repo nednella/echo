@@ -35,11 +35,8 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
 
     @BeforeEach
     void setup() {
-        selfPost = new Post(authUser.getId(), "Test post.");
-        selfPost = postRepository.save(selfPost);
-
-        notSelfPost = new Post(mockUser.getId(), "Test post.");
-        notSelfPost = postRepository.save(notSelfPost);
+        selfPost = postRepository.save(Post.create(null, authUser.getId(), "Test post."));
+        notSelfPost = postRepository.save(Post.create(null, mockUser.getId(), "Test post."));
     }
 
     @Test
@@ -84,15 +81,15 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
     }
 
     @Test
-    void create_Returns400BadRequest_WhenPostByParentIdDoesNotExist() {
+    void create_Returns404NotFound_WhenPostByParentIdDoesNotExist() {
         // api: POST /api/v1/post ==> 400 Bad Request : ErrorDTO
-        PostErrorCode errorCode = PostErrorCode.INVALID_PARENT_ID;
+        PostErrorCode errorCode = PostErrorCode.ID_NOT_FOUND;
 
         UUID invalidParentId = UUID.randomUUID();
         var body = new CreatePostDTO(invalidParentId, "Test post.");
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.BAD_REQUEST,
+            errorCode.getStatus(),
             errorCode.formatMessage(invalidParentId),
             null);
 
@@ -100,7 +97,7 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
             .uri(CREATE_PATH)
             .bodyValue(body)
             .exchange()
-            .expectStatus().isBadRequest()
+            .expectStatus().isNotFound()
             .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
@@ -136,7 +133,7 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
         UUID notMyPostId = notSelfPost.getId();
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.FORBIDDEN,
+            errorCode.getStatus(),
             errorCode.formatMessage(),
             null);
 

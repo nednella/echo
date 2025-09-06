@@ -26,6 +26,7 @@ import com.example.echo_api.testing.support.AbstractRepositoryTest;
 import com.example.echo_api.util.PostEntityExtractor;
 
 // TODO: finish JDocs
+// TODO: SQL query testing for metrics/relationships
 
 /**
  * Integration test class for {@link PostRepository}.
@@ -65,8 +66,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     private Post createPost(UUID parentId, UUID authorId, String text) {
-        Post post = new Post(parentId, authorId, text);
-        return postRepository.save(post);
+        return postRepository.save(Post.create(parentId, authorId, text));
     }
 
     /**

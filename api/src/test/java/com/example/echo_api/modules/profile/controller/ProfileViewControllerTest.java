@@ -103,7 +103,7 @@ class ProfileViewControllerTest {
         when(profileViewService.getMe()).thenThrow(errorCode.buildAsException("?"));
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.NOT_FOUND,
+            errorCode.getStatus(),
             errorCode.formatMessage("?"),
             null);
 
@@ -144,7 +144,7 @@ class ProfileViewControllerTest {
         when(profileViewService.getByUsername(username)).thenThrow(errorCode.buildAsException(username));
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.NOT_FOUND,
+            errorCode.getStatus(),
             errorCode.formatMessage(username),
             null);
 
@@ -197,7 +197,7 @@ class ProfileViewControllerTest {
         when(profileViewService.getFollowers(eq(id), any(Pageable.class))).thenThrow(errorCode.buildAsException(id));
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.NOT_FOUND,
+            errorCode.getStatus(),
             errorCode.formatMessage(id),
             null);
 
@@ -303,7 +303,7 @@ class ProfileViewControllerTest {
         when(profileViewService.getFollowing(eq(id), any(Pageable.class))).thenThrow(errorCode.buildAsException(id));
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.NOT_FOUND,
+            errorCode.getStatus(),
             errorCode.formatMessage(id),
             null);
 

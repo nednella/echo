@@ -193,7 +193,7 @@ class ProfileViewServiceTest {
         Page<SimplifiedProfileDTO> followersDto = new PageImpl<>(new ArrayList<>(), page, 0);
         PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(followersDto, uri);
 
-        when(profileRepository.findById(id)).thenReturn(Optional.of(profile));
+        when(profileRepository.existsById(id)).thenReturn(true);
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(profileRepository.findFollowerDtosById(profile.getId(), authenticatedUserId, page))
             .thenReturn(followersDto);
@@ -218,7 +218,7 @@ class ProfileViewServiceTest {
         int limit = 1;
         Pageable page = OffsetLimitRequest.of(offset, limit);
 
-        when(profileRepository.findById(id)).thenReturn(Optional.empty());
+        when(profileRepository.existsById(id)).thenReturn(false);
 
         // act & assert
         var ex = assertThrows(ApplicationException.class, () -> profileViewService.getFollowers(id, page));
@@ -238,7 +238,7 @@ class ProfileViewServiceTest {
         Page<SimplifiedProfileDTO> followingDto = new PageImpl<>(new ArrayList<>(), page, 0);
         PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(followingDto, uri);
 
-        when(profileRepository.findById(id)).thenReturn(Optional.of(profile));
+        when(profileRepository.existsById(id)).thenReturn(true);
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(profileRepository.findFollowingDtosById(profile.getId(), authenticatedUserId, page))
             .thenReturn(followingDto);
@@ -263,7 +263,7 @@ class ProfileViewServiceTest {
         int limit = 1;
         Pageable page = OffsetLimitRequest.of(offset, limit);
 
-        when(profileRepository.findById(id)).thenReturn(Optional.empty());
+        when(profileRepository.existsById(id)).thenReturn(false);
 
         // act & assert
         var ex = assertThrows(ApplicationException.class, () -> profileViewService.getFollowing(id, page));

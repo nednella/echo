@@ -7,7 +7,7 @@ import com.example.echo_api.exception.ApplicationException;
 public interface ProfileInteractionService {
 
     /**
-     * Follows a profile by {@code id}.
+     * Follow a profile by {@code id}.
      * 
      * @param id the profile id
      * @throws ApplicationException if no profile with the given id exists
@@ -17,7 +17,7 @@ public interface ProfileInteractionService {
     void follow(UUID id);
 
     /**
-     * Unfollows a profile by {@code id}.
+     * Unfollow a profile by {@code id}.
      * 
      * <p>
      * This operation is idempotent.
