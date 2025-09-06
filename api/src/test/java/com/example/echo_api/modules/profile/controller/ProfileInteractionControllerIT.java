@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
 import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
@@ -42,7 +41,7 @@ class ProfileInteractionControllerIT extends AbstractIntegrationTest {
         UUID nonExistingProfileId = UUID.randomUUID();
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.NOT_FOUND,
+            errorCode.getStatus(),
             errorCode.formatMessage(nonExistingProfileId),
             null);
 
@@ -60,7 +59,7 @@ class ProfileInteractionControllerIT extends AbstractIntegrationTest {
         UUID myProfileId = authUser.getId();
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.CONFLICT,
+            errorCode.getStatus(),
             errorCode.formatMessage(),
             null);
 
@@ -78,7 +77,7 @@ class ProfileInteractionControllerIT extends AbstractIntegrationTest {
         UUID profileId = mockUser.getId();
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.CONFLICT,
+            errorCode.getStatus(),
             errorCode.formatMessage(profileId),
             null);
 

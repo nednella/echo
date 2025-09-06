@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 
 import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.modules.post.entity.Post;
@@ -58,7 +57,7 @@ class PostInteractionControllerIT extends AbstractIntegrationTest {
         UUID nonExistingPostId = UUID.randomUUID();
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.NOT_FOUND,
+            errorCode.getStatus(),
             errorCode.formatMessage(nonExistingPostId),
             null);
 
@@ -76,7 +75,7 @@ class PostInteractionControllerIT extends AbstractIntegrationTest {
         UUID postId = post.getId();
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.CONFLICT,
+            errorCode.getStatus(),
             errorCode.formatMessage(postId),
             null);
 

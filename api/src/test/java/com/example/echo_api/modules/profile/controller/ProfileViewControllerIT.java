@@ -8,7 +8,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatus;
 
 import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.modules.profile.dto.response.ProfileDTO;
@@ -102,7 +101,7 @@ class ProfileViewControllerIT extends AbstractIntegrationTest {
         String nonExistingUsername = "i_dont_exist";
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.NOT_FOUND,
+            errorCode.getStatus(),
             errorCode.formatMessage(nonExistingUsername),
             null);
 
@@ -141,7 +140,7 @@ class ProfileViewControllerIT extends AbstractIntegrationTest {
         UUID nonExistingProfileId = UUID.randomUUID();
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.NOT_FOUND,
+            errorCode.getStatus(),
             errorCode.formatMessage(nonExistingProfileId),
             null);
 
@@ -180,7 +179,7 @@ class ProfileViewControllerIT extends AbstractIntegrationTest {
         UUID nonExistingProfileId = UUID.randomUUID();
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.NOT_FOUND,
+            errorCode.getStatus(),
             errorCode.formatMessage(nonExistingProfileId),
             null);
 

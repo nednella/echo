@@ -97,7 +97,7 @@ class PostViewControllerTest {
         when(postViewService.getPostById(id)).thenThrow(errorCode.buildAsException(id));
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.NOT_FOUND,
+            errorCode.getStatus(),
             errorCode.formatMessage(id),
             null);
 
@@ -202,7 +202,7 @@ class PostViewControllerTest {
             .thenThrow(errorCode.buildAsException(id));
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.NOT_FOUND,
+            errorCode.getStatus(),
             errorCode.formatMessage(id),
             null);
 

@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatus;
 
 import com.example.echo_api.exception.ErrorResponse;
 import com.example.echo_api.modules.post.dto.response.PostDTO;
@@ -93,7 +92,7 @@ class PostViewControllerIT extends AbstractIntegrationTest {
         UUID nonExistingPostId = UUID.randomUUID();
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.NOT_FOUND,
+            errorCode.getStatus(),
             errorCode.formatMessage(nonExistingPostId),
             null);
 
@@ -133,7 +132,7 @@ class PostViewControllerIT extends AbstractIntegrationTest {
         UUID nonExistingPostId = UUID.randomUUID();
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.NOT_FOUND,
+            errorCode.getStatus(),
             errorCode.formatMessage(nonExistingPostId),
             null);
 

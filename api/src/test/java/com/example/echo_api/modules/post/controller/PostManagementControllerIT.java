@@ -89,7 +89,7 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
         var body = new CreatePostDTO(invalidParentId, "Test post.");
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.NOT_FOUND,
+            errorCode.getStatus(),
             errorCode.formatMessage(invalidParentId),
             null);
 
@@ -133,7 +133,7 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
         UUID notMyPostId = notSelfPost.getId();
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.FORBIDDEN,
+            errorCode.getStatus(),
             errorCode.formatMessage(),
             null);
 

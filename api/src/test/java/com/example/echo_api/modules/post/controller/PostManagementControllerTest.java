@@ -106,7 +106,7 @@ class PostManagementControllerTest {
         doThrow(errorCode.buildAsException(invalidParentId)).when(postManagementService).create(post);
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.NOT_FOUND,
+            errorCode.getStatus(),
             errorCode.formatMessage(invalidParentId),
             null);
 
@@ -149,7 +149,7 @@ class PostManagementControllerTest {
         doThrow(errorCode.buildAsException()).when(postManagementService).delete(id);
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.FORBIDDEN,
+            errorCode.getStatus(),
             errorCode.formatMessage(),
             null);
 
