@@ -35,11 +35,8 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
 
     @BeforeEach
     void setup() {
-        selfPost = new Post(authUser.getId(), "Test post.");
-        selfPost = postRepository.save(selfPost);
-
-        notSelfPost = new Post(mockUser.getId(), "Test post.");
-        notSelfPost = postRepository.save(notSelfPost);
+        selfPost = postRepository.save(Post.create(null, authUser.getId(), "Test post."));
+        notSelfPost = postRepository.save(Post.create(null, mockUser.getId(), "Test post."));
     }
 
     @Test

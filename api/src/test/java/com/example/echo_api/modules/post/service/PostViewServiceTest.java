@@ -2,6 +2,8 @@ package com.example.echo_api.modules.post.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import java.util.List;
@@ -121,7 +123,7 @@ class PostViewServiceTest {
     void getRepliesByPostId_ReturnPageDtoOfPostDto_WhenPostByIdExists() {
         // arrange
         UUID id = UUID.randomUUID();
-        Post post = new Post(UUID.randomUUID(), "Test post.");
+        Post post = Post.forTest(id, null, UUID.randomUUID(), "Test post.");
 
         String uri = "/some/api/uri";
         int offset = 0;

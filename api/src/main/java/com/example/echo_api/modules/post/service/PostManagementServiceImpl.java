@@ -42,7 +42,7 @@ class PostManagementServiceImpl extends BasePostService implements PostManagemen
         UUID authorId = getAuthenticatedUserId();
         String text = request.text();
 
-        Post post = postRepository.save(new Post(parentId, authorId, text));
+        Post post = postRepository.save(Post.create(parentId, authorId, text));
         postEntityRepository.saveAll(PostEntityExtractor.extract(post.getId(), text));
     }
 

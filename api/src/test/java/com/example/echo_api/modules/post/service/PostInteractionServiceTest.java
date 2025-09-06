@@ -45,7 +45,7 @@ class PostInteractionServiceTest {
     @BeforeAll
     static void setup() {
         authenticatedUserId = UUID.randomUUID();
-        post = new Post(UUID.randomUUID(), "Test post.");
+        post = Post.forTest(UUID.randomUUID(), null, UUID.randomUUID(), "Test post.");
     }
 
     @Test

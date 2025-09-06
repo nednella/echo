@@ -65,8 +65,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     private Post createPost(UUID parentId, UUID authorId, String text) {
-        Post post = new Post(parentId, authorId, text);
-        return postRepository.save(post);
+        return postRepository.save(Post.create(parentId, authorId, text));
     }
 
     /**

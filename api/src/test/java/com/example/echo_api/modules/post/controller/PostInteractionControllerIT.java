@@ -31,8 +31,7 @@ class PostInteractionControllerIT extends AbstractIntegrationTest {
 
     @BeforeAll
     void setup() {
-        post = new Post(authUser.getId(), "Test post.");
-        post = postRepository.save(post);
+        post = postRepository.save(Post.create(null, authUser.getId(), "Test post."));
     }
 
     @BeforeEach

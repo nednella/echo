@@ -63,8 +63,7 @@ class PostViewControllerIT extends AbstractIntegrationTest {
      * @return the persisted {@link Post}
      */
     private Post createPost(UUID parentId, UUID authorId, String text) {
-        Post post = new Post(parentId, authorId, text);
-        post = postRepository.save(post);
+        Post post = postRepository.save(Post.create(parentId, authorId, text));
         postEntityRepository.saveAll(PostEntityExtractor.extract(post.getId(), post.getText()));
         return post;
     }
