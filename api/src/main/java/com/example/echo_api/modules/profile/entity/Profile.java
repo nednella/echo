@@ -71,7 +71,7 @@ public class Profile {
 
     /**
      * Factory method to create a new {@link Profile} for <b>testing only</b>, in
-     * cases where a username is required to be set.
+     * cases where an id is required to be set.
      * 
      * @param id       the placeholder UUID
      * @param username the placeholder username
