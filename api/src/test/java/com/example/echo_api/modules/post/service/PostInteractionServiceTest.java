@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -53,13 +52,13 @@ class PostInteractionServiceTest {
         // arrange
         UUID id = post.getId();
 
+        when(postRepository.existsById(id)).thenReturn(true);
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
-        when(postRepository.findById(id)).thenReturn(Optional.of(post));
         when(likeRepository.existsByPostIdAndAuthorId(id, authenticatedUserId)).thenReturn(false);
 
         // act & assert
         assertDoesNotThrow(() -> postInteractionService.like(id));
-        verify(postRepository).findById(id);
+        verify(postRepository).existsById(id);
         verify(likeRepository).existsByPostIdAndAuthorId(id, authenticatedUserId);
     }
 
@@ -69,14 +68,13 @@ class PostInteractionServiceTest {
         PostErrorCode errorCode = PostErrorCode.ID_NOT_FOUND;
         UUID id = post.getId();
 
-        when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
-        when(postRepository.findById(id)).thenReturn(Optional.empty());
+        when(postRepository.existsById(id)).thenReturn(false);
 
         // act & assert
         var ex = assertThrows(ApplicationException.class, () -> postInteractionService.like(id));
         assertThat(ex.getMessage()).isEqualTo(errorCode.formatMessage(id));
 
-        verify(postRepository).findById(id);
+        verify(postRepository).existsById(id);
         verify(likeRepository, never()).existsByPostIdAndAuthorId(id, authenticatedUserId);
     }
 
@@ -86,15 +84,15 @@ class PostInteractionServiceTest {
         PostErrorCode errorCode = PostErrorCode.ALREADY_LIKED;
         UUID id = post.getId();
 
+        when(postRepository.existsById(id)).thenReturn(true);
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
-        when(postRepository.findById(id)).thenReturn(Optional.of(post));
         when(likeRepository.existsByPostIdAndAuthorId(id, authenticatedUserId)).thenReturn(true);
 
         // act & assert
         var ex = assertThrows(ApplicationException.class, () -> postInteractionService.like(id));
         assertThat(ex.getMessage()).isEqualTo(errorCode.formatMessage(id));
 
-        verify(postRepository).findById(id);
+        verify(postRepository).existsById(id);
         verify(likeRepository).existsByPostIdAndAuthorId(id, authenticatedUserId);
     }
 

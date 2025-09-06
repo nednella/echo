@@ -126,7 +126,7 @@ class PostViewServiceTest {
         Page<PostDTO> repliesDto = new PageImpl<>(List.of(createPostDto(id, "Test post.")), page, 1);
         PageDTO<PostDTO> expected = PageMapper.toDTO(repliesDto, uri);
 
-        when(postRepository.findById(id)).thenReturn(Optional.of(post));
+        when(postRepository.existsById(id)).thenReturn(true);
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.findRepliesById(post.getId(), authenticatedUserId, page)).thenReturn(repliesDto);
         when(httpServletRequest.getRequestURI()).thenReturn(uri);
@@ -136,7 +136,7 @@ class PostViewServiceTest {
 
         // assert
         assertEquals(expected, actual);
-        verify(postRepository).findById(id);
+        verify(postRepository).existsById(id);
         verify(postRepository).findRepliesById(post.getId(), authenticatedUserId, page);
     }
 
@@ -150,13 +150,13 @@ class PostViewServiceTest {
         int limit = 20;
         Pageable page = OffsetLimitRequest.of(offset, limit);
 
-        when(postRepository.findById(id)).thenReturn(Optional.empty());
+        when(postRepository.existsById(id)).thenReturn(false);
 
         // act & assert
         var ex = assertThrows(ApplicationException.class, () -> postViewService.getRepliesByPostId(id, page));
         assertThat(ex.getMessage()).isEqualTo(errorCode.formatMessage(id));
 
-        verify(postRepository).findById(id);
+        verify(postRepository).existsById(id);
         verify(postRepository, never()).findRepliesById(any(UUID.class), eq(authenticatedUserId), eq(page));
     }
 

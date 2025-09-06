@@ -89,7 +89,7 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
         var body = new CreatePostDTO(invalidParentId, "Test post.");
 
         ErrorResponse expected = new ErrorResponse(
-            HttpStatus.BAD_REQUEST,
+            HttpStatus.NOT_FOUND,
             errorCode.formatMessage(invalidParentId),
             null);
 
@@ -97,7 +97,7 @@ class PostManagementControllerIT extends AbstractIntegrationTest {
             .uri(CREATE_PATH)
             .bodyValue(body)
             .exchange()
-            .expectStatus().isBadRequest()
+            .expectStatus().isNotFound()
             .expectBody(ErrorResponse.class).isEqualTo(expected);
     }
 
