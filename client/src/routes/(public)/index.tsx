@@ -1,4 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router"
+import ButtonLink from "../../components/ButtonLink"
+import EchoLogo from "../../components/EchoLogo"
+import Page from "../../components/Page"
+import Separator from "../../components/Separator"
+import { createFileRoute } from "@tanstack/react-router"
+import { motion } from "motion/react"
 
 export const Route = createFileRoute("/(public)/")({
     component: RouteComponent
@@ -6,43 +11,65 @@ export const Route = createFileRoute("/(public)/")({
 
 function RouteComponent() {
     return (
-        <div className="grid gap-2 p-2">
-            <h1 className="text-xl">Welcome!</h1>
-            <p>You are currently on the landing page.</p>
-            <ol className="list-inside list-disc px-2">
-                <li>
-                    <Link
-                        to="/auth/login"
-                        className="text-blue-500 hover:opacity-75"
+        <Page className="flex items-center justify-center">
+            <section className="w-full max-w-md">
+                {/* Logo */}
+                <motion.div
+                    className="text-center"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 1.2, delay: 0.2 }}
+                >
+                    <EchoLogo
+                        size={96}
+                        variant="gradient"
+                        className="mx-auto"
+                    />
+                    <h1 className="mt-12 text-3xl font-bold text-gray-900">
+                        Your Voice, <span className="text-echo-teal">Heard</span>
+                    </h1>
+                    <p className="mt-6 text-xl text-gray-600">
+                        the social platform where <br /> authentic conversations flourish
+                    </p>
+                </motion.div>
+
+                {/* Buttons */}
+                <motion.div
+                    className="mt-12"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 0.4 }}
+                >
+                    <ButtonLink
+                        to={"/register"}
+                        className="bg-echo-teal text-white shadow-sm"
                     >
-                        Go to the public login page.
-                    </Link>
-                </li>
-                <li>
-                    <Link
-                        to="/auth/register"
-                        className="text-blue-500 hover:opacity-75"
+                        Create an account
+                    </ButtonLink>
+                    <Separator
+                        colour="bg-gray-200"
+                        label={"or"}
+                    />
+                    <ButtonLink
+                        to={"/login"}
+                        className="bg-white shadow-sm"
                     >
-                        Go to the public register page.
-                    </Link>
-                </li>
-                <li>
-                    <Link
-                        to="/home"
-                        className="text-blue-500 hover:opacity-75"
-                    >
-                        Go to the auth-only home page.
-                    </Link>
-                </li>
-                <li>
-                    <Link
-                        to="/onboarding"
-                        className="text-blue-500 hover:opacity-75"
-                    >
-                        Go to the auth-only onboarding page.
-                    </Link>
-                </li>
-            </ol>
-        </div>
+                        Login
+                    </ButtonLink>
+                </motion.div>
+
+                {/* Footer */}
+                <motion.div
+                    className="mt-12 text-center"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 0.8 }}
+                >
+                    <p className="text-xs leading-relaxed text-gray-500">
+                        By signing up, you agree to the use of Cookies.
+                    </p>
+                </motion.div>
+            </section>
+        </Page>
     )
 }

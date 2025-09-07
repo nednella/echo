@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@theme {
+    --color-echo-teal: #077085;
+    --color-echo-navy: #101828;
+}
+
 html,
 body,
 #root {
