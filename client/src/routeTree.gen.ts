@@ -14,10 +14,10 @@ import { Route as protectedLayoutRouteImport } from './routes/(protected)/_layou
 import { Route as publicIndexRouteImport } from './routes/(public)/index'
 import { Route as protectedHomeRouteImport } from './routes/(protected)/home'
 import { Route as onboardingOnboardingRouteImport } from './routes/(onboarding)/onboarding'
-import { Route as publicAuthLayoutRouteImport } from './routes/(public)/auth/_layout'
-import { Route as publicAuthSsoCallbackRouteImport } from './routes/(public)/auth/sso-callback'
-import { Route as publicAuthRegisterRouteImport } from './routes/(public)/auth/register'
-import { Route as publicAuthLoginRouteImport } from './routes/(public)/auth/login'
+import { Route as publicauthLayoutRouteImport } from './routes/(public)/(auth)/_layout'
+import { Route as publicauthSsoCallbackRouteImport } from './routes/(public)/(auth)/sso-callback'
+import { Route as publicauthRegisterRouteImport } from './routes/(public)/(auth)/register'
+import { Route as publicauthLoginRouteImport } from './routes/(public)/(auth)/login'
 
 const publicLayoutRoute = publicLayoutRouteImport.update({
   id: '/(public)',
@@ -42,87 +42,76 @@ const onboardingOnboardingRoute = onboardingOnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
-const publicAuthLayoutRoute = publicAuthLayoutRouteImport.update({
-  id: '/auth',
-  path: '/auth',
+const publicauthLayoutRoute = publicauthLayoutRouteImport.update({
+  id: '/(auth)',
   getParentRoute: () => publicLayoutRoute,
 } as any)
-const publicAuthSsoCallbackRoute = publicAuthSsoCallbackRouteImport.update({
+const publicauthSsoCallbackRoute = publicauthSsoCallbackRouteImport.update({
   id: '/sso-callback',
   path: '/sso-callback',
-  getParentRoute: () => publicAuthLayoutRoute,
+  getParentRoute: () => publicauthLayoutRoute,
 } as any)
-const publicAuthRegisterRoute = publicAuthRegisterRouteImport.update({
+const publicauthRegisterRoute = publicauthRegisterRouteImport.update({
   id: '/register',
   path: '/register',
-  getParentRoute: () => publicAuthLayoutRoute,
+  getParentRoute: () => publicauthLayoutRoute,
 } as any)
-const publicAuthLoginRoute = publicAuthLoginRouteImport.update({
+const publicauthLoginRoute = publicauthLoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => publicAuthLayoutRoute,
+  getParentRoute: () => publicauthLayoutRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof publicIndexRoute
-  '/auth': typeof publicAuthLayoutRouteWithChildren
   '/onboarding': typeof onboardingOnboardingRoute
   '/home': typeof protectedHomeRoute
-  '/auth/login': typeof publicAuthLoginRoute
-  '/auth/register': typeof publicAuthRegisterRoute
-  '/auth/sso-callback': typeof publicAuthSsoCallbackRoute
+  '/login': typeof publicauthLoginRoute
+  '/register': typeof publicauthRegisterRoute
+  '/sso-callback': typeof publicauthSsoCallbackRoute
 }
 export interface FileRoutesByTo {
   '/': typeof publicIndexRoute
-  '/auth': typeof publicAuthLayoutRouteWithChildren
   '/onboarding': typeof onboardingOnboardingRoute
   '/home': typeof protectedHomeRoute
-  '/auth/login': typeof publicAuthLoginRoute
-  '/auth/register': typeof publicAuthRegisterRoute
-  '/auth/sso-callback': typeof publicAuthSsoCallbackRoute
+  '/login': typeof publicauthLoginRoute
+  '/register': typeof publicauthRegisterRoute
+  '/sso-callback': typeof publicauthSsoCallbackRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(protected)': typeof protectedLayoutRouteWithChildren
   '/(public)': typeof publicLayoutRouteWithChildren
-  '/(public)/auth': typeof publicAuthLayoutRouteWithChildren
+  '/(public)/(auth)': typeof publicauthLayoutRouteWithChildren
   '/(onboarding)/onboarding': typeof onboardingOnboardingRoute
   '/(protected)/home': typeof protectedHomeRoute
   '/(public)/': typeof publicIndexRoute
-  '/(public)/auth/login': typeof publicAuthLoginRoute
-  '/(public)/auth/register': typeof publicAuthRegisterRoute
-  '/(public)/auth/sso-callback': typeof publicAuthSsoCallbackRoute
+  '/(public)/(auth)/login': typeof publicauthLoginRoute
+  '/(public)/(auth)/register': typeof publicauthRegisterRoute
+  '/(public)/(auth)/sso-callback': typeof publicauthSsoCallbackRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/auth'
     | '/onboarding'
     | '/home'
-    | '/auth/login'
-    | '/auth/register'
-    | '/auth/sso-callback'
+    | '/login'
+    | '/register'
+    | '/sso-callback'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/auth'
-    | '/onboarding'
-    | '/home'
-    | '/auth/login'
-    | '/auth/register'
-    | '/auth/sso-callback'
+  to: '/' | '/onboarding' | '/home' | '/login' | '/register' | '/sso-callback'
   id:
     | '__root__'
     | '/(protected)'
     | '/(public)'
-    | '/(public)/auth'
+    | '/(public)/(auth)'
     | '/(onboarding)/onboarding'
     | '/(protected)/home'
     | '/(public)/'
-    | '/(public)/auth/login'
-    | '/(public)/auth/register'
-    | '/(public)/auth/sso-callback'
+    | '/(public)/(auth)/login'
+    | '/(public)/(auth)/register'
+    | '/(public)/(auth)/sso-callback'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -168,33 +157,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof onboardingOnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(public)/auth': {
-      id: '/(public)/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof publicAuthLayoutRouteImport
+    '/(public)/(auth)': {
+      id: '/(public)/(auth)'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof publicauthLayoutRouteImport
       parentRoute: typeof publicLayoutRoute
     }
-    '/(public)/auth/sso-callback': {
-      id: '/(public)/auth/sso-callback'
+    '/(public)/(auth)/sso-callback': {
+      id: '/(public)/(auth)/sso-callback'
       path: '/sso-callback'
-      fullPath: '/auth/sso-callback'
-      preLoaderRoute: typeof publicAuthSsoCallbackRouteImport
-      parentRoute: typeof publicAuthLayoutRoute
+      fullPath: '/sso-callback'
+      preLoaderRoute: typeof publicauthSsoCallbackRouteImport
+      parentRoute: typeof publicauthLayoutRoute
     }
-    '/(public)/auth/register': {
-      id: '/(public)/auth/register'
+    '/(public)/(auth)/register': {
+      id: '/(public)/(auth)/register'
       path: '/register'
-      fullPath: '/auth/register'
-      preLoaderRoute: typeof publicAuthRegisterRouteImport
-      parentRoute: typeof publicAuthLayoutRoute
+      fullPath: '/register'
+      preLoaderRoute: typeof publicauthRegisterRouteImport
+      parentRoute: typeof publicauthLayoutRoute
     }
-    '/(public)/auth/login': {
-      id: '/(public)/auth/login'
+    '/(public)/(auth)/login': {
+      id: '/(public)/(auth)/login'
       path: '/login'
-      fullPath: '/auth/login'
-      preLoaderRoute: typeof publicAuthLoginRouteImport
-      parentRoute: typeof publicAuthLayoutRoute
+      fullPath: '/login'
+      preLoaderRoute: typeof publicauthLoginRouteImport
+      parentRoute: typeof publicauthLayoutRoute
     }
   }
 }
@@ -211,28 +200,28 @@ const protectedLayoutRouteWithChildren = protectedLayoutRoute._addFileChildren(
   protectedLayoutRouteChildren,
 )
 
-interface publicAuthLayoutRouteChildren {
-  publicAuthLoginRoute: typeof publicAuthLoginRoute
-  publicAuthRegisterRoute: typeof publicAuthRegisterRoute
-  publicAuthSsoCallbackRoute: typeof publicAuthSsoCallbackRoute
+interface publicauthLayoutRouteChildren {
+  publicauthLoginRoute: typeof publicauthLoginRoute
+  publicauthRegisterRoute: typeof publicauthRegisterRoute
+  publicauthSsoCallbackRoute: typeof publicauthSsoCallbackRoute
 }
 
-const publicAuthLayoutRouteChildren: publicAuthLayoutRouteChildren = {
-  publicAuthLoginRoute: publicAuthLoginRoute,
-  publicAuthRegisterRoute: publicAuthRegisterRoute,
-  publicAuthSsoCallbackRoute: publicAuthSsoCallbackRoute,
+const publicauthLayoutRouteChildren: publicauthLayoutRouteChildren = {
+  publicauthLoginRoute: publicauthLoginRoute,
+  publicauthRegisterRoute: publicauthRegisterRoute,
+  publicauthSsoCallbackRoute: publicauthSsoCallbackRoute,
 }
 
-const publicAuthLayoutRouteWithChildren =
-  publicAuthLayoutRoute._addFileChildren(publicAuthLayoutRouteChildren)
+const publicauthLayoutRouteWithChildren =
+  publicauthLayoutRoute._addFileChildren(publicauthLayoutRouteChildren)
 
 interface publicLayoutRouteChildren {
-  publicAuthLayoutRoute: typeof publicAuthLayoutRouteWithChildren
+  publicauthLayoutRoute: typeof publicauthLayoutRouteWithChildren
   publicIndexRoute: typeof publicIndexRoute
 }
 
 const publicLayoutRouteChildren: publicLayoutRouteChildren = {
-  publicAuthLayoutRoute: publicAuthLayoutRouteWithChildren,
+  publicauthLayoutRoute: publicauthLayoutRouteWithChildren,
   publicIndexRoute: publicIndexRoute,
 }
 

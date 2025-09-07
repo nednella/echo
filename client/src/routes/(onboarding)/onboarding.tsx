@@ -6,7 +6,7 @@ export const Route = createFileRoute("/(onboarding)/onboarding")({
         // Redirect to login if user is not authenticated
         if (context.auth.isSignedIn === false) {
             throw redirect({
-                to: "/auth/login",
+                to: "/login",
                 replace: true
             })
         }
