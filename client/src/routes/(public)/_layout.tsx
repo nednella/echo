@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router"
 
-// /(public)/ layout component ensuring access only for unauthenticated users
+// /(public)/ authentication check
 export const Route = createFileRoute("/(public)")({
     beforeLoad({ context }) {
         // Redirect to home if user is already authenticated

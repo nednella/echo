@@ -4,12 +4,11 @@ import { createFileRoute, Outlet } from "@tanstack/react-router"
 import { ArrowLeft } from "lucide-react"
 import { motion } from "motion/react"
 
-// /(public)/(auth) layout component
 export const Route = createFileRoute("/(public)/(auth)")({
-    component: RouteComponent
+    component: Layout
 })
 
-function RouteComponent() {
+function Layout() {
     return (
         <Page className="to-echo-teal from-echo-navy flex items-center justify-center bg-gradient-to-br">
             <motion.div

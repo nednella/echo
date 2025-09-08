@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router"
 
-// /(protected)/ layout component ensuring user authentication and onboarding status
+// /(protected)/ authentication check
 export const Route = createFileRoute("/(protected)")({
     beforeLoad({ context, location }) {
         // Redirect to login if user is not authenticated
@@ -22,9 +22,5 @@ export const Route = createFileRoute("/(protected)")({
             })
         }
     },
-    component: Layout
+    component: () => <Outlet />
 })
-
-function Layout() {
-    return <Outlet />
-}
