@@ -1,18 +1,17 @@
+import { isAuthenticated, isOnboarded } from "../../utils/auth"
 import { useUser } from "@clerk/clerk-react"
 import { createFileRoute, redirect } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/(onboarding)/onboarding")({
     beforeLoad({ context }) {
-        // Redirect to login if user is not authenticated
-        if (context.auth.isSignedIn === false) {
+        if (!isAuthenticated(context.auth)) {
             throw redirect({
                 to: "/login",
                 replace: true
             })
         }
 
-        // Redirect to home if onboarding is completed
-        if (context.auth.sessionClaims?.onboarded === true) {
+        if (isOnboarded(context.auth)) {
             throw redirect({
                 to: "/home",
                 replace: true

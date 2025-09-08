@@ -1,10 +1,10 @@
+import { isAuthenticated } from "../../utils/auth"
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router"
 
 // /(public)/ authentication check
 export const Route = createFileRoute("/(public)")({
     beforeLoad({ context }) {
-        // Redirect to home if user is already authenticated
-        if (context.auth.isSignedIn === true) {
+        if (isAuthenticated(context.auth)) {
             throw redirect({
                 to: "/home",
                 replace: true

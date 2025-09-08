@@ -1,21 +1,20 @@
+import { isAuthenticated, isOnboarded } from "../../utils/auth"
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router"
 
-// /(protected)/ authentication check
+// /(protected)/ authentication/onboarding check
 export const Route = createFileRoute("/(protected)")({
     beforeLoad({ context, location }) {
-        // Redirect to login if user is not authenticated
-        if (context.auth.isSignedIn === false) {
+        if (!isAuthenticated(context.auth)) {
             throw redirect({
                 to: "/login",
                 replace: true,
                 search: {
-                    redirect: location.href // Preserve intended location for post-auth redirect
+                    redirect: location.href
                 }
             })
         }
 
-        // Redirect to onboarding if onboarding is not completed
-        if (!context.auth.sessionClaims?.onboarded) {
+        if (!isOnboarded(context.auth)) {
             throw redirect({
                 to: "/onboarding",
                 replace: true
