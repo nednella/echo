@@ -19,10 +19,10 @@ export const Route = createFileRoute("/(onboarding)/onboarding")({
             })
         }
     },
-    component: RouteComponent
+    component: OnboardingPage
 })
 
-function RouteComponent() {
+function OnboardingPage() {
     const user = useUser()
 
     console.log(user)

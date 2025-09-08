@@ -6,10 +6,10 @@ import { createFileRoute } from "@tanstack/react-router"
 import { motion } from "motion/react"
 
 export const Route = createFileRoute("/(public)/")({
-    component: RouteComponent
+    component: LandingPage
 })
 
-function RouteComponent() {
+function LandingPage() {
     return (
         <Page className="flex items-center justify-center">
             <section className="w-full max-w-md">
@@ -26,7 +26,7 @@ function RouteComponent() {
                         className="mx-auto"
                     />
                     <h1 className="mt-12 text-3xl font-bold text-gray-900">
-                        Your Voice, <span className="text-echo-teal">Heard</span>
+                        Your voice, <span className="text-echo-teal">heard</span>
                     </h1>
                     <p className="mt-6 text-xl text-gray-600">
                         the social platform where <br /> authentic conversations flourish

@@ -5,10 +5,10 @@ import { ArrowLeft } from "lucide-react"
 import { motion } from "motion/react"
 
 export const Route = createFileRoute("/(public)/(auth)")({
-    component: Layout
+    component: AuthPageLayout
 })
 
-function Layout() {
+function AuthPageLayout() {
     return (
         <Page className="to-echo-teal from-echo-navy flex items-center justify-center bg-gradient-to-br">
             <motion.div
