@@ -1,8 +1,6 @@
 <p align="center">
-  <img alt="Echo logo" src="./assets/logo.svg" width="200" />
+  <img alt="Echo logo" src="./docs/assets/echo-logo-256-gradient.svg" width="80" />
 </p>
-
-<h1 align="center">Echo</h1>
 
 <p align="center">
   <i>A social app: [tagline]</i>
