@@ -1,20 +1,11 @@
 import ButtonLink from "../../../components/ButtonLink"
 import Page from "../../../components/Page"
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router"
+import { createFileRoute, Outlet } from "@tanstack/react-router"
 import { ArrowLeft } from "lucide-react"
 import { motion } from "motion/react"
 
-// /(public)/(auth) layout component ensuring access only for unauthenticated users
+// /(public)/(auth) layout component
 export const Route = createFileRoute("/(public)/(auth)")({
-    beforeLoad({ context }) {
-        // Redirect to home if user is already authenticated
-        if (context.auth.isSignedIn === true) {
-            throw redirect({
-                to: "/home",
-                replace: true
-            })
-        }
-    },
     component: RouteComponent
 })
 
