@@ -12,7 +12,7 @@ export const Route = createFileRoute("/(onboarding)/onboarding")({
         }
 
         // Redirect to home if onboarding is completed
-        if (context.auth.sessionClaims?.metadata.onboardingComplete === true) {
+        if (context.auth.sessionClaims?.onboarded === true) {
             throw redirect({
                 to: "/home",
                 replace: true
