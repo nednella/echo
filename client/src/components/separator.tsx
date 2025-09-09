@@ -2,7 +2,7 @@ import React from "react"
 
 import { twMerge } from "tailwind-merge"
 
-type HrProps = React.ComponentPropsWithoutRef<"hr"> & {
+interface HrProps extends React.ComponentPropsWithoutRef<"hr"> {
     thickness?: "thin" | "thick"
     colour?: string
 }
