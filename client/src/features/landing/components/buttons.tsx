@@ -12,7 +12,7 @@ export function Buttons() {
         >
             <ButtonLink
                 to="/register"
-                className="bg-echo-teal text-white shadow-sm"
+                className="bg-echo-accent text-white shadow-sm"
             >
                 Create an account
             </ButtonLink>
