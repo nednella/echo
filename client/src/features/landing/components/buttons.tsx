@@ -1,5 +1,5 @@
-import ButtonLink from "../../../components/ButtonLink"
-import Separator from "../../../components/Separator"
+import ButtonLink from "../../../components/button-link"
+import Separator from "../../../components/separator"
 import { motion } from "motion/react"
 
 export default function Buttons() {

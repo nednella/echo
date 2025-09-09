@@ -1,4 +1,4 @@
-import EchoLogo from "../../../components/EchoLogo"
+import EchoLogo from "../../../components/echo-logo"
 import { motion } from "motion/react"
 
 export default function Hero() {

@@ -1,4 +1,4 @@
-import ButtonLink from "../../../components/ButtonLink"
+import ButtonLink from "../../../components/button-link"
 import { ArrowLeft } from "lucide-react"
 import { motion } from "motion/react"
 

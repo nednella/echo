@@ -1,6 +1,6 @@
 import React from "react"
 
-import Page from "../../../components/Page"
+import Page from "../../../components/page"
 import BackToHome from "../components/back-to-home"
 import { motion } from "motion/react"
 

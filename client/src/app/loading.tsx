@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 
-import EchoLogo from "../components/EchoLogo"
-import Page from "../components/Page"
+import EchoLogo from "../components/echo-logo"
+import Page from "../components/page"
 import { AnimatePresence, motion } from "motion/react"
 
 interface Props {
