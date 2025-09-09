@@ -1,4 +1,4 @@
-import { Buttons } from "../../features/landing/components/buttons"
+import { CallToAction } from "../../features/landing/components/cta"
 import { Footer } from "../../features/landing/components/footer"
 import { Hero } from "../../features/landing/components/hero"
 import { Layout } from "../../features/landing/layout/layout"
@@ -12,7 +12,7 @@ function LandingPage() {
     return (
         <Layout>
             <Hero />
-            <Buttons />
+            <CallToAction />
             <Footer />
         </Layout>
     )

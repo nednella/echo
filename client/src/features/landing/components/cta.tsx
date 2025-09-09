@@ -2,7 +2,7 @@ import { ButtonLink } from "../../../components/ui/button-link"
 import { MotionContainer } from "../../../components/ui/container"
 import { Separator } from "../../../components/ui/separator"
 
-export function Buttons() {
+export function CallToAction() {
     return (
         <MotionContainer
             className="mt-12"
