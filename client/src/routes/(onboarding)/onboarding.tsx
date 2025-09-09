@@ -1,3 +1,4 @@
+import { Layout } from "../../features/onboarding/layout/layout"
 import { isAuthenticated, isOnboarded } from "../../utils/auth"
 import { useUser } from "@clerk/clerk-react"
 import { createFileRoute, redirect } from "@tanstack/react-router"
@@ -26,5 +27,5 @@ function OnboardingPage() {
 
     console.log(user)
 
-    return <div>Hello "/(onboarding)/onboarding"!</div>
+    return <Layout></Layout>
 }
