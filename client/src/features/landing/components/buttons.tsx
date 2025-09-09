@@ -11,7 +11,7 @@ export function Buttons() {
             transition={{ duration: 0.6, delay: 0.4 }}
         >
             <ButtonLink
-                to={"/register"}
+                to="/register"
                 className="bg-echo-teal text-white shadow-sm"
             >
                 Create an account
@@ -21,7 +21,7 @@ export function Buttons() {
                 label={"or"}
             />
             <ButtonLink
-                to={"/login"}
+                to="/login"
                 className="bg-white shadow-sm"
             >
                 Login
