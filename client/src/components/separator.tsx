@@ -3,38 +3,38 @@ import React from "react"
 import { twMerge } from "tailwind-merge"
 
 interface HrProps extends React.ComponentPropsWithoutRef<"hr"> {
-    thickness?: "thin" | "thick"
     colour?: string
+    thickness?: "thin" | "thick"
 }
 
-function Hr({ thickness = "thin", colour, className, ...props }: Readonly<HrProps>) {
+function Hr({ className, colour, thickness = "thin", ...props }: Readonly<HrProps>) {
     return (
         <hr
-            {...props}
             className={twMerge(
                 "my-8 block w-full border-0",
-                thickness === "thin" ? "h-px" : "h-[2px]",
                 colour,
+                thickness === "thin" ? "h-px" : "h-[2px]",
                 className
             )}
+            {...props}
         />
     )
 }
 
 interface SeparatorProps {
+    className?: string
+    colour?: HrProps["colour"]
     label?: React.ReactNode
     thickness?: HrProps["thickness"]
-    colour?: HrProps["colour"]
-    className?: string
 }
 
-export function Separator({ label, thickness = "thin", colour, className }: Readonly<SeparatorProps>) {
+export function Separator({ className, colour, label, thickness = "thin" }: Readonly<SeparatorProps>) {
     if (!label) {
         return (
             <Hr
-                thickness={thickness}
-                colour={colour}
                 className={className}
+                colour={colour}
+                thickness={thickness}
             />
         )
     }
@@ -42,15 +42,15 @@ export function Separator({ label, thickness = "thin", colour, className }: Read
     return (
         <div className={twMerge("my-6 flex items-center gap-2", className)}>
             <Hr
-                thickness={thickness}
-                colour={colour}
                 className="my-0 flex-1"
+                colour={colour}
+                thickness={thickness}
             />
             <span className="px-2 text-sm text-gray-500 select-none">{label}</span>
             <Hr
-                thickness={thickness}
-                colour={colour}
                 className="my-0 flex-1"
+                colour={colour}
+                thickness={thickness}
             />
         </div>
     )

@@ -1,16 +1,16 @@
 interface Props {
+    className?: string
     size?: number
     variant?: "white" | "gradient"
-    className?: string
 }
 
-export function EchoLogo({ size, variant = "white", className }: Readonly<Props>) {
+export function EchoLogo({ className, size, variant = "white" }: Readonly<Props>) {
     return (
         <svg
+            className={className}
             width={size}
             height={size}
             viewBox="0 0 190 230"
-            className={className}
             xmlns="http://www.w3.org/2000/svg"
         >
             <path
