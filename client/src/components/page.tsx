@@ -1,13 +1,15 @@
-import type React from "react"
+import React from "react"
 
 import { twMerge } from "tailwind-merge"
 
-interface Props {
-    children: React.ReactNode
-    className?: string
-}
+type Props = React.ComponentPropsWithoutRef<"div">
 
-export function Page({ children, className }: Readonly<Props>) {
+export function Page({ className, ...props }: Readonly<Props>) {
     // TODO: theme
-    return <div className={twMerge("min-h-screen bg-gray-50 p-2", className)}>{children}</div>
+    return (
+        <div
+            className={twMerge("min-h-screen bg-gray-50 p-2", className)}
+            {...props}
+        />
+    )
 }

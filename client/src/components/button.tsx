@@ -4,7 +4,7 @@ import { twMerge } from "tailwind-merge"
 
 type Props = React.ComponentPropsWithRef<"button">
 
-export function Button({ children, className, type = "button", ...props }: Readonly<Props>) {
+export function Button({ className, type = "button", ...props }: Readonly<Props>) {
     return (
         <button
             className={twMerge(
@@ -15,8 +15,6 @@ export function Button({ children, className, type = "button", ...props }: Reado
             )}
             type={type}
             {...props}
-        >
-            {children}
-        </button>
+        />
     )
 }
