@@ -12,7 +12,7 @@ export function Hero() {
             <MotionContainer
                 initial={{ scale: 0.8 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 2 }}
+                transition={{ duration: 1.4 }}
             >
                 <EchoLogo
                     size={96}
