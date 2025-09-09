@@ -17,7 +17,7 @@ export function Buttons() {
                 Create an account
             </ButtonLink>
             <Separator
-                colour="bg-gray-200"
+                colour="bg-gray-400"
                 label={"or"}
             />
             <ButtonLink

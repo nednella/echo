@@ -48,7 +48,7 @@ export function Separator({ className, colour, label, thickness = "thin" }: Read
                 colour={colour}
                 thickness={thickness}
             />
-            <span className="px-2 text-sm text-gray-500 select-none">{label}</span>
+            <span className={twMerge("px-2 text-sm text-gray-300 select-none")}>{label}</span>
             <Hr
                 className="my-0 flex-1"
                 colour={colour}
