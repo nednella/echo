@@ -50,12 +50,12 @@ export function LoadingPage({ isReady, minimumLoadingTime, onAnimationComplete }
                         >
                             {/* Logo */}
                             <MotionContainer
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1.1 }}
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, transition: { duration: 0.2 } }}
                                 transition={{ duration: minimumLoadingTime / 1000, ease: "easeInOut" }}
                             >
-                                <EchoLogo size={80} />
+                                <EchoLogo size={96} />
                             </MotionContainer>
 
                             {/* Loading Indicator */}
