@@ -55,7 +55,10 @@ export function LoadingPage({ isReady, minimumLoadingTime, onAnimationComplete }
                                 exit={{ opacity: 0, transition: { duration: 0.2 } }}
                                 transition={{ duration: minimumLoadingTime / 1000, ease: "easeInOut" }}
                             >
-                                <EchoLogo size={96} />
+                                <EchoLogo
+                                    size={96}
+                                    variant="light-gradient"
+                                />
                             </MotionContainer>
 
                             {/* Loading Indicator */}

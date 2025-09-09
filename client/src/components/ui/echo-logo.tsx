@@ -1,10 +1,109 @@
+type Variant = "white" | "black" | "light-gradient" | "gradient"
+
 interface Props {
     className?: string
     size?: number
-    variant?: "white" | "gradient"
+    variant?: Variant
 }
 
+function getGradient(variant: Variant) {
+    switch (variant) {
+        case "white":
+            return {
+                primary: "#fff",
+                secondary: "fff"
+            }
+        case "black":
+            return {
+                primary: "#000",
+                secondary: "000"
+            }
+        case "light-gradient":
+            return {
+                primary: "#67e8f9",
+                secondary: "#0891b2"
+            }
+        case "gradient":
+            return {
+                primary: "#077085",
+                secondary: "#101828"
+            }
+    }
+}
 export function EchoLogo({ className, size, variant = "white" }: Readonly<Props>) {
+    const colours = getGradient(variant)
+
+    // static
+    if (variant === "white" || variant === "black") {
+        return (
+            <svg
+                className={className}
+                width={size}
+                height={size}
+                viewBox="0 0 190 230"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    d="M0 101C0 98.2386 2.23858 96 5 96V96C7.76142 96 10 98.2386 10 101V129C10 131.761 7.76142 134 5 134V134C2.23858 134 0 131.761 0 129V101Z"
+                    fill={colours.primary}
+                />
+                <path
+                    d="M15 88C15 85.2386 17.2386 83 20 83V83C22.7614 83 25 85.2386 25 88V142C25 144.761 22.7614 147 20 147V147C17.2386 147 15 144.761 15 142V88Z"
+                    fill={colours.primary}
+                />
+                <path
+                    d="M30 75C30 72.2386 32.2386 70 35 70V70C37.7614 70 40 72.2386 40 75V155C40 157.761 37.7614 160 35 160V160C32.2386 160 30 157.761 30 155V75Z"
+                    fill={colours.primary}
+                />
+                <path
+                    d="M45 63C45 60.2386 47.2386 58 50 58V58C52.7614 58 55 60.2386 55 63V168C55 170.761 52.7614 173 50 173V173C47.2386 173 45 170.761 45 168V63Z"
+                    fill={colours.primary}
+                />
+                <path
+                    d="M60 43C60 40.2386 62.2386 38 65 38V38C67.7614 38 70 40.2386 70 43V187C70 189.761 67.7614 192 65 192V192C62.2386 192 60 189.761 60 187V43Z"
+                    fill={colours.primary}
+                />
+                <path
+                    d="M75 24C75 21.2386 77.2386 19 80 19V19C82.7614 19 85 21.2386 85 24V206C85 208.761 82.7614 211 80 211V211C77.2386 211 75 208.761 75 206V24Z"
+                    fill={colours.primary}
+                />
+                <path
+                    d="M90 11C90 8.23858 92.2386 6 95 6V6C97.7614 6 100 8.23858 100 11V219C100 221.761 97.7614 224 95 224V224C92.2386 224 90 221.761 90 219V11Z"
+                    fill={colours.primary}
+                />
+                <path
+                    d="M105 25C105 22.2386 107.239 20 110 20V20C112.761 20 115 22.2386 115 25V207C115 209.761 112.761 212 110 212V212C107.239 212 105 209.761 105 207V25Z"
+                    fill={colours.primary}
+                />
+                <path
+                    d="M105 5C105 2.23857 107.239 0 110 0V0C112.761 0 115 2.23858 115 5V225C115 227.761 112.761 230 110 230V230C107.239 230 105 227.761 105 225V5Z"
+                    fill={colours.primary}
+                />
+                <path
+                    d="M120 11C120 8.23858 122.239 6 125 6V6C127.761 6 130 8.23858 130 11V219C130 221.761 127.761 224 125 224V224C122.239 224 120 221.761 120 219V11Z"
+                    fill={colours.primary}
+                />
+                <path
+                    d="M135 24C135 21.2386 137.239 19 140 19V19C142.761 19 145 21.2386 145 24V206C145 208.761 142.761 211 140 211V211C137.239 211 135 208.761 135 206V24Z"
+                    fill={colours.primary}
+                />
+                <path
+                    d="M150 43C150 40.2386 152.239 38 155 38V38C157.761 38 160 40.2386 160 43V187C160 189.761 157.761 192 155 192V192C152.239 192 150 189.761 150 187V43Z"
+                    fill={colours.primary}
+                />
+                <path
+                    d="M165 62C165 59.2386 167.239 57 170 57V57C172.761 57 175 59.2386 175 62V167C175 169.761 172.761 172 170 172V172C167.239 172 165 169.761 165 167V62Z"
+                    fill={colours.primary}
+                />
+                <path
+                    d="M180 75C180 72.2386 182.239 70 185 70V70C187.761 70 190 72.2386 190 75V155C190 157.761 187.761 160 185 160V160C182.239 160 180 157.761 180 155V75Z"
+                    fill={colours.primary}
+                />
+            </svg>
+        )
+    }
+
+    // gradient
     return (
         <svg
             className={className}
@@ -15,59 +114,59 @@ export function EchoLogo({ className, size, variant = "white" }: Readonly<Props>
         >
             <path
                 d="M0 101C0 98.2386 2.23858 96 5 96V96C7.76142 96 10 98.2386 10 101V129C10 131.761 7.76142 134 5 134V134C2.23858 134 0 131.761 0 129V101Z"
-                fill={variant === "white" ? "white" : "url(#paint0_linear_2018_725)"}
+                fill={"url(#paint0_linear_2018_725)"}
             />
             <path
                 d="M15 88C15 85.2386 17.2386 83 20 83V83C22.7614 83 25 85.2386 25 88V142C25 144.761 22.7614 147 20 147V147C17.2386 147 15 144.761 15 142V88Z"
-                fill={variant === "white" ? "white" : "url(#paint1_linear_2018_725)"}
+                fill={"url(#paint1_linear_2018_725)"}
             />
             <path
                 d="M30 75C30 72.2386 32.2386 70 35 70V70C37.7614 70 40 72.2386 40 75V155C40 157.761 37.7614 160 35 160V160C32.2386 160 30 157.761 30 155V75Z"
-                fill={variant === "white" ? "white" : "url(#paint2_linear_2018_725)"}
+                fill={"url(#paint2_linear_2018_725)"}
             />
             <path
                 d="M45 63C45 60.2386 47.2386 58 50 58V58C52.7614 58 55 60.2386 55 63V168C55 170.761 52.7614 173 50 173V173C47.2386 173 45 170.761 45 168V63Z"
-                fill={variant === "white" ? "white" : "url(#paint3_linear_2018_725)"}
+                fill={"url(#paint3_linear_2018_725)"}
             />
             <path
                 d="M60 43C60 40.2386 62.2386 38 65 38V38C67.7614 38 70 40.2386 70 43V187C70 189.761 67.7614 192 65 192V192C62.2386 192 60 189.761 60 187V43Z"
-                fill={variant === "white" ? "white" : "url(#paint4_linear_2018_725)"}
+                fill={"url(#paint4_linear_2018_725)"}
             />
             <path
                 d="M75 24C75 21.2386 77.2386 19 80 19V19C82.7614 19 85 21.2386 85 24V206C85 208.761 82.7614 211 80 211V211C77.2386 211 75 208.761 75 206V24Z"
-                fill={variant === "white" ? "white" : "url(#paint5_linear_2018_725)"}
+                fill={"url(#paint5_linear_2018_725)"}
             />
             <path
                 d="M90 11C90 8.23858 92.2386 6 95 6V6C97.7614 6 100 8.23858 100 11V219C100 221.761 97.7614 224 95 224V224C92.2386 224 90 221.761 90 219V11Z"
-                fill={variant === "white" ? "white" : "url(#paint6_linear_2018_725)"}
+                fill={"url(#paint6_linear_2018_725)"}
             />
             <path
                 d="M105 25C105 22.2386 107.239 20 110 20V20C112.761 20 115 22.2386 115 25V207C115 209.761 112.761 212 110 212V212C107.239 212 105 209.761 105 207V25Z"
-                fill={variant === "white" ? "white" : "url(#paint7_linear_2018_725)"}
+                fill={"url(#paint7_linear_2018_725)"}
             />
             <path
                 d="M105 5C105 2.23857 107.239 0 110 0V0C112.761 0 115 2.23858 115 5V225C115 227.761 112.761 230 110 230V230C107.239 230 105 227.761 105 225V5Z"
-                fill={variant === "white" ? "white" : "url(#paint8_linear_2018_725)"}
+                fill={"url(#paint8_linear_2018_725)"}
             />
             <path
                 d="M120 11C120 8.23858 122.239 6 125 6V6C127.761 6 130 8.23858 130 11V219C130 221.761 127.761 224 125 224V224C122.239 224 120 221.761 120 219V11Z"
-                fill={variant === "white" ? "white" : "url(#paint9_linear_2018_725)"}
+                fill={"url(#paint9_linear_2018_725)"}
             />
             <path
                 d="M135 24C135 21.2386 137.239 19 140 19V19C142.761 19 145 21.2386 145 24V206C145 208.761 142.761 211 140 211V211C137.239 211 135 208.761 135 206V24Z"
-                fill={variant === "white" ? "white" : "url(#paint10_linear_2018_725)"}
+                fill={"url(#paint10_linear_2018_725)"}
             />
             <path
                 d="M150 43C150 40.2386 152.239 38 155 38V38C157.761 38 160 40.2386 160 43V187C160 189.761 157.761 192 155 192V192C152.239 192 150 189.761 150 187V43Z"
-                fill={variant === "white" ? "white" : "url(#paint11_linear_2018_725)"}
+                fill={"url(#paint11_linear_2018_725)"}
             />
             <path
                 d="M165 62C165 59.2386 167.239 57 170 57V57C172.761 57 175 59.2386 175 62V167C175 169.761 172.761 172 170 172V172C167.239 172 165 169.761 165 167V62Z"
-                fill={variant === "white" ? "white" : "url(#paint12_linear_2018_725)"}
+                fill={"url(#paint12_linear_2018_725)"}
             />
             <path
                 d="M180 75C180 72.2386 182.239 70 185 70V70C187.761 70 190 72.2386 190 75V155C190 157.761 187.761 160 185 160V160C182.239 160 180 157.761 180 155V75Z"
-                fill={variant === "white" ? "white" : "url(#paint13_linear_2018_725)"}
+                fill={"url(#paint13_linear_2018_725)"}
             />
             <defs>
                 <linearGradient
@@ -78,10 +177,10 @@ export function EchoLogo({ className, size, variant = "white" }: Readonly<Props>
                     y2="134"
                     gradientUnits="userSpaceOnUse"
                 >
-                    <stop stopColor="#077085" />
+                    <stop stopColor={colours.primary} />
                     <stop
                         offset="1"
-                        stopColor="#101828"
+                        stopColor={colours.secondary}
                     />
                 </linearGradient>
                 <linearGradient
@@ -92,10 +191,10 @@ export function EchoLogo({ className, size, variant = "white" }: Readonly<Props>
                     y2="147"
                     gradientUnits="userSpaceOnUse"
                 >
-                    <stop stopColor="#077085" />
+                    <stop stopColor={colours.primary} />
                     <stop
                         offset="1"
-                        stopColor="#101828"
+                        stopColor={colours.secondary}
                     />
                 </linearGradient>
                 <linearGradient
@@ -106,10 +205,10 @@ export function EchoLogo({ className, size, variant = "white" }: Readonly<Props>
                     y2="160"
                     gradientUnits="userSpaceOnUse"
                 >
-                    <stop stopColor="#077085" />
+                    <stop stopColor={colours.primary} />
                     <stop
                         offset="1"
-                        stopColor="#101828"
+                        stopColor={colours.secondary}
                     />
                 </linearGradient>
                 <linearGradient
@@ -120,10 +219,10 @@ export function EchoLogo({ className, size, variant = "white" }: Readonly<Props>
                     y2="173"
                     gradientUnits="userSpaceOnUse"
                 >
-                    <stop stopColor="#077085" />
+                    <stop stopColor={colours.primary} />
                     <stop
                         offset="1"
-                        stopColor="#101828"
+                        stopColor={colours.secondary}
                     />
                 </linearGradient>
                 <linearGradient
@@ -134,10 +233,10 @@ export function EchoLogo({ className, size, variant = "white" }: Readonly<Props>
                     y2="192"
                     gradientUnits="userSpaceOnUse"
                 >
-                    <stop stopColor="#077085" />
+                    <stop stopColor={colours.primary} />
                     <stop
                         offset="1"
-                        stopColor="#101828"
+                        stopColor={colours.secondary}
                     />
                 </linearGradient>
                 <linearGradient
@@ -148,10 +247,10 @@ export function EchoLogo({ className, size, variant = "white" }: Readonly<Props>
                     y2="211"
                     gradientUnits="userSpaceOnUse"
                 >
-                    <stop stopColor="#077085" />
+                    <stop stopColor={colours.primary} />
                     <stop
                         offset="1"
-                        stopColor="#101828"
+                        stopColor={colours.secondary}
                     />
                 </linearGradient>
                 <linearGradient
@@ -162,10 +261,10 @@ export function EchoLogo({ className, size, variant = "white" }: Readonly<Props>
                     y2="224"
                     gradientUnits="userSpaceOnUse"
                 >
-                    <stop stopColor="#077085" />
+                    <stop stopColor={colours.primary} />
                     <stop
                         offset="1"
-                        stopColor="#101828"
+                        stopColor={colours.secondary}
                     />
                 </linearGradient>
                 <linearGradient
@@ -176,10 +275,10 @@ export function EchoLogo({ className, size, variant = "white" }: Readonly<Props>
                     y2="212"
                     gradientUnits="userSpaceOnUse"
                 >
-                    <stop stopColor="#077085" />
+                    <stop stopColor={colours.primary} />
                     <stop
                         offset="1"
-                        stopColor="#101828"
+                        stopColor={colours.secondary}
                     />
                 </linearGradient>
                 <linearGradient
@@ -190,10 +289,10 @@ export function EchoLogo({ className, size, variant = "white" }: Readonly<Props>
                     y2="230"
                     gradientUnits="userSpaceOnUse"
                 >
-                    <stop stopColor="#077085" />
+                    <stop stopColor={colours.primary} />
                     <stop
                         offset="1"
-                        stopColor="#101828"
+                        stopColor={colours.secondary}
                     />
                 </linearGradient>
                 <linearGradient
@@ -204,10 +303,10 @@ export function EchoLogo({ className, size, variant = "white" }: Readonly<Props>
                     y2="224"
                     gradientUnits="userSpaceOnUse"
                 >
-                    <stop stopColor="#077085" />
+                    <stop stopColor={colours.primary} />
                     <stop
                         offset="1"
-                        stopColor="#101828"
+                        stopColor={colours.secondary}
                     />
                 </linearGradient>
                 <linearGradient
@@ -218,10 +317,10 @@ export function EchoLogo({ className, size, variant = "white" }: Readonly<Props>
                     y2="211"
                     gradientUnits="userSpaceOnUse"
                 >
-                    <stop stopColor="#077085" />
+                    <stop stopColor={colours.primary} />
                     <stop
                         offset="1"
-                        stopColor="#101828"
+                        stopColor={colours.secondary}
                     />
                 </linearGradient>
                 <linearGradient
@@ -232,10 +331,10 @@ export function EchoLogo({ className, size, variant = "white" }: Readonly<Props>
                     y2="192"
                     gradientUnits="userSpaceOnUse"
                 >
-                    <stop stopColor="#077085" />
+                    <stop stopColor={colours.primary} />
                     <stop
                         offset="1"
-                        stopColor="#101828"
+                        stopColor={colours.secondary}
                     />
                 </linearGradient>
                 <linearGradient
@@ -246,10 +345,10 @@ export function EchoLogo({ className, size, variant = "white" }: Readonly<Props>
                     y2="172"
                     gradientUnits="userSpaceOnUse"
                 >
-                    <stop stopColor="#077085" />
+                    <stop stopColor={colours.primary} />
                     <stop
                         offset="1"
-                        stopColor="#101828"
+                        stopColor={colours.secondary}
                     />
                 </linearGradient>
                 <linearGradient
@@ -260,10 +359,10 @@ export function EchoLogo({ className, size, variant = "white" }: Readonly<Props>
                     y2="160"
                     gradientUnits="userSpaceOnUse"
                 >
-                    <stop stopColor="#077085" />
+                    <stop stopColor={colours.primary} />
                     <stop
                         offset="1"
-                        stopColor="#101828"
+                        stopColor={colours.secondary}
                     />
                 </linearGradient>
             </defs>

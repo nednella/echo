@@ -16,7 +16,7 @@ export function Hero() {
             >
                 <EchoLogo
                     size={96}
-                    variant="gradient"
+                    variant="light-gradient"
                     className="mx-auto"
                 />
             </MotionContainer>
