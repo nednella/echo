@@ -1,6 +1,6 @@
-import { ButtonLink } from "../../../components/button-link"
-import { MotionContainer } from "../../../components/container"
-import { Separator } from "../../../components/separator"
+import { ButtonLink } from "../../../components/ui/button-link"
+import { MotionContainer } from "../../../components/ui/container"
+import { Separator } from "../../../components/ui/separator"
 
 export function Buttons() {
     return (

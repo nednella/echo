@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 
-import { MotionContainer } from "../components/container"
-import { EchoLogo } from "../components/echo-logo"
-import { Page } from "../components/page"
+import { MotionContainer } from "../components/ui/container"
+import { EchoLogo } from "../components/ui/echo-logo"
+import { Page } from "../components/ui/page"
 import { AnimatePresence } from "motion/react"
 
 interface Props {

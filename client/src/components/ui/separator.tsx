@@ -7,6 +7,8 @@ interface HrProps extends React.ComponentPropsWithoutRef<"hr"> {
     thickness?: "thin" | "thick"
 }
 
+// TODO: theme
+
 function Hr({ className, colour, thickness = "thin", ...props }: Readonly<HrProps>) {
     return (
         <hr

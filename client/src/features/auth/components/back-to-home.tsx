@@ -1,5 +1,5 @@
-import { ButtonLink } from "../../../components/button-link"
-import { MotionContainer } from "../../../components/container"
+import { ButtonLink } from "../../../components/ui/button-link"
+import { MotionContainer } from "../../../components/ui/container"
 import { ArrowLeft } from "lucide-react"
 
 export function BackToHome() {
