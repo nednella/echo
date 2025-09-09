@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 
+import { MotionContainer } from "../components/ui/container"
 import { EchoLogo } from "../components/ui/echo-logo"
 import { Page } from "../components/ui/page"
 import { AnimatePresence, motion } from "motion/react"
@@ -41,14 +42,15 @@ export function LoadingPage({ isReady, minimumLoadingTime, onAnimationComplete }
                             transition={{ delay: 0.2 }}
                         />
                         {/* Scale transition */}
-                        <motion.div
+                        <MotionContainer
                             className="fixed inset-0 flex items-center justify-center"
                             initial={{ scale: 1 }}
                             exit={{ scale: 25 }}
                             transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
                         >
                             {/* Logo */}
-                            <motion.div
+                            <MotionContainer
+                                className="w-fit"
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, transition: { duration: 0.2 } }}
@@ -58,11 +60,11 @@ export function LoadingPage({ isReady, minimumLoadingTime, onAnimationComplete }
                                     size={96}
                                     variant="light-gradient"
                                 />
-                            </motion.div>
+                            </MotionContainer>
 
                             {/* Loading Indicator */}
-                            <motion.div
-                                className="absolute bottom-20"
+                            <MotionContainer
+                                className="absolute bottom-20 w-fit"
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: -20 }}
                                 transition={{ duration: 0.6, delay: 0.6 }}
@@ -75,8 +77,8 @@ export function LoadingPage({ isReady, minimumLoadingTime, onAnimationComplete }
                                         transition={{ duration: minimumLoadingTime / 1000, ease: "easeInOut" }}
                                     />
                                 </div>
-                            </motion.div>
-                        </motion.div>
+                            </MotionContainer>
+                        </MotionContainer>
                     </>
                 )}
             </AnimatePresence>

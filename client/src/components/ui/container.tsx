@@ -18,7 +18,7 @@ const pxMap = {
 export function Container({ className, px = "0", ...props }: Readonly<Props>) {
     return (
         <div
-            className={twMerge("container", pxMap[px], className)}
+            className={twMerge("mx-auto w-full", pxMap[px], className)}
             {...props}
         />
     )
