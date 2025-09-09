@@ -1,10 +1,10 @@
 import { ButtonLink } from "../../../components/button-link"
+import { MotionContainer } from "../../../components/container"
 import { Separator } from "../../../components/separator"
-import { motion } from "motion/react"
 
 export function Buttons() {
     return (
-        <motion.div
+        <MotionContainer
             className="mt-12"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -26,6 +26,6 @@ export function Buttons() {
             >
                 Login
             </ButtonLink>
-        </motion.div>
+        </MotionContainer>
     )
 }

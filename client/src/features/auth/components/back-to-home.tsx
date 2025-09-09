@@ -1,10 +1,10 @@
 import { ButtonLink } from "../../../components/button-link"
+import { MotionContainer } from "../../../components/container"
 import { ArrowLeft } from "lucide-react"
-import { motion } from "motion/react"
 
 export function BackToHome() {
     return (
-        <motion.div
+        <MotionContainer
             whileHover={{ x: -5 }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
             className="mb-4"
@@ -17,6 +17,6 @@ export function BackToHome() {
                 <ArrowLeft size={16} />
                 Back to Home
             </ButtonLink>
-        </motion.div>
+        </MotionContainer>
     )
 }

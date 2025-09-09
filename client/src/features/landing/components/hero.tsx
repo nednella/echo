@@ -1,9 +1,9 @@
+import { MotionContainer } from "../../../components/container"
 import { EchoLogo } from "../../../components/echo-logo"
-import { motion } from "motion/react"
 
 export function Hero() {
     return (
-        <motion.div
+        <MotionContainer
             className="text-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -20,6 +20,6 @@ export function Hero() {
             <p className="mt-6 text-xl text-gray-600">
                 the social platform where <br /> authentic conversations flourish
             </p>
-        </motion.div>
+        </MotionContainer>
     )
 }
