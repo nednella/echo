@@ -11,5 +11,6 @@ body,
 #root {
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
     height: 100%;
-    color-scheme: light;
+    color-scheme: dark;
+    background: #1e2939;
 }
