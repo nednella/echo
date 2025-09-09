@@ -1,7 +1,7 @@
-import EchoLogo from "../../../components/echo-logo"
+import { EchoLogo } from "../../../components/echo-logo"
 import { motion } from "motion/react"
 
-export default function Hero() {
+export function Hero() {
     return (
         <motion.div
             className="text-center"

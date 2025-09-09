@@ -28,7 +28,7 @@ interface SeparatorProps {
     className?: string
 }
 
-export default function Separator({ label, thickness = "thin", colour, className }: Readonly<SeparatorProps>) {
+export function Separator({ label, thickness = "thin", colour, className }: Readonly<SeparatorProps>) {
     if (!label) {
         return (
             <Hr

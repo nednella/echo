@@ -1,8 +1,8 @@
-import ButtonLink from "../../../components/button-link"
-import Separator from "../../../components/separator"
+import { ButtonLink } from "../../../components/button-link"
+import { Separator } from "../../../components/separator"
 import { motion } from "motion/react"
 
-export default function Buttons() {
+export function Buttons() {
     return (
         <motion.div
             className="mt-12"

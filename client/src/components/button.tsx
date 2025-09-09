@@ -4,7 +4,7 @@ import { twMerge } from "tailwind-merge"
 
 type Props = React.ButtonHTMLAttributes<HTMLButtonElement>
 
-const Button = forwardRef<HTMLButtonElement, Props>(
+export const Button = forwardRef<HTMLButtonElement, Props>(
     ({ children, className, disabled, type = "button", ...props }, ref) => (
         <button
             type={type}
@@ -22,5 +22,3 @@ const Button = forwardRef<HTMLButtonElement, Props>(
         </button>
     )
 )
-
-export default Button

@@ -1,8 +1,8 @@
-import ButtonLink from "../../../components/button-link"
+import { ButtonLink } from "../../../components/button-link"
 import { ArrowLeft } from "lucide-react"
 import { motion } from "motion/react"
 
-export default function BackToHome() {
+export function BackToHome() {
     return (
         <motion.div
             whileHover={{ x: -5 }}

@@ -4,7 +4,7 @@ interface Props {
     className?: string
 }
 
-export default function EchoLogo({ size, variant = "white", className }: Readonly<Props>) {
+export function EchoLogo({ size, variant = "white", className }: Readonly<Props>) {
     return (
         <svg
             width={size}

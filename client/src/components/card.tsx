@@ -7,7 +7,7 @@ interface Props {
     className?: string
 }
 
-export default function Card({ children, className }: Readonly<Props>) {
+export function Card({ children, className }: Readonly<Props>) {
     // TODO: bg-colour/text -> theme
     return <div className={twMerge("h-fit w-full rounded-lg bg-white p-4 shadow-md", className)}>{children}</div>
 }

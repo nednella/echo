@@ -12,6 +12,6 @@ interface Props {
     children: React.ReactNode
 }
 
-export default function AuthProvider({ children }: Readonly<Props>) {
+export function AuthProvider({ children }: Readonly<Props>) {
     return <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>{children}</ClerkProvider>
 }

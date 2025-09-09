@@ -1,6 +1,6 @@
 import { motion } from "motion/react"
 
-export default function Footer() {
+export function Footer() {
     return (
         <motion.div
             className="mt-12 text-center"

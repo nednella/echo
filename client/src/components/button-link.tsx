@@ -24,8 +24,6 @@ const Link = forwardRef<HTMLAnchorElement, Props>(({ className, ...props }, ref)
 
 const CreatedLinkComponent = createLink(Link)
 
-const ButtonLink: LinkComponent<typeof Link> = (props) => {
+export const ButtonLink: LinkComponent<typeof Link> = (props) => {
     return <CreatedLinkComponent {...props} />
 }
-
-export default ButtonLink

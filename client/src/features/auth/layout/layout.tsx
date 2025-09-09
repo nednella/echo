@@ -1,14 +1,14 @@
 import React from "react"
 
-import Page from "../../../components/page"
-import BackToHome from "../components/back-to-home"
+import { Page } from "../../../components/page"
+import { BackToHome } from "../components/back-to-home"
 import { motion } from "motion/react"
 
 interface Props {
     children: React.ReactNode
 }
 
-export default function Layout({ children }: Readonly<Props>) {
+export function Layout({ children }: Readonly<Props>) {
     return (
         <Page className="to-echo-teal from-echo-navy flex items-center justify-center bg-gradient-to-br">
             <motion.div

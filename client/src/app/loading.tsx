@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 
-import EchoLogo from "../components/echo-logo"
-import Page from "../components/page"
+import { EchoLogo } from "../components/echo-logo"
+import { Page } from "../components/page"
 import { AnimatePresence, motion } from "motion/react"
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
     onAnimationComplete: () => void
 }
 
-export default function LoadingPage({ isReady, minimumLoadingTime, onAnimationComplete }: Readonly<Props>) {
+export function LoadingPage({ isReady, minimumLoadingTime, onAnimationComplete }: Readonly<Props>) {
     const [shouldExit, setShouldExit] = useState(false)
     const [minLoadingTimeReached, setMinLoadingTimeReached] = useState(false)
 
