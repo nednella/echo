@@ -1,29 +1,26 @@
-import { forwardRef, type AnchorHTMLAttributes } from "react"
+import React from "react"
 
 import { createLink, type LinkComponent } from "@tanstack/react-router"
 import { twMerge } from "tailwind-merge"
 
-interface Props extends AnchorHTMLAttributes<HTMLAnchorElement> {
-    className?: string
-}
+type Props = React.ComponentPropsWithRef<"a">
 
-const Link = forwardRef<HTMLAnchorElement, Props>(({ className, ...props }, ref) => {
+function Link({ className, ...props }: Readonly<Props>) {
     return (
         <a
-            ref={ref}
-            {...props}
             className={twMerge(
                 // TODO: theme
                 `block w-full cursor-pointer truncate rounded-full px-8 py-2 text-center font-medium transition
                 select-none hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-75`,
                 className
             )}
+            {...props}
         />
     )
-})
+}
 
-const CreatedLinkComponent = createLink(Link)
+const CustomLink = createLink(Link)
 
 export const ButtonLink: LinkComponent<typeof Link> = (props) => {
-    return <CreatedLinkComponent {...props} />
+    return <CustomLink {...props} />
 }
