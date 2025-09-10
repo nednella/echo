@@ -22,7 +22,7 @@ export function CallToAction() {
             />
             <ButtonLink
                 to="/login"
-                className="bg-white shadow-sm"
+                className="bg-white text-black shadow-sm"
             >
                 Login
             </ButtonLink>
