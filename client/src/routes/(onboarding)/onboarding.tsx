@@ -1,31 +1,31 @@
+import { Layout } from "../../features/onboarding/layout/layout"
+import { isAuthenticated, isOnboarded } from "../../utils/auth"
 import { useUser } from "@clerk/clerk-react"
 import { createFileRoute, redirect } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/(onboarding)/onboarding")({
     beforeLoad({ context }) {
-        // Redirect to login if user is not authenticated
-        if (context.auth.isSignedIn === false) {
+        if (!isAuthenticated(context.auth)) {
             throw redirect({
-                to: "/auth/login",
+                to: "/login",
                 replace: true
             })
         }
 
-        // Redirect to home if onboarding is completed
-        if (context.auth.sessionClaims?.metadata.onboardingComplete === true) {
+        if (isOnboarded(context.auth)) {
             throw redirect({
                 to: "/home",
                 replace: true
             })
         }
     },
-    component: RouteComponent
+    component: OnboardingPage
 })
 
-function RouteComponent() {
+function OnboardingPage() {
     const user = useUser()
 
     console.log(user)
 
-    return <div>Hello "/(onboarding)/onboarding"!</div>
+    return <Layout></Layout>
 }

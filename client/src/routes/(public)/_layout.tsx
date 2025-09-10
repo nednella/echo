@@ -1,10 +1,15 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router"
+import { isAuthenticated } from "../../utils/auth"
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router"
 
-// (public) layout component
+// /(public)/ authentication check
 export const Route = createFileRoute("/(public)")({
-    component: Layout
+    beforeLoad({ context }) {
+        if (isAuthenticated(context.auth)) {
+            throw redirect({
+                to: "/home",
+                replace: true
+            })
+        }
+    },
+    component: () => <Outlet />
 })
-
-function Layout() {
-    return <Outlet />
-}

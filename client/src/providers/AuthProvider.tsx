@@ -8,16 +8,10 @@ if (!CLERK_PUBLISHABLE_KEY) {
     throw new Error("Clerk Publishable Key missing from .env file!")
 }
 
-type Props = {
+interface Props {
     children: React.ReactNode
 }
 
-// prettier-ignore
-export default function AuthProvider({ children }: Readonly<Props>) {
-
-    return (
-        <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
-            {children}
-        </ClerkProvider>
-    )
+export function AuthProvider({ children }: Readonly<Props>) {
+    return <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>{children}</ClerkProvider>
 }
