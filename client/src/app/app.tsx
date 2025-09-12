@@ -11,16 +11,16 @@ function InnerApp() {
     const [isReady, setIsReady] = useState(false)
     const auth = useAuth()
 
-    return !isReady ? (
+    return isReady ? (
+        <RouterProvider
+            router={router}
+            context={{ auth }}
+        />
+    ) : (
         <LoadingPage
             isReady={auth.isLoaded} // based on Clerk loading status
             minimumLoadingTime={2000}
             onAnimationComplete={() => setIsReady(true)} // render app after animation complete
-        />
-    ) : (
-        <RouterProvider
-            router={router}
-            context={{ auth }}
         />
     )
 }

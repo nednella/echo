@@ -8,26 +8,30 @@ interface Props {
 
 function getGradient(variant: Variant) {
     switch (variant) {
-        case "white":
+        case "white": {
             return {
                 primary: "#fff",
                 secondary: "fff"
             }
-        case "black":
+        }
+        case "black": {
             return {
                 primary: "#000",
                 secondary: "000"
             }
-        case "light-gradient":
+        }
+        case "light-gradient": {
             return {
                 primary: "#67e8f9",
                 secondary: "#0891b2"
             }
-        case "gradient":
+        }
+        case "gradient": {
             return {
                 primary: "#077085",
                 secondary: "#101828"
             }
+        }
     }
 }
 export function EchoLogo({ className, size, variant = "white" }: Readonly<Props>) {
