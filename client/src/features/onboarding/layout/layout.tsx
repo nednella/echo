@@ -1,4 +1,4 @@
-import { Page } from "../../../components/ui/page"
+import { Page } from "@/components/ui/page"
 
 export function Layout() {
     return (

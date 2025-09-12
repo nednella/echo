@@ -1,7 +1,7 @@
 import React from "react"
 
-import { Container } from "../../../components/ui/container"
-import { Page } from "../../../components/ui/page"
+import { Container } from "@/components/ui/container"
+import { Page } from "@/components/ui/page"
 
 interface Props {
     children: React.ReactNode

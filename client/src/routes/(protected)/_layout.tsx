@@ -1,5 +1,6 @@
-import { isAuthenticated, isOnboarded } from "../../utils/auth"
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router"
+import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
+
+import { isAuthenticated, isOnboarded } from "@/utils/auth"
 
 // /(protected)/ authentication/onboarding check
 export const Route = createFileRoute("/(protected)")({

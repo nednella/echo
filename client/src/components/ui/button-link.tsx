@@ -1,6 +1,6 @@
 import React from "react"
 
-import { createLink, type LinkComponent } from "@tanstack/react-router"
+import { type LinkComponent, createLink } from "@tanstack/react-router"
 import { twMerge } from "tailwind-merge"
 
 type Props = React.ComponentPropsWithRef<"a">
