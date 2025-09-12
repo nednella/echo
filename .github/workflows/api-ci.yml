@@ -1,4 +1,4 @@
-name: API CI Pipeline
+name: API CI
 
 on:
     pull_request:
@@ -41,10 +41,10 @@ jobs:
           CLERK_SECRET_KEY: ${{ secrets.API_CI_CLERK_SECRET_KEY }}
 
         steps:
-            - name: Checkout Code
+            - name: Checkout code
               uses: actions/checkout@v4
 
-            - name: Set up JDK 21
+            - name: Setup JDK 21
               uses: actions/setup-java@v4
               with:
                   java-version: 21
@@ -58,10 +58,10 @@ jobs:
               run: |
                   sudo chmod 666 /var/run/docker.sock
 
-            - name: Build & Test w/ Gradle Wrapper
+            - name: Build & test
               run: cd api && ./gradlew clean build --parallel --scan --stacktrace
 
-            - name: Upload Test Results
+            - name: Upload test results
               if: always()
               uses: actions/upload-artifact@v4
               with:
