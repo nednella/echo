@@ -13,6 +13,7 @@
     "jsxSingleQuote": false,
     "trailingComma": "none",
     "printWidth": 120,
-    "importOrder": ["^react", "<THIRD_PARTY_MODULES>", "^\\./"],
-    "importOrderSeparation": true
+    "importOrder": ["^react", "<THIRD_PARTY_MODULES>", "@/(.*)$", "^[./]"],
+    "importOrderSeparation": true,
+    "importOrderSortSpecifiers": true
 }

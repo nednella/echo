@@ -1,5 +1,5 @@
 import type { useAuth } from "@clerk/clerk-react"
-import { createRootRouteWithContext, Outlet } from "@tanstack/react-router"
+import { Outlet, createRootRouteWithContext } from "@tanstack/react-router"
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools"
 
 interface RouterContext {

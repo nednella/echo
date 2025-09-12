@@ -1,7 +1,8 @@
 import React from "react"
 
-import { MotionContainer } from "../../../components/ui/container"
-import { Page } from "../../../components/ui/page"
+import { MotionContainer } from "@/components/ui/container"
+import { Page } from "@/components/ui/page"
+
 import { BackToHome } from "../components/back-to-home"
 
 interface Props {

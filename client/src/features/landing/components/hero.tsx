@@ -1,5 +1,5 @@
-import { MotionContainer } from "../../../components/ui/container"
-import { EchoLogo } from "../../../components/ui/echo-logo"
+import { MotionContainer } from "@/components/ui/container"
+import { EchoLogo } from "@/components/ui/echo-logo"
 
 export function Hero() {
     return (

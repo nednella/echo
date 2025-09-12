@@ -1,7 +1,8 @@
-import { Layout } from "../../features/onboarding/layout/layout"
-import { isAuthenticated, isOnboarded } from "../../utils/auth"
 import { useUser } from "@clerk/clerk-react"
 import { createFileRoute, redirect } from "@tanstack/react-router"
+
+import { Layout } from "@/features/onboarding/layout/layout"
+import { isAuthenticated, isOnboarded } from "@/utils/auth"
 
 export const Route = createFileRoute("/(onboarding)/onboarding")({
     beforeLoad({ context }) {
