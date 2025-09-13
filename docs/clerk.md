@@ -77,6 +77,11 @@ To run the applications locally, you need to create a Clerk application.
 5. Locate your **Signing Secret** from the endpoint panel once created &rarr; This is your **CLERK_WEBHOOK_SIGNING_SECRET**
 
 <br />
+
+```
+{YOUR_TUNNEL_URL}/api/v1/clerk/webhook
+```
+
 <img src="./assets/clerk_webhook_configuration.png" width="600">
 
 ## Obtaining the API keys
