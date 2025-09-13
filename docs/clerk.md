@@ -84,6 +84,10 @@ To run the applications locally, you need to create a Clerk application.
 
 <img src="./assets/clerk_webhook_configuration.png" width="600">
 
+<p align="right">
+  <sub><a href="#top">back to the top</a></sub>
+</p>
+
 ## Obtaining the API keys
 
 1. Head to the **Configure** tab within your newly created Clerk application
@@ -101,6 +105,10 @@ For the Spring Boot REST API, you will need:
 
 <br />
 <img src="./assets/clerk_api_keys.png" width="600">
+
+<p align="right">
+  <sub><a href="#top">back to the top</a></sub>
+</p>
 
 ## Optional: local integration testing
 
