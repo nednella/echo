@@ -1,8 +1,8 @@
 <!-- HEADER -->
-<br />
+<br id="top" />
 <p align="center">
   <a href="https://github.com/nednella/echo" target="_blank" rel="noopener noreferrer">
-    <img src="./docs/assets/echo-logo-256-light-gradient.svg" width="64" />
+    <img src="./docs/assets/echo-logo-256-light-gradient.svg" width="48" />
   </a>
 </p>
 <div align="center">
@@ -33,5 +33,5 @@
 
 <!-- FOOTER -->
 <p align="center">
-  <sub>[footer]</sub>
+  <sub><a href="#top">back to the top</a></sub>
 </p>

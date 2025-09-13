@@ -1,11 +1,11 @@
 <!-- HEADER -->
-<br />
+<br id="top" />
 <p align="center">
   <a href="https://github.com/nednella/echo" target="_blank" rel="noopener noreferrer">
-    <img src="./assets/echo-logo-256-light-gradient.svg" width="64" />
+    <img src="./assets/echo-logo-256-light-gradient.svg" width="48" />
   </a>
 </p>
-<h1 align="center">Architecture</h1>
+<h1 align="center">System Architecture</h1>
 
 [summary]
 
@@ -17,5 +17,5 @@
 
 <!-- FOOTER -->
 <p align="center">
-  <sub>[footer]</sub>
+  <sub><a href="#top">back to the top</a></sub>
 </p>

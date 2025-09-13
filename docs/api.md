@@ -1,8 +1,8 @@
 <!-- HEADER -->
-<br />
+<br id="top" />
 <p align="center">
   <a href="https://github.com/nednella/echo" target="_blank" rel="noopener noreferrer">
-    <img src="./assets/echo-logo-256-light-gradient.svg" width="64" />
+    <img src="./assets/echo-logo-256-light-gradient.svg" width="48" />
   </a>
 </p>
 <div align="center">
@@ -15,6 +15,7 @@
     <img alt="Clerk" src="https://img.shields.io/badge/Clerk-5138EE?style=for-the-badge&logo=clerk&logoColor=white"/>
     <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white"/>
     <img alt="Docker" src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
+    [add more]
   </p>
 </div>
 
@@ -34,5 +35,5 @@
 
 <!-- FOOTER -->
 <p align="center">
-  <sub>[footer]</sub>
+  <sub><a href="#top">back to the top</a></sub>
 </p>

@@ -1,8 +1,8 @@
 <!-- HEADER -->
-<br />
+<br id="top" />
 <p align="center">
   <a href="https://github.com/nednella/echo" target="_blank" rel="noopener noreferrer">
-    <img src="./assets/echo-logo-256-light-gradient.svg" width="64" />
+    <img src="./assets/echo-logo-256-light-gradient.svg" width="48" />
   </a>
 </p>
 <div align="center">
@@ -14,6 +14,7 @@
     <img alt="TailwindCSS" src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white"/>
     <img alt="Clerk" src="https://img.shields.io/badge/Clerk-5138EE?style=for-the-badge&logo=clerk&logoColor=white"/>
     <img alt="TanStack Router" src="https://img.shields.io/badge/TanStack_Router-FF4154?style=for-the-badge"/>
+    [add more]
   </p>
 </div>
 
@@ -33,5 +34,5 @@
 
 <!-- FOOTER -->
 <p align="center">
-  <sub>[footer]</sub>
+  <sub><a href="#top">back to the top</a></sub>
 </p>
