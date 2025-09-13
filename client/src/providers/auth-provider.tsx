@@ -2,7 +2,7 @@ import React from "react"
 
 import { ClerkProvider } from "@clerk/clerk-react"
 
-const CLERK_PUBLISHABLE_KEY = import.meta.env.CLERK_PUBLISHABLE_KEY
+const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
 if (!CLERK_PUBLISHABLE_KEY) {
     throw new Error("Clerk Publishable Key missing from .env file!")
