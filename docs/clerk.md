@@ -8,7 +8,7 @@
     </picture>
   </a>
 </p>
-<h1 align="center">Clerk Setup</h1>
+<h1 align="center">Clerk setup</h1>
 
 The Echo applications are protected with Clerk authentication. Without a correctly configured Clerk application, you won't be able to boot local instances of the React client or Spring Boot REST API.
 
@@ -17,23 +17,23 @@ This documentation contains instructions for validating that the Clerk applicati
 > [!IMPORTANT]
 > The Clerk dashboard UI is subject to change and the below instructions may no longer be fully accurate in the future, but the relevant settings should still be easy to find.
 
-## Table of Contents
+## Table of contents
 
-- [Creating a Clerk Application](#creating-a-clerk-application)
-  - [Requiring Usernames at Sign-up](#requiring-usernames-at-sign-up)
-  - [Adding Custom Session Token Claims](#adding-custom-session-token-claims)
-  - [Configuring User Event Webhooks](#configuring-user-event-webhooks)
-- [Obtaining the API Keys](#obtaining-the-api-keys)
-- [Optional: Local Integration Testing](#optional-local-integration-testing)
+- [Creating a Clerk application](#creating-a-clerk-application)
+  - [Requiring usernames at sign-up](#requiring-usernames-at-sign-up)
+  - [Adding custom session token claims](#adding-custom-session-token-claims)
+  - [Configuring user event webhooks](#configuring-user-event-webhooks)
+- [Obtaining the API keys](#obtaining-the-api-keys)
+- [Optional: local integration testing](#optional-local-integration-testing)
 
-## Creating a Clerk Application
+## Creating a Clerk application
 
 To run the applications locally, you need to create a Clerk application.
 
 1. Sign up for a [Clerk](https://clerk.com) account if you do not already have one
 2. Navigate to the [Clerk dashboard](https://dashboard.clerk.com/apps) and create a new application
 
-### Requiring Usernames at Sign-up
+### Requiring usernames at sign-up
 
 > [!CAUTION]
 > If the Clerk application is not configured to require usernames on sign-up, the user registration flow will fail at the API.
@@ -45,7 +45,7 @@ To run the applications locally, you need to create a Clerk application.
 <br />
 <img src="./assets/clerk_require_username.png" width="600">
 
-### Adding Custom Session Token Claims
+### Adding custom session token claims
 
 > [!CAUTION]
 > If the Clerk application is not configured to include the required custom claims on the bearer tokens, all authenticated HTTP requests sent to the REST API will return 403 Forbidden.
@@ -65,7 +65,7 @@ To run the applications locally, you need to create a Clerk application.
 
 <img src="./assets/clerk_require_custom_claims.png" width="600">
 
-### Configuring User Event Webhooks
+### Configuring user event webhooks
 
 > [!IMPORTANT]  
 > You will require a tunneling service to expose your localhost port to the web. [Ngrok is the recommended option by Clerk](https://clerk.com/docs/webhooks/sync-data), but you may use any tunneling service of your choice.
@@ -79,14 +79,14 @@ To run the applications locally, you need to create a Clerk application.
 <br />
 <img src="./assets/clerk_webhook_configuration.png" width="600">
 
-## Obtaining the API Keys
+## Obtaining the API keys
 
 1. Head to the **Configure** tab within your newly created Clerk application
 2. Head to the **Developers &rarr; API Keys** section
 
 For the React Web Client, you will need:
 
-- The **Publishable Key** &rarr; This is your **CLERK_PUBLISHABLE_KEY**
+- The **Publishable Key** &rarr; This is your **VITE_CLERK_PUBLISHABLE_KEY**
 
 For the Spring Boot REST API, you will need:
 
@@ -97,7 +97,7 @@ For the Spring Boot REST API, you will need:
 <br />
 <img src="./assets/clerk_api_keys.png" width="600">
 
-## Optional: Local Integration Testing
+## Optional: local integration testing
 
 As of **Sept. 2025**, Clerk does not currently support testing environments within the same Clerk application. The current workaround to run local integration tests is to create **a second identical Clerk application** (e.g., append the application name with **CI/CD** for clarity).
 
