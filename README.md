@@ -26,9 +26,10 @@
 
 ## 📚 Documentation
 
-- [System Architecture](./docs/architecture.md)  
-- [Client Guide](./docs/client.md)  
-- [API Guide](./docs/api.md)  
+- [System Architecture](./docs/architecture.md)
+- [Clerk Guide](./docs/clerk.md)
+- [Client Guide](./docs/client.md)
+- [API Guide](./docs/api.md)
 
 ---
 
