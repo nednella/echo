@@ -24,6 +24,11 @@ The document structure may seem a little weird, but it is infact laid out in the
   - [Defining the API contract vs. the data model](#defining-the-api-contract-vs-the-data-model)
   - [Defining a consistent error model](#defining-a-consistent-error-model)
   - [Ensuring data integrity through validation](#ensuring-data-integrity-through-validation)
+- [Authentication & security](#authentication--security)
+  - [Starting with username-password form authentication](#starting-with-username-password-form-authentication)
+  - ["Why switch to Clerk, then?"](#why-switch-to-clerk-then)
+  - [The challenge of synchronising databases](#the-challenge-of-synchronising-databases)
+  - [Looking beyond Clerk](#looking-beyond-clerk)
 
 <!-- TODO -->
 
@@ -133,6 +138,62 @@ In some cases, simple controller input validation doesn't suffice. Taking the po
 For cases where the request itself is invalid, and not the contained client inputs, Spring does a good job of raising exceptions. Cases like malformed JSON, unsupported HTTP methods, or mismatched argument types (`MethodArgumentTypeMismatch`, `HttpMessageNotReadable`, `HttpRequestMethodNotSupported`) are all thrown automatically.
 
 With the correct exception handlers in place, annotations for field-level checks, service logic for domain rules and framework exceptions for general request errors all flow back to the client in a predictable format.
+
+<p align="right">
+  <sub><a href="#top">back to the top</a></sub>
+</p>
+
+
+## Authentication & security
+
+### Starting with username-password form authentication
+
+The application revolves around users and interactions between those users, and the groundwork for those social interactions start with authentication. Developing features before authentication didn't make sense when the app revolves around knowing *who* the authenticated user is.
+
+When I began working on the backend, I spent time learning the Spring framework, including [Spring Security](https://docs.spring.io/spring-security/reference/servlet/authentication/index.html), a trusted and highly customisable authentication and access-control framework. It supports numerous popular authentication mechanisms with minimal setup required, ranging from:
+
+- Username and password
+- OAuth 2.0
+- SAML 2.0
+
+I started with the simplest: username and password authentication. With minimal configuration, I have:
+
+- A robust authentication implementation backed by a custom `user` table that stores usernames and BCrypt hashed passwords
+- [In-memory session persistence](https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html) using configurable session cookies
+- Custom authentication endpoints (e.g. `/auth/login`, `/auth/logout`) instead of the default Spring login page
+- Options for external cache or database integration such as [Redis](https://docs.spring.io/spring-session/reference/http-session.html), for horizontal scaling
+
+This approach met my early development requirements and allowed me to start layering on application features.
+
+### "Why switch to Clerk, then?"
+
+The long-term goal was to support both username–password authentication with the usual email verification “forgot password” flows, and OAuth integration with providers like GitHub and LinkedIn.
+
+While I could have extended my Spring Security setup and built out additional security features, it's deceptively complex to stretch beyond the basics and not recommended to do from scratch. It's much more straightforward to integrate with 3rd party authentication libraries or providers, and rolling your own auth only once the application scale requires you to do so.
+
+I compared several popular solutions from libraries to hosted providers — including Auth.js, Better Auth, Lucia, Auth0, Clerk and Supabase — and considered the following points:
+
+- **Frontend integration**: Is there a plug-and-play TypeScript SDK? Are there pre-built UI components?
+- **Database control**: Can I manage my own `user` table, and if not, how do I maintain database sync?
+- **Developer experience**: Are the docs reliable? Is there support if I run into issues? What about the risk of vendor lock-in?
+- **Cost**: Is there a free tier for development? What happens if the project grows unexpectedly?
+
+In the end, I chose [Clerk](https://clerk.com/). Their developer experience is second-to-none: the dashboard UI is one of the best, the React integration is seamless, the docs answer most questions, and I can personally vouch that their email support fills the gaps. Their free tier plan covers 10,000 monthly active users, with a unique definition of "active" — a user who comes back 24+ hours after registration, and not just uses the application once. Within a few minutes of setup, I had production-grade authentication running on the client, issuing session tokens that my API could validate against.
+
+### The challenge of synchronising databases
+
+The trade off for integrating with Clerk was losing control of the `user` table — Echo's entire social model depends on referencing a local `user` table!
+
+Clerk currently does not offer exposure to their underlying database, nor do they provider triggers to synchronise state directly. What they do offer (at the time of writing) is asynchronous, non-guaranteed [webhook](https://clerk.com/docs/webhooks/sync-data) events. They are useful for maintaining sync of PUTs and DELETEs, but not for critical actions like user registration. A new user should immediately be able to access and navigate the application without error, *guaranteed*. This requires the user to be present in the local database immediately after the point of registration.
+
+Clerk discusses an ["onboarding flow"](https://clerk.com/blog/add-onboarding-flow-for-your-application-with-clerk) that you can use to collect key information from your user post-registration, and use that information to drive application state.
+
+[I chose to adapt this flow with a twist](https://github.com/nednella/echo/pull/61). Rather than collecting information from the user, an onboarding page will automatically send an authenticated request to the server as soon as registration completes. The key to the flow is that the Clerk session tokens [contain the Clerk user's unique identifier](https://clerk.com/docs/backend-requests/resources/session-tokens) within the `sub` claim. Using that information, I can run a database upsert action:
+
+- If a user doesn't exist with the given Clerk ID, create one, and update the Clerk user as having completed the onboarding process
+- If a user already exists, update (or skip)
+
+Once the server responds OK, the client can safely redirect the user to the core application, and the server can reply on webhooks for post-registration updates.
 
 <p align="right">
   <sub><a href="#top">back to the top</a></sub>
