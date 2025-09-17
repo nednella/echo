@@ -15,21 +15,67 @@
     <img alt="Clerk" src="https://img.shields.io/badge/Clerk-5138EE?style=for-the-badge&logo=clerk&logoColor=white"/>
     <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white"/>
     <img alt="Docker" src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
-    [add more]
   </p>
 </div>
 
-[summary]
+## Table of contents
 
-## Table of Contents
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Usage](#usage)
+- [FAQ](#faq)
 
 ## Prerequisites
 
+The following items should be pre-installed on your system
+
+- Java 21+ JDK
+- Docker
+- Ngrok, or any tunneling service of your choice
+
+You will also need a pre-configured Clerk application along with the required keys, as described in the [setup guide](clerk.md).
+
 ## Installation
+
+1. **Clone the repository and navigate to the project root**
+
+```
+git clone https://github.com/nednella/echo.git
+cd echo
+```
+
+2. **Navigate to the application**
+
+```
+cd api
+```
+
+3. **Create your local `.env.dev` file**
+
+```
+touch .env.dev
+```
+
+4. **Populate your environment variables**
+
+    - Copy the relevant required variables from the template `.env.example`
+    - Populate your local `.env.dev` file with the [required keys](clerk.md#obtaining-the-api-keys)
+
+5. **Run the application locally**
+
+```
+./gradlew bootRun
+```
+
+The application will run on the default port `8080`. Your Docker containers are automatically managed by Spring (exept shutdown).
+
+## Usage
+
+WIP
 
 ## FAQ
 
-[Q/A some common issues]
+WIP
 
 ---
 
