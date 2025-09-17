@@ -24,6 +24,10 @@ The document structure may seem a little weird, but it is infact laid out in the
   - [Defining the API contract vs. the data model](#defining-the-api-contract-vs-the-data-model)
   - [Defining a consistent error model](#defining-a-consistent-error-model)
   - [Ensuring data integrity through validation](#ensuring-data-integrity-through-validation)
+- [Database & persistence](#database--persistence)
+  - [Choosing a DBMS](#choosing-a-dbms)
+  - [Mixing data access methods](#mixing-data-access-methods)
+  - [The trade-offs for using Spring JDBC](#the-trade-offs-for-using-spring-jdbc)
 - [Authentication & security](#authentication--security)
   - [Starting with username-password form authentication](#starting-with-username-password-form-authentication)
   - ["Why switch to Clerk, then?"](#why-switch-to-clerk-then)
@@ -82,6 +86,7 @@ I set out to use this project as a lab of sorts, for learning and experimenting 
 ## Backend
 
 <!-- TODO: discuss authorisation once a request is authenticated (e.g. admin) -->
+<!-- TODO: discuss testing -->
 
 ### Settling on a language and framework
 
@@ -143,6 +148,41 @@ With the correct exception handlers in place, annotations for field-level checks
   <sub><a href="#top">back to the top</a></sub>
 </p>
 
+## Database & persistence
+
+### Choosing a DBMS
+
+Not much to talk about here. I knew before starting out that a relational model would be best suited. The project has a rigid data structure, and most `GET` requests would involve stitching various different structures together. During research into the various options, Postgres came up as the most widely recommended option.
+
+### Mixing data access methods
+
+Spring offers [various approaches](https://docs.spring.io/spring-framework/reference/data-access.html) to data access within your application. You have [full-feature ORMs](https://docs.spring.io/spring-framework/reference/data-access/orm.html) like Hibernate and JPA, and some barebones abstractions like [Spring JDBC](https://docs.spring.io/spring-framework/reference/data-access/jdbc.html). 
+
+For simple CRUD operations, I leaned on Spring Data JPA's [repository interfaces](https://docs.spring.io/spring-data/jpa/reference/repositories/definition.html). The basics are covered very well with these, and it's easy to [define custom query methods](https://docs.spring.io/spring-data/jpa/reference/repositories/query-methods-details.html) if the defaults don't suffice. The best part being since the query method implementation is handled by JPA under the hood, you don't need to write any integration tests.
+
+Complexity grew when working on `GET` requests for profiles and posts. These endpoints required complex data transfer objects (DTO) that combined data from multiple tables. Taking a look at a standard representation for a user's post:
+
+```
+<!-- TODO: some code -->
+```
+
+It doesn't just expose a record in the `post` table. There's lots of additional context such as author details, post metrics, relationships and entities to give the client full context.
+
+At the time, I couldn't figure out how to model these requirements through an ORM alone. Instead, I discovered that if I used Spring JDBC, I could write SQL directly and map the resulting dataset rows into the required shape using a `RowMapper`. This way, I could focus on writing efficient SQL functions that covered my requirements.
+
+<!-- TODO: include example of JDBC with RowMapper -->
+
+### The trade-offs for using Spring JDBC
+
+There were positives to draw from the decision. Writing raw SQL forced me to understand it properly and expand my knowledge. I became more comfortable joining and aggregating data, and explored new-to-me features like views and CTEs. By writing the queries myself, I could also easily look at query performance using `EXPLAIN ANALYZE`.
+
+But, there are some significant hinderances. Refactoring data access is a headache, and debugging raw SQL is a nightmare. If I touch a base query function like `fetch_posts`, I will have to carefully update every higher-level function that consumes it. If I introduce a bug in a query, I don't have any IDE support and I've found that SQL errors are not the most descriptive.
+
+It works, but it's very easy to make mistakes and frustrating to maintain.
+
+<p align="right">
+  <sub><a href="#top">back to the top</a></sub>
+</p>
 
 ## Authentication & security
 
@@ -150,11 +190,7 @@ With the correct exception handlers in place, annotations for field-level checks
 
 The application revolves around users and interactions between those users, and the groundwork for those social interactions start with authentication. Developing features before authentication didn't make sense when the app revolves around knowing *who* the authenticated user is.
 
-When I began working on the backend, I spent time learning the Spring framework, including [Spring Security](https://docs.spring.io/spring-security/reference/servlet/authentication/index.html), a trusted and highly customisable authentication and access-control framework. It supports numerous popular authentication mechanisms with minimal setup required, ranging from:
-
-- Username and password
-- OAuth 2.0
-- SAML 2.0
+When I began working on the backend, I spent time learning the Spring framework, including [Spring Security](https://docs.spring.io/spring-security/reference/servlet/authentication/index.html), a trusted and highly customisable authentication and access-control framework. It supports [numerous popular authentication mechanisms](https://docs.spring.io/spring-security/reference/servlet/authentication/index.html) with minimal setup required.
 
 I started with the simplest: username and password authentication. With minimal configuration, I have:
 
