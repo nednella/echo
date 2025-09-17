@@ -108,9 +108,23 @@ I refactored with the single-responsibility principle in mind, intending on usin
 
 I started building out the application by considering what information I wanted to return to the client for a given domain.
 
-Working example: profile requests should return the information you'd expect when visiting a user's page. Their unique identifier, some personalised details specific to the application, when they first joined. Contextual information like follower counts, post counts and relationship status with the viewing user should also be included.
+#### Working example
 
-<!-- TODO: include ProfileDTO vs Profile entity code blocks -->
+Profile requests should return the information you'd expect when visiting a user's page. Their unique identifier, some personalised details specific to the application, and when they first joined. Contextual information like follower counts, post counts and relationship status with the viewing user should also be included.
+
+```
+{
+    "id": String,
+    "username": String,
+    "name": String | null,
+    "bio": String | null,
+    "location": String | null,
+    "image_url": String | null,
+    "created_at": String,
+    "metrics": { ... },
+    "relationship": { ... } | null
+}
+```
 
 By starting with the public-facing contract and shaping the underlying entities to support, I kept the design clean and logical.
 
@@ -118,15 +132,38 @@ By starting with the public-facing contract and shaping the underlying entities 
 
 I took inspiration from the [Spotify Web API](https://developer.spotify.com/documentation/web-api) on this one. Their API errors are simple, the user receives an error status code and a message describing the issue. I opted to replicate this, but also included `timestamp` and `path` properties for additional context.
 
-<!-- TODO: include ErrorResponse code block -->
+```
+public record ErrorResponse(
+    Instant timestamp,
+    int status,
+    String message,
+    String path
+) {}
+```
 
 Starting with the desired client response makes the implementation straightforward. Any explicitly handled exceptions (using Spring's `@ControllerAdvice` and `@ExceptionHandler` annotations) are formatted into the standardised response object.
 
-Any given application exception should be able to be mapped into a particular HTTP status code and a descriptive error message, so I opted to create error catalogue enums per-feature using a custom `ErrorCode` interface. Each declared enum constant should contain its own HTTP status code, a message template, and the number of arguments that the template expects. This way, a template can be formatted while avoiding runtime errors, and tested against accordingly.
+Any given application exception should be able to be mapped into a particular HTTP status code and a descriptive error message, so I opted to error enums per-feature implemented against an `ErrorCode` interface. Each declared error should contain its own HTTP status code, a message template, and the number of arguments that the template expects. This way, a template can be formatted while avoiding runtime errors, and tested against accordingly.
 
-<!-- TODO: include ErrorCode interface, and an example implementation code blocks -->
+```
+public interface ErrorCode {
 
-To propagate errors through the application, a custom `RuntimeException` is used. It accepts a given error code and any expected error message arguments, carrying the HTTP status code and the now-formatted error message to the exception handlers to build the response.
+    HttpStatus getStatus();
+
+    String getMessageTemplate();
+
+    int getExpectedArgs();
+
+    default String formatMessage(Object... args) {
+        ...
+    }
+
+    default ApplicationException buildAsException(Object... args) {
+        ...
+    }
+
+}
+```
 
 Now, the client can always expect errors in a predictable format, regardless of how they originated, simplifying both application debugging and client integration.
 
@@ -136,11 +173,11 @@ This was done using the recommended Spring approach — where possible, client-s
 
 In some cases, simple controller input validation doesn't suffice. Taking the post replies feature for example, when a post is created in reply to another, the request includes the ID of the parent post. In this case, existence of records are also validated within the application business logic. This way, invalid data never finds its way into the database, even when the request shape looks good.
 
+Finally, the database schema itself acts as a last wall of defence. Constraints and indexes ensure that even if bad data splips through, it cannot be persisted.
+
 For cases where the request itself is invalid, and not the contained client inputs, Spring does a good job of raising exceptions. Cases like malformed JSON, unsupported HTTP methods, or mismatched argument types (`MethodArgumentTypeMismatch`, `HttpMessageNotReadable`, `HttpRequestMethodNotSupported`) are all thrown automatically.
 
 With the correct exception handlers in place, annotations for field-level checks, service logic for domain rules and framework exceptions for general request errors all flow back to the client in a predictable format.
-
-<!-- TODO: mention db level validation as a final wall -->
 
 ### Choosing a DBMS
 
