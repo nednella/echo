@@ -26,6 +26,7 @@
   - [Choosing a DBMS](#choosing-a-dbms)
   - [Mixing data access methods](#mixing-data-access-methods)
   - [The trade-offs of using Spring JDBC](#the-trade-offs-of-using-spring-jdbc)
+  - [Testing the application](#testing-the-application)
 - [Authentication & security](#authentication--security)
   - [Starting with username-password form authentication](#starting-with-username-password-form-authentication)
   - ["Why switch to Clerk, then?"](#why-switch-to-clerk-then)
@@ -84,7 +85,6 @@ I set out to use this project as a lab of sorts, for learning and experimenting 
 ## Backend
 
 <!-- TODO: discuss authorisation once a request is authenticated (e.g. admin) -->
-<!-- TODO: discuss testing -->
 
 ### Settling on a language and framework
 
@@ -112,7 +112,7 @@ I started building out the application by considering what information I wanted 
 
 Profile requests should return the information you'd expect when visiting a user's page. Their unique identifier, some personalised details specific to the application, and when they first joined. Contextual information like follower counts, post counts and relationship status with the viewing user should also be included.
 
-```
+```json
 {
     "id": String,
     "username": String,
@@ -126,13 +126,13 @@ Profile requests should return the information you'd expect when visiting a user
 }
 ```
 
-By starting with the public-facing contract and shaping the underlying entities to support, I kept the design clean and logical.
+By starting with the public-facing contract and shaping the underlying entities to support, I kept the models clean and logical.
 
 ### Defining a consistent error model
 
 I took inspiration from the [Spotify Web API](https://developer.spotify.com/documentation/web-api) on this one. Their API errors are simple, the user receives an error status code and a message describing the issue. I opted to replicate this, but also included `timestamp` and `path` properties for additional context.
 
-```
+```java
 public record ErrorResponse(
     Instant timestamp,
     int status,
@@ -145,7 +145,7 @@ Starting with the desired client response makes the implementation straightforwa
 
 Any given application exception should be able to be mapped into a particular HTTP status code and a descriptive error message, so I opted to error enums per-feature implemented against an `ErrorCode` interface. Each declared error should contain its own HTTP status code, a message template, and the number of arguments that the template expects. This way, a template can be formatted while avoiding runtime errors, and tested against accordingly.
 
-```
+```java
 public interface ErrorCode {
 
     HttpStatus getStatus();
@@ -191,7 +191,7 @@ For simple CRUD operations, I leaned on Spring Data JPA's [repository interfaces
 
 Complexity grew when working on `GET` requests for profiles and posts. These endpoints required complex data transfer objects (DTO) that combined data from multiple tables. Taking a look at a standard representation of a user's post:
 
-```
+```json
 {
     "id": String,
     "parent_id": String | null,
@@ -217,11 +217,28 @@ At the time, I couldn't figure out how to model these requirements through an OR
 
 ### The trade-offs of using Spring JDBC
 
-There were positives to draw from the decision. Writing raw SQL forced me to understand it properly and expand my knowledge. I became more comfortable joining and aggregating data, and explored new-to-me features like views and CTEs. By writing the queries myself, I could also easily look at query performance using `EXPLAIN ANALYZE`.
+There were positives to draw from the decision. Writing raw SQL forced me to understand it better and expand my knowledge. I became more comfortable joining and aggregating data, and explored new-to-me features like views and CTEs. By writing the queries myself, I could also easily look at query performance using `EXPLAIN ANALYZE`.
 
 But, there are some significant hindrances. Refactoring data access is a headache, and debugging raw SQL is a nightmare. If I touch a base query function like `fetch_posts`, I will have to carefully update every higher-level function that consumes it. If I introduce a bug in a query, I don't have any IDE support and I've found that SQL errors are not the most descriptive.
 
 It works, but it's very easy to make mistakes and frustrating to maintain.
+
+### Testing the application
+
+I kept the backend tests pragmatic. Fast unit tests for behaviour, and a smaller set of integration tests to prove the application wiring (filters → controllers → services → repositories).
+
+#### Unit testing
+
+At the unit level, services are tested in isolation with dependencies mocked with Mockito so I can focus on business rules and exception handling. Controllers are tested with `@MockMvcTest` to ensure request validation and error mapping. Smaller components like mappers and utility functions are also unit tested. Essentially, any code that can be isolated and tested against, is.
+
+#### Integration testing
+
+For integration testing, I use [Testcontainers](https://testcontainers.com/) to spin up fresh Postgres instances alongside either a full Spring context (`@SpringBootTest`), or a narrower repository slice (`@DataJpaTest`). HTTP endpoints are tested with Spring's [WebTestClient](https://docs.spring.io/spring-framework/reference/testing/webtestclient.html) by sending real valid/invalid requests through the filter chain, controllers, services and persistence layer, covering:
+
+- Authentication and security filters
+- Input validation
+- Business logic
+- Database integrity
 
 <p align="right">
   <sub><a href="#top">back to the top</a></sub>
