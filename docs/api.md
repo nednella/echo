@@ -27,7 +27,7 @@
 
 ## Prerequisites
 
-The following items should be pre-installed on your system
+The following items should be pre-installed on your system:
 
 - Java 21+ JDK
 - Docker
