@@ -23,10 +23,9 @@
   - [Defining the API contract vs. the domain model](#defining-the-api-contract-vs-the-domain-model)
   - [Defining a consistent error model](#defining-a-consistent-error-model)
   - [Ensuring data integrity through validation](#ensuring-data-integrity-through-validation)
-- [Database & persistence](#database--persistence)
   - [Choosing a DBMS](#choosing-a-dbms)
   - [Mixing data access methods](#mixing-data-access-methods)
-  - [The trade-offs for using Spring JDBC](#the-trade-offs-for-using-spring-jdbc)
+  - [The trade-offs of using Spring JDBC](#the-trade-offs-of-using-spring-jdbc)
 - [Authentication & security](#authentication--security)
   - [Starting with username-password form authentication](#starting-with-username-password-form-authentication)
   - ["Why switch to Clerk, then?"](#why-switch-to-clerk-then)
@@ -135,19 +134,13 @@ Now, the client can always expect errors in a predictable format, regardless of 
 
 This was done using the recommended Spring approach — where possible, client-side inputs passed through the request body are validated at the controllers using bean validation annotations within the mapped request objects. This makes it simple to declare validation messages per-request object and keeps the validation logic tightly coupled to the request objects themselves.
 
-<!-- TODO: example request DTO with validation included code block -->
-
 In some cases, simple controller input validation doesn't suffice. Taking the post replies feature for example, when a post is created in reply to another, the request includes the ID of the parent post. In this case, existence of records are also validated within the application business logic. This way, invalid data never finds its way into the database, even when the request shape looks good.
 
 For cases where the request itself is invalid, and not the contained client inputs, Spring does a good job of raising exceptions. Cases like malformed JSON, unsupported HTTP methods, or mismatched argument types (`MethodArgumentTypeMismatch`, `HttpMessageNotReadable`, `HttpRequestMethodNotSupported`) are all thrown automatically.
 
 With the correct exception handlers in place, annotations for field-level checks, service logic for domain rules and framework exceptions for general request errors all flow back to the client in a predictable format.
 
-<p align="right">
-  <sub><a href="#top">back to the top</a></sub>
-</p>
-
-## Database & persistence
+<!-- TODO: mention db level validation as a final wall -->
 
 ### Choosing a DBMS
 
@@ -185,7 +178,7 @@ It doesn't just expose a record in the `post` table; there's a lot of additional
 
 At the time, I couldn't figure out how to model these requirements through an ORM alone. Instead, I discovered that if I used Spring JDBC, I could write SQL directly and map the resulting rows into the required shape using a `RowMapper`. This way, I could focus on writing efficient SQL functions that covered my requirements.
 
-### The trade-offs for using Spring JDBC
+### The trade-offs of using Spring JDBC
 
 There were positives to draw from the decision. Writing raw SQL forced me to understand it properly and expand my knowledge. I became more comfortable joining and aggregating data, and explored new-to-me features like views and CTEs. By writing the queries myself, I could also easily look at query performance using `EXPLAIN ANALYZE`.
 
