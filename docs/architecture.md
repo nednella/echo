@@ -33,6 +33,9 @@ The document structure may seem a little weird, but it is infact laid out in the
   - ["Why switch to Clerk, then?"](#why-switch-to-clerk-then)
   - [The challenge of synchronising databases](#the-challenge-of-synchronising-databases)
   - [Looking beyond Clerk](#looking-beyond-clerk)
+- [Frontend](#frontend)
+- [DevOps & CI/CD](#devops--cicd)
+- [Finishing up](#finishing-up)
 
 <!-- TODO -->
 
@@ -234,6 +237,26 @@ Once the server responds OK, the client can safely redirect the user to the core
 <p align="right">
   <sub><a href="#top">back to the top</a></sub>
 </p>
+
+## Frontend
+
+WIP
+
+<p align="right">
+  <sub><a href="#top">back to the top</a></sub>
+</p>
+
+## DevOps & CI/CD
+
+WIP
+
+<p align="right">
+  <sub><a href="#top">back to the top</a></sub>
+</p>
+
+## Finishing up
+
+WIP
 
 ---
 
