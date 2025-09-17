@@ -102,6 +102,7 @@ For the Spring Boot REST API, you will need:
 - A **Secret Key** &rarr; This is your **CLERK_SECRET_KEY**
 - The **Frontend API URL** &rarr; This is your **CLERK_ISSUER_URI**
 - The **JWKS URL** &rarr; This is your **CLERK_JWK_SET_URI**
+- The **Webhook Signing Secret** located as described [here](#configuring-user-event-webhooks)
 
 <br />
 <img src="./assets/clerk_api_keys.png" width="600">
