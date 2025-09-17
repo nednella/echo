@@ -9,9 +9,10 @@
 
 > A deep dive into the design decisions and architecture of Echo — why I built it, why it’s built the way it is, and what questions were asked along the way.
 
-<!-- TODO -->
-
 ## Table of contents
+
+<!-- TODO: validate table links once complete -->
+<!-- TODO: validate doc links once complete -->
 
 - [Motivation](#motivation)
   - ["Why another boring social media app?"](#why-another-boring-social-media-app)
@@ -33,8 +34,6 @@
 - [Frontend](#frontend)
 - [DevOps & CI/CD](#devops--cicd)
 - [Finishing up](#finishing-up)
-
-<!-- TODO -->
 
 ## Motivation
 
@@ -160,17 +159,31 @@ Spring offers [various approaches](https://docs.spring.io/spring-framework/refer
 
 For simple CRUD operations, I leaned on Spring Data JPA's [repository interfaces](https://docs.spring.io/spring-data/jpa/reference/repositories/definition.html). The basics are covered very well with these, and it's easy to [define custom query methods](https://docs.spring.io/spring-data/jpa/reference/repositories/query-methods-details.html) if the defaults don't suffice. The best part is that, since JPA generates the query method implementations, you don't need to write any integration tests.
 
-Complexity grew when working on `GET` requests for profiles and posts. These endpoints required complex data transfer objects (DTO) that combined data from multiple tables. Taking a look at a standard representation for a user's post:
+Complexity grew when working on `GET` requests for profiles and posts. These endpoints required complex data transfer objects (DTO) that combined data from multiple tables. Taking a look at a standard representation of a user's post:
 
 ```
-<!-- TODO: some code -->
+{
+    "id": String,
+    "parent_id": String | null,
+    "conversation_id": String,
+    "author": {
+        "id": String,
+        "username": String,
+        "name": String | null,
+        "image_url": String | null,
+        "relationship": { ... } | null
+    },
+    "text": String,
+    "created_at": String,
+    "metrics": { ... },
+    "relationship": { ... },
+    "entities": { ... }
+}
 ```
 
 It doesn't just expose a record in the `post` table; there's a lot of additional context such as author details, post metrics, relationships and entities to give the client full context.
 
 At the time, I couldn't figure out how to model these requirements through an ORM alone. Instead, I discovered that if I used Spring JDBC, I could write SQL directly and map the resulting rows into the required shape using a `RowMapper`. This way, I could focus on writing efficient SQL functions that covered my requirements.
-
-<!-- TODO: include example of JDBC with RowMapper -->
 
 ### The trade-offs for using Spring JDBC
 
