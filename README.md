@@ -10,9 +10,9 @@
   <h3><i>The social platform where authentic conversations flourish</i></h3>
   <p>
     <a href="./docs/architecture.md">Architecture</a> •
-    <a href="./docs/clerk.md">Clerk Guide</a> •
-    <a href="./docs/client.md">Client Guide</a> •
-    <a href="./docs/api.md">API Guide</a>
+    <a href="./docs/clerk.md">Clerk Setup</a> •
+    <a href="./docs/client.md">Client Docs</a> •
+    <a href="./docs/api.md">API Docs</a>
   </p>
 </div>
 
@@ -22,14 +22,14 @@
 
 ## 📜 Introduction
 
-[intro/desc]
+WIP
 
 ## 📚 Documentation
 
 - [System Architecture](./docs/architecture.md)
-- [Clerk Guide](./docs/clerk.md)
-- [Client Guide](./docs/client.md)
-- [API Guide](./docs/api.md)
+- [Clerk Setup Guide](./docs/clerk.md)
+- [Client Documentation](./docs/client.md)
+- [API Documenation](./docs/api.md)
 
 ---
 
