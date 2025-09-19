@@ -1,0 +1,51 @@
+{
+    "name": "client",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc -b && vite build",
+        "format": "npx prettier . --check",
+        "format:fix": "npx prettier . --write",
+        "lint": "npx eslint .",
+        "lint:fix": "npx eslint . --fix",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "@clerk/clerk-react": "^5.35.3",
+        "@tailwindcss/vite": "^4.1.11",
+        "@tanstack/react-form": "^1.15.0",
+        "@tanstack/react-router": "^1.129.8",
+        "@tanstack/react-router-devtools": "^1.129.8",
+        "lucide-react": "^0.542.0",
+        "motion": "^12.23.12",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
+        "react-icons": "^5.5.0",
+        "tailwind-merge": "^3.3.1",
+        "tailwindcss": "^4.1.11"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.30.1",
+        "@tanstack/router-plugin": "^1.129.8",
+        "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+        "@types/node": "^24.3.1",
+        "@types/react": "^19.1.8",
+        "@types/react-dom": "^19.1.6",
+        "@vitejs/plugin-react": "^4.6.0",
+        "eslint": "^9.35.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-react-hooks": "^5.2.0",
+        "eslint-plugin-react-refresh": "^0.4.20",
+        "eslint-plugin-unicorn": "^61.0.2",
+        "globals": "^16.3.0",
+        "prettier": "^3.6.2",
+        "prettier-plugin-classnames": "^0.8.1",
+        "prettier-plugin-merge": "^0.8.0",
+        "prettier-plugin-tailwindcss": "^0.6.14",
+        "typescript": "~5.8.3",
+        "typescript-eslint": "^8.35.1",
+        "vite": "^7.0.4"
+    }
+}

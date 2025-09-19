@@ -1,0 +1,52 @@
+name: Client - Format & Lint
+
+on:
+    pull_request:
+        branches: [dev, main]
+
+defaults:
+    run:
+        working-directory: client
+
+jobs:
+    detect-changes: # determine if the job should run or not based on whether /client directory was touched
+        runs-on: ubuntu-latest
+
+        permissions:
+            pull-requests: read
+
+        outputs:
+            client: ${{steps.filter.outputs.client}}
+
+        steps:
+            - name: Should the job run
+              uses: dorny/paths-filter@v3
+              id: filter
+              with:
+                  filters: |
+                      client:
+                          - 'client/**'
+
+    format-lint:
+        needs: detect-changes # 3rd party solution to required but skipped issue: https://github.com/orgs/community/discussions/44490
+        if: ${{ needs.detect-changes.outputs.client == 'true' }}
+
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Set up Node 22.x
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22.x
+            
+            - name: Install dependencies
+              run: npm i
+
+            - name: Check formatting
+              run: npm run format
+
+            - name: Lint
+              run: npm run lint -- --max-warnings=0

@@ -1,0 +1,68 @@
+name: API - CI
+
+on:
+    pull_request:
+        branches: [dev, main]
+
+jobs:
+    detect-changes: # determine if the job should run or not based on whether /api directory was touched
+        runs-on: ubuntu-latest
+
+        permissions:
+            pull-requests: read
+
+        outputs:
+            api: ${{steps.filter.outputs.api}}
+
+        steps:
+            - name: Should the job run
+              uses: dorny/paths-filter@v3
+              id: filter
+              with:
+                  filters: |
+                      api:
+                          - 'api/**'
+
+    build-test:
+        needs: detect-changes # 3rd party solution to required but skipped issue: https://github.com/orgs/community/discussions/44490
+        if: ${{ needs.detect-changes.outputs.api == 'true' }}
+
+        runs-on: ubuntu-latest
+
+        services:
+            docker:
+                image: docker:latest
+                options: --privileged
+
+        env:
+          CLERK_ISSUER_URI: ${{ secrets.API_CI_CLERK_ISSUER_URI }}
+          CLERK_JWK_SET_URI: ${{ secrets.API_CI_CLERK_JWK_SET_URI }}
+          CLERK_SECRET_KEY: ${{ secrets.API_CI_CLERK_SECRET_KEY }}
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup JDK 21
+              uses: actions/setup-java@v4
+              with:
+                  java-version: 21
+                  distribution: 'temurin'
+                  cache: gradle
+
+            - name: Setup Gradle
+              uses: gradle/actions/setup-gradle@v4
+
+            - name: Configure Docker
+              run: |
+                  sudo chmod 666 /var/run/docker.sock
+
+            - name: Build & test
+              run: cd api && ./gradlew clean build --parallel --scan --stacktrace
+
+            - name: Upload test results
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: test-results
+                  path: api/build/test-results

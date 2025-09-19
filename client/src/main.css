@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@theme {
+    --color-echo-teal: #077085;
+    --color-echo-navy: #101828;
+    --color-echo-accent: #0891b2;
+}
+
+html,
+body,
+#root {
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    height: 100%;
+    color-scheme: dark;
+    background: #1e2939;
+}
