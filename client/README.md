@@ -2,7 +2,7 @@
 <br id="top" />
 <p align="center">
   <a href="https://github.com/nednella/echo" target="_blank" rel="noopener noreferrer">
-    <img src="./assets/echo-logo-256-light-gradient.svg" width="48" />
+    <img src="../docs/assets/echo-logo-256-light-gradient.svg" width="48" />
   </a>
 </p>
 <div align="center">
@@ -29,7 +29,7 @@
 
 ...
 
-You will need a pre-configured Clerk application along with the required keys, as described in the [setup guide](clerk.md).
+You will need a pre-configured Clerk application along with the required keys, as described in the [setup guide](../docs/clerk.md).
 
 ## Installation
 
@@ -59,9 +59,8 @@ touch .env
 ```
 
 5. **Populate your environment variables**
-
     - Copy the relevant required variables from the template `.env.example`
-    - Populate your local `.env` file with the [required keys](clerk.md#obtaining-the-api-keys)
+    - Populate your local `.env` file with the required keys
 
 6. **Run the application locally**
 

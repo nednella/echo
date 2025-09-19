@@ -11,8 +11,8 @@
   <p>
     <a href="./docs/architecture.md">Architecture</a> •
     <a href="./docs/clerk.md">Clerk Setup</a> •
-    <a href="./docs/client.md">Client Docs</a> •
-    <a href="./docs/api.md">API Docs</a>
+    <a href="./client/README.md">Client Docs</a> •
+    <a href="./api/README.md">API Docs</a>
   </p>
 </div>
 
@@ -27,9 +27,9 @@ WIP
 ## 📚 Documentation
 
 - [System Architecture](./docs/architecture.md)
-- [Clerk Setup Guide](./docs/clerk.md)
-- [Client Documentation](./docs/client.md)
-- [API Documenation](./docs/api.md)
+- [Clerk Setup Guide](./docs/clerk-setup.md)
+- [Client Documentation](./client/README.md)
+- [API Documenation](./api/README.md)
 
 ---
 
