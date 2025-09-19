@@ -1,10 +1,8 @@
-name: API CI
+name: API - CI
 
 on:
     pull_request:
-        branches:
-            - dev
-            - main
+        branches: [dev, main]
 
 jobs:
     detect-changes: # determine if the job should run or not based on whether /api directory was touched
@@ -17,7 +15,7 @@ jobs:
             api: ${{steps.filter.outputs.api}}
 
         steps:
-            - name: Should the CI run
+            - name: Should the job run
               uses: dorny/paths-filter@v3
               id: filter
               with:

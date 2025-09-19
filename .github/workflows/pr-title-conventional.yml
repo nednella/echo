@@ -1,9 +1,8 @@
-name: Validate Dev PR Title
+name: Pr Title - Conventional Commits
 
 on:
     pull_request:
-        branches:
-            - dev
+        branches: [dev]
         types: [opened, edited, reopened, synchronize]
 
 jobs:
