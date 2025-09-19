@@ -20,17 +20,17 @@ jobs:
                   set +H
 
                   # Pattern
-                  PATTERN="^(\[(\w|\-)+\] )?(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert)(!)?:"
+                  PATTERN="^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test){1}(\([\w\-\.]+\))?(!)?:"
 
                   # Check if the PR title matches the expected pattern
                   if [[ ! '${{ github.event.pull_request.title }}' =~ $PATTERN ]]; then
                   echo "❌ PR title must follow the Conventional Commits format!"
                   echo ""
                   echo "Expected title format:"
-                  echo "[optional scope] <type>: <description>"
+                  echo "<type>[optional scope]: <description>"
                   echo ""
-                  echo "Valid types: feat, fix, docs, style, refactor, perf, test, chore, ci, build, revert"
-                  echo "For breaking changes, use: <type>!: <description>"
+                  echo "Valid types: build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test"
+                  echo "For breaking changes, use: <type>[optional scope]!: <description>"
                   echo ""
                   echo "See: https://www.conventionalcommits.org/en/v1.0.0/ for more details."
                   exit 1
