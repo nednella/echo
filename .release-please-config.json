@@ -5,13 +5,17 @@
     "include-v-in-tag": true,
     "packages": {
         "client": {
+            "path": "client",
+            "component": "client",
             "release-type": "node",
             "release-as": "0.1.0"
         },
         "api": {
+            "path": "api",
+            "component": "api",
             "release-type": "java",
             "release-as": "0.1.0",
-            "extra-files": ["api/build.gradle"]
+            "extra-files": ["build.gradle"]
         }
     },
     "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"
