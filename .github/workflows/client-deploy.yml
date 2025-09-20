@@ -1,0 +1,41 @@
+name: Client - Deploy to Production
+
+on:
+    workflow_dispatch: # Manually run workflow from GH repository/CLI
+    push:
+        tags: [client@v*]
+
+defaults:
+    run:
+        working-directory: client
+
+env:
+    VERCEL_TOKEN:
+    VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+    VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    
+jobs:
+    deploy-production:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Install Vercel CLI
+              run: npm i -g vercel@latest
+              # docs: https://vercel.com/docs/cli
+            
+            - name: Vercel Pull
+              run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+              # --yes: https://vercel.com/docs/cli/pull#yes
+              # --environment: https://vercel.com/docs/cli/pull#environment
+
+            - name: Vercel Build
+              run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+              # --prod: https://vercel.com/docs/cli/build#production
+
+            - name: Vercel Deploy
+              run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+              # --prebuilt: https://vercel.com/docs/cli/deploy#prebuilt
+              # --prod: https://vercel.com/docs/cli/deploy#prod
