@@ -10,7 +10,6 @@ defaults:
         working-directory: client
 
 env:
-    VERCEL_TOKEN:
     VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
     VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     
@@ -21,6 +20,11 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
+
+            - name: Set up Node 22.x
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22.x
 
             - name: Install Vercel CLI
               run: npm i -g vercel@latest
