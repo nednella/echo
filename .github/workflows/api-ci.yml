@@ -4,6 +4,10 @@ on:
     pull_request:
         branches: [dev, main]
 
+defaults:
+    run:
+        working-directory: api
+
 jobs:
     detect-changes: # determine if the job should run or not based on whether /api directory was touched
         runs-on: ubuntu-latest
