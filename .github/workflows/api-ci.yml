@@ -62,7 +62,7 @@ jobs:
                   sudo chmod 666 /var/run/docker.sock
 
             - name: Build & test
-              run: cd api && ./gradlew clean build --parallel --scan --stacktrace
+              run: ./gradlew clean build --parallel --scan --stacktrace
 
             - name: Upload test results
               if: always()
