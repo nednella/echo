@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/nednella/echo/compare/client@v0.1.0...client@v0.1.1) (2025-09-20)
+
+
+### Bug Fixes
+
+* **client:** add vercel.json to enable deep linking for SPA Vite applications ([#96](https://github.com/nednella/echo/issues/96)) ([37333eb](https://github.com/nednella/echo/commit/37333eb6c6b4d4079616820871db887d09855f06))
+
 ## 0.1.0 (2025-09-20)
 
 
