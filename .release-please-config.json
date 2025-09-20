@@ -7,14 +7,12 @@
         "client": {
             "path": "client",
             "component": "client",
-            "release-type": "node",
-            "release-as": "0.1.0"
+            "release-type": "node"
         },
         "api": {
             "path": "api",
             "component": "api",
-            "release-type": "java",
-            "release-as": "0.1.0",
+            "release-type": "simple",
             "extra-files": ["build.gradle"]
         }
     },
