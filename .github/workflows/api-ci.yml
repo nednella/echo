@@ -4,6 +4,10 @@ on:
     pull_request:
         branches: [dev, main]
 
+defaults:
+    run:
+        working-directory: api
+
 jobs:
     detect-changes: # determine if the job should run or not based on whether /api directory was touched
         runs-on: ubuntu-latest
@@ -58,7 +62,7 @@ jobs:
                   sudo chmod 666 /var/run/docker.sock
 
             - name: Build & test
-              run: cd api && ./gradlew clean build --parallel --scan --stacktrace
+              run: ./gradlew clean build --parallel --scan --stacktrace
 
             - name: Upload test results
               if: always()
