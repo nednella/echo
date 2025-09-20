@@ -1,6 +1,7 @@
 name: release-please
 
 on:
+    workflow_dispatch: # Manually run workflow from GH repository/CLI
     push:
         branches:
           - main
