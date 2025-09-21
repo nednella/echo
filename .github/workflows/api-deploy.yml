@@ -1,0 +1,27 @@
+name: API - Deploy to Production
+
+on:
+    workflow_dispatch: # Manually run workflow from GH repository/CLI
+    push:
+        tags: [api@v*]
+
+defaults:
+    run:
+        working-directory: api
+
+env:
+    RAILWAY_SERVICE_ID: 1eb5003b-188d-48d5-977b-5f55b02b01e6
+    RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+jobs:
+    deploy-production:
+        runs-on: ubuntu-latest 
+
+        container: ghcr.io/railwayapp/cli:latest # Use Railway CLI via Docker container
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Railway Deploy
+              run: railway up --service=$RAILWAY_SERVICE_ID
