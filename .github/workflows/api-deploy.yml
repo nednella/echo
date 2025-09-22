@@ -17,11 +17,26 @@ jobs:
     deploy-production:
         runs-on: ubuntu-latest 
 
-        container: ghcr.io/railwayapp/cli:latest # Use Railway CLI via Docker container
-
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
+
+            - name: Setup Java 21
+              uses: actions/setup-java@v4
+              with:
+                  java-version: 21
+                  distribution: 'temurin'
+                  cache: gradle
+
+            - name: Setup Gradle
+              uses: gradle/actions/setup-gradle@v4
+
+            - name: Build (skip tests)
+              run: ./gradlew assemble
+
+            - name: Install Railway CLI
+              run: npm i -g @railway/cli
+              # docs: https://docs.railway.com/reference/cli-api
 
             - name: Railway Deploy
               run: railway up --service=$RAILWAY_SERVICE_ID
