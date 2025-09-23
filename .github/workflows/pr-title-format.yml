@@ -2,7 +2,6 @@ name: PR Title - Conventional Commits
 
 on:
     pull_request:
-        branches: [dev]
         types: [opened, edited, reopened, synchronize]
 
 jobs:
@@ -12,7 +11,7 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v4
 
-            - name: Validate PR title
+            - name: Check PR title
               run: |
 
                   # Disable history expansion to allow '!' in title
