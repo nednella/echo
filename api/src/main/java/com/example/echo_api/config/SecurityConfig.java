@@ -37,8 +37,6 @@ public class SecurityConfig {
             .authorizeHttpRequests(req -> req
                 .requestMatchers("/public/**").permitAll()
                 .requestMatchers(EndpointRequest.to("health")).permitAll()
-                .requestMatchers(HttpMethod.POST, ApiRoutes.CLERK.PERSIST_ALL).permitAll() // dev only
-                .requestMatchers(HttpMethod.DELETE, ApiRoutes.CLERK.SYNC_ALL).permitAll() // dev only
                 .requestMatchers(HttpMethod.POST, ApiRoutes.CLERK.WEBHOOK).permitAll()
                 .anyRequest().authenticated())
             .oauth2ResourceServer(oauth -> oauth
