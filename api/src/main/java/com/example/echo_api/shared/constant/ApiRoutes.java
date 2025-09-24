@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PRIVATE)
 public class ApiRoutes {
 
-    private static final String BASE_URL = "/api/v1";
+    private static final String BASE_URL = "/v1";
 
     @NoArgsConstructor(access = PRIVATE)
     public static final class CLERK {
