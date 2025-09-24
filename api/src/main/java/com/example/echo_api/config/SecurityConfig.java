@@ -1,5 +1,6 @@
 package com.example.echo_api.config;
 
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -34,8 +35,8 @@ public class SecurityConfig {
             .sessionManagement(sm -> sm
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(req -> req
-                .requestMatchers(HttpMethod.POST, ApiRoutes.CLERK.PERSIST_ALL).permitAll() // dev only
-                .requestMatchers(HttpMethod.DELETE, ApiRoutes.CLERK.SYNC_ALL).permitAll() // dev only
+                .requestMatchers("/public/**").permitAll()
+                .requestMatchers(EndpointRequest.to("health")).permitAll()
                 .requestMatchers(HttpMethod.POST, ApiRoutes.CLERK.WEBHOOK).permitAll()
                 .anyRequest().authenticated())
             .oauth2ResourceServer(oauth -> oauth
