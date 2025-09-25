@@ -3,6 +3,9 @@ package com.example.echo_api.modules.post.dto.response;
 import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+// @formatter:off
 /**
  * Represents a standardised response format for a single post.
  * 
@@ -20,6 +23,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param entities       the entities related to the post text (e.g., urls, user
  *                       mentions, hashtags)
  */
+@Schema(
+    name = "Post",
+    description = "A complete representation of a single post."
+)
 public record PostDTO(
     String id,
     @JsonProperty("parent_id") String parentId,

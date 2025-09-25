@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+// @formatter:off
 /**
  * Represents a standardised response format for a user profile.
  *
@@ -19,6 +22,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param relationship the relationships between the profile and the
  *                     authenticated user, null if same user id
  */
+@Schema(
+    name = "Profile",
+    description = "A complete representation of a single profile."
+)
 public record ProfileDTO(
     String id,
     String username,
