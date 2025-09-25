@@ -10,9 +10,11 @@ import com.example.echo_api.modules.profile.dto.request.UpdateProfileDTO;
 import com.example.echo_api.modules.profile.service.ProfileManagementService;
 import com.example.echo_api.shared.constant.ApiRoutes;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Profile")
 @Validated
 @RestController
 @RequiredArgsConstructor

@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.echo_api.modules.profile.service.ProfileInteractionService;
 import com.example.echo_api.shared.constant.ApiRoutes;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Profile")
 @RestController
 @RequiredArgsConstructor
 public class ProfileInteractionController {

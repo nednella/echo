@@ -15,11 +15,13 @@ import com.example.echo_api.shared.pagination.PageDTO;
 import com.example.echo_api.shared.validation.annotations.Limit;
 import com.example.echo_api.shared.validation.annotations.Offset;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+@Tag(name = "Post")
 @Validated
 @RestController
 @RequiredArgsConstructor
