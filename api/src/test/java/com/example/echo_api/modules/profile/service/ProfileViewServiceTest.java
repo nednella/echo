@@ -26,7 +26,7 @@ import com.example.echo_api.modules.profile.entity.Profile;
 import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
 import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
-import com.example.echo_api.shared.pagination.PageDTO;
+import com.example.echo_api.shared.pagination.Paged;
 import com.example.echo_api.shared.pagination.PageMapper;
 import com.example.echo_api.shared.service.SessionService;
 
@@ -191,7 +191,7 @@ class ProfileViewServiceTest {
         int limit = 1;
         Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<SimplifiedProfileDTO> followersDto = new PageImpl<>(new ArrayList<>(), page, 0);
-        PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(followersDto, uri);
+        Paged<SimplifiedProfileDTO> expected = PageMapper.toDTO(followersDto, uri);
 
         when(profileRepository.existsById(id)).thenReturn(true);
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
@@ -200,7 +200,7 @@ class ProfileViewServiceTest {
         when(httpServletRequest.getRequestURI()).thenReturn(uri);
 
         // act
-        PageDTO<SimplifiedProfileDTO> actual = profileViewService.getFollowers(id, page);
+        Paged<SimplifiedProfileDTO> actual = profileViewService.getFollowers(id, page);
 
         // assert
         assertTrue(actual.items().isEmpty());
@@ -236,7 +236,7 @@ class ProfileViewServiceTest {
         int limit = 1;
         Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<SimplifiedProfileDTO> followingDto = new PageImpl<>(new ArrayList<>(), page, 0);
-        PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(followingDto, uri);
+        Paged<SimplifiedProfileDTO> expected = PageMapper.toDTO(followingDto, uri);
 
         when(profileRepository.existsById(id)).thenReturn(true);
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
@@ -245,7 +245,7 @@ class ProfileViewServiceTest {
         when(httpServletRequest.getRequestURI()).thenReturn(uri);
 
         // act
-        PageDTO<SimplifiedProfileDTO> actual = profileViewService.getFollowing(id, page);
+        Paged<SimplifiedProfileDTO> actual = profileViewService.getFollowing(id, page);
 
         // assert
         assertTrue(actual.items().isEmpty());

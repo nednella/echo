@@ -30,7 +30,7 @@ import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
 import com.example.echo_api.modules.profile.service.ProfileViewService;
 import com.example.echo_api.shared.constant.ApiRoutes;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
-import com.example.echo_api.shared.pagination.PageDTO;
+import com.example.echo_api.shared.pagination.Paged;
 import com.example.echo_api.shared.pagination.PageMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -168,7 +168,7 @@ class ProfileViewControllerTest {
 
         Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<SimplifiedProfileDTO> pageProfileDto = new PageImpl<>(List.of(simplifiedProfile), page, 1);
-        PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(pageProfileDto, FOLLOWERS_BY_ID_PATH);
+        Paged<SimplifiedProfileDTO> expected = PageMapper.toDTO(pageProfileDto, FOLLOWERS_BY_ID_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
 
         when(profileViewService.getFollowers(eq(id), any(Pageable.class))).thenReturn(expected);
@@ -273,7 +273,7 @@ class ProfileViewControllerTest {
 
         Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<SimplifiedProfileDTO> pageProfileDto = new PageImpl<>(List.of(simplifiedProfile), page, 1);
-        PageDTO<SimplifiedProfileDTO> expected = PageMapper.toDTO(pageProfileDto, FOLLOWING_BY_ID_PATH);
+        Paged<SimplifiedProfileDTO> expected = PageMapper.toDTO(pageProfileDto, FOLLOWING_BY_ID_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
 
         when(profileViewService.getFollowing(eq(id), any(Pageable.class))).thenReturn(expected);

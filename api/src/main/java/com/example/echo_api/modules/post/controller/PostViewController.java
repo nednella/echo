@@ -11,15 +11,17 @@ import com.example.echo_api.modules.post.dto.response.PostDTO;
 import com.example.echo_api.modules.post.service.PostViewService;
 import com.example.echo_api.shared.constant.ApiRoutes;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
-import com.example.echo_api.shared.pagination.PageDTO;
+import com.example.echo_api.shared.pagination.Paged;
 import com.example.echo_api.shared.validation.annotations.Limit;
 import com.example.echo_api.shared.validation.annotations.Offset;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+@Tag(name = "Post")
 @Validated
 @RestController
 @RequiredArgsConstructor
@@ -33,7 +35,7 @@ public class PostViewController {
     }
 
     @GetMapping(ApiRoutes.POST.REPLIES)
-    public ResponseEntity<PageDTO<PostDTO>> getRepliesByPostId(
+    public ResponseEntity<Paged<PostDTO>> getRepliesByPostId(
         @PathVariable("id") UUID id,
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit) {

@@ -31,7 +31,7 @@ import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
-import com.example.echo_api.shared.pagination.PageDTO;
+import com.example.echo_api.shared.pagination.Paged;
 import com.example.echo_api.shared.pagination.PageMapper;
 import com.example.echo_api.shared.service.SessionService;
 
@@ -124,7 +124,7 @@ class PostViewServiceTest {
         int limit = 20;
         Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> repliesDto = new PageImpl<>(List.of(createPostDto(id, "Test post.")), page, 1);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(repliesDto, uri);
+        Paged<PostDTO> expected = PageMapper.toDTO(repliesDto, uri);
 
         when(postRepository.existsById(id)).thenReturn(true);
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
@@ -132,7 +132,7 @@ class PostViewServiceTest {
         when(httpServletRequest.getRequestURI()).thenReturn(uri);
 
         // act
-        PageDTO<PostDTO> actual = postViewService.getRepliesByPostId(id, page);
+        Paged<PostDTO> actual = postViewService.getRepliesByPostId(id, page);
 
         // assert
         assertEquals(expected, actual);

@@ -13,8 +13,10 @@ import com.example.echo_api.modules.clerk.service.ClerkDevService;
 import com.example.echo_api.modules.user.entity.User;
 import com.example.echo_api.shared.constant.ApiRoutes;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 
+@Hidden
 @Profile("dev")
 @RestController
 @RequiredArgsConstructor

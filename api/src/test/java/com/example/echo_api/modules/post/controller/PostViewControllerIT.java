@@ -16,7 +16,7 @@ import com.example.echo_api.modules.post.entity.Post;
 import com.example.echo_api.modules.post.exception.PostErrorCode;
 import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.pagination.PageDTO;
+import com.example.echo_api.shared.pagination.Paged;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
 
 /**
@@ -52,7 +52,7 @@ class PostViewControllerIT extends AbstractIntegrationTest {
      * Helper funtion to validate pagination metadata.
      */
     private static void assertPageMetadata(
-        PageDTO<?> dto,
+        Paged<?> dto,
         URI expectedPrevious,
         URI expectedNext,
         int expectedOffset,
@@ -110,11 +110,11 @@ class PostViewControllerIT extends AbstractIntegrationTest {
         Post reply1 = createPost(post.getId(), mockUser.getId(), "Test reply 1.");
         Post reply2 = createPost(post.getId(), mockUser.getId(), "Test reply 2.");
 
-        PageDTO<PostDTO> response = authenticatedClient.get()
+        Paged<PostDTO> response = authenticatedClient.get()
             .uri(REPLIES_PATH, post.getId())
             .exchange()
             .expectStatus().isOk()
-            .expectBody(new ParameterizedTypeReference<PageDTO<PostDTO>>() {})
+            .expectBody(new ParameterizedTypeReference<Paged<PostDTO>>() {})
             .returnResult()
             .getResponseBody();
 

@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.echo_api.modules.post.service.PostInteractionService;
 import com.example.echo_api.shared.constant.ApiRoutes;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Post")
 @RestController
 @RequiredArgsConstructor
 public class PostInteractionController {

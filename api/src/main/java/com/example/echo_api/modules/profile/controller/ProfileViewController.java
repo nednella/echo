@@ -15,12 +15,14 @@ import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.service.ProfileViewService;
 import com.example.echo_api.shared.constant.ApiRoutes;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
-import com.example.echo_api.shared.pagination.PageDTO;
+import com.example.echo_api.shared.pagination.Paged;
 import com.example.echo_api.shared.validation.annotations.Limit;
 import com.example.echo_api.shared.validation.annotations.Offset;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Profile")
 @Validated
 @RestController
 @RequiredArgsConstructor
@@ -40,7 +42,7 @@ public class ProfileViewController {
 
     // @formatter:off
     @GetMapping(ApiRoutes.PROFILE.FOLLOWERS)
-    public ResponseEntity<PageDTO<SimplifiedProfileDTO>> getFollowers(
+    public ResponseEntity<Paged<SimplifiedProfileDTO>> getFollowers(
         @PathVariable("id") UUID id,
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit
@@ -50,7 +52,7 @@ public class ProfileViewController {
     }
 
     @GetMapping(ApiRoutes.PROFILE.FOLLOWING)
-    public ResponseEntity<PageDTO<SimplifiedProfileDTO>> getFollowing(
+    public ResponseEntity<Paged<SimplifiedProfileDTO>> getFollowing(
        @PathVariable("id") UUID id,
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit

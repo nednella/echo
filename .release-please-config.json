@@ -13,7 +13,7 @@
             "path": "api",
             "component": "api",
             "release-type": "simple",
-            "extra-files": ["build.gradle"]
+            "extra-files": ["build.gradle", "/src/main/java/com/example/echo_api/config/OpenApiConfig.java"]
         }
     },
     "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json"

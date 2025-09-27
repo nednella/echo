@@ -32,7 +32,7 @@ import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
 import com.example.echo_api.modules.profile.repository.ProfileRepository;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
-import com.example.echo_api.shared.pagination.PageDTO;
+import com.example.echo_api.shared.pagination.Paged;
 import com.example.echo_api.shared.pagination.PageMapper;
 import com.example.echo_api.shared.service.SessionService;
 
@@ -91,14 +91,14 @@ class FeedServiceTest {
         // arrange
         String uri = "/some/api/uri";
         Page<PostDTO> posts = new PageImpl<>(List.of(createPostDto(UUID.randomUUID(), "Test post.")), page, 1);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, uri);
+        Paged<PostDTO> expected = PageMapper.toDTO(posts, uri);
 
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.findHomepagePosts(authenticatedUserId, page)).thenReturn(posts);
         when(httpServletRequest.getRequestURI()).thenReturn(uri);
 
         // act
-        PageDTO<PostDTO> actual = feedService.getHomeFeed(page);
+        Paged<PostDTO> actual = feedService.getHomeFeed(page);
 
         // assert
         assertEquals(expected, actual);
@@ -110,14 +110,14 @@ class FeedServiceTest {
         // arrange
         String uri = "/some/api/uri";
         Page<PostDTO> posts = new PageImpl<>(List.of(createPostDto(UUID.randomUUID(), "Test post.")), page, 1);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, uri);
+        Paged<PostDTO> expected = PageMapper.toDTO(posts, uri);
 
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
         when(postRepository.findDiscoverPosts(authenticatedUserId, page)).thenReturn(posts);
         when(httpServletRequest.getRequestURI()).thenReturn(uri);
 
         // act
-        PageDTO<PostDTO> actual = feedService.getDiscoverFeed(page);
+        Paged<PostDTO> actual = feedService.getDiscoverFeed(page);
 
         // assert
         assertEquals(expected, actual);
@@ -131,7 +131,7 @@ class FeedServiceTest {
 
         String uri = "/some/api/uri";
         Page<PostDTO> posts = new PageImpl<>(List.of(createPostDto(UUID.randomUUID(), "Test post.")), page, 1);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, uri);
+        Paged<PostDTO> expected = PageMapper.toDTO(posts, uri);
 
         when(profileRepository.existsById(id)).thenReturn(true);
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
@@ -139,7 +139,7 @@ class FeedServiceTest {
         when(httpServletRequest.getRequestURI()).thenReturn(uri);
 
         // act
-        PageDTO<PostDTO> actual = feedService.getProfilePosts(id, page);
+        Paged<PostDTO> actual = feedService.getProfilePosts(id, page);
 
         // assert
         assertEquals(expected, actual);
@@ -170,7 +170,7 @@ class FeedServiceTest {
 
         String uri = "/some/api/uri";
         Page<PostDTO> posts = new PageImpl<>(List.of(createPostDto(UUID.randomUUID(), "Test post.")), page, 1);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, uri);
+        Paged<PostDTO> expected = PageMapper.toDTO(posts, uri);
 
         when(profileRepository.existsById(id)).thenReturn(true);
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
@@ -178,7 +178,7 @@ class FeedServiceTest {
         when(httpServletRequest.getRequestURI()).thenReturn(uri);
 
         // act
-        PageDTO<PostDTO> actual = feedService.getProfileReplies(id, page);
+        Paged<PostDTO> actual = feedService.getProfileReplies(id, page);
 
         // assert
         assertEquals(expected, actual);
@@ -209,7 +209,7 @@ class FeedServiceTest {
 
         String uri = "/some/api/uri";
         Page<PostDTO> posts = new PageImpl<>(List.of(createPostDto(UUID.randomUUID(), "Test post.")), page, 1);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, uri);
+        Paged<PostDTO> expected = PageMapper.toDTO(posts, uri);
 
         when(profileRepository.existsById(id)).thenReturn(true);
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
@@ -217,7 +217,7 @@ class FeedServiceTest {
         when(httpServletRequest.getRequestURI()).thenReturn(uri);
 
         // act
-        PageDTO<PostDTO> actual = feedService.getProfileLikes(id, page);
+        Paged<PostDTO> actual = feedService.getProfileLikes(id, page);
 
         // assert
         assertEquals(expected, actual);
@@ -248,7 +248,7 @@ class FeedServiceTest {
 
         String uri = "/some/api/uri";
         Page<PostDTO> posts = new PageImpl<>(List.of(createPostDto(UUID.randomUUID(), "Test post.")), page, 1);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, uri);
+        Paged<PostDTO> expected = PageMapper.toDTO(posts, uri);
 
         when(profileRepository.existsById(id)).thenReturn(true);
         when(sessionService.getAuthenticatedUserId()).thenReturn(authenticatedUserId);
@@ -256,7 +256,7 @@ class FeedServiceTest {
         when(httpServletRequest.getRequestURI()).thenReturn(uri);
 
         // act
-        PageDTO<PostDTO> actual = feedService.getProfileMentions(id, page);
+        Paged<PostDTO> actual = feedService.getProfileMentions(id, page);
 
         // assert
         assertEquals(expected, actual);

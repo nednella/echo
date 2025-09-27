@@ -14,9 +14,11 @@ import com.example.echo_api.modules.post.dto.request.CreatePostDTO;
 import com.example.echo_api.modules.post.service.PostManagementService;
 import com.example.echo_api.shared.constant.ApiRoutes;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Post")
 @Validated
 @RestController
 @RequiredArgsConstructor

@@ -13,8 +13,11 @@ import com.example.echo_api.modules.clerk.service.ClerkWebhookService;
 import com.example.echo_api.modules.user.entity.User;
 import com.example.echo_api.shared.constant.ApiRoutes;
 
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Clerk")
 @RestController
 @RequiredArgsConstructor
 public class ClerkController {
@@ -28,6 +31,7 @@ public class ClerkController {
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
+    @Hidden
     @PostMapping(ApiRoutes.CLERK.WEBHOOK)
     public ResponseEntity<Void> clerkEvent(@RequestHeader HttpHeaders headers, @RequestBody String payload) {
         webhookService.verify(headers, payload);

@@ -33,7 +33,7 @@ import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
 import com.example.echo_api.shared.constant.ApiRoutes;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
-import com.example.echo_api.shared.pagination.PageDTO;
+import com.example.echo_api.shared.pagination.Paged;
 import com.example.echo_api.shared.pagination.PageMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -84,7 +84,7 @@ class FeedControllerTest {
 
         Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, HOMEPAGE_PATH);
+        Paged<PostDTO> expected = PageMapper.toDTO(posts, HOMEPAGE_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
 
         when(feedService.getHomeFeed(any(Pageable.class))).thenReturn(expected);
@@ -158,7 +158,7 @@ class FeedControllerTest {
 
         Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, DISCOVER_PATH);
+        Paged<PostDTO> expected = PageMapper.toDTO(posts, DISCOVER_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
 
         when(feedService.getDiscoverFeed(any(Pageable.class))).thenReturn(expected);
@@ -233,7 +233,7 @@ class FeedControllerTest {
 
         Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, POSTS_PATH);
+        Paged<PostDTO> expected = PageMapper.toDTO(posts, POSTS_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
 
         when(feedService.getProfilePosts(eq(id), any(Pageable.class))).thenReturn(expected);
@@ -340,7 +340,7 @@ class FeedControllerTest {
 
         Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, REPLIES_PATH);
+        Paged<PostDTO> expected = PageMapper.toDTO(posts, REPLIES_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
 
         when(feedService.getProfileReplies(eq(id), any(Pageable.class))).thenReturn(expected);
@@ -447,7 +447,7 @@ class FeedControllerTest {
 
         Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, LIKES_PATH);
+        Paged<PostDTO> expected = PageMapper.toDTO(posts, LIKES_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
 
         when(feedService.getProfileLikes(eq(id), any(Pageable.class))).thenReturn(expected);
@@ -556,7 +556,7 @@ class FeedControllerTest {
 
         Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> posts = new PageImpl<>(List.of(post), page, 1);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(posts, MENTIONS_PATH);
+        Paged<PostDTO> expected = PageMapper.toDTO(posts, MENTIONS_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
 
         when(feedService.getProfileMentions(eq(id), any(Pageable.class))).thenReturn(expected);

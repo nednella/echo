@@ -16,7 +16,7 @@ import com.example.echo_api.modules.profile.entity.ProfileFollow;
 import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
 import com.example.echo_api.modules.profile.repository.ProfileFollowRepository;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.pagination.PageDTO;
+import com.example.echo_api.shared.pagination.Paged;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
 
 /**
@@ -47,7 +47,7 @@ class ProfileViewControllerIT extends AbstractIntegrationTest {
      * Helper funtion to validate pagination metadata.
      */
     private static void assertPageMetadata(
-        PageDTO<?> dto,
+        Paged<?> dto,
         URI expectedPrevious,
         URI expectedNext,
         int expectedOffset,
@@ -118,11 +118,11 @@ class ProfileViewControllerIT extends AbstractIntegrationTest {
         UUID profileId = mockUser.getId();
         followProfile(authUser.getId(), profileId); // follow mock user
 
-        PageDTO<SimplifiedProfileDTO> response = authenticatedClient.get()
+        Paged<SimplifiedProfileDTO> response = authenticatedClient.get()
             .uri(FOLLOWERS_BY_ID_PATH, profileId)
             .exchange()
             .expectStatus().isOk()
-            .expectBody(new ParameterizedTypeReference<PageDTO<SimplifiedProfileDTO>>() {})
+            .expectBody(new ParameterizedTypeReference<Paged<SimplifiedProfileDTO>>() {})
             .returnResult()
             .getResponseBody();
 
@@ -157,11 +157,11 @@ class ProfileViewControllerIT extends AbstractIntegrationTest {
         UUID profileId = authUser.getId();
         followProfile(profileId, mockUser.getId()); // follow mock user
 
-        PageDTO<SimplifiedProfileDTO> response = authenticatedClient.get()
+        Paged<SimplifiedProfileDTO> response = authenticatedClient.get()
             .uri(FOLLOWING_BY_ID_PATH, profileId)
             .exchange()
             .expectStatus().isOk()
-            .expectBody(new ParameterizedTypeReference<PageDTO<SimplifiedProfileDTO>>() {})
+            .expectBody(new ParameterizedTypeReference<Paged<SimplifiedProfileDTO>>() {})
             .returnResult()
             .getResponseBody();
 
