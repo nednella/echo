@@ -31,7 +31,7 @@ import com.example.echo_api.modules.post.service.PostViewService;
 import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.example.echo_api.shared.constant.ApiRoutes;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
-import com.example.echo_api.shared.pagination.PageDTO;
+import com.example.echo_api.shared.pagination.Paged;
 import com.example.echo_api.shared.pagination.PageMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -121,7 +121,7 @@ class PostViewControllerTest {
 
         Pageable page = OffsetLimitRequest.of(offset, limit);
         Page<PostDTO> replies = new PageImpl<>(List.of(post), page, 1);
-        PageDTO<PostDTO> expected = PageMapper.toDTO(replies, REPLIES_PATH);
+        Paged<PostDTO> expected = PageMapper.toDTO(replies, REPLIES_PATH);
         String expectedJson = objectMapper.writeValueAsString(expected);
 
         when(postViewService.getRepliesByPostId(eq(id), any(Pageable.class))).thenReturn(expected);

@@ -13,7 +13,7 @@ import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.modules.profile.entity.Profile;
 import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
 import com.example.echo_api.modules.profile.repository.ProfileRepository;
-import com.example.echo_api.shared.pagination.PageDTO;
+import com.example.echo_api.shared.pagination.Paged;
 import com.example.echo_api.shared.pagination.PageMapper;
 import com.example.echo_api.shared.service.SessionService;
 
@@ -36,7 +36,7 @@ class FeedServiceImpl implements FeedService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageDTO<PostDTO> getHomeFeed(Pageable page) {
+    public Paged<PostDTO> getHomeFeed(Pageable page) {
         UUID authUserId = sessionService.getAuthenticatedUserId();
 
         var query = postRepository.findHomepagePosts(authUserId, page);
@@ -47,7 +47,7 @@ class FeedServiceImpl implements FeedService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageDTO<PostDTO> getDiscoverFeed(Pageable page) {
+    public Paged<PostDTO> getDiscoverFeed(Pageable page) {
         UUID authUserId = sessionService.getAuthenticatedUserId();
 
         var query = postRepository.findDiscoverPosts(authUserId, page);
@@ -57,7 +57,7 @@ class FeedServiceImpl implements FeedService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageDTO<PostDTO> getProfilePosts(UUID profileId, Pageable page) {
+    public Paged<PostDTO> getProfilePosts(UUID profileId, Pageable page) {
         validateProfileExists(profileId);
         UUID authUserId = sessionService.getAuthenticatedUserId();
 
@@ -68,7 +68,7 @@ class FeedServiceImpl implements FeedService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageDTO<PostDTO> getProfileReplies(UUID profileId, Pageable page) {
+    public Paged<PostDTO> getProfileReplies(UUID profileId, Pageable page) {
         validateProfileExists(profileId);
         UUID authUserId = sessionService.getAuthenticatedUserId();
 
@@ -79,7 +79,7 @@ class FeedServiceImpl implements FeedService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageDTO<PostDTO> getProfileLikes(UUID profileId, Pageable page) {
+    public Paged<PostDTO> getProfileLikes(UUID profileId, Pageable page) {
         validateProfileExists(profileId);
         UUID authUserId = sessionService.getAuthenticatedUserId();
 
@@ -90,7 +90,7 @@ class FeedServiceImpl implements FeedService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageDTO<PostDTO> getProfileMentions(UUID profileId, Pageable page) {
+    public Paged<PostDTO> getProfileMentions(UUID profileId, Pageable page) {
         validateProfileExists(profileId);
         UUID authUserId = sessionService.getAuthenticatedUserId();
 

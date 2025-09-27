@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.example.echo_api.exception.ApplicationException;
 import com.example.echo_api.modules.post.dto.response.PostDTO;
-import com.example.echo_api.shared.pagination.PageDTO;
+import com.example.echo_api.shared.pagination.Paged;
 
 public interface PostViewService {
 
@@ -20,15 +20,15 @@ public interface PostViewService {
     PostDTO getPostById(UUID id);
 
     /**
-     * Fetch a {@link PageDTO} of {@link PostDTO} for the posts that are in reply to
+     * Fetch a {@link Paged} of {@link PostDTO} for the posts that are in reply to
      * the given post {@code id}.
      * 
      * @param id   the post id
      * @param page pagination parameters
-     * @return a {@link PageDTO} of {@link PostDTO}; empty if no matches
+     * @return a {@link Paged} of {@link PostDTO}; empty if no matches
      * @throws ApplicationException if no post with the given id exists
      */
-    PageDTO<PostDTO> getRepliesByPostId(UUID id, Pageable page);
+    Paged<PostDTO> getRepliesByPostId(UUID id, Pageable page);
     // TODO: refactor to getConversationByPostId
 
 }

@@ -11,7 +11,7 @@ import com.example.echo_api.modules.post.dto.response.PostDTO;
 import com.example.echo_api.modules.post.entity.Post;
 import com.example.echo_api.modules.post.exception.PostErrorCode;
 import com.example.echo_api.modules.post.repository.PostRepository;
-import com.example.echo_api.shared.pagination.PageDTO;
+import com.example.echo_api.shared.pagination.Paged;
 import com.example.echo_api.shared.pagination.PageMapper;
 import com.example.echo_api.shared.service.SessionService;
 
@@ -47,7 +47,7 @@ class PostViewServiceImpl extends BasePostService implements PostViewService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageDTO<PostDTO> getRepliesByPostId(UUID id, Pageable page) {
+    public Paged<PostDTO> getRepliesByPostId(UUID id, Pageable page) {
         validatePostExists(id);
         UUID authUserId = getAuthenticatedUserId();
 

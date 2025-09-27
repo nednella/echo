@@ -10,7 +10,7 @@ import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.entity.Profile;
 import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
 import com.example.echo_api.modules.profile.repository.ProfileRepository;
-import com.example.echo_api.shared.pagination.PageDTO;
+import com.example.echo_api.shared.pagination.Paged;
 import com.example.echo_api.shared.pagination.PageMapper;
 import com.example.echo_api.shared.service.SessionService;
 
@@ -61,7 +61,7 @@ class ProfileViewServiceImpl extends BaseProfileService implements ProfileViewSe
     }
 
     @Override
-    public PageDTO<SimplifiedProfileDTO> getFollowers(UUID id, Pageable page) {
+    public Paged<SimplifiedProfileDTO> getFollowers(UUID id, Pageable page) {
         validateProfileExists(id);
         UUID authUserId = getAuthenticatedUserId();
 
@@ -71,7 +71,7 @@ class ProfileViewServiceImpl extends BaseProfileService implements ProfileViewSe
     }
 
     @Override
-    public PageDTO<SimplifiedProfileDTO> getFollowing(UUID id, Pageable page) {
+    public Paged<SimplifiedProfileDTO> getFollowing(UUID id, Pageable page) {
         validateProfileExists(id);
         UUID authUserId = getAuthenticatedUserId();
 

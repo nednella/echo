@@ -14,7 +14,7 @@ import com.example.echo_api.modules.feed.service.FeedService;
 import com.example.echo_api.modules.post.dto.response.PostDTO;
 import com.example.echo_api.shared.constant.ApiRoutes;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
-import com.example.echo_api.shared.pagination.PageDTO;
+import com.example.echo_api.shared.pagination.Paged;
 import com.example.echo_api.shared.validation.annotations.Limit;
 import com.example.echo_api.shared.validation.annotations.Offset;
 
@@ -30,7 +30,7 @@ public class FeedController {
     private final FeedService feedService;
 
     @GetMapping(ApiRoutes.FEED.HOMEPAGE)
-    public ResponseEntity<PageDTO<PostDTO>> getHomeFeed(
+    public ResponseEntity<Paged<PostDTO>> getHomeFeed(
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit) {
         Pageable page = OffsetLimitRequest.of(offset, limit);
@@ -38,7 +38,7 @@ public class FeedController {
     }
 
     @GetMapping(ApiRoutes.FEED.DISCOVER)
-    public ResponseEntity<PageDTO<PostDTO>> getDiscoverFeed(
+    public ResponseEntity<Paged<PostDTO>> getDiscoverFeed(
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit) {
         Pageable page = OffsetLimitRequest.of(offset, limit);
@@ -46,7 +46,7 @@ public class FeedController {
     }
 
     @GetMapping(ApiRoutes.FEED.POSTS)
-    public ResponseEntity<PageDTO<PostDTO>> getProfilePosts(
+    public ResponseEntity<Paged<PostDTO>> getProfilePosts(
         @PathVariable("id") UUID id,
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit) {
@@ -55,7 +55,7 @@ public class FeedController {
     }
 
     @GetMapping(ApiRoutes.FEED.REPLIES)
-    public ResponseEntity<PageDTO<PostDTO>> getProfileReplies(
+    public ResponseEntity<Paged<PostDTO>> getProfileReplies(
         @PathVariable("id") UUID id,
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit) {
@@ -64,7 +64,7 @@ public class FeedController {
     }
 
     @GetMapping(ApiRoutes.FEED.LIKES)
-    public ResponseEntity<PageDTO<PostDTO>> getProfileLikes(
+    public ResponseEntity<Paged<PostDTO>> getProfileLikes(
         @PathVariable("id") UUID id,
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit) {
@@ -73,7 +73,7 @@ public class FeedController {
     }
 
     @GetMapping(ApiRoutes.FEED.MENTIONS)
-    public ResponseEntity<PageDTO<PostDTO>> getProfileMentions(
+    public ResponseEntity<Paged<PostDTO>> getProfileMentions(
         @PathVariable("id") UUID id,
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit) {

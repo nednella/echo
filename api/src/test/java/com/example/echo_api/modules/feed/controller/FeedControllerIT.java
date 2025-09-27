@@ -20,7 +20,7 @@ import com.example.echo_api.modules.post.repository.PostLikeRepository;
 import com.example.echo_api.modules.post.repository.PostRepository;
 import com.example.echo_api.modules.profile.exception.ProfileErrorCode;
 import com.example.echo_api.shared.constant.ApiRoutes;
-import com.example.echo_api.shared.pagination.PageDTO;
+import com.example.echo_api.shared.pagination.Paged;
 import com.example.echo_api.testing.support.AbstractIntegrationTest;
 import com.example.echo_api.util.PostEntityExtractor;
 
@@ -79,7 +79,7 @@ class FeedControllerIT extends AbstractIntegrationTest {
      * Helper funtion to validate pagination metadata.
      */
     private static void assertPageMetadata(
-        PageDTO<?> dto,
+        Paged<?> dto,
         URI expectedPrevious,
         URI expectedNext,
         int expectedOffset,
@@ -99,11 +99,11 @@ class FeedControllerIT extends AbstractIntegrationTest {
         Post post1 = createPost(null, authUser.getId(), "Test post 1.");
         Post post2 = createPost(null, authUser.getId(), "Test post 2.");
 
-        PageDTO<PostDTO> response = authenticatedClient.get()
+        Paged<PostDTO> response = authenticatedClient.get()
             .uri(HOMEPAGE_PATH)
             .exchange()
             .expectStatus().isOk()
-            .expectBody(new ParameterizedTypeReference<PageDTO<PostDTO>>() {})
+            .expectBody(new ParameterizedTypeReference<Paged<PostDTO>>() {})
             .returnResult()
             .getResponseBody();
 
@@ -122,11 +122,11 @@ class FeedControllerIT extends AbstractIntegrationTest {
         Post post1 = createPost(null, mockUser.getId(), "Test post 1.");
         Post post2 = createPost(null, mockUser.getId(), "Test post 2.");
 
-        PageDTO<PostDTO> response = authenticatedClient.get()
+        Paged<PostDTO> response = authenticatedClient.get()
             .uri(DISCOVER_PATH)
             .exchange()
             .expectStatus().isOk()
-            .expectBody(new ParameterizedTypeReference<PageDTO<PostDTO>>() {})
+            .expectBody(new ParameterizedTypeReference<Paged<PostDTO>>() {})
             .returnResult()
             .getResponseBody();
 
@@ -145,11 +145,11 @@ class FeedControllerIT extends AbstractIntegrationTest {
         UUID profileId = mockUser.getId();
         Post post = createPost(null, mockUser.getId(), "Test post.");
 
-        PageDTO<PostDTO> response = authenticatedClient.get()
+        Paged<PostDTO> response = authenticatedClient.get()
             .uri(POSTS_PATH, profileId)
             .exchange()
             .expectStatus().isOk()
-            .expectBody(new ParameterizedTypeReference<PageDTO<PostDTO>>() {})
+            .expectBody(new ParameterizedTypeReference<Paged<PostDTO>>() {})
             .returnResult()
             .getResponseBody();
 
@@ -186,11 +186,11 @@ class FeedControllerIT extends AbstractIntegrationTest {
         Post reply1 = createPost(post.getId(), profileId, "Test reply 1.");
         Post reply2 = createPost(post.getId(), profileId, "Test reply 2.");
 
-        PageDTO<PostDTO> response = authenticatedClient.get()
+        Paged<PostDTO> response = authenticatedClient.get()
             .uri(REPLIES_PATH, profileId)
             .exchange()
             .expectStatus().isOk()
-            .expectBody(new ParameterizedTypeReference<PageDTO<PostDTO>>() {})
+            .expectBody(new ParameterizedTypeReference<Paged<PostDTO>>() {})
             .returnResult()
             .getResponseBody();
 
@@ -229,11 +229,11 @@ class FeedControllerIT extends AbstractIntegrationTest {
         UUID profileId = mockUser.getId();
         likePost(post.getId(), profileId);
 
-        PageDTO<PostDTO> response = authenticatedClient.get()
+        Paged<PostDTO> response = authenticatedClient.get()
             .uri(LIKES_PATH, profileId)
             .exchange()
             .expectStatus().isOk()
-            .expectBody(new ParameterizedTypeReference<PageDTO<PostDTO>>() {})
+            .expectBody(new ParameterizedTypeReference<Paged<PostDTO>>() {})
             .returnResult()
             .getResponseBody();
 
@@ -271,11 +271,11 @@ class FeedControllerIT extends AbstractIntegrationTest {
         String textWithMention = String.format("Hello, @%s.", AUTH_USER_USERNAME);
         Post post = createPost(null, mockUser.getId(), textWithMention);
 
-        PageDTO<PostDTO> response = authenticatedClient.get()
+        Paged<PostDTO> response = authenticatedClient.get()
             .uri(MENTIONS_PATH, profileId)
             .exchange()
             .expectStatus().isOk()
-            .expectBody(new ParameterizedTypeReference<PageDTO<PostDTO>>() {})
+            .expectBody(new ParameterizedTypeReference<Paged<PostDTO>>() {})
             .returnResult()
             .getResponseBody();
 

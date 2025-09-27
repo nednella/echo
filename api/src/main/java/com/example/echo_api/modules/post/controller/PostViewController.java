@@ -11,7 +11,7 @@ import com.example.echo_api.modules.post.dto.response.PostDTO;
 import com.example.echo_api.modules.post.service.PostViewService;
 import com.example.echo_api.shared.constant.ApiRoutes;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
-import com.example.echo_api.shared.pagination.PageDTO;
+import com.example.echo_api.shared.pagination.Paged;
 import com.example.echo_api.shared.validation.annotations.Limit;
 import com.example.echo_api.shared.validation.annotations.Offset;
 
@@ -35,7 +35,7 @@ public class PostViewController {
     }
 
     @GetMapping(ApiRoutes.POST.REPLIES)
-    public ResponseEntity<PageDTO<PostDTO>> getRepliesByPostId(
+    public ResponseEntity<Paged<PostDTO>> getRepliesByPostId(
         @PathVariable("id") UUID id,
         @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
         @RequestParam(name = "limit", defaultValue = "20") @Limit int limit) {

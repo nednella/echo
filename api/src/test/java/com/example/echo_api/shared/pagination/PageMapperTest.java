@@ -67,7 +67,7 @@ class PageMapperTest {
             Page<String> page = pageOf(items, offset, limit, totalItemsAvailable);
 
             // act
-            PageDTO<String> dto = PageMapper.toDTO(page, BASE_URI);
+            Paged<String> dto = PageMapper.toDTO(page, BASE_URI);
 
             // assert
             assertThat(dto.offset()).isEqualTo(offset);
@@ -91,7 +91,7 @@ class PageMapperTest {
             Page<String> page = pageOf(items, offset, limit, totalItemsAvailable);
 
             // act
-            PageDTO<String> dto = PageMapper.toDTO(page, BASE_URI);
+            Paged<String> dto = PageMapper.toDTO(page, BASE_URI);
 
             // assert
             assertThat(page.hasPrevious()).isTrue(); // assert previous items available
@@ -109,7 +109,7 @@ class PageMapperTest {
             Page<String> page = pageOf(items, offset, limit, totalItemsAvailable);
 
             // act
-            PageDTO<String> dto = PageMapper.toDTO(page, BASE_URI);
+            Paged<String> dto = PageMapper.toDTO(page, BASE_URI);
 
             // assert
             assertThat(page.hasPrevious()).isTrue(); // assert previous items available
@@ -127,7 +127,7 @@ class PageMapperTest {
             Page<String> page = pageOf(items, offset, limit, totalItemsAvailable);
 
             // act
-            PageDTO<String> dto = PageMapper.toDTO(page, BASE_URI);
+            Paged<String> dto = PageMapper.toDTO(page, BASE_URI);
 
             // assert
             assertThat(page.isFirst()).isTrue();
@@ -144,7 +144,7 @@ class PageMapperTest {
             Page<String> page = pageOf(items, offset, limit, totalItemsAvailable);
 
             // act
-            PageDTO<String> dto = PageMapper.toDTO(page, BASE_URI);
+            Paged<String> dto = PageMapper.toDTO(page, BASE_URI);
 
             // assert
             assertThat(page.isFirst()).isTrue();
@@ -162,7 +162,7 @@ class PageMapperTest {
             String expectedPagination = String.format("?offset=%d&limit=%d", offset - limit, offset);
 
             // act
-            PageDTO<String> dto = PageMapper.toDTO(page, BASE_URI);
+            Paged<String> dto = PageMapper.toDTO(page, BASE_URI);
 
             // assert
             assertThat(page.hasPrevious()).isTrue(); // assert previous items available
@@ -180,7 +180,7 @@ class PageMapperTest {
 
             // act
             String baseUriWithSomeExistingUnrelatedQueries = BASE_URI + "?filter=active&sort=date";
-            PageDTO<String> dto = PageMapper.toDTO(page, baseUriWithSomeExistingUnrelatedQueries);
+            Paged<String> dto = PageMapper.toDTO(page, baseUriWithSomeExistingUnrelatedQueries);
 
             // assert
             assertThat(dto.previous()).asString().contains("?filter=active&sort=date");
@@ -197,7 +197,7 @@ class PageMapperTest {
 
             // act
             String baseUriWithSomeExistingPaginationQueries = BASE_URI + "?offset=200&limit=5";
-            PageDTO<String> dto = PageMapper.toDTO(page, baseUriWithSomeExistingPaginationQueries);
+            Paged<String> dto = PageMapper.toDTO(page, baseUriWithSomeExistingPaginationQueries);
 
             // assert
             assertThat(dto.previous()).asString().doesNotContain("?offset=200&limit=5");
@@ -218,7 +218,7 @@ class PageMapperTest {
             Page<String> page = pageOf(items, offset, limit, totalItemsAvailable);
 
             // act
-            PageDTO<String> dto = PageMapper.toDTO(page, BASE_URI);
+            Paged<String> dto = PageMapper.toDTO(page, BASE_URI);
 
             // assert
             assertThat(page.hasNext()).isTrue(); // assert more items available
@@ -236,7 +236,7 @@ class PageMapperTest {
             Page<String> page = pageOf(items, offset, limit, totalItemsAvailable);
 
             // act
-            PageDTO<String> dto = PageMapper.toDTO(page, BASE_URI);
+            Paged<String> dto = PageMapper.toDTO(page, BASE_URI);
 
             // assert
             assertThat(page.hasNext()).isTrue(); // assert more items available
@@ -254,7 +254,7 @@ class PageMapperTest {
             Page<String> page = pageOf(items, offset, limit, totalItemsAvailable);
 
             // act
-            PageDTO<String> dto = PageMapper.toDTO(page, BASE_URI);
+            Paged<String> dto = PageMapper.toDTO(page, BASE_URI);
 
             // assert
             assertThat(page.isLast()).isTrue(); // assert no more items available
@@ -271,7 +271,7 @@ class PageMapperTest {
             Page<String> page = pageOf(items, offset, limit, totalItemsAvailable);
 
             // act
-            PageDTO<String> dto = PageMapper.toDTO(page, BASE_URI);
+            Paged<String> dto = PageMapper.toDTO(page, BASE_URI);
 
             // assert
             assertThat(page.isLast()).isTrue(); // assert no more items available
@@ -289,7 +289,7 @@ class PageMapperTest {
             String expectedPagination = String.format("?offset=%d&limit=%d", offset + limit, offset);
 
             // act
-            PageDTO<String> dto = PageMapper.toDTO(page, BASE_URI);
+            Paged<String> dto = PageMapper.toDTO(page, BASE_URI);
 
             // assert
             assertThat(page.hasNext()).isTrue(); // assert more items available
@@ -307,7 +307,7 @@ class PageMapperTest {
 
             // act
             String baseUriWithSomeExistingUnrelatedQueries = BASE_URI + "?filter=active&sort=date";
-            PageDTO<String> dto = PageMapper.toDTO(page, baseUriWithSomeExistingUnrelatedQueries);
+            Paged<String> dto = PageMapper.toDTO(page, baseUriWithSomeExistingUnrelatedQueries);
 
             // assert
             assertThat(dto.next()).asString().contains("?filter=active&sort=date");
@@ -324,7 +324,7 @@ class PageMapperTest {
 
             // act
             String baseUriWithSomeExistingPaginationQueries = BASE_URI + "?offset=200&limit=5";
-            PageDTO<String> dto = PageMapper.toDTO(page, baseUriWithSomeExistingPaginationQueries);
+            Paged<String> dto = PageMapper.toDTO(page, baseUriWithSomeExistingPaginationQueries);
 
             // assert
             assertThat(dto.next()).asString().doesNotContain("?offset=200&limit=5");
