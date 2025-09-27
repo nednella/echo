@@ -36,8 +36,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(req -> req
                 .requestMatchers("/public/**").permitAll()
-                .requestMatchers("/v3/api-docs/**").permitAll()
-                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers("/openapi-spec/**", "/swagger-ui/**").permitAll()
                 .requestMatchers(EndpointRequest.to("health")).permitAll()
                 .requestMatchers(HttpMethod.POST, ApiRoutes.CLERK.WEBHOOK).permitAll()
                 .anyRequest().authenticated())

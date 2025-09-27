@@ -9,3 +9,9 @@ spring:
                 - classpath:sql/schema/*.sql
                 - classpath:sql/function/*.sql
                 - classpath:sql/trigger/*.sql
+
+springdoc:
+    api-docs:
+        path: /openapi-spec
+    swagger-ui:
+        path: /swagger-ui
