@@ -13,11 +13,11 @@ import jakarta.validation.constraints.Size;
 /**
  * Represents a request to create a post.
  * 
- * @param parentId the id of the parent post, null if not a reply
- * @param text     the text content of the post (required)
+ * @param parentId the id of the parent post, null if not a reply (nullable)
+ * @param text     the text content of the post
  */
 @Schema(
-    name = "Create Post Request",
+    name = "CreatePostRequest",
     description = "Represents the request body required to create a new post."
 )
 public record CreatePostDTO(

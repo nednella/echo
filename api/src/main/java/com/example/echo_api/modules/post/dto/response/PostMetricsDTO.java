@@ -1,6 +1,7 @@
 package com.example.echo_api.modules.post.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 
 // @formatter:off
 /**
@@ -11,11 +12,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @param shares  the number of shares the post has
  */
 @Schema(
-    name = "Post Metrics",
+    name = "PostMetrics",
     description = "Engagement metrics for the given post."
 )
 public record PostMetricsDTO(
-    int likes,
-    int replies
+    @NotNull int likes,
+    @NotNull int replies
 // int shares // TODO: implement post shares
 ) {}

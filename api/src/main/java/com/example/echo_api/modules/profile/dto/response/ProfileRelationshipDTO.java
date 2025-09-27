@@ -3,6 +3,7 @@ package com.example.echo_api.modules.profile.dto.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 
 // @formatter:off
 /**
@@ -14,10 +15,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
  *                   requested profile
  */
 @Schema(
-    name = "Profile Relationship",
+    name = "ProfileRelationship",
     description = "Describes the relationship between the current user and the given profile."
 )
 public record ProfileRelationshipDTO(
-    boolean following,
-    @JsonProperty("followed_by") boolean followedBy
+    @NotNull boolean following,
+    @NotNull @JsonProperty("followed_by") boolean followedBy
 ) {}

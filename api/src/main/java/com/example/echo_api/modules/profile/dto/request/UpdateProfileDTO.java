@@ -14,7 +14,7 @@ import jakarta.validation.constraints.Size;
  * @param location the location for the profile
  */
 @Schema(
-    name = "Update Profile Request",
+    name = "UpdateProfileRequest",
     description = "Represents the request body required to update a user's profile information."
 )
 public record UpdateProfileDTO(
@@ -24,7 +24,7 @@ public record UpdateProfileDTO(
 
     @Size(max = PostConstraints.BIO_MAX_LENGTH, message = "Bio must not exceed {max} characters")
     String bio,
-
+    
     @Size(max = PostConstraints.LOCATION_MAX_LENGTH, message = "Location must not exceed {max} characters")
     String location
     

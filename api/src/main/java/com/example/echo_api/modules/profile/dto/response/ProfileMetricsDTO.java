@@ -1,6 +1,7 @@
 package com.example.echo_api.modules.profile.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 
 // @formatter:off
 /**
@@ -12,12 +13,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @param media     the number of media items this profile has uploaded
  */
 @Schema(
-    name = "Profile Metrics",
+    name = "ProfileMetrics",
     description = "Contextual metrics related to the given profile."
 )
 public record ProfileMetricsDTO(
-    int followers,
-    int following,
-    int posts
+    @NotNull int followers,
+    @NotNull int following,
+    @NotNull int posts
 // int media // TODO: implement post media
 ) {}

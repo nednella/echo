@@ -1,6 +1,7 @@
 package com.example.echo_api.modules.post.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 
 // @formatter:off
 /**
@@ -9,11 +10,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * clickable links within post bodies.
  */
 @Schema(
-    name = "Post Entity",
+    name = "PostEntity",
     description = "A single entity in the given post's text."
 )
 public record PostEntityDTO(
-    int start,
-    int end,
-    String text
+    @NotNull int start,
+    @NotNull int end,
+    @NotNull String text
 ) {}

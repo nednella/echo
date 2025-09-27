@@ -4,14 +4,14 @@ import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 
 // @formatter:off
 /**
  * Represents a standardised response format for a single post.
  * 
  * @param id             the unique post id
- * @param parentId       the id of the post that this post replies to, or null
- *                       if a root post
+ * @param parentId       the id of the post that this post replies to (nullable)
  * @param conversationId the id of the root post of the conversation, equal to
  *                       itself for root posts
  * @param author         the author of the post
@@ -28,13 +28,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
     description = "A complete representation of a single post."
 )
 public record PostDTO(
-    String id,
+    @NotNull String id,
     @JsonProperty("parent_id") String parentId,
-    @JsonProperty("conversation_id") String conversationId,
-    SimplifiedProfileDTO author,
-    String text,
-    @JsonProperty("created_at") String createdAt,
-    PostMetricsDTO metrics,
-    PostRelationshipDTO relationship,
-    PostEntitiesDTO entities
+    @NotNull @JsonProperty("conversation_id") String conversationId,
+    @NotNull SimplifiedProfileDTO author,
+    @NotNull String text,
+    @NotNull @JsonProperty("created_at") String createdAt,
+    @NotNull PostMetricsDTO metrics,
+    @NotNull PostRelationshipDTO relationship,
+    @NotNull PostEntitiesDTO entities
 ) {}
