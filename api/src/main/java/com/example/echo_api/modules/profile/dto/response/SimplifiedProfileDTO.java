@@ -21,7 +21,8 @@ import jakarta.validation.constraints.NotNull;
  */
 @Schema(
     name = "SimplifiedProfile",
-    description = "A lightweight representation of a profile, used within contextual objects like posts or lists of followers/following."
+    description = "A lightweight representation of a profile, used within contextual objects like posts or lists of followers/following.",
+    accessMode = Schema.AccessMode.READ_ONLY
 )
 public record SimplifiedProfileDTO(
     @NotNull String id,

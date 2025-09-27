@@ -11,7 +11,8 @@ import jakarta.validation.constraints.NotNull;
  */
 @Schema(
     name = "PostRelationship",
-    description = "Describes the relationship between the current user and the given post."
+    description = "Describes the relationship between the current user and the given post.",
+    accessMode = Schema.AccessMode.READ_ONLY
 )
 public record PostRelationshipDTO(
     @NotNull boolean liked

@@ -14,7 +14,8 @@ import jakarta.validation.constraints.NotNull;
  */
 @Schema(
     name = "ProfileMetrics",
-    description = "Contextual metrics related to the given profile."
+    description = "Contextual metrics related to the given profile.",
+    accessMode = Schema.AccessMode.READ_ONLY
 )
 public record ProfileMetricsDTO(
     @NotNull int followers,

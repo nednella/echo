@@ -16,7 +16,8 @@ import jakarta.validation.constraints.NotNull;
  */
 @Schema(
     name = "ProfileRelationship",
-    description = "Describes the relationship between the current user and the given profile."
+    description = "Describes the relationship between the current user and the given profile.",
+    accessMode = Schema.AccessMode.READ_ONLY
 )
 public record ProfileRelationshipDTO(
     @NotNull boolean following,

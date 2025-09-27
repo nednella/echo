@@ -25,7 +25,8 @@ import jakarta.validation.constraints.NotNull;
  */
 @Schema(
     name = "Post",
-    description = "A complete representation of a single post."
+    description = "A complete representation of a single post.",
+    accessMode = Schema.AccessMode.READ_ONLY
 )
 public record PostDTO(
     @NotNull String id,

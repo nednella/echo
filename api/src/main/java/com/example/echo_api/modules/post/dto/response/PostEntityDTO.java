@@ -11,7 +11,8 @@ import jakarta.validation.constraints.NotNull;
  */
 @Schema(
     name = "PostEntity",
-    description = "A single entity in the given post's text."
+    description = "A single entity in the given post's text.",
+    accessMode = Schema.AccessMode.READ_ONLY
 )
 public record PostEntityDTO(
     @NotNull int start,

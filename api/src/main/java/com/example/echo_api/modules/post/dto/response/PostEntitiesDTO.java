@@ -11,7 +11,8 @@ import jakarta.validation.constraints.NotNull;
  */
 @Schema(
     name = "PostEntities",
-    description = "Collections of parsed entities in the given post's text."
+    description = "Collections of parsed entities in the given post's text.",
+    accessMode = Schema.AccessMode.READ_ONLY
 )
 public record PostEntitiesDTO(
     // List<?> media, // TODO: implement post images

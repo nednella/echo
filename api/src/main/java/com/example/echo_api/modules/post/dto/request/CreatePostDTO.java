@@ -18,7 +18,8 @@ import jakarta.validation.constraints.Size;
  */
 @Schema(
     name = "CreatePostRequest",
-    description = "Represents the request body required to create a new post."
+    description = "Represents the request body required to create a new post.",
+    accessMode = Schema.AccessMode.WRITE_ONLY
 )
 public record CreatePostDTO(
 

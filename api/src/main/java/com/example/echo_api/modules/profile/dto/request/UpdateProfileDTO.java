@@ -15,7 +15,8 @@ import jakarta.validation.constraints.Size;
  */
 @Schema(
     name = "UpdateProfileRequest",
-    description = "Represents the request body required to update a user's profile information."
+    description = "Represents the request body required to update a user's profile information.",
+    accessMode = Schema.AccessMode.WRITE_ONLY
 )
 public record UpdateProfileDTO(
 

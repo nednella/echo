@@ -25,7 +25,8 @@ import jakarta.validation.constraints.NotNull;
  */
 @Schema(
     name = "Profile",
-    description = "A complete representation of a single profile."
+    description = "A complete representation of a single profile.",
+    accessMode = Schema.AccessMode.READ_ONLY
 )
 public record ProfileDTO(
     @NotNull String id,

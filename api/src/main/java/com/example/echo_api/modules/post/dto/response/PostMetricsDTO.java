@@ -13,7 +13,8 @@ import jakarta.validation.constraints.NotNull;
  */
 @Schema(
     name = "PostMetrics",
-    description = "Engagement metrics for the given post."
+    description = "Engagement metrics for the given post.",
+    accessMode = Schema.AccessMode.READ_ONLY
 )
 public record PostMetricsDTO(
     @NotNull int likes,
