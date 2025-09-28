@@ -29,7 +29,7 @@
 
 ...
 
-You will need a pre-configured Clerk application along with the required keys, as described in the [setup guide](../docs/clerk.md).
+You will need a pre-configured Clerk application along with the required keys, as described in the [setup guide](../docs/clerk-setup.md).
 
 ## Installation
 

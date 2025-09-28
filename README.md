@@ -10,7 +10,7 @@
   <h3><i>The social platform where authentic conversations flourish</i></h3>
   <p>
     <a href="./docs/architecture.md">Architecture</a> •
-    <a href="./docs/clerk.md">Clerk Setup</a> •
+    <a href="./docs/clerk-setup.md">Clerk Setup</a> •
     <a href="./client/README.md">Client Docs</a> •
     <a href="./api/README.md">API Docs</a>
   </p>
