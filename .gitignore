@@ -1,6 +1,6 @@
-# Environment (allow example template)
+# Environment (allow templates)
 .env*
-!.env.template
+!.env.*.template
 
 # Build Output
 build/
