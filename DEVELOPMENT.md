@@ -63,7 +63,7 @@ You should use a version manager (e.g. `sdkman` for Java, `nvm` for Node) so tha
 ### Minimum recommended versions
 
 - Java (JDK): **21 (LTS)**
-- Node: **22.x (latest LTS)**
+- Node.js: **22.x (LTS, latest patch)**
 
 <p align="right">
   <sub><a href="#top">back to the top</a></sub>
@@ -80,7 +80,7 @@ cd echo
 
 ### Setup environment variables
 
-Each application’s root directory includes an `.env.*.template` file per environment. Copy the values from that file into a new environment file (see below) and fill in any missing values from the appropriate source.
+Each application’s root directory includes an `.env.*.template` file per environment. Copy the template file into a new environment file (as shown below), then fill in any missing values from the appropriate source.
 
 ```sh
 # Frontend
@@ -113,7 +113,7 @@ cd api
 **2. Run the application with the local Gradle wrapper**
 
 > [!NOTE]  
-> Your Docker container lifecycles are [automatically managed](https://docs.spring.io/spring-boot/reference/features/dev-services.html) by Spring Boot.
+> Docker container lifecycles are [automatically managed](https://docs.spring.io/spring-boot/reference/features/dev-services.html) by Spring Boot.
 
 ```sh
 ./gradlew bootRun
@@ -150,7 +150,7 @@ By default, the web client will be available on port [5173](http://localhost:517
 ## The onboarding process
 
 > [!IMPORTANT]  
-> The server requires that a user completes the onboarding step before any API calls will be accepted. If onboarding is not completed, requests will return `403 Forbidden` with the message `User has not completed the onboarding process`.
+> The server requires users to complete the onboarding step before any API calls are accepted. If onboarding is not completed, requests will return `403 Forbidden` with the message `User has not completed the onboarding process`.
 
 Depending on your area of local development, you may or may not need to complete this process manually.
 
@@ -162,7 +162,7 @@ If you register a new user through the web client’s authentication pages, onbo
 
 If you are working with the Spring Boot server only, you must create a user in the Clerk dashboard and generate a long-lived session token for authentication.
 
-You can generate a token for a given `User ID` (found via the **Users** tab) from any client of choice using the [Clerk backend API](https://clerk.com/docs/reference/api/overview).
+You can generate a token for a given `User ID` (found via the **Users** tab) using the [Clerk backend API](https://clerk.com/docs/reference/api/overview) from any HTTP client of your choice.
 
 Once you have a valid token, call `POST /v1/clerk/onboarding` once, immediately after registering the user in the dashboard. If the request succeeds, **generate a new session token** (required to pull in updated token claims) and use that token to authenticate subsequent API requests.
 
