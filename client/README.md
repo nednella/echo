@@ -2,7 +2,7 @@
 <br id="top" />
 <p align="center">
   <a href="https://github.com/nednella/echo" target="_blank" rel="noopener noreferrer">
-    <img src="../docs/assets/echo-logo-256-light-gradient.svg" width="48" />
+    <img src="../docs/logo/echo-logo-256-light-gradient.svg" width="48" />
   </a>
 </p>
 <div align="center">
