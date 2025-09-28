@@ -3,3 +3,4 @@ build
 coverage
 src/routeTree.gen.ts
 CHANGELOG.md
+src/libs/api/api-spec.d.ts
