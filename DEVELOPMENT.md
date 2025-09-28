@@ -14,6 +14,14 @@ The Echo project is organised as a monorepo and consists of the following compon
 - A frontend written in TypeScript
 - A PostgreSQL database
 
+## Table of contents
+
+- [Project structure](#project-structure)
+- [Prerequisites](#prerequisites)
+- [Setup environment](#setup-environment)
+- [Start environment](#start-environment)
+- [The onboarding process](#the-onboarding-process)
+
 ## Project structure
 
 ```
@@ -40,6 +48,10 @@ echo/
 └── README.md                # Project overview and quick start
 ```
 
+<p align="right">
+  <sub><a href="#top">back to the top</a></sub>
+</p>
+
 ## Prerequisites
 
 The project requires a pre-configured Clerk application, as described in the [Clerk setup guide](./docs/clerk-setup.md).
@@ -52,6 +64,10 @@ You should use a version manager (e.g. `sdkman` for Java, `nvm` for Node) so tha
 
 - Java (JDK): **21 (LTS)**
 - Node: **22.x (latest LTS)**
+
+<p align="right">
+  <sub><a href="#top">back to the top</a></sub>
+</p>
 
 ## Setup environment
 
@@ -75,6 +91,10 @@ cp ./client/.env.local.template ./client/.env.local
 # Backend
 cp ./api/.env.dev.template ./api/.env.dev
 ```
+
+<p align="right">
+  <sub><a href="#top">back to the top</a></sub>
+</p>
 
 ## Start environment
 
@@ -122,6 +142,10 @@ npm run dev
 ```
 
 By default, the web client will be available on port [5173](http://localhost:5173/).
+
+<p align="right">
+  <sub><a href="#top">back to the top</a></sub>
+</p>
 
 ## The onboarding process
 
