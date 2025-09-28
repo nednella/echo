@@ -18,64 +18,13 @@
   </p>
 </div>
 
-## Table of contents
+## Versioning
 
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Usage](#usage)
-- [FAQ](#faq)
+This application follows [Semantic Versioning](https://semver.org/).
 
-## Prerequisites
+## Releases
 
-The following items should be pre-installed on your system:
-
-- Java 21+ JDK
-- Docker
-- Ngrok, or any tunneling service of your choice
-
-You will also need a pre-configured Clerk application along with the required keys, as described in the [setup guide](../docs/clerk-setup.md).
-
-## Installation
-
-1. **Clone the repository and navigate to the project root**
-
-```
-git clone https://github.com/nednella/echo.git
-cd echo
-```
-
-2. **Navigate to the application**
-
-```
-cd api
-```
-
-3. **Create your local `.env.dev` file**
-
-```
-touch .env.dev
-```
-
-4. **Populate your environment variables**
-
-    - Copy the relevant required variables from the template `.env.example`
-    - Populate your local `.env.dev` file with the required keys
-
-5. **Run the application locally**
-
-```
-./gradlew bootRun
-```
-
-The application will run on the default port `8080`. Your Docker containers are automatically managed by Spring (exept shutdown).
-
-## Usage
-
-WIP
-
-## FAQ
-
-WIP
+Releases & CHANGELOGs are automatically handled by [release-please](https://github.com/googleapis/release-please) according to [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
 ---
 

@@ -19,60 +19,13 @@
   </p>
 </div>
 
-## Table of contents
+## Versioning
 
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [FAQ](#faq)
+This application follows [Semantic Versioning](https://semver.org/).
 
-## Prerequisites
+## Releases
 
-...
-
-You will need a pre-configured Clerk application along with the required keys, as described in the [setup guide](../docs/clerk-setup.md).
-
-## Installation
-
-1. **Clone the repository and navigate to the project root**
-
-```
-git clone https://github.com/nednella/echo.git
-cd echo
-```
-
-2. **Navigate to the application**
-
-```
-cd client
-```
-
-3. **Install the dependencies**
-
-```
-npm i
-```
-
-4. **Create your local `.env` file**
-
-```
-touch .env
-```
-
-5. **Populate your environment variables**
-    - Copy the relevant required variables from the template `.env.example`
-    - Populate your local `.env` file with the required keys
-
-6. **Run the application locally**
-
-```
-npm run dev
-```
-
-The application will run on the default port `5173`.
-
-## FAQ
-
-WIP
+Releases & CHANGELOGs are automatically handled by [release-please](https://github.com/googleapis/release-please) according to [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
 ---
 
