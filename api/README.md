@@ -24,7 +24,7 @@ The REST application is described with an OpenAPI spec located at `/openapi-spec
 
 ## Local development
 
-See the [development documentation](../DEVELOPMENT.md) on how to set up a local development environment.
+See the [development setup guide](../DEVELOPMENT.md) on how to set up a local development environment.
 
 ## Versioning
 
