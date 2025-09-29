@@ -13,9 +13,9 @@
     <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
     <a href="./DEVELOPMENT.md">Development</a>
     <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-    <a href="./client/">Web Client</a>
+    <a href="./apps/client/">Web Client</a>
     <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-    <a href="./api/">REST Service</a>
+    <a href="./apps/api/">REST Service</a>
   </p>
 </div>
 
