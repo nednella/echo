@@ -147,6 +147,42 @@ By default, the web client will be available on port [5173](http://localhost:517
   <sub><a href="#top">back to the top</a></sub>
 </p>
 
+## Commands
+
+### Backend development
+
+```bash
+./gradlew bootRun           # start the development server (docker lifecycle management built-in)
+
+./gradlew clean             # clean the /build directory
+
+./gradlew test              # test the application
+
+./gradlew assemble          # build the application without prior testing
+
+./gradlew build             # test and build the application
+```
+
+### Frontend development
+
+```bash
+npm run dev                 # Start the development server
+
+npm run build               # build the application
+
+npm run format              # run prettier to check for formatting errors
+
+npm run format:fix          # run prettier to fix any formatting errors
+
+npm run lint                # run eslint to check for any linting errors
+
+npm run lint:fix            # run eslint to fix any linting errors
+```
+
+<p align="right">
+  <sub><a href="#top">back to the top</a></sub>
+</p>
+
 ## The onboarding process
 
 > [!IMPORTANT]  
