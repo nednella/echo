@@ -2,11 +2,11 @@
 <br id="top" />
 <p align="center">
   <a href="https://github.com/nednella/echo" target="_blank" rel="noopener noreferrer">
-    <img src="../docs/assets/echo-logo-256-light-gradient.svg" width="48" />
+    <img src="../docs/logo/echo-logo-256-light-gradient.svg" width="48" />
   </a>
 </p>
 <div align="center">
-  <h1>Spring Boot REST API</h1>
+  <h1>Spring Boot REST Service</h1>
   <p>
     <img alt="Java" src="https://img.shields.io/badge/Java-F71134?style=for-the-badge&logo=openjdk&logoColor=white"/>
     <img alt="Spring Boot" src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/>
@@ -18,64 +18,21 @@
   </p>
 </div>
 
-## Table of contents
+## Documentation
 
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Usage](#usage)
-- [FAQ](#faq)
+The REST application is described with an OpenAPI spec located at `/openapi-spec`. A live Swagger UI page is served at `/swagger-ui`.
 
-## Prerequisites
+## Local development
 
-The following items should be pre-installed on your system:
+See the [development setup guide](../DEVELOPMENT.md) on how to set up a local development environment.
 
-- Java 21+ JDK
-- Docker
-- Ngrok, or any tunneling service of your choice
+## Versioning
 
-You will also need a pre-configured Clerk application along with the required keys, as described in the [setup guide](../docs/clerk.md).
+This application follows [Semantic Versioning](https://semver.org/).
 
-## Installation
+## Releases
 
-1. **Clone the repository and navigate to the project root**
-
-```
-git clone https://github.com/nednella/echo.git
-cd echo
-```
-
-2. **Navigate to the application**
-
-```
-cd api
-```
-
-3. **Create your local `.env.dev` file**
-
-```
-touch .env.dev
-```
-
-4. **Populate your environment variables**
-
-    - Copy the relevant required variables from the template `.env.example`
-    - Populate your local `.env.dev` file with the required keys
-
-5. **Run the application locally**
-
-```
-./gradlew bootRun
-```
-
-The application will run on the default port `8080`. Your Docker containers are automatically managed by Spring (exept shutdown).
-
-## Usage
-
-WIP
-
-## FAQ
-
-WIP
+Releases & CHANGELOGs are automatically handled by [release-please](https://github.com/googleapis/release-please) according to [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
 ---
 

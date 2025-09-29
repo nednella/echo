@@ -10,7 +10,7 @@
 </p>
 <h1 align="center">Clerk setup</h1>
 
-The Echo applications are protected with Clerk authentication. Without a correctly configured Clerk application, you won't be able to boot local instances of the React client or Spring Boot REST API.
+This project is protected with Clerk authentication. Without a correctly configured Clerk application, you won't be able to run local instances of the web client or server.
 
 This documentation contains instructions for validating that the Clerk application is correctly configured to the repository's needs, and for obtaining the required keys to spin up the applications on your local machine.
 
@@ -22,9 +22,9 @@ This documentation contains instructions for validating that the Clerk applicati
 - [Creating a Clerk application](#creating-a-clerk-application)
   - [Requiring usernames at sign-up](#requiring-usernames-at-sign-up)
   - [Adding custom session token claims](#adding-custom-session-token-claims)
-  - [Configuring user event webhooks](#configuring-user-event-webhooks)
 - [Obtaining the API keys](#obtaining-the-api-keys)
-- [Optional: local integration testing](#optional-local-integration-testing)
+- [OPTIONAL: Webhooks](#optional-webhooks)
+- [OPTIONAL: Local integration testing](#optional-local-integration-testing)
 
 ## Creating a Clerk application
 
@@ -48,7 +48,7 @@ To run the applications locally, you need to create a Clerk application.
 ### Adding custom session token claims
 
 > [!CAUTION]
-> If the Clerk application is not configured to include the required custom claims on the bearer tokens, all authenticated HTTP requests sent to the REST API will return 403 Forbidden.
+> If the Clerk application is not configured to include the required custom claims on the bearer tokens, all authenticated HTTP requests sent to the REST API will return `403 Forbidden`.
 
 1. Head to the **Configure** tab within your newly created Clerk application
 2. Head to the **Session management &rarr; Sessions** section
@@ -64,25 +64,6 @@ To run the applications locally, you need to create a Clerk application.
 ```
 
 <img src="./assets/clerk_require_custom_claims.png" width="600">
-
-### Configuring user event webhooks
-
-> [!IMPORTANT]  
-> You will require a tunneling service to expose your localhost port to the web. [Ngrok is the recommended option by Clerk](https://clerk.com/docs/webhooks/sync-data), but you may use any tunneling service of your choice.
-
-1. Spin up a tunnel pointing to `localhost:8080`, or the port the REST API will run on if you changed it from the default
-2. Head to the **Configure** tab within your newly created Clerk application
-3. Head to the **Developers &rarr; Webhooks** section
-4. Add a new endpoint, set the **Webhook URL**, subscribe to all **user** events, then create
-5. Locate your **Signing Secret** from the endpoint panel once created &rarr; This is your **CLERK_WEBHOOK_SIGNING_SECRET**
-
-<br />
-
-```
-{YOUR_TUNNEL_URL}/api/v1/clerk/webhook
-```
-
-<img src="./assets/clerk_webhook_configuration.png" width="600">
 
 <p align="right">
   <sub><a href="#top">back to the top</a></sub>
@@ -102,7 +83,6 @@ For the Spring Boot REST API, you will need:
 - A **Secret Key** &rarr; This is your **CLERK_SECRET_KEY**
 - The **Frontend API URL** &rarr; This is your **CLERK_ISSUER_URI**
 - The **JWKS URL** &rarr; This is your **CLERK_JWK_SET_URI**
-- The **Webhook Signing Secret** located as described [here](#configuring-user-event-webhooks)
 
 <br />
 <img src="./assets/clerk_api_keys.png" width="600">
@@ -111,7 +91,33 @@ For the Spring Boot REST API, you will need:
   <sub><a href="#top">back to the top</a></sub>
 </p>
 
-## Optional: local integration testing
+## OPTIONAL: Webhooks
+
+> [!IMPORTANT]  
+> You will require a tunneling service to expose your localhost port to the web. [Ngrok is the recommended option by Clerk](https://clerk.com/docs/webhooks/sync-data), but you may use any tunneling service of your choice.
+
+> [!IMPORTANT]  
+> The Echo REST API is currently only configured to accept `user` events; any other event type will be rejected.
+
+1. Spin up a tunnel pointing to `localhost:8080`, or the port the REST API will run on if you changed it from the default
+2. Head to the **Configure** tab within your newly created Clerk application
+3. Head to the **Developers &rarr; Webhooks** section
+4. Add a new endpoint, set the **Webhook URL**, subscribe to all `user` events, then create
+5. Locate your **Signing Secret** from the endpoint panel once created &rarr; This is your **CLERK_WEBHOOK_SIGNING_SECRET**
+
+<br />
+
+```
+{YOUR_TUNNEL_URL}/api/v1/clerk/webhook
+```
+
+<img src="./assets/clerk_webhook_configuration.png" width="600">
+
+<p align="right">
+  <sub><a href="#top">back to the top</a></sub>
+</p>
+
+## OPTIONAL: Local integration testing
 
 As of **Sept. 2025**, Clerk does not currently support testing environments within the same Clerk application. The current workaround to run local integration tests is to create **a second identical Clerk application** (e.g., append the application name with **CI/CD** for clarity).
 
