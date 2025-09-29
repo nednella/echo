@@ -7,22 +7,26 @@
 </p>
 <h1 align="center">Development</h1>
 
-The Echo project is organised as a monorepo and consists of the following components:
+This file provides guidance for getting started with your local development environment when working with code in this repository.
 
-- Authentication provided by Clerk
-- A backend written in Java, exposing a REST API
-- A frontend written in TypeScript
-- A PostgreSQL database
+## Overview
+
+The Echo project is organised as a monorepo consisting of the following components:
+
+- **Authentication:** provided by Clerk
+- **Backend:** Java/Spring Boot REST API server with postgreSQL
+- **Frontend:** Typescript Vite/React web application
 
 ## Table of contents
 
-- [Project structure](#project-structure)
+- [Architecture](#architecture)
 - [Prerequisites](#prerequisites)
-- [Setup environment](#setup-environment)
-- [Start environment](#start-environment)
+- [Environment setup](#environment-setup)
+- [Environment startup](#environment-startup)
+- [Commands](#commands)
 - [The onboarding process](#the-onboarding-process)
 
-## Project structure
+## Architecture
 
 ```
 echo/
@@ -38,9 +42,9 @@ echo/
 │   ├── package.json         # Application dependencies & scripts
 │   └── ...
 │
-├── docs/                    # Documentation and assets
-│   ├── assets/              # Project images
-│   ├── logo/                # Project logos
+├── docs/                    # Documentation andrelated assets
+│   ├── assets/              # Documentation images
+│   ├── logo/                # Documentation logos
 │   ├── architecture.md      # Application architecture discussion
 │   └── clerk-setup.md       # Clerk configuration guide
 │
@@ -69,7 +73,7 @@ You should use a version manager (e.g. `sdkman` for Java, `nvm` for Node) so tha
   <sub><a href="#top">back to the top</a></sub>
 </p>
 
-## Setup environment
+## Environment setup
 
 ### Clone the repository to your local machine
 
@@ -78,7 +82,7 @@ git clone https://github.com/nednella/echo.git
 cd echo
 ```
 
-### Setup environment variables
+### Environment variables
 
 Each application’s root directory includes an `.env.*.template` file per environment. Copy the template file into a new environment file (as shown below), then fill in any missing values from the appropriate source.
 
@@ -96,7 +100,7 @@ cp ./api/.env.dev.template ./api/.env.dev
   <sub><a href="#top">back to the top</a></sub>
 </p>
 
-## Start environment
+## Environment startup
 
 > [!TIP]
 > Use multiple terminal tabs to run applications in parallel.
@@ -190,10 +194,6 @@ npm run lint:fix            # run eslint to fix any linting errors
 
 Depending on your area of local development, you may or may not need to complete this process manually.
 
-### Frontend development
-
-If you register a new user through the web client’s authentication pages, onboarding will be handled automatically via the `/onboarding` page redirect after successful registration.
-
 ### Backend development
 
 If you are working with the Spring Boot server only, you must create a user in the Clerk dashboard and generate a long-lived session token for authentication.
@@ -201,6 +201,10 @@ If you are working with the Spring Boot server only, you must create a user in t
 You can generate a token for a given `User ID` (found via the **Users** tab) using the [Clerk backend API](https://clerk.com/docs/reference/api/overview) from any HTTP client of your choice.
 
 Once you have a valid token, call `POST /v1/clerk/onboarding` once, immediately after registering the user in the dashboard. If the request succeeds, **generate a new session token** (required to pull in updated token claims) and use that token to authenticate subsequent API requests.
+
+### Frontend development
+
+If you register a new user through the web client’s authentication pages, onboarding will be handled automatically via the `/onboarding` page redirect after successful registration.
 
 ---
 
