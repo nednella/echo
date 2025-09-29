@@ -41,7 +41,7 @@ Like all of my previous projects to date, this one came about with the intention
 
 ### "Why another boring social media app?"
 
-Nobody needs another social app — but I need one to learn how they’re built!
+I need one to learn how they’re built!
 
 By choosing a well-understood domain, I was free to explore the underlying systems and architectural decisions that make large-scale applications work:
 
@@ -76,7 +76,7 @@ I set out to use this project as a lab of sorts, for learning and experimenting 
 - **DevOps & CI/CD**:
   - Build pipelines to automatically run tests and enforce code quality before merges
   - Understand how to manage different development environments
-  - Explore tooling for easing developer experience, e.g. Docker
+  - Explore tooling for improved developer experience, e.g. Docker
 
 <p align="right">
   <sub><a href="#top">back to the top</a></sub>
@@ -90,7 +90,7 @@ I set out to use this project as a lab of sorts, for learning and experimenting 
 
 Before starting out on this project, I had long since settled on building a Java Spring Boot backend service. I had previously covered Node Express backend services, and didn't like the lack of structure in the framework. 
 
-Prior to this project I was new to Java. I learned the language initially to cover the [Princeton Algorithms I](https://www.coursera.org/learn/algorithms-part1) online course content. The strictness of a statically typed language (minus the sheer quantity of boilerplate) was really refreshing, coming from JS.
+Prior to this project, I was new to Java. I learned the language initially to cover the [Princeton Algorithms I](https://www.coursera.org/learn/algorithms-part1) online course content. The strictness of a statically typed language (minus the sheer quantity of boilerplate) was really refreshing, coming from JS.
 
 Java and Spring are widely used in industry, and I liked the opinionated structure that the framework itself seemed to offer when I was doing my research. So, I thought I'd pick it up and expand my knowledge base.
 
@@ -112,7 +112,7 @@ I started building out the application by considering what information I wanted 
 
 Profile requests should return the information you'd expect when visiting a user's page. Their unique identifier, some personalised details specific to the application, and when they first joined. Contextual information like follower counts, post counts and relationship status with the viewing user should also be included.
 
-```json
+```javascript
 {
     "id": String,
     "username": String,
@@ -191,7 +191,7 @@ For simple CRUD operations, I leaned on Spring Data JPA's [repository interfaces
 
 Complexity grew when working on `GET` requests for profiles and posts. These endpoints required complex data transfer objects (DTO) that combined data from multiple tables. Taking a look at a standard representation of a user's post:
 
-```json
+```javascript
 {
     "id": String,
     "parent_id": String | null,
@@ -219,7 +219,7 @@ At the time, I couldn't figure out how to model these requirements through an OR
 
 There were positives to draw from the decision. Writing raw SQL forced me to understand it better and expand my knowledge. I became more comfortable joining and aggregating data, and explored new-to-me features like views and CTEs. By writing the queries myself, I could also easily look at query performance using `EXPLAIN ANALYZE`.
 
-But, there are some significant hindrances. Refactoring data access is a headache, and debugging raw SQL is a nightmare. If I touch a base query function like `fetch_posts`, I will have to carefully update every higher-level function that consumes it. If I introduce a bug in a query, I don't have any IDE support and I've found that SQL errors are not the most descriptive.
+But, there are some significant hindrances. Refactoring data access is a headache, and debugging raw SQL is a nightmare. If I touch a base query function like `fetch_posts`, I will have to carefully update every higher-level function that consumes it. If I introduce a bug in a query, I don't have any IDE support, and I've found that SQL errors are not the most descriptive.
 
 It works, but it's very easy to make mistakes and frustrating to maintain.
 
@@ -280,11 +280,11 @@ In the end, I chose [Clerk](https://clerk.com/). Their developer experience is s
 
 The trade-off for integrating with Clerk was losing control of the `user` table — Echo's entire social model depends on referencing a local `user` table!
 
-Clerk currently does not offer exposure to their underlying database, nor do they provide triggers to synchronise state directly. What they do offer (at the time of writing) is asynchronous, non-guaranteed [webhook](https://clerk.com/docs/webhooks/sync-data) events. They are useful for maintaining sync of PUTs and DELETEs, but not for critical actions like user registration. A new user should immediately be able to access and navigate the application without error, *guaranteed*. This requires the user to be present in the local database immediately after the point of registration.
+Clerk currently does not offer exposure to their underlying database, nor do they provide triggers to synchronise state directly. What they do offer (at the time of writing) is asynchronous, non-guaranteed [webhook](https://clerk.com/docs/webhooks/sync-data) events.
 
-Clerk discusses an ["onboarding flow"](https://clerk.com/blog/add-onboarding-flow-for-your-application-with-clerk) that you can use to collect key information from your user post-registration, and use that information to drive application state.
+Webhooks are useful for maintaining sync of PUTs and DELETEs, but not for critical actions like user registration. A new user should immediately be able to access and navigate the application without error, *guaranteed*. This requires the user to be present in the local database immediately after the point of registration.
 
-[I chose to adapt this flow with a twist](https://github.com/nednella/echo/pull/61). Rather than collecting information from the user, an onboarding page will automatically send an authenticated request to the server as soon as registration completes. The key to the flow is that the Clerk session tokens [contain the Clerk user's unique identifier](https://clerk.com/docs/backend-requests/resources/session-tokens) within the `sub` claim. Using that information, I can run a database upsert action:
+Clerk discusses an ["onboarding flow"](https://clerk.com/blog/add-onboarding-flow-for-your-application-with-clerk) that you can use to collect key information from your user post-registration, and use that information to drive application state. [I chose to adapt this flow with a twist](https://github.com/nednella/echo/pull/61). Rather than collecting information from the user, an onboarding page will automatically send an authenticated request to the server as soon as registration completes. From that request, I can run a database upsert:
 
 - If a user doesn't exist with the given Clerk ID, create one, and update the Clerk user as having completed the onboarding process
 - If a user already exists, update (or skip)
@@ -304,8 +304,6 @@ WIP
 </p>
 
 ## DevOps & CI/CD
-
-WIP
 
 <p align="right">
   <sub><a href="#top">back to the top</a></sub>
