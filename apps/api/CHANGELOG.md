@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.0](https://github.com/nednella/echo/compare/api@v0.2.0...api@v0.3.0) (2025-09-29)
+
+
+### Features
+
+* **api:** add openapi docs  ([#107](https://github.com/nednella/echo/issues/107)) ([a918406](https://github.com/nednella/echo/commit/a9184068fa474665e6710aa53bcfe7c8d19ecaa6))
+
+
+### Bug Fixes
+
+* **api:** add missing protocol prefix to default CORS_ALLOWED_ORIGIN ([#111](https://github.com/nednella/echo/issues/111)) ([b158386](https://github.com/nednella/echo/commit/b158386e2d0461943c8c3f93a7a622f8c20b3f98))
+
 ## [0.2.0](https://github.com/nednella/echo/compare/api@v0.1.0...api@v0.2.0) (2025-09-24)
 
 
