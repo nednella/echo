@@ -6,7 +6,7 @@
   </a>
 </p>
 <div align="center">
-  <h1>Spring Boot REST API</h1>
+  <h1>Spring Boot REST Service</h1>
   <p>
     <img alt="Java" src="https://img.shields.io/badge/Java-F71134?style=for-the-badge&logo=openjdk&logoColor=white"/>
     <img alt="Spring Boot" src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/>
@@ -17,6 +17,14 @@
     <img alt="Docker" src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
   </p>
 </div>
+
+## Documentation
+
+The REST application is described with an OpenAPI spec located at `/openapi-spec`. A live Swagger UI page is served at `/swagger-ui`.
+
+## Local development
+
+See the [development documentation](../DEVELOPMENT.md) on how to set up a local development environment.
 
 ## Versioning
 
