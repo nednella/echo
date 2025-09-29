@@ -24,7 +24,7 @@ function HomePage() {
         }
 
         fetch()
-    }, [])
+    }, [getToken])
 
     return (
         <div className="flex h-full items-center justify-center gap-6">
