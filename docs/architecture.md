@@ -5,9 +5,9 @@
     <img src="./logo/echo-logo-256-light-gradient.svg" width="48" />
   </a>
 </p>
-<h1 align="center">System Architecture</h1>
+<h1 align="center">Echo Architecture</h1>
 
-> A deep dive into the design decisions and architecture of Echo — why I built it, why it’s built the way it is, and what questions were asked along the way.
+> A dive under the hood of Echo — why it exists, the decisions that shaped it, what I learnt, and a few things I might do differently next time.
 
 ## Table of contents
 
