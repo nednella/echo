@@ -19,6 +19,10 @@
   </p>
 </div>
 
+## Local development
+
+See the [development documentation](../DEVELOPMENT.md) on how to set up a local development environment.
+
 ## Versioning
 
 This application follows [Semantic Versioning](https://semver.org/).
