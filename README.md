@@ -1,24 +1,27 @@
 <!-- HEADER -->
 <br id="top" />
+
 <p align="center">
-  <a href="https://github.com/nednella/echo" target="_blank" rel="noopener noreferrer">
-    <img src="./docs/logo/echo-logo-256-light-gradient.svg" width="48" />
+  <a href="https://echo-social.app/">
+      <img src="./docs/assets/banner.png" />
   </a>
 </p>
+
 <div align="center">
-  <h1>Echo</h1>
-  <h3><i>The social platform where authentic conversations flourish</i></h3>
   <p>
-    <a href="./docs/architecture.md">Architecture</a> •
-    <a href="./docs/clerk-setup.md">Clerk Setup</a> •
-    <a href="./client/README.md">Client Docs</a> •
-    <a href="./api/README.md">API Docs</a>
+    <a href="./docs/architecture.md">Architecture</a>
+    <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+    <a href="./DEVELOPMENT.md">Development</a>
+    <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+    <a href="./client/">Web Client</a>
+    <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+    <a href="./api/">REST Service</a>
   </p>
 </div>
 
 ## 🖼️ Showcase
 
-![Landing page](./docs/assets/landing.png)
+WIP
 
 ## 📜 Introduction
 
@@ -26,10 +29,7 @@ WIP
 
 ## 📚 Documentation
 
-- [System Architecture](./docs/architecture.md)
-- [Clerk Setup Guide](./docs/clerk-setup.md)
-- [Client Documentation](./client/README.md)
-- [API Documenation](./api/README.md)
+WIP
 
 ---
 
