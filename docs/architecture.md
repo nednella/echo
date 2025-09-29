@@ -33,6 +33,12 @@
   - [The challenge of synchronising databases](#the-challenge-of-synchronising-databases)
 - [Frontend](#frontend)
 - [DevOps & CI/CD](#devops--cicd)
+  - [Git workflow](#git-workflow)
+  - [Conventional commits](#conventional-commits)
+  - [Branch protection rules](#branch-protection-rules)
+  - [Continuous integration](#continuous-integration)
+  - [Continuous deployment](#continuous-deployment)
+  - [Deployment services](#deployment-services)
 - [Finishing up](#finishing-up)
 
 ## Motivation
@@ -304,6 +310,64 @@ WIP
 </p>
 
 ## DevOps & CI/CD
+
+### Git workflow
+
+The repository follows [trunk-based development](https://trunkbaseddevelopment.com/) using short-lived feature branches.
+
+- All new work starts from the latest version of `main`
+- Branches are kept small and focussed on a specific change
+- Once a change is ready, a PR is opened back into `main`
+
+This way, `main` acts as the single source of truth and is always in a deployable state.
+
+### Conventional commits
+
+To standardise commit messages, the repository uses the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) spec. There are a couple key benefits:
+
+1. **Readable history** - the log explains clearly what changes were made
+2. **Automation** - tools can parse commit messages to generate version bumps and changelogs
+
+### Branch protection rules
+
+The highlighted workflow is enforced with specific branch protection rules.
+
+- A pull request is required before merging
+- A linear commit history is required (squash merges only -- required for automation tooling)
+- Specific status checks must pass before permitting a merge
+
+Checks include a `check-pr-title` job that enforces the Conventional Commits spec, and CI workflows for each application. As a result, every change that lands on `main` is meaningful and production-ready.
+
+### Continuous integration
+
+CI runs via GitHub Actions for every PR into `main`. Each application has it's own dedicated CI workflow that involves formatting, linting and testing the source code.
+
+To save time, CI workflows are [conditionally executed](https://github.com/dorny/paths-filter) based on whether the relevant source code was touched.
+
+### Continuous deployment
+
+Application deployment workflows run via GitHub Actions on tag pushes.
+
+The deployment process is automated with [release-please](https://github.com/googleapis/release-please). The tool works by parsing commits on a given branch (in this case, `main`) and looks for messages that match the [Conventional Commits](#conventional-commits) spec. When qualifying changes are detected, it automatically opens a **"Release PR"** with an updated changelog and a [semantic version](https://semver.org/) bump.
+
+Upon merging a release PR, the tool executes the following tasks:
+
+- Updates the `CHANGELOG.md` file
+- Updates the relevant files versioned files (e.g., `package.json`, `build-gradle`)
+- Tags the commit with the updated application version number
+- Creates a GitHub release based on this tag
+
+The tool is configured to look at each application individually using the [manifest-driven configuration](https://github.com/googleapis/release-please/blob/main/docs/manifest-releaser.md). As a result, each application maintains its own changelog and version, allowing deployment on a per-application basis.
+
+From there, GitHub Actions picks up a pushed tag and runs the relevant deployment pipeline. The end result is that deployment for a given application within the project requires no manual intevention, except one click on the green button within the release PR.
+
+The process is entirely hands-off and reliable when matched with the afore mentioned branch protection ruleset. Implementing this tool was probably the best thing I did for myself throughout the entire project.
+
+### Deployment services
+
+Not much to discuss here. This is really just a learning project and I don't expect to generate any organic traffic, so it's hosted with services that either have a generous free tier, or at most, a cheap but reliable hobby tier.
+
+The web client is currently hosted with [Vercel](https://vercel.com/home), and the backend service is hosted with [Railway](https://railway.com/).
 
 <p align="right">
   <sub><a href="#top">back to the top</a></sub>
