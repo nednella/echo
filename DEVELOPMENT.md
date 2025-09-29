@@ -9,6 +9,17 @@
 
 This file provides guidance for getting started with your local development environment when working with code in this repository.
 
+
+## Table of contents
+
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Prerequisites](#prerequisites)
+- [Environment setup](#environment-setup)
+- [Environment startup](#environment-startup)
+- [Commands](#commands)
+- [The onboarding process](#the-onboarding-process)
+
 ## Overview
 
 The Echo project is organised as a monorepo consisting of the following components:
@@ -17,14 +28,10 @@ The Echo project is organised as a monorepo consisting of the following componen
 - **Backend:** Java/Spring Boot REST API server with postgreSQL
 - **Frontend:** Typescript Vite/React web application
 
-## Table of contents
+<p align="right">
+  <sub><a href="#top">back to the top</a></sub>
+</p>
 
-- [Architecture](#architecture)
-- [Prerequisites](#prerequisites)
-- [Environment setup](#environment-setup)
-- [Environment startup](#environment-startup)
-- [Commands](#commands)
-- [The onboarding process](#the-onboarding-process)
 
 ## Architecture
 
@@ -170,11 +177,13 @@ By default, the web client will be available on port [5173](http://localhost:517
 ### Frontend development
 
 ```bash
+npm i                       # Install dependencies
+
 npm run dev                 # Start the development server
 
 npm run build               # build the application
 
-npm run format              # run prettier to check for formatting errors
+npm run format              # run prettier to check for any formatting errors
 
 npm run format:fix          # run prettier to fix any formatting errors
 
