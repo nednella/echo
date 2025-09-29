@@ -1,15 +1,14 @@
-import React from "react"
+import { Outlet, createFileRoute } from "@tanstack/react-router"
 
-import { MotionContainer } from "@/components/ui/container"
-import { Page } from "@/components/ui/page"
+import { BackToHome } from "@/features/auth/components/back-to-home"
+import { MotionContainer } from "@/libs/ui/container"
+import { Page } from "@/libs/ui/page"
 
-import { BackToHome } from "../components/back-to-home"
+export const Route = createFileRoute("/(public)/(auth)")({
+    component: AuthLayout
+})
 
-interface Props {
-    children: React.ReactNode
-}
-
-export function Layout({ children }: Readonly<Props>) {
+function AuthLayout() {
     return (
         <Page className="to-echo-teal from-echo-navy flex items-center justify-center bg-gradient-to-br">
             <MotionContainer
@@ -24,7 +23,7 @@ export function Layout({ children }: Readonly<Props>) {
                     animate={{ y: 0, scale: 1, opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
                 >
-                    {children}
+                    <Outlet />
                 </MotionContainer>
             </MotionContainer>
         </Page>

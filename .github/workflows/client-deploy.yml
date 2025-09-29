@@ -7,7 +7,7 @@ on:
 
 defaults:
     run:
-        working-directory: client
+        working-directory: apps/client
 
 env:
     VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
