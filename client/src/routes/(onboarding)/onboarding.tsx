@@ -1,7 +1,7 @@
 import { useUser } from "@clerk/clerk-react"
 import { createFileRoute, redirect } from "@tanstack/react-router"
 
-import { Layout } from "@/features/onboarding/layout/layout"
+import { Page } from "@/libs/ui/page"
 import { isAuthenticated, isOnboarded } from "@/utils/auth"
 
 export const Route = createFileRoute("/(onboarding)/onboarding")({
@@ -28,5 +28,9 @@ function OnboardingPage() {
 
     console.log(user)
 
-    return <Layout></Layout>
+    return (
+        <Page>
+            <p>onboarding page</p>
+        </Page>
+    )
 }
