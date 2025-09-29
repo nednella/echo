@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.2.0](https://github.com/nednella/echo/compare/client@v0.1.1...client@v0.2.0) (2025-09-29)
+
+
+### Features
+
+* **client:** add index.html title & favicon ([#112](https://github.com/nednella/echo/issues/112)) ([0ac2d2d](https://github.com/nednella/echo/commit/0ac2d2d335917bf86bb6d7414bf595c2ef97ed2b))
+* **client:** add type-safe api client using generated openapi spec ([#109](https://github.com/nednella/echo/issues/109)) ([c4b6c7b](https://github.com/nednella/echo/commit/c4b6c7b8fe7b097f42ec12bad4f0f7087d984421))
+
+
+### Bug Fixes
+
+* **client:** fix public favicon import ([#113](https://github.com/nednella/echo/issues/113)) ([e8c4f2d](https://github.com/nednella/echo/commit/e8c4f2dbd37b7e6f721b048faeaadbd924a2688a))
+
 ## [0.1.1](https://github.com/nednella/echo/compare/client@v0.1.0...client@v0.1.1) (2025-09-20)
 
 
