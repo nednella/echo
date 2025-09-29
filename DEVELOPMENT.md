@@ -39,15 +39,16 @@ The Echo project is organised as a monorepo consisting of the following componen
 echo/
 ├── .github/                 # GitHub Actions workflows (CI/CD)
 │
-├── api/                     # Spring Boot backend (REST API, business logic, persistence)
-│   ├── src/                 # Application source code
-│   ├── build.gradle         # Application build configuration
-│   └── ...             
-│
-├── client/                  # Frontend web client (TypeScript, React, Vite)
-│   ├── src/                 # Application source code
-│   ├── package.json         # Application dependencies & scripts
-│   └── ...
+├── apps/
+│   ├── api/                 # Spring Boot backend (REST API, business logic, persistence)
+│   │   ├── src/             # Application source code
+│   │   ├── build.gradle     # Application build configuration
+│   │   └── ...
+│   │
+│   └── client/              # Frontend web client (TypeScript, React, Vite)
+│       ├── src/             # Application source code
+│       ├── package.json     # Application dependencies & scripts
+│       └── ...
 │
 ├── docs/                    # Documentation andrelated assets
 │   ├── assets/              # Documentation images
@@ -95,12 +96,12 @@ Each application’s root directory includes an `.env.*.template` file per envir
 
 ```sh
 # Frontend
-cp ./client/.env.local.template ./client/.env.local
+cp ./apps/client/.env.local.template ./apps/client/.env.local
 ```
 
 ```sh
 # Backend
-cp ./api/.env.dev.template ./api/.env.dev
+cp ./apps/api/.env.dev.template ./apps/api/.env.dev
 ```
 
 <p align="right">
@@ -118,7 +119,7 @@ cp ./api/.env.dev.template ./api/.env.dev
 **1. Navigate to the application root**
 
 ```sh
-cd api
+cd apps/api
 ```
 
 **2. Run the application with the local Gradle wrapper**
@@ -137,7 +138,7 @@ By default, the server will be available on port `8080`.
 **1. Navigate to the application root**
 
 ```sh
-cd client
+cd apps/client
 ```
 
 **2. Install dependencies**
