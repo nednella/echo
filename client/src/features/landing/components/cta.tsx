@@ -1,6 +1,6 @@
-import { ButtonLink } from "@/components/ui/button-link"
-import { MotionContainer } from "@/components/ui/container"
-import { Separator } from "@/components/ui/separator"
+import { ButtonLink } from "@/libs/ui/button-link"
+import { MotionContainer } from "@/libs/ui/container"
+import { Separator } from "@/libs/ui/separator"
 
 export function CallToAction() {
     return (

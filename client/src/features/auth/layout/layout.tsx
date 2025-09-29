@@ -1,7 +1,7 @@
 import React from "react"
 
-import { MotionContainer } from "@/components/ui/container"
-import { Page } from "@/components/ui/page"
+import { MotionContainer } from "@/libs/ui/container"
+import { Page } from "@/libs/ui/page"
 
 import { BackToHome } from "../components/back-to-home"
 
