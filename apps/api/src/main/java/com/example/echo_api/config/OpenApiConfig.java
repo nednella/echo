@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.info.Info;
     info = @Info(
         title = "Echo API",
         description = "A REST API implementation to serve the Echo client.",
-        version = "0.2.0" // x-release-please-version
+        version = "0.3.0" // x-release-please-version
     )
 )
 @Configuration
