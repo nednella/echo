@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/nednella/echo/compare/client@v0.2.0...client@v0.2.1) (2025-09-30)
+
+
+### Bug Fixes
+
+* **release:** force patch version bump ([#121](https://github.com/nednella/echo/issues/121)) ([882f08e](https://github.com/nednella/echo/commit/882f08e3956cf1b44f3491ad79f38d3aa8db03f1))
+
 ## [0.2.0](https://github.com/nednella/echo/compare/client@v0.1.1...client@v0.2.0) (2025-09-29)
 
 
