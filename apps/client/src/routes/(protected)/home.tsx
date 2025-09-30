@@ -20,6 +20,7 @@ function HomePage() {
                 headers: { Authorization: "Bearer " + token },
                 credentials: "include"
             })
+
             console.log(response)
         }
 
