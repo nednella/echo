@@ -8,7 +8,7 @@ import globals from "globals"
 import tseslint from "typescript-eslint"
 
 export default tseslint.config([
-    globalIgnores(["dist", "src/routeTree.gen.ts", "CHANGELOG.md", "src/libs/api/api-spec.d.ts"]),
+    globalIgnores(["dist", "src/routeTree.gen.ts", "CHANGELOG.md", "src/libs/api/v1.d.ts"]),
     {
         files: ["**/*.{ts,tsx}"],
         extends: [
