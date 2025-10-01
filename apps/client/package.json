@@ -32,6 +32,7 @@
     "devDependencies": {
         "@eslint/js": "^9.30.1",
         "@tanstack/eslint-plugin-query": "^5.91.0",
+        "@tanstack/eslint-plugin-router": "^1.132.21",
         "@tanstack/router-plugin": "^1.129.8",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "@types/node": "^24.3.1",
