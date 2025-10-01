@@ -1,4 +1,5 @@
 import js from "@eslint/js"
+import eslintPluginQuery from "@tanstack/eslint-plugin-query"
 import eslintConfigPrettier from "eslint-config-prettier"
 import reactHooks from "eslint-plugin-react-hooks"
 import reactRefresh from "eslint-plugin-react-refresh"
@@ -15,6 +16,7 @@ export default tseslint.config([
             js.configs.recommended,
             tseslint.configs.recommended,
             eslintPluginUnicorn.configs.recommended,
+            eslintPluginQuery.configs["flat/recommended"],
             reactHooks.configs["recommended-latest"],
             reactRefresh.configs.vite,
             eslintConfigPrettier // must be last
