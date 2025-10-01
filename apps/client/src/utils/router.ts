@@ -12,7 +12,7 @@ declare module "@tanstack/react-router" {
 
 export const router = createRouter({
     routeTree,
-    defaultPreload: false, // TODO: use "intent"
+    defaultPreload: "intent",
     scrollRestoration: true, //  https://tanstack.com/router/latest/docs/framework/react/examples/scroll-restoration
     context: {
         auth: undefined!,
