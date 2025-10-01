@@ -8,7 +8,15 @@ import { router } from "@/utils/router"
 
 import { LoadingPage } from "./loading"
 
-function InnerApp() {
+export function App() {
+    return (
+        <AppProvider>
+            <EntryPoint />
+        </AppProvider>
+    )
+}
+
+function EntryPoint() {
     const [isReady, setIsReady] = useState(false)
     const auth = useAuth()
 
@@ -19,17 +27,9 @@ function InnerApp() {
         />
     ) : (
         <LoadingPage
-            isReady={auth.isLoaded} // based on Clerk loading status
+            isReady={auth.isLoaded} // base on Clerk load status
             minimumLoadingTime={2000}
-            onAnimationComplete={() => setIsReady(true)} // render app after animation complete
+            onAnimationComplete={() => setIsReady(true)}
         />
-    )
-}
-
-export function App() {
-    return (
-        <AppProvider>
-            <InnerApp />
-        </AppProvider>
     )
 }
