@@ -2,10 +2,10 @@ import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 
 import { isAuthenticated, isOnboarded } from "@/utils/auth"
 
-// /(protected)/ authentication/onboarding check
+// /(protected)/ authentication/onboarded check
 export const Route = createFileRoute("/(protected)")({
-    beforeLoad({ context, location }) {
-        if (!isAuthenticated(context.auth)) {
+    beforeLoad({ context: { auth }, location }) {
+        if (!isAuthenticated(auth)) {
             throw redirect({
                 to: "/login",
                 replace: true,
@@ -14,8 +14,7 @@ export const Route = createFileRoute("/(protected)")({
                 }
             })
         }
-
-        if (!isOnboarded(context.auth)) {
+        if (!isOnboarded(auth)) {
             throw redirect({
                 to: "/onboarding",
                 replace: true

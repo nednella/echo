@@ -4,8 +4,8 @@ import { isAuthenticated } from "@/utils/auth"
 
 // /(public)/ authentication check
 export const Route = createFileRoute("/(public)")({
-    beforeLoad({ context }) {
-        if (isAuthenticated(context.auth)) {
+    beforeLoad({ context: { auth } }) {
+        if (isAuthenticated(auth)) {
             throw redirect({
                 to: "/home",
                 replace: true
