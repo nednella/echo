@@ -1,4 +1,4 @@
-import { AuthProvider } from "./auth-provider"
+import { EchoClerkProvider } from "./clerk-provider"
 import { EchoQueryClientProvider } from "./query-client-provider"
 
 interface Props {
@@ -7,8 +7,8 @@ interface Props {
 
 export function AppProvider({ children }: Readonly<Props>) {
     return (
-        <AuthProvider>
+        <EchoClerkProvider>
             <EchoQueryClientProvider>{children}</EchoQueryClientProvider>
-        </AuthProvider>
+        </EchoClerkProvider>
     )
 }
