@@ -4,9 +4,9 @@ import { useAuth } from "@clerk/clerk-react"
 import { RouterProvider } from "@tanstack/react-router"
 
 import { AppProvider } from "@/providers"
+import { router } from "@/utils/router"
 
 import { LoadingPage } from "./loading"
-import { router } from "./router"
 
 function InnerApp() {
     const [isReady, setIsReady] = useState(false)
