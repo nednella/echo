@@ -3,8 +3,9 @@ import { useState } from "react"
 import { useAuth } from "@clerk/clerk-react"
 import { RouterProvider } from "@tanstack/react-router"
 
+import { AppProvider } from "@/providers"
+
 import { LoadingPage } from "./loading"
-import { Provider } from "./provider"
 import { router } from "./router"
 
 function InnerApp() {
@@ -27,8 +28,8 @@ function InnerApp() {
 
 export function App() {
     return (
-        <Provider>
+        <AppProvider>
             <InnerApp />
-        </Provider>
+        </AppProvider>
     )
 }
