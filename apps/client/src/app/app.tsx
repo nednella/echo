@@ -3,11 +3,20 @@ import { useState } from "react"
 import { useAuth } from "@clerk/clerk-react"
 import { RouterProvider } from "@tanstack/react-router"
 
-import { LoadingPage } from "./loading"
-import { Provider } from "./provider"
-import { router } from "./router"
+import { AppProvider } from "@/providers"
+import { router } from "@/utils/router"
 
-function InnerApp() {
+import { LoadingPage } from "./loading"
+
+export function App() {
+    return (
+        <AppProvider>
+            <EntryPoint />
+        </AppProvider>
+    )
+}
+
+function EntryPoint() {
     const [isReady, setIsReady] = useState(false)
     const auth = useAuth()
 
@@ -18,17 +27,9 @@ function InnerApp() {
         />
     ) : (
         <LoadingPage
-            isReady={auth.isLoaded} // based on Clerk loading status
+            isReady={auth.isLoaded} // base on Clerk load status
             minimumLoadingTime={2000}
-            onAnimationComplete={() => setIsReady(true)} // render app after animation complete
+            onAnimationComplete={() => setIsReady(true)}
         />
-    )
-}
-
-export function App() {
-    return (
-        <Provider>
-            <InnerApp />
-        </Provider>
     )
 }

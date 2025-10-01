@@ -5,15 +5,14 @@ import { Page } from "@/libs/ui/page"
 import { isAuthenticated, isOnboarded } from "@/utils/auth"
 
 export const Route = createFileRoute("/(onboarding)/onboarding")({
-    beforeLoad({ context }) {
-        if (!isAuthenticated(context.auth)) {
+    beforeLoad({ context: { auth } }) {
+        if (!isAuthenticated(auth)) {
             throw redirect({
                 to: "/login",
                 replace: true
             })
         }
-
-        if (isOnboarded(context.auth)) {
+        if (isOnboarded(auth)) {
             throw redirect({
                 to: "/home",
                 replace: true
