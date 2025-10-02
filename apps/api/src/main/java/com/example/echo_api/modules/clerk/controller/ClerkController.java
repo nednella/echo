@@ -17,7 +17,7 @@ import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Clerk")
+@Tag(name = "Clerk API")
 @RestController
 @RequiredArgsConstructor
 public class ClerkController {

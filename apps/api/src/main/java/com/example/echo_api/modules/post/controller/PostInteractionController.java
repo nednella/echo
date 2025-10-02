@@ -14,7 +14,7 @@ import com.example.echo_api.shared.constant.ApiRoutes;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Post")
+@Tag(name = "Post API")
 @RestController
 @RequiredArgsConstructor
 public class PostInteractionController {

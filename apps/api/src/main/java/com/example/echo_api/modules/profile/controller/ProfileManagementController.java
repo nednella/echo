@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Profile")
+@Tag(name = "Profile API")
 @Validated
 @RestController
 @RequiredArgsConstructor

@@ -22,7 +22,7 @@ import com.example.echo_api.shared.validation.annotations.Offset;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Profile")
+@Tag(name = "Profile API")
 @Validated
 @RestController
 @RequiredArgsConstructor
