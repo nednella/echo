@@ -1,4 +1,4 @@
-package com.example.echo_api.shared.constant;
+package com.example.echo_api.shared.pagination;
 
 import static lombok.AccessLevel.PRIVATE;
 

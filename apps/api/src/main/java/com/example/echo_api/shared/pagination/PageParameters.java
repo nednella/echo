@@ -2,7 +2,6 @@ package com.example.echo_api.shared.pagination;
 
 import org.springdoc.core.annotations.ParameterObject;
 
-import com.example.echo_api.shared.constant.PaginationConstraints;
 import com.example.echo_api.shared.validation.annotations.Limit;
 import com.example.echo_api.shared.validation.annotations.Offset;
 
