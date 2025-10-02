@@ -4,41 +4,28 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.echo_api.modules.post.api.PostViewAPI;
 import com.example.echo_api.modules.post.dto.response.PostDTO;
 import com.example.echo_api.modules.post.service.PostViewService;
-import com.example.echo_api.shared.constant.ApiRoutes;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
 import com.example.echo_api.shared.pagination.Paged;
-import com.example.echo_api.shared.validation.annotations.Limit;
-import com.example.echo_api.shared.validation.annotations.Offset;
-
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
-@Tag(name = "Post API")
-@Validated
 @RestController
 @RequiredArgsConstructor
-public class PostViewController {
+class PostViewController implements PostViewAPI {
 
     private final PostViewService postViewService;
 
-    @GetMapping(ApiRoutes.POST.BY_ID)
-    public ResponseEntity<PostDTO> getPostById(@PathVariable("id") UUID id) {
+    @Override
+    public ResponseEntity<PostDTO> getPostById(UUID id) {
         return ResponseEntity.ok(postViewService.getPostById(id));
     }
 
-    @GetMapping(ApiRoutes.POST.REPLIES)
-    public ResponseEntity<Paged<PostDTO>> getRepliesByPostId(
-        @PathVariable("id") UUID id,
-        @RequestParam(name = "offset", defaultValue = "0") @Offset int offset,
-        @RequestParam(name = "limit", defaultValue = "20") @Limit int limit) {
+    @Override
+    public ResponseEntity<Paged<PostDTO>> getRepliesByPostId(UUID id, int offset, int limit) {
         Pageable page = OffsetLimitRequest.of(offset, limit);
         return ResponseEntity.ok(postViewService.getRepliesByPostId(id, page));
     }
