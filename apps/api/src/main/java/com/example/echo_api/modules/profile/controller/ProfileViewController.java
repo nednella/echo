@@ -11,6 +11,7 @@ import com.example.echo_api.modules.profile.dto.response.ProfileDTO;
 import com.example.echo_api.modules.profile.dto.response.SimplifiedProfileDTO;
 import com.example.echo_api.modules.profile.service.ProfileViewService;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
+import com.example.echo_api.shared.pagination.PageParameters;
 import com.example.echo_api.shared.pagination.Paged;
 
 import lombok.RequiredArgsConstructor;
@@ -32,14 +33,14 @@ class ProfileViewController implements ProfileViewAPI {
     }
 
     @Override
-    public ResponseEntity<Paged<SimplifiedProfileDTO>> getFollowers(UUID id, int offset, int limit) {
-        Pageable page = OffsetLimitRequest.of(offset, limit);
+    public ResponseEntity<Paged<SimplifiedProfileDTO>> getFollowers(UUID id, PageParameters pageParams) {
+        Pageable page = OffsetLimitRequest.of(pageParams.getOffset(), pageParams.getLimit());
         return ResponseEntity.ok(profileViewService.getFollowers(id, page));
     }
 
     @Override
-    public ResponseEntity<Paged<SimplifiedProfileDTO>> getFollowing(UUID id, int offset, int limit) {
-        Pageable page = OffsetLimitRequest.of(offset, limit);
+    public ResponseEntity<Paged<SimplifiedProfileDTO>> getFollowing(UUID id, PageParameters pageParams) {
+        Pageable page = OffsetLimitRequest.of(pageParams.getOffset(), pageParams.getLimit());
         return ResponseEntity.ok(profileViewService.getFollowing(id, page));
     }
 

@@ -10,6 +10,7 @@ import com.example.echo_api.modules.post.api.PostViewAPI;
 import com.example.echo_api.modules.post.dto.response.PostDTO;
 import com.example.echo_api.modules.post.service.PostViewService;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
+import com.example.echo_api.shared.pagination.PageParameters;
 import com.example.echo_api.shared.pagination.Paged;
 import lombok.RequiredArgsConstructor;
 
@@ -25,8 +26,8 @@ class PostViewController implements PostViewAPI {
     }
 
     @Override
-    public ResponseEntity<Paged<PostDTO>> getRepliesByPostId(UUID id, int offset, int limit) {
-        Pageable page = OffsetLimitRequest.of(offset, limit);
+    public ResponseEntity<Paged<PostDTO>> getRepliesByPostId(UUID id, PageParameters pageParams) {
+        Pageable page = OffsetLimitRequest.of(pageParams.getOffset(), pageParams.getLimit());
         return ResponseEntity.ok(postViewService.getRepliesByPostId(id, page));
     }
 
