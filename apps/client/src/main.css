@@ -12,5 +12,5 @@ body,
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
     height: 100%;
     color-scheme: dark;
-    background: #1e2939;
+    background: #1e2939; // TODO: integrate theme, dark = #1e2939, light = #f9fafb
 }
