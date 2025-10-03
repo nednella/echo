@@ -9,6 +9,16 @@ if (!BASE_URL) {
     throw new Error("API base URL missing from .env file!")
 }
 
+const authMiddleware: Middleware = {
+    onRequest: async ({ request }) => {
+        const token = await globalThis.Clerk?.session?.getToken()
+
+        if (token) {
+            request.headers.append("Authorization", `Bearer ${token}`)
+        }
+    }
+}
+
 const errorMiddleware: Middleware = {
     onResponse: async ({ response }) => {
         if (response.ok) return response
@@ -23,6 +33,7 @@ const errorMiddleware: Middleware = {
 
 function createClientWithMiddleware() {
     const client = createClient(BASE_URL)
+    client.use(authMiddleware)
     client.use(errorMiddleware)
     return client
 }
