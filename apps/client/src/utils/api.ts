@@ -1,5 +1,3 @@
-import { QueryClient } from "@tanstack/react-query"
-
 import { createClient } from "@/libs/api"
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
@@ -10,7 +8,3 @@ if (!BASE_URL) {
 }
 
 export const client = createClient(BASE_URL)
-
-export const queryClient = new QueryClient({
-    defaultOptions: {}
-})
