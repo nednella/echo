@@ -13,11 +13,13 @@ import com.example.echo_api.modules.user.entity.User;
 import com.example.echo_api.shared.constant.ApiRoutes;
 
 import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "Clerk API")
 public interface ClerkAPI {
 
+    @Operation(description = "Sync the authenticated Clerk user to the local application")
     @PostMapping(ApiRoutes.CLERK.ONBOARDING)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<User> clerkOnboarding();
