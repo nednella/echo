@@ -11,7 +11,7 @@
         "lint": "npx eslint .",
         "lint:fix": "npx eslint . --fix",
         "typecheck": "npx tsc --noEmit",
-        "generate": "npx openapi-typescript https://api.echo-social.app/openapi -o ./src/libs/api/v1.d.ts",
+        "openapi": "npx openapi-typescript https://api.echo-social.app/openapi -o ./src/libs/api/v1.d.ts",
         "preview": "vite preview"
     },
     "dependencies": {
