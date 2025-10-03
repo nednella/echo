@@ -1,6 +1,6 @@
 import { toast } from "sonner"
 
-import { type Middleware, createClient } from "@/libs/api"
+import { ApiException, type Middleware, createClient } from "@/libs/api"
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
 
@@ -10,8 +10,11 @@ if (!BASE_URL) {
 }
 
 const errorMiddleware: Middleware = {
-    onResponse: () => {
-        console.log("onResponse")
+    onResponse: async ({ response }) => {
+        if (response.ok) return response
+
+        const error = await response.json()
+        throw new ApiException(error, response) // https://openapi-ts.dev/openapi-fetch/middleware-auth#throwing
     },
     onError: () => {
         toast.error("A network error occurred", { description: "Please try again later" })
