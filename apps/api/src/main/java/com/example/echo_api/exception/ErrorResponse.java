@@ -5,6 +5,8 @@ import java.util.Objects;
 
 import org.springframework.http.HttpStatus;
 
+import jakarta.validation.constraints.NotNull;
+
 /**
  * Represents a standardised error response format for the application.
  * 
@@ -14,10 +16,10 @@ import org.springframework.http.HttpStatus;
  * @param path      the request path that triggered the error
  */
 public record ErrorResponse(
-    Instant timestamp,
-    int status,
-    String message,
-    String path
+    @NotNull Instant timestamp,
+    @NotNull int status,
+    @NotNull String message,
+    @NotNull String path
 ) {
 
     /**
