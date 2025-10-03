@@ -11,7 +11,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** @description Get your profile */
         get: operations["getMe"];
+        /** @description Update your profile */
         put: operations["updateProfile"];
         post?: never;
         delete?: never;
@@ -29,7 +31,9 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** @description Follow a profile by ID */
         post: operations["followById"];
+        /** @description Unfollow a profile by ID */
         delete: operations["unfollowById"];
         options?: never;
         head?: never;
@@ -45,6 +49,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** @description Create a post */
         post: operations["create"];
         delete?: never;
         options?: never;
@@ -61,7 +66,9 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** @description Like a post by ID */
         post: operations["like"];
+        /** @description Unlike a post by ID */
         delete: operations["unlike"];
         options?: never;
         head?: never;
@@ -77,6 +84,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** @description Sync the authenticated Clerk user to the local application */
         post: operations["clerkOnboarding"];
         delete?: never;
         options?: never;
@@ -91,6 +99,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** @description Get a profile by username */
         get: operations["getByUsername"];
         put?: never;
         post?: never;
@@ -107,6 +116,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** @description Get following by ID */
         get: operations["getFollowing"];
         put?: never;
         post?: never;
@@ -123,6 +133,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** @description Get followers by ID */
         get: operations["getFollowers"];
         put?: never;
         post?: never;
@@ -139,9 +150,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** @description Get a post by ID */
         get: operations["getPostById"];
         put?: never;
         post?: never;
+        /** @description Delete a post by ID */
         delete: operations["delete"];
         options?: never;
         head?: never;
@@ -155,6 +168,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** @description Get post replies by ID */
         get: operations["getRepliesByPostId"];
         put?: never;
         post?: never;
@@ -171,6 +185,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** @description Get replies by profile ID */
         get: operations["getProfileReplies"];
         put?: never;
         post?: never;
@@ -187,6 +202,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** @description Get posts by profile ID */
         get: operations["getProfilePosts"];
         put?: never;
         post?: never;
@@ -203,6 +219,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** @description Get mentions of profile ID */
         get: operations["getProfileMentions"];
         put?: never;
         post?: never;
@@ -219,6 +236,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** @description Get likes by profile ID */
         get: operations["getProfileLikes"];
         put?: never;
         post?: never;
@@ -235,6 +253,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** @description Get your homepage posts */
         get: operations["getHomeFeed"];
         put?: never;
         post?: never;
@@ -251,6 +270,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** @description Get discover page posts */
         get: operations["getDiscoverFeed"];
         put?: never;
         post?: never;
@@ -269,6 +289,14 @@ export interface components {
             name?: string;
             bio?: string;
             location?: string;
+        };
+        ErrorResponse: {
+            /** Format: date-time */
+            timestamp: string;
+            /** Format: int32 */
+            status: number;
+            message: string;
+            path: string;
         };
         /** @description Represents the request body required to create a new post. */
         CreatePostRequest: {
@@ -426,12 +454,21 @@ export interface operations {
             };
         };
         responses: {
-            /** @description OK */
-            200: {
+            /** @description No Content */
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Invalid field(s) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
             };
         };
     };
@@ -446,12 +483,30 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
-            200: {
+            /** @description No Content */
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description ID not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Already following profile with ID */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
             };
         };
     };
@@ -466,12 +521,21 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
-            200: {
+            /** @description No Content */
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description ID not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
             };
         };
     };
@@ -488,12 +552,30 @@ export interface operations {
             };
         };
         responses: {
-            /** @description OK */
-            200: {
+            /** @description No Content */
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Invalid field(s) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Parent ID not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
             };
         };
     };
@@ -508,12 +590,30 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
-            200: {
+            /** @description No Content */
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description ID not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Already liked post with ID */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
             };
         };
     };
@@ -528,8 +628,8 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
-            200: {
+            /** @description No Content */
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -546,8 +646,8 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
-            200: {
+            /** @description Created */
+            201: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -577,13 +677,24 @@ export interface operations {
                     "*/*": components["schemas"]["Profile"];
                 };
             };
+            /** @description Username not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     getFollowing: {
         parameters: {
             query?: {
-                offset?: number;
-                limit?: number;
+                /** @description Zero-based offset */
+                offset?: string;
+                /** @description Page size */
+                limit?: string;
             };
             header?: never;
             path: {
@@ -600,6 +711,24 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["PagedSimplifiedProfile"];
+                };
+            };
+            /** @description Invalid pagination parameter(s) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description ID not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -607,8 +736,10 @@ export interface operations {
     getFollowers: {
         parameters: {
             query?: {
-                offset?: number;
-                limit?: number;
+                /** @description Zero-based offset */
+                offset?: string;
+                /** @description Page size */
+                limit?: string;
             };
             header?: never;
             path: {
@@ -625,6 +756,24 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["PagedSimplifiedProfile"];
+                };
+            };
+            /** @description Invalid pagination parameter(s) */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description ID not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -649,6 +798,15 @@ export interface operations {
                     "*/*": components["schemas"]["Post"];
                 };
             };
+            /** @description ID not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     delete: {
@@ -662,20 +820,31 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description OK */
-            200: {
+            /** @description No Content */
+            204: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Cannot delete another user's post */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
             };
         };
     };
     getRepliesByPostId: {
         parameters: {
             query?: {
-                offset?: number;
-                limit?: number;
+                /** @description Zero-based offset */
+                offset?: string;
+                /** @description Page size */
+                limit?: string;
             };
             header?: never;
             path: {
@@ -692,6 +861,15 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["PagedPost"];
+                };
+            };
+            /** @description ID not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -699,8 +877,10 @@ export interface operations {
     getProfileReplies: {
         parameters: {
             query?: {
-                offset?: number;
-                limit?: number;
+                /** @description Zero-based offset */
+                offset?: string;
+                /** @description Page size */
+                limit?: string;
             };
             header?: never;
             path: {
@@ -717,6 +897,15 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["PagedPost"];
+                };
+            };
+            /** @description ID not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -724,8 +913,10 @@ export interface operations {
     getProfilePosts: {
         parameters: {
             query?: {
-                offset?: number;
-                limit?: number;
+                /** @description Zero-based offset */
+                offset?: string;
+                /** @description Page size */
+                limit?: string;
             };
             header?: never;
             path: {
@@ -742,6 +933,15 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["PagedPost"];
+                };
+            };
+            /** @description ID not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -749,8 +949,10 @@ export interface operations {
     getProfileMentions: {
         parameters: {
             query?: {
-                offset?: number;
-                limit?: number;
+                /** @description Zero-based offset */
+                offset?: string;
+                /** @description Page size */
+                limit?: string;
             };
             header?: never;
             path: {
@@ -767,6 +969,15 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["PagedPost"];
+                };
+            };
+            /** @description ID not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
                 };
             };
         };
@@ -774,8 +985,10 @@ export interface operations {
     getProfileLikes: {
         parameters: {
             query?: {
-                offset?: number;
-                limit?: number;
+                /** @description Zero-based offset */
+                offset?: string;
+                /** @description Page size */
+                limit?: string;
             };
             header?: never;
             path: {
@@ -794,13 +1007,24 @@ export interface operations {
                     "*/*": components["schemas"]["PagedPost"];
                 };
             };
+            /** @description ID not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
     };
     getHomeFeed: {
         parameters: {
             query?: {
-                offset?: number;
-                limit?: number;
+                /** @description Zero-based offset */
+                offset?: string;
+                /** @description Page size */
+                limit?: string;
             };
             header?: never;
             path?: never;
@@ -822,8 +1046,10 @@ export interface operations {
     getDiscoverFeed: {
         parameters: {
             query?: {
-                offset?: number;
-                limit?: number;
+                /** @description Zero-based offset */
+                offset?: string;
+                /** @description Page size */
+                limit?: string;
             };
             header?: never;
             path?: never;

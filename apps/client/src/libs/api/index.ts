@@ -1,15 +1,26 @@
-import createClient from "openapi-fetch"
+import createOpenApiClient from "openapi-fetch"
 
 import type { components, paths } from "./v1"
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL
+export const createClient = (baseUrl: string) => createOpenApiClient<paths>({ baseUrl })
 
-// TODO: validate .env variables in one place
-if (!BASE_URL) {
-    throw new Error("API base URL missing from .env file!")
+export class ApiException extends Error {
+    public timestamp: string
+    public status: number
+    public path: string
+    public response: Response
+
+    constructor(error: schemas["ErrorResponse"], response: Response) {
+        super(error.message)
+        this.timestamp = error.timestamp
+        this.status = error.status
+        this.path = error.path
+        this.response = response
+        this.name = "ApiException"
+    }
 }
 
-export const client = createClient<paths>({ baseUrl: BASE_URL })
-
-export type { paths, operations } from "./v1"
+export type { Middleware } from "openapi-fetch"
+export type { operations, paths } from "./v1"
 export type schemas = components["schemas"]
+export type Client = ReturnType<typeof createClient>

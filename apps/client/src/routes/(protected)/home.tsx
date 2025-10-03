@@ -3,7 +3,7 @@ import { useEffect } from "react"
 import { UserButton, useAuth } from "@clerk/clerk-react"
 import { createFileRoute } from "@tanstack/react-router"
 
-import { client } from "@/libs/api"
+import { client } from "@/utils/api"
 
 export const Route = createFileRoute("/(protected)/home")({
     component: HomePage
