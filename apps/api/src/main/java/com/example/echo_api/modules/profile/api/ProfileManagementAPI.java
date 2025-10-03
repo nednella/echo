@@ -1,9 +1,11 @@
 package com.example.echo_api.modules.profile.api;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.example.echo_api.modules.profile.dto.request.UpdateProfileDTO;
 import com.example.echo_api.shared.constant.ApiRoutes;
@@ -16,6 +18,7 @@ import jakarta.validation.Valid;
 public interface ProfileManagementAPI {
 
     @PutMapping(ApiRoutes.PROFILE.ME)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> updateProfile(@RequestBody @Valid UpdateProfileDTO request);
 
 }

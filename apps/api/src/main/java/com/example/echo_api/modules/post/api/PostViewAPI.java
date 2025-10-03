@@ -2,10 +2,12 @@ package com.example.echo_api.modules.post.api;
 
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.example.echo_api.modules.post.dto.response.PostDTO;
 import com.example.echo_api.shared.constant.ApiRoutes;
@@ -20,9 +22,11 @@ import jakarta.validation.Valid;
 public interface PostViewAPI {
 
     @GetMapping(ApiRoutes.POST.BY_ID)
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<PostDTO> getPostById(@PathVariable("id") UUID id);
 
     @GetMapping(ApiRoutes.POST.REPLIES)
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Paged<PostDTO>> getRepliesByPostId(
         @PathVariable("id") UUID id,
         @Valid PageParameters pageParams);
