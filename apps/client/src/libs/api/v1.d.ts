@@ -292,11 +292,11 @@ export interface components {
         };
         ErrorResponse: {
             /** Format: date-time */
-            timestamp?: string;
+            timestamp: string;
             /** Format: int32 */
-            status?: number;
-            message?: string;
-            path?: string;
+            status: number;
+            message: string;
+            path: string;
         };
         /** @description Represents the request body required to create a new post. */
         CreatePostRequest: {
