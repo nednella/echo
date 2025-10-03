@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.0](https://github.com/nednella/echo/compare/client@v0.2.1...client@v0.3.0) (2025-10-03)
+
+
+### Features
+
+* **api:** update controller OpenAPI documentation ([#128](https://github.com/nednella/echo/issues/128)) ([9dd81d1](https://github.com/nednella/echo/commit/9dd81d161bb3f682afe5bf0c1be9df493f0a47ab))
+* **client:** add & configure tanstack query ([#127](https://github.com/nednella/echo/issues/127)) ([5b9587f](https://github.com/nednella/echo/commit/5b9587fd4d4f293be812ac2af91a577ee8d474b1))
+* **client:** add auth & error middleware to openapi-fetch client ([#131](https://github.com/nednella/echo/issues/131)) ([710a94b](https://github.com/nednella/echo/commit/710a94bbe38ba3abf3c47143b8cc864c3798e33a))
+* **client:** add npm generate script for regenerating openapi type file ([#124](https://github.com/nednella/echo/issues/124)) ([7b4b86f](https://github.com/nednella/echo/commit/7b4b86f8af442695b110824ed5d824bc74ed92a4))
+* **client:** add typecheck script ([#126](https://github.com/nednella/echo/issues/126)) ([1e9e598](https://github.com/nednella/echo/commit/1e9e5982b6b37b6b325efc375efcece373af652d))
+
 ## [0.2.1](https://github.com/nednella/echo/compare/client@v0.2.0...client@v0.2.1) (2025-09-30)
 
 
