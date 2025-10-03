@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.0](https://github.com/nednella/echo/compare/api@v0.3.1...api@v0.4.0) (2025-10-03)
+
+
+### Features
+
+* **api:** annotate ErrorResponse with NotNull so OpenAPI spec infers as required fields ([#130](https://github.com/nednella/echo/issues/130)) ([4c5f158](https://github.com/nednella/echo/commit/4c5f15820db43a16604cb837be91d99f7fc1ea18))
+* **api:** update controller OpenAPI documentation ([#128](https://github.com/nednella/echo/issues/128)) ([9dd81d1](https://github.com/nednella/echo/commit/9dd81d161bb3f682afe5bf0c1be9df493f0a47ab))
+
 ## [0.3.1](https://github.com/nednella/echo/compare/api@v0.3.0...api@v0.3.1) (2025-09-30)
 
 
