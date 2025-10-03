@@ -3,32 +3,27 @@ package com.example.echo_api.modules.post.controller;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.echo_api.modules.post.api.PostInteractionAPI;
 import com.example.echo_api.modules.post.service.PostInteractionService;
-import com.example.echo_api.shared.constant.ApiRoutes;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Post")
 @RestController
 @RequiredArgsConstructor
-public class PostInteractionController {
+class PostInteractionController implements PostInteractionAPI {
 
     private final PostInteractionService postInteractionService;
 
-    @PostMapping(ApiRoutes.POST.LIKE)
-    public ResponseEntity<Void> like(@PathVariable("id") UUID id) {
+    @Override
+    public ResponseEntity<Void> like(UUID id) {
         postInteractionService.like(id);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(ApiRoutes.POST.LIKE)
-    public ResponseEntity<Void> unlike(@PathVariable("id") UUID id) {
+    @Override
+    public ResponseEntity<Void> unlike(UUID id) {
         postInteractionService.unlike(id);
         return ResponseEntity.noContent().build();
     }

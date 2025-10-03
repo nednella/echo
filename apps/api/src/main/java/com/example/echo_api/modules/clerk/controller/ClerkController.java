@@ -3,39 +3,31 @@ package com.example.echo_api.modules.clerk.controller;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.echo_api.modules.clerk.api.ClerkAPI;
 import com.example.echo_api.modules.clerk.service.ClerkOnboardingService;
 import com.example.echo_api.modules.clerk.service.ClerkWebhookService;
 import com.example.echo_api.modules.user.entity.User;
-import com.example.echo_api.shared.constant.ApiRoutes;
-
-import io.swagger.v3.oas.annotations.Hidden;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Clerk")
 @RestController
 @RequiredArgsConstructor
-public class ClerkController {
+class ClerkController implements ClerkAPI {
 
-    private final ClerkOnboardingService onboardingService;
-    private final ClerkWebhookService webhookService;
+    private final ClerkOnboardingService clerkOnboardingService;
+    private final ClerkWebhookService clerkWebhookService;
 
-    @PostMapping(ApiRoutes.CLERK.ONBOARDING)
+    @Override
     public ResponseEntity<User> clerkOnboarding() {
-        User user = onboardingService.onboardAuthenticatedUser();
+        User user = clerkOnboardingService.onboardAuthenticatedUser();
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
-    @Hidden
-    @PostMapping(ApiRoutes.CLERK.WEBHOOK)
-    public ResponseEntity<Void> clerkEvent(@RequestHeader HttpHeaders headers, @RequestBody String payload) {
-        webhookService.verify(headers, payload);
-        webhookService.handleWebhook(payload);
+    @Override
+    public ResponseEntity<Void> clerkEvent(HttpHeaders headers, String payload) {
+        clerkWebhookService.verify(headers, payload);
+        clerkWebhookService.handleWebhook(payload);
         return ResponseEntity.noContent().build();
     }
 
