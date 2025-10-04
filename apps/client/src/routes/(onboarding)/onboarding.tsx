@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query"
 import { createFileRoute, redirect } from "@tanstack/react-router"
 
-import { onboardingMutation } from "@/features/onboarding/hooks/onboarding"
+import { onboardingMutationOptions } from "@/features/onboarding/api/options"
 import { useEffectOnce } from "@/hooks/effect"
 import { Page } from "@/libs/ui/page"
 import { isAuthenticated, isOnboarded } from "@/utils/auth"
@@ -26,11 +26,9 @@ export const Route = createFileRoute("/(onboarding)/onboarding")({
 })
 
 function OnboardingPage() {
-    const onboarding = useMutation(onboardingMutation())
-
     const { auth } = Route.useRouteContext()
     const navigate = Route.useNavigate()
-    const { getToken } = auth
+    const onboarding = useMutation(onboardingMutationOptions())
 
     useEffectOnce(() => {
         onboarding.mutate()
@@ -41,7 +39,7 @@ function OnboardingPage() {
      * the user will be redirected back to /onboarding due to missing claims.
      */
     const handleOnboardingComplete = async () => {
-        await getToken({ skipCache: true })
+        await auth.getToken({ skipCache: true })
         navigate({ to: "/home", replace: true })
     }
 

@@ -3,8 +3,8 @@ import { mutationOptions } from "@tanstack/react-query"
 import { client } from "@/utils/api"
 import { delayWithPromise } from "@/utils/delay"
 
-export const onboardingMutation = () => {
-    return mutationOptions({
+export const onboardingMutationOptions = () =>
+    mutationOptions({
         mutationFn: async () => {
             // API call is forced to a minimum delay for UX
             const [response] = await Promise.allSettled([client.POST("/v1/clerk/onboarding"), delayWithPromise(3000)])
@@ -14,4 +14,3 @@ export const onboardingMutation = () => {
             return response.value.data
         }
     })
-}
