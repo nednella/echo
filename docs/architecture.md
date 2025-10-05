@@ -353,7 +353,7 @@ The deployment process is automated with [release-please](https://github.com/goo
 Upon merging a release PR, the tool executes the following tasks:
 
 - Updates the `CHANGELOG.md` file
-- Updates the relevant files versioned files (e.g., `package.json`, `build-gradle`)
+- Updates the relevant versioned files (e.g., `package.json`, `build-gradle`)
 - Tags the commit with the updated application version number
 - Creates a GitHub release based on this tag
 
