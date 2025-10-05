@@ -1,31 +1,23 @@
 import { useEffect } from "react"
 
-import { UserButton, useAuth } from "@clerk/clerk-react"
+import { UserButton } from "@clerk/clerk-react"
 import { createFileRoute } from "@tanstack/react-router"
 
-import { client } from "@/utils/api"
+import { client } from "@/utils/api/client"
 
 export const Route = createFileRoute("/(protected)/home")({
     component: HomePage
 })
 
 function HomePage() {
-    const { getToken } = useAuth()
-
     useEffect(() => {
         const fetch = async () => {
-            const token = await getToken()
-
-            const response = await client.GET("/v1/profile/me", {
-                headers: { Authorization: "Bearer " + token },
-                credentials: "include"
-            })
-
-            console.log(response)
+            const { data } = await client.GET("/v1/profile/me")
+            console.log(data)
         }
 
         fetch()
-    }, [getToken])
+    }, [])
 
     return (
         <div className="flex h-full items-center justify-center gap-6">
