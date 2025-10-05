@@ -28,7 +28,7 @@ function EntryPoint() {
     ) : (
         <LoadingPage
             isReady={auth.isLoaded} // base on Clerk load status
-            minimumLoadingTime={2000}
+            minimumLoadingTimeMs={2000}
             onAnimationComplete={() => setIsReady(true)}
         />
     )
