@@ -8,21 +8,22 @@ import { Page } from "@/libs/ui/page"
 
 interface Props {
     isReady: boolean
-    minimumLoadingTime: number // millisec
+    minimumLoadingTimeMs: number
     onAnimationComplete: () => void
 }
 
-export function LoadingPage({ isReady, minimumLoadingTime, onAnimationComplete }: Readonly<Props>) {
+export function LoadingPage({ isReady, minimumLoadingTimeMs, onAnimationComplete }: Readonly<Props>) {
     const [shouldExit, setShouldExit] = useState(false)
     const [minLoadingTimeReached, setMinLoadingTimeReached] = useState(false)
 
+    // TODO: refactor into a single useEffect
     useEffect(() => {
         const id = setTimeout(() => {
             setMinLoadingTimeReached(true)
-        }, minimumLoadingTime)
+        }, minimumLoadingTimeMs)
 
         return () => clearTimeout(id)
-    }, [minimumLoadingTime])
+    }, [minimumLoadingTimeMs])
 
     useEffect(() => {
         if (isReady && minLoadingTimeReached) {
@@ -30,6 +31,7 @@ export function LoadingPage({ isReady, minimumLoadingTime, onAnimationComplete }
         }
     }, [isReady, minLoadingTimeReached])
 
+    // TODO: refactor animation
     return (
         <Page className="p-0">
             <AnimatePresence onExitComplete={onAnimationComplete}>
@@ -55,7 +57,7 @@ export function LoadingPage({ isReady, minimumLoadingTime, onAnimationComplete }
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, transition: { duration: 0.2 } }}
-                                transition={{ duration: minimumLoadingTime / 1000, ease: "easeInOut" }}
+                                transition={{ duration: minimumLoadingTimeMs / 1000, ease: "easeInOut" }}
                             >
                                 <EchoLogo
                                     size={96}
@@ -75,7 +77,7 @@ export function LoadingPage({ isReady, minimumLoadingTime, onAnimationComplete }
                                         className="h-full rounded-full bg-white/60"
                                         initial={{ width: 0 }}
                                         animate={{ width: isReady ? "95%" : "60%" }}
-                                        transition={{ duration: minimumLoadingTime / 1000, ease: "easeInOut" }}
+                                        transition={{ duration: minimumLoadingTimeMs / 1000, ease: "easeInOut" }}
                                     />
                                 </div>
                             </MotionContainer>

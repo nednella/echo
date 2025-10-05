@@ -8,7 +8,7 @@ export function Page({ className, ...props }: Readonly<Props>) {
     // TODO: theme
     return (
         <div
-            className={twMerge("h-screen w-screen bg-gray-800 p-2", className)}
+            className={twMerge("h-screen w-screen p-2", className)}
             {...props}
         />
     )

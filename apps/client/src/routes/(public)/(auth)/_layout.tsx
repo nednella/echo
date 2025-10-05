@@ -4,6 +4,7 @@ import { BackToHome } from "@/features/auth/components/back-to-home"
 import { MotionContainer } from "@/libs/ui/container"
 import { Page } from "@/libs/ui/page"
 
+// (auth) layout
 export const Route = createFileRoute("/(public)/(auth)")({
     component: AuthLayout
 })
