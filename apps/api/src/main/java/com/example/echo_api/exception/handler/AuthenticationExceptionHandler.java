@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -50,8 +51,30 @@ public class AuthenticationExceptionHandler {
 
     /**
      * Handles {@link AuthenticationException} subclass
+     * {@link OAuth2AuthenticationException}.
+     * 
+     * <p>
+     * For more information, refer to:
+     * <ul>
+     * <li>https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/oauth2/core/OAuth2AuthenticationException.html
+     * </ul>
+     */
+    @ExceptionHandler(OAuth2AuthenticationException.class)
+    ResponseEntity<ErrorResponse> handleOAuth2AuthenticationException(
+        HttpServletRequest request,
+        OAuth2AuthenticationException ex) {
+        log.debug("Handling exception: {}", ex.getMessage());
+
+        return ErrorResponseFactory.build(
+            request,
+            HttpStatus.UNAUTHORIZED,
+            ex.getMessage());
+    }
+
+    /**
+     * Handles {@link OAuth2AuthenticationException} subclass
      * {@link InvalidBearerTokenException}, for cases when the provided bearer token
-     * is invalid.
+     * is invalid. Prevents revealing sensitive token-related information.
      * 
      * <p>
      * For more information, refer to:
