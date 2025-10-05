@@ -51,5 +51,14 @@ function OnboardingPage() {
         onboarding.mutate()
     }
 
-    return <Page className="flex items-center justify-center">{/* TODO: loading animation component */}</Page>
+    return (
+        <Page className="flex items-center justify-center">
+            <OnboardingAnimation
+                status={onboarding.status}
+                onSuccessAutoContinueMs={3000}
+                onSuccessContinue={handleSuccess}
+                onErrorRetry={handleRetry}
+            />
+        </Page>
+    )
 }
