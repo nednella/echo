@@ -1,6 +1,6 @@
-import { EchoClerkProvider } from "./clerk-provider"
-import { EchoQueryClientProvider } from "./query-client-provider"
-import SonnerProvider from "./sonner-provider"
+import { EchoClerkProvider } from "@/providers/clerk-provider"
+import { EchoQueryClientProvider } from "@/providers/query-client-provider"
+import SonnerProvider from "@/providers/sonner-provider"
 
 interface Props {
     children: React.ReactNode

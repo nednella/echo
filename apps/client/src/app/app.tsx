@@ -4,9 +4,9 @@ import { useAuth } from "@clerk/clerk-react"
 import { RouterProvider } from "@tanstack/react-router"
 
 import { router } from "@/common/router"
-import { AppProvider } from "@/providers"
 
 import { LoadingPage } from "./loading"
+import { AppProvider } from "./providers"
 
 export function App() {
     return (
