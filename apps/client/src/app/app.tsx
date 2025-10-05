@@ -3,8 +3,8 @@ import { useState } from "react"
 import { useAuth } from "@clerk/clerk-react"
 import { RouterProvider } from "@tanstack/react-router"
 
+import { router } from "@/common/router"
 import { AppProvider } from "@/providers"
-import { router } from "@/utils/router"
 
 import { LoadingPage } from "./loading"
 
