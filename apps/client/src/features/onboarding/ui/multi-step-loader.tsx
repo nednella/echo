@@ -3,9 +3,9 @@ import { useEffect } from "react"
 import type { MutationStatus } from "@tanstack/react-query"
 import { AnimatePresence } from "motion/react"
 
-import Spinner from "@/components/spinner"
 import { Button } from "@/libs/ui/button"
 import { MotionContainer } from "@/libs/ui/container"
+import Spinner from "@/libs/ui/spinner"
 
 interface Props {
     status: MutationStatus
