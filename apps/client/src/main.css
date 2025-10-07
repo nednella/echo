@@ -73,8 +73,8 @@
 
     /* palettes */
     --neutral-50: oklch(0.985 0 0);
-    --neutral-100: oklch(0.97 0);
-    --neutral-200: oklch(0.922 0);
+    --neutral-100: oklch(0.97 0 0);
+    --neutral-200: oklch(0.922 0 0);
     --neutral-300: oklch(0.87 0 0);
     --neutral-400: oklch(0.708 0 0);
     --neutral-500: oklch(0.556 0 0);
