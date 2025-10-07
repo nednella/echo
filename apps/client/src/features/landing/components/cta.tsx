@@ -1,6 +1,8 @@
-import { ButtonLink } from "@/libs/ui/button-link"
+import { Link } from "@tanstack/react-router"
+
+import { Button } from "@/libs/ui/button"
 import { MotionContainer } from "@/libs/ui/container"
-import { Separator } from "@/libs/ui/separator"
+import { LabelledSeparator } from "@/libs/ui/separator"
 
 export function CallToAction() {
     return (
@@ -10,22 +12,27 @@ export function CallToAction() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
         >
-            <ButtonLink
-                to="/register"
-                className="bg-echo-accent text-white shadow-sm"
+            <Button
+                asChild
+                fill
+                rounded
+                size="lg"
             >
-                Create an account
-            </ButtonLink>
-            <Separator
-                colour="bg-gray-400"
-                label={"or"}
+                <Link to="/register">Create an account</Link>
+            </Button>
+            <LabelledSeparator
+                className="my-4 text-neutral-100 opacity-60"
+                label="or"
             />
-            <ButtonLink
-                to="/login"
-                className="bg-white text-black shadow-sm"
+            <Button
+                asChild
+                fill
+                rounded
+                size="lg"
+                variant="secondary"
             >
-                Login
-            </ButtonLink>
+                <Link to="/login">Login</Link>
+            </Button>
         </MotionContainer>
     )
 }
