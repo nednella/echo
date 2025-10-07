@@ -1,21 +1,23 @@
-import React from "react"
+import * as React from "react"
 
-import { twMerge } from "tailwind-merge"
+import * as SeparatorPrimitive from "@radix-ui/react-separator"
 
-interface HrProps extends React.ComponentPropsWithoutRef<"hr"> {
-    colour?: string
-    thickness?: "thin" | "thick"
-}
+import { cn } from "@/libs/utils"
 
-// TODO: theme
-
-function Hr({ className, colour, thickness = "thin", ...props }: Readonly<HrProps>) {
+function Separator({
+    className,
+    orientation = "horizontal",
+    decorative = true,
+    ...props
+}: React.ComponentProps<typeof SeparatorPrimitive.Root>) {
     return (
-        <hr
-            className={twMerge(
-                "my-8 block w-full border-0",
-                colour,
-                thickness === "thin" ? "h-px" : "h-[2px]",
+        <SeparatorPrimitive.Root
+            data-slot="separator"
+            decorative={decorative}
+            orientation={orientation}
+            className={cn(
+                `bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full
+                data-[orientation=vertical]:h-full data-[orientation=vertical]:w-px`,
                 className
             )}
             {...props}
@@ -23,37 +25,4 @@ function Hr({ className, colour, thickness = "thin", ...props }: Readonly<HrProp
     )
 }
 
-interface SeparatorProps {
-    className?: string
-    colour?: HrProps["colour"]
-    label?: React.ReactNode
-    thickness?: HrProps["thickness"]
-}
-
-export function Separator({ className, colour, label, thickness = "thin" }: Readonly<SeparatorProps>) {
-    if (!label) {
-        return (
-            <Hr
-                className={className}
-                colour={colour}
-                thickness={thickness}
-            />
-        )
-    }
-
-    return (
-        <div className={twMerge("my-6 flex items-center gap-2", className)}>
-            <Hr
-                className="my-0 flex-1"
-                colour={colour}
-                thickness={thickness}
-            />
-            <span className={twMerge("px-2 text-sm text-gray-300 select-none")}>{label}</span>
-            <Hr
-                className="my-0 flex-1"
-                colour={colour}
-                thickness={thickness}
-            />
-        </div>
-    )
-}
+export { Separator }
