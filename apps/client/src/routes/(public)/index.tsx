@@ -12,7 +12,10 @@ export const Route = createFileRoute("/(public)/")({
 
 function LandingPage() {
     return (
-        <Page className="to-echo-teal from-echo-navy flex items-center justify-center bg-gradient-to-br">
+        <Page
+            center
+            landingGradient
+        >
             <Container className="max-w-md">
                 <Hero />
                 <CallToAction />

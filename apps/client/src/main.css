@@ -14,6 +14,9 @@
 @theme inline {
     --color-*: initial; /* remove defaults */
 
+    --color-gradient-teal: #00556e;
+    --color-gradient-navy: #101828;
+
     /* palettes */
     --color-neutral-50: var(--neutral-50);
     --color-neutral-100: var(--neutral-100);

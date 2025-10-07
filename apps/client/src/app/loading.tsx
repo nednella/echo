@@ -33,13 +33,13 @@ export function LoadingPage({ isReady, minimumLoadingTimeMs, onAnimationComplete
 
     // TODO: refactor animation
     return (
-        <Page className="p-0">
+        <Page>
             <AnimatePresence onExitComplete={onAnimationComplete}>
                 {!shouldExit && (
                     <>
                         {/* Background gradient */}
                         <motion.div
-                            className="to-echo-teal from-echo-navy absolute inset-0 bg-gradient-to-br"
+                            className="from-gradient-teal to-gradient-navy absolute inset-0 bg-gradient-to-br"
                             initial={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ delay: 0.2 }}

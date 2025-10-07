@@ -52,7 +52,7 @@ function OnboardingPage() {
     }
 
     return (
-        <Page className="flex items-center justify-center">
+        <Page center>
             <OnboardingAnimation
                 status={onboarding.status}
                 onSuccessAutoContinueMs={3000}

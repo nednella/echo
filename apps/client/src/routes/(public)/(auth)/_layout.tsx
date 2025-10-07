@@ -11,7 +11,10 @@ export const Route = createFileRoute("/(public)/(auth)")({
 
 function AuthLayout() {
     return (
-        <Page className="to-echo-teal from-echo-navy flex items-center justify-center bg-gradient-to-br">
+        <Page
+            center
+            landingGradient
+        >
             <MotionContainer
                 className="w-fit"
                 initial={{ opacity: 0 }}
