@@ -2,8 +2,8 @@ import { useEffect, useState } from "react"
 
 import { AnimatePresence, motion } from "motion/react"
 
+import { EchoLogo } from "@/common/components/logos/echo-logo"
 import { MotionContainer } from "@/libs/ui/container"
-import { EchoLogo } from "@/libs/ui/echo-logo"
 import { Page } from "@/libs/ui/page"
 
 interface Props {

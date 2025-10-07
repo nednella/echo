@@ -1,5 +1,5 @@
+import { EchoLogo } from "@/common/components/logos/echo-logo"
 import { MotionContainer } from "@/libs/ui/container"
-import { EchoLogo } from "@/libs/ui/echo-logo"
 
 export function Hero() {
     return (
