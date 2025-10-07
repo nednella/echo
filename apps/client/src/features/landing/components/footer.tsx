@@ -1,4 +1,4 @@
-import { MotionContainer } from "@/common/components/container"
+import { MotionContainer } from "@/libs/ui/container"
 
 export function Footer() {
     return (
