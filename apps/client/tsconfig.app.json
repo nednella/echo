@@ -25,9 +25,9 @@
         "noUncheckedIndexedAccess": true,
 
         /* Absolute importing*/
-        "baseUrl": "src",
+        "baseUrl": ".",
         "paths": {
-            "@/*": ["*"]
+            "@/*": ["./src/*"]
         }
     },
     "include": ["src"]
