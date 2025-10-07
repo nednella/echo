@@ -20,7 +20,7 @@ export function BackToHome() {
                     asChild
                     size="sm"
                     variant="ghost"
-                    className="text-neutral-100/80"
+                    className="text-neutral-100/80 hover:bg-neutral-100/50"
                 >
                     <Link to="/">
                         <ArrowLeft size={16} />
