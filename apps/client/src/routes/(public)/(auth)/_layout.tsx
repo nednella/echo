@@ -1,6 +1,6 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router"
 
-import { BackToHome } from "@/features/auth/ui/back-to-home"
+import { BackToHome } from "@/features/auth/components/back-to-home"
 import { MotionContainer } from "@/libs/ui/container"
 import { Page } from "@/libs/ui/page"
 

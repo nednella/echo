@@ -4,7 +4,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router"
 import { useEffectOnce } from "@/common/hooks/use-effect-once"
 import { isAuthenticated, isOnboarded } from "@/common/utils/auth"
 import { onboardingMutationOptions } from "@/features/onboarding/api/options"
-import { OnboardingAnimation } from "@/features/onboarding/ui/multi-step-loader"
+import { OnboardingAnimation } from "@/features/onboarding/components/multi-step-loader"
 import { Page } from "@/libs/ui/page"
 
 // (onboarding) authentication & onboarded check
