@@ -17,6 +17,8 @@ export function CallToAction() {
                 fill
                 rounded
                 size="lg"
+                variant="custom"
+                className="bg-echo-600 text-neutral-50 hover:opacity-80"
             >
                 <Link to="/register">Create an account</Link>
             </Button>
@@ -29,7 +31,8 @@ export function CallToAction() {
                 fill
                 rounded
                 size="lg"
-                variant="secondary"
+                variant="custom"
+                className="bg-neutral-50 text-neutral-900 hover:opacity-80"
             >
                 <Link to="/login">Login</Link>
             </Button>
