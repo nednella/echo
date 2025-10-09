@@ -8,28 +8,32 @@ export function CallToAction() {
     return (
         <MotionContainer
             className="mt-12"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
         >
             <Button
                 asChild
                 fill
                 rounded
                 size="lg"
+                variant="custom"
+                className="bg-echo-600 text-neutral-50 hover:opacity-80"
             >
                 <Link to="/register">Create an account</Link>
             </Button>
             <LabelledSeparator
-                className="my-4 text-neutral-100 opacity-60"
                 label="or"
+                className="my-4 before:bg-neutral-300/40 after:bg-neutral-300/40"
+                labelClassName="text-neutral-100/60"
             />
             <Button
                 asChild
                 fill
                 rounded
                 size="lg"
-                variant="secondary"
+                variant="custom"
+                className="bg-neutral-50 text-neutral-900 hover:opacity-80"
             >
                 <Link to="/login">Login</Link>
             </Button>

@@ -7,21 +7,15 @@ export function Hero() {
     return (
         <MotionContainer
             className="text-center"
-            initial={{ opacity: 0, y: 0 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.2, delay: 0.2 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
         >
-            <MotionContainer
-                initial={{ scale: 0.8 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 1.4 }}
-            >
-                <EchoLogo
-                    size={96}
-                    variant="light-gradient"
-                    className="mx-auto"
-                />
-            </MotionContainer>
+            <EchoLogo
+                size={80}
+                variant="light-gradient"
+                className="mx-auto"
+            />
             <H1 className="mt-4 text-neutral-100">Join the conversation</H1>
             <Lead className="mt-4 text-neutral-100/60">
                 the social platform where <br /> authentic conversations flourish
