@@ -23,8 +23,9 @@ export function CallToAction() {
                 <Link to="/register">Create an account</Link>
             </Button>
             <LabelledSeparator
-                className="my-4 text-neutral-100 opacity-60"
                 label="or"
+                className="my-4 before:bg-neutral-300/40 after:bg-neutral-300/40"
+                labelClassName="text-neutral-100/60"
             />
             <Button
                 asChild

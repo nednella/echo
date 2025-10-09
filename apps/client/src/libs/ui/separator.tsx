@@ -22,25 +22,31 @@ function Separator({ className, orientation = "horizontal", decorative = true, .
     )
 }
 
-type LabelledSeparatorProps = React.ComponentProps<typeof SeparatorPrimitive.Root> & { label: string }
+type LabelledSeparatorProps = React.ComponentProps<typeof SeparatorPrimitive.Root> & {
+    label: string
+    labelClassName?: string
+}
 
-function LabelledSeparator({ className, label, decorative = true, ...props }: Readonly<LabelledSeparatorProps>) {
+function LabelledSeparator({
+    className,
+    label,
+    labelClassName,
+    decorative = true,
+    ...props
+}: Readonly<LabelledSeparatorProps>) {
     return (
-        <div className={cn("flex items-center gap-2", className)}>
-            <SeparatorPrimitive.Root
-                data-slot="separator"
-                decorative={decorative}
-                className={"bg-border data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full"}
-                {...props}
-            />
-            <span className="text-sm select-none">{label}</span>
-            <SeparatorPrimitive.Root
-                data-slot="separator"
-                decorative={decorative}
-                className={"bg-border data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full"}
-                {...props}
-            />
-        </div>
+        <SeparatorPrimitive.Root
+            data-slot="separator"
+            decorative={decorative}
+            className={cn(
+                `before:bg-border after:bg-border relative flex items-center gap-2 before:h-px before:flex-1
+                before:content-[''] after:h-px after:flex-1 after:content-['']`,
+                className
+            )}
+            {...props}
+        >
+            <span className={cn("text-border text-sm", labelClassName)}>{label}</span>
+        </SeparatorPrimitive.Root>
     )
 }
 
