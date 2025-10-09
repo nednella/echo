@@ -23,8 +23,8 @@ function AuthLayout() {
             >
                 <BackToHome />
                 <MotionContainer
-                    initial={{ y: 20, scale: 0.95, opacity: 0 }}
-                    animate={{ y: 0, scale: 1, opacity: 1 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
                 >
                     <Outlet />
