@@ -40,7 +40,9 @@ export default tseslint.config([
                         Props: true,
                         props: true,
                         Env: true,
-                        env: true
+                        env: true,
+                        utils: true,
+                        Utils: true
                     }
                 }
             ]

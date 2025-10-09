@@ -1,16 +1,189 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap");
 @import "tailwindcss";
+@import "tw-animate-css";
 
-@theme {
-    --color-echo-teal: #077085;
-    --color-echo-navy: #101828;
-    --color-echo-accent: #0891b2;
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
+@theme inline {
+    --color-*: initial; /* remove defaults */
+
+    --color-gradient-teal: #00556e;
+    --color-gradient-navy: #101828;
+
+    /* palettes */
+    --color-neutral-50: var(--neutral-50);
+    --color-neutral-100: var(--neutral-100);
+    --color-neutral-200: var(--neutral-200);
+    --color-neutral-300: var(--neutral-300);
+    --color-neutral-400: var(--neutral-400);
+    --color-neutral-500: var(--neutral-500);
+    --color-neutral-600: var(--neutral-600);
+    --color-neutral-700: var(--neutral-700);
+    --color-neutral-800: var(--neutral-800);
+    --color-neutral-900: var(--neutral-900);
+    --color-neutral-950: var(--neutral-950);
+
+    --color-echo-50: var(--echo-50);
+    --color-echo-100: var(--echo-100);
+    --color-echo-200: var(--echo-200);
+    --color-echo-300: var(--echo-300);
+    --color-echo-400: var(--echo-400);
+    --color-echo-500: var(--echo-500);
+    --color-echo-600: var(--echo-600);
+    --color-echo-700: var(--echo-700);
+    --color-echo-800: var(--echo-800);
+    --color-echo-900: var(--echo-900);
+    --color-echo-950: var(--echo-950);
+
+    /* theme */
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+}
+
+:root {
+    /* generics */
+    --radius: 0.625rem;
+
+    /* palettes */
+    --neutral-50: oklch(0.985 0 0);
+    --neutral-100: oklch(0.97 0 0);
+    --neutral-200: oklch(0.922 0 0);
+    --neutral-300: oklch(0.87 0 0);
+    --neutral-400: oklch(0.708 0 0);
+    --neutral-500: oklch(0.556 0 0);
+    --neutral-600: oklch(0.439 0 0);
+    --neutral-700: oklch(0.371 0 0);
+    --neutral-800: oklch(0.269 0 0);
+    --neutral-900: oklch(0.205 0 0);
+    --neutral-950: oklch(0.145 0 0);
+
+    --echo-50: oklch(0.95 0.038 220); /* #d4f5ff */
+    --echo-100: oklch(0.89 0.085 220); /* #99e9ff */
+    --echo-200: oklch(0.83 0.134 220); /* #45dbff */
+    --echo-300: oklch(0.77 0.185 220); /* #00cafa */
+    --echo-400: oklch(0.71 0.17 220); /* #00b5e2 */
+    --echo-500: oklch(0.65 0.156 220); /* #00a1c9 */
+    --echo-600: oklch(0.59 0.142 220); /* #008db1 */
+    --echo-700: oklch(0.53 0.127 220); /* #007a9a */
+    --echo-800: oklch(0.47 0.113 220); /* #006784 */
+    --echo-900: oklch(0.41 0.098 220); /* #00556e */
+    --echo-950: oklch(0.35 0.084 220); /* #004358 */
+}
+
+:root[data-theme="light"] {
+    /* core */
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+
+    /* brand */
+    --primary: oklch(0.59 0.142 220);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+    --accent: oklch(0.97 0 0);
+    --accent-foreground: oklch(0.205 0 0);
+
+    /* status */
+    --destructive: oklch(0.577 0.245 27.325);
+
+    /* components */
+    --border: oklch(0.922 0 0);
+    --input: oklch(0.922 0 0);
+    --ring: oklch(0.708 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+
+    /* --chart-1: oklch(0.646 0.222 41.116);
+    --chart-2: oklch(0.6 0.118 184.704);
+    --chart-3: oklch(0.398 0.07 227.392);
+    --chart-4: oklch(0.828 0.189 84.429);
+    --chart-5: oklch(0.769 0.188 70.08);
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.708 0 0); */
+}
+
+:root[data-theme="dark"] {
+    /* core */
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+
+    /* brand */
+    --primary: oklch(0.922 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --accent: oklch(0.269 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+
+    /* status */
+    --destructive: oklch(0.704 0.191 22.216);
+
+    /* components */
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.556 0 0);
+    --card: oklch(0.205 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.205 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+
+    /* --chart-1: oklch(0.488 0.243 264.376);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.627 0.265 303.9);
+    --chart-5: oklch(0.645 0.246 16.439);
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(1 0 0 / 10%);
+    --sidebar-ring: oklch(0.556 0 0); */
 }
 
 html,
 body,
 #root {
-    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-family: Geist, system-ui, sans-serif;
     height: 100%;
-    color-scheme: light;
-    background: #f9fafb;
 }

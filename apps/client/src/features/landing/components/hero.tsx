@@ -1,5 +1,7 @@
+import { EchoLogo } from "@/common/components/logos/echo-logo"
 import { MotionContainer } from "@/libs/ui/container"
-import { EchoLogo } from "@/libs/ui/echo-logo"
+import H1 from "@/libs/ui/typography/h1"
+import Lead from "@/libs/ui/typography/lead"
 
 export function Hero() {
     return (
@@ -20,10 +22,10 @@ export function Hero() {
                     className="mx-auto"
                 />
             </MotionContainer>
-            <h1 className="mt-6 text-3xl font-bold text-white">Join the conversation</h1>
-            <p className="mt-12 text-xl text-white/80">
+            <H1 className="mt-4 text-neutral-100">Join the conversation</H1>
+            <Lead className="mt-4 text-neutral-100/60">
                 the social platform where <br /> authentic conversations flourish
-            </p>
+            </Lead>
         </MotionContainer>
     )
 }

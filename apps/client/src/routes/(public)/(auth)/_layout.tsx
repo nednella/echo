@@ -1,6 +1,6 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router"
 
-import { BackToHome } from "@/features/auth/ui/back-to-home"
+import { BackToHome } from "@/features/auth/components/back-to-home"
 import { MotionContainer } from "@/libs/ui/container"
 import { Page } from "@/libs/ui/page"
 
@@ -11,7 +11,10 @@ export const Route = createFileRoute("/(public)/(auth)")({
 
 function AuthLayout() {
     return (
-        <Page className="to-echo-teal from-echo-navy flex items-center justify-center bg-gradient-to-br">
+        <Page
+            center
+            landingGradient
+        >
             <MotionContainer
                 className="w-fit"
                 initial={{ opacity: 0 }}

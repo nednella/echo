@@ -1,6 +1,7 @@
+import { Link } from "@tanstack/react-router"
 import { ArrowLeft } from "lucide-react"
 
-import { ButtonLink } from "@/libs/ui/button-link"
+import { Button } from "@/libs/ui/button"
 import { MotionContainer } from "@/libs/ui/container"
 
 export function BackToHome() {
@@ -15,14 +16,17 @@ export function BackToHome() {
                 whileHover={{ x: -10 }}
                 transition={{ type: "spring", stiffness: 400, damping: 20 }}
             >
-                <ButtonLink
-                    to="/"
-                    className="flex w-fit items-center gap-2 rounded-lg px-4 text-sm text-gray-300 hover:bg-gray-800/50
-                        hover:text-white"
+                <Button
+                    asChild
+                    size="sm"
+                    variant="ghost"
+                    className="text-neutral-100/80 hover:bg-neutral-100/50"
                 >
-                    <ArrowLeft size={16} />
-                    Back to Home
-                </ButtonLink>
+                    <Link to="/">
+                        <ArrowLeft size={16} />
+                        Back to home
+                    </Link>
+                </Button>
             </MotionContainer>
         </MotionContainer>
     )
