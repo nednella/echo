@@ -7,7 +7,7 @@ import { MotionContainer } from "@/libs/ui/container"
 export function BackToHome() {
     return (
         <MotionContainer
-            initial={{ opacity: 0, x: -40 }}
+            initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
             className="mb-4"
@@ -18,9 +18,8 @@ export function BackToHome() {
             >
                 <Button
                     asChild
-                    size="sm"
-                    variant="ghost"
-                    className="text-neutral-100/80 hover:bg-neutral-100/50"
+                    variant="custom"
+                    className="text-neutral-100/80 hover:bg-neutral-800/30"
                 >
                     <Link to="/">
                         <ArrowLeft size={16} />
