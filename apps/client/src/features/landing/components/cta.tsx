@@ -23,10 +23,11 @@ export function CallToAction() {
                 <Link to="/register">Create an account</Link>
             </Button>
             <LabelledSeparator
-                label="or"
                 className="my-4 before:bg-neutral-300/40 after:bg-neutral-300/40"
-                labelClassName="text-neutral-100/60"
-            />
+                childrenClassName="text-neutral-100/60"
+            >
+                or
+            </LabelledSeparator>
             <Button
                 asChild
                 fill
