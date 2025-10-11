@@ -1,11 +1,8 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 
+import type { Theme } from "./types"
 import { resolveTheme } from "./utils"
-
-declare global {
-    type Theme = "light" | "dark" | "system"
-}
 
 type ThemeState = {
     theme: Theme

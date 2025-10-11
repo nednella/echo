@@ -1,3 +1,5 @@
+import type { Theme } from "./types"
+
 /**
  * Media query handle for the user's OS color scheme preference.
  */
