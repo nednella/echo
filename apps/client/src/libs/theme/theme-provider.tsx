@@ -1,8 +1,11 @@
 import { useEffect } from "react"
 
-import { useThemeStore } from "@/common/stores/theme.store"
-import { applyTheme, onSystemThemeChange } from "@/common/utils/theme"
+import { useThemeStore } from "@/libs/theme/theme.store"
+import { applyTheme, onSystemThemeChange } from "@/libs/theme/utils"
 
+/**
+ * This provider should be nested within the provider tree next to the application's entry point.
+ */
 export function ThemeProvider() {
     const { theme } = useThemeStore()
 
