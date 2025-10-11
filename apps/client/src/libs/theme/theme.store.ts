@@ -1,7 +1,7 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 
-import { resolveTheme } from "../utils/theme"
+import { resolveTheme } from "./utils"
 
 declare global {
     type Theme = "light" | "dark" | "system"
