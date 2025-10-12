@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as onboardingLayoutRouteImport } from './routes/(onboarding)/_layout'
 import { Route as authLayoutRouteImport } from './routes/(auth)/_layout'
 import { Route as appLayoutRouteImport } from './routes/(app)/_layout'
 import { Route as authIndexRouteImport } from './routes/(auth)/index'
@@ -18,6 +19,10 @@ import { Route as authRegisterRouteImport } from './routes/(auth)/register'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as appHomeRouteImport } from './routes/(app)/home'
 
+const onboardingLayoutRoute = onboardingLayoutRouteImport.update({
+  id: '/(onboarding)',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const authLayoutRoute = authLayoutRouteImport.update({
   id: '/(auth)',
   getParentRoute: () => rootRouteImport,
@@ -32,9 +37,9 @@ const authIndexRoute = authIndexRouteImport.update({
   getParentRoute: () => authLayoutRoute,
 } as any)
 const onboardingOnboardingRoute = onboardingOnboardingRouteImport.update({
-  id: '/(onboarding)/onboarding',
+  id: '/onboarding',
   path: '/onboarding',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => onboardingLayoutRoute,
 } as any)
 const authSsoCallbackRoute = authSsoCallbackRouteImport.update({
   id: '/sso-callback',
@@ -77,6 +82,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(app)': typeof appLayoutRouteWithChildren
   '/(auth)': typeof authLayoutRouteWithChildren
+  '/(onboarding)': typeof onboardingLayoutRouteWithChildren
   '/(app)/home': typeof appHomeRoute
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
@@ -99,6 +105,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/(app)'
     | '/(auth)'
+    | '/(onboarding)'
     | '/(app)/home'
     | '/(auth)/login'
     | '/(auth)/register'
@@ -110,11 +117,18 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   appLayoutRoute: typeof appLayoutRouteWithChildren
   authLayoutRoute: typeof authLayoutRouteWithChildren
-  onboardingOnboardingRoute: typeof onboardingOnboardingRoute
+  onboardingLayoutRoute: typeof onboardingLayoutRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/(onboarding)': {
+      id: '/(onboarding)'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof onboardingLayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(auth)': {
       id: '/(auth)'
       path: '/'
@@ -141,7 +155,7 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof onboardingOnboardingRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof onboardingLayoutRoute
     }
     '/(auth)/sso-callback': {
       id: '/(auth)/sso-callback'
@@ -204,10 +218,21 @@ const authLayoutRouteWithChildren = authLayoutRoute._addFileChildren(
   authLayoutRouteChildren,
 )
 
+interface onboardingLayoutRouteChildren {
+  onboardingOnboardingRoute: typeof onboardingOnboardingRoute
+}
+
+const onboardingLayoutRouteChildren: onboardingLayoutRouteChildren = {
+  onboardingOnboardingRoute: onboardingOnboardingRoute,
+}
+
+const onboardingLayoutRouteWithChildren =
+  onboardingLayoutRoute._addFileChildren(onboardingLayoutRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   appLayoutRoute: appLayoutRouteWithChildren,
   authLayoutRoute: authLayoutRouteWithChildren,
-  onboardingOnboardingRoute: onboardingOnboardingRoute,
+  onboardingLayoutRoute: onboardingLayoutRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
