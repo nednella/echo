@@ -20,9 +20,11 @@ function HomePage() {
     }, [])
 
     return (
-        <div className="flex h-full items-center justify-center gap-6">
-            Hello "/(protected)/home"!
-            <UserButton />
-        </div>
+        <>
+            <header className="bg-card-foreground h-16 text-black">Optional Content Header</header>
+            <div className="flex h-full items-center justify-center gap-2">
+                Hello "/(app)/home"! <UserButton />
+            </div>
+        </>
     )
 }
