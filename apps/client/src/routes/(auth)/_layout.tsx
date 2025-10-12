@@ -3,7 +3,11 @@ import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 import { isAuthenticated } from "@/common/utils/auth"
 import { Page } from "@/libs/ui/page"
 
-// (auth) authentication check
+/**
+ * Routes nested within the `/(auth)` pathless layout should only be accessible
+ * when the user **IS NOT** authenticated, otherwise the user should be
+ * redirected accordingly.
+ */
 export const Route = createFileRoute("/(auth)")({
     beforeLoad({ context: { auth } }) {
         if (isAuthenticated(auth)) {

@@ -2,7 +2,11 @@ import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 
 import { isAuthenticated, isOnboarded } from "@/common/utils/auth"
 
-// (onboarding) authentication & onboarded check
+/**
+ * Routes nested within the `/(onboarding)` pathless layout should only be accessible
+ * when the user **IS** authenticated, but **IS NOT** onboarded, otherwise the user
+ * should be redirected accordingly.
+ */
 export const Route = createFileRoute("/(onboarding)")({
     beforeLoad({ context: { auth } }) {
         if (!isAuthenticated(auth)) {
