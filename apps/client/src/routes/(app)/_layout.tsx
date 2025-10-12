@@ -2,8 +2,8 @@ import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 
 import { isAuthenticated, isOnboarded } from "@/common/utils/auth"
 
-// (protected) authentication & onboarded check
-export const Route = createFileRoute("/(protected)")({
+// (app) authentication & onboarded check
+export const Route = createFileRoute("/(app)")({
     beforeLoad({ context: { auth }, location }) {
         if (!isAuthenticated(auth)) {
             throw redirect({
