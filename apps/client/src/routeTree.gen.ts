@@ -12,7 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as publicLayoutRouteImport } from './routes/(public)/_layout'
 import { Route as authLayoutRouteImport } from './routes/(auth)/_layout'
 import { Route as appLayoutRouteImport } from './routes/(app)/_layout'
-import { Route as publicIndexRouteImport } from './routes/(public)/index'
+import { Route as authIndexRouteImport } from './routes/(auth)/index'
 import { Route as publicSsoCallbackRouteImport } from './routes/(public)/sso-callback'
 import { Route as onboardingOnboardingRouteImport } from './routes/(onboarding)/onboarding'
 import { Route as authRegisterRouteImport } from './routes/(auth)/register'
@@ -31,10 +31,10 @@ const appLayoutRoute = appLayoutRouteImport.update({
   id: '/(app)',
   getParentRoute: () => rootRouteImport,
 } as any)
-const publicIndexRoute = publicIndexRouteImport.update({
+const authIndexRoute = authIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => publicLayoutRoute,
+  getParentRoute: () => authLayoutRoute,
 } as any)
 const publicSsoCallbackRoute = publicSsoCallbackRouteImport.update({
   id: '/sso-callback',
@@ -63,7 +63,7 @@ const appHomeRoute = appHomeRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof publicIndexRoute
+  '/': typeof authIndexRoute
   '/home': typeof appHomeRoute
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
@@ -71,7 +71,7 @@ export interface FileRoutesByFullPath {
   '/sso-callback': typeof publicSsoCallbackRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof publicIndexRoute
+  '/': typeof authIndexRoute
   '/home': typeof appHomeRoute
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
@@ -88,7 +88,7 @@ export interface FileRoutesById {
   '/(auth)/register': typeof authRegisterRoute
   '/(onboarding)/onboarding': typeof onboardingOnboardingRoute
   '/(public)/sso-callback': typeof publicSsoCallbackRoute
-  '/(public)/': typeof publicIndexRoute
+  '/(auth)/': typeof authIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,7 +111,7 @@ export interface FileRouteTypes {
     | '/(auth)/register'
     | '/(onboarding)/onboarding'
     | '/(public)/sso-callback'
-    | '/(public)/'
+    | '/(auth)/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -144,12 +144,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appLayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(public)/': {
-      id: '/(public)/'
+    '/(auth)/': {
+      id: '/(auth)/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof publicIndexRouteImport
-      parentRoute: typeof publicLayoutRoute
+      preLoaderRoute: typeof authIndexRouteImport
+      parentRoute: typeof authLayoutRoute
     }
     '/(public)/sso-callback': {
       id: '/(public)/sso-callback'
@@ -204,11 +204,13 @@ const appLayoutRouteWithChildren = appLayoutRoute._addFileChildren(
 interface authLayoutRouteChildren {
   authLoginRoute: typeof authLoginRoute
   authRegisterRoute: typeof authRegisterRoute
+  authIndexRoute: typeof authIndexRoute
 }
 
 const authLayoutRouteChildren: authLayoutRouteChildren = {
   authLoginRoute: authLoginRoute,
   authRegisterRoute: authRegisterRoute,
+  authIndexRoute: authIndexRoute,
 }
 
 const authLayoutRouteWithChildren = authLayoutRoute._addFileChildren(
@@ -217,12 +219,10 @@ const authLayoutRouteWithChildren = authLayoutRoute._addFileChildren(
 
 interface publicLayoutRouteChildren {
   publicSsoCallbackRoute: typeof publicSsoCallbackRoute
-  publicIndexRoute: typeof publicIndexRoute
 }
 
 const publicLayoutRouteChildren: publicLayoutRouteChildren = {
   publicSsoCallbackRoute: publicSsoCallbackRoute,
-  publicIndexRoute: publicIndexRoute,
 }
 
 const publicLayoutRouteWithChildren = publicLayoutRoute._addFileChildren(
