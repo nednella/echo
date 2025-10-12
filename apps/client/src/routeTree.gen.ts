@@ -9,20 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as publicLayoutRouteImport } from './routes/(public)/_layout'
 import { Route as authLayoutRouteImport } from './routes/(auth)/_layout'
 import { Route as appLayoutRouteImport } from './routes/(app)/_layout'
 import { Route as authIndexRouteImport } from './routes/(auth)/index'
-import { Route as publicSsoCallbackRouteImport } from './routes/(public)/sso-callback'
 import { Route as onboardingOnboardingRouteImport } from './routes/(onboarding)/onboarding'
+import { Route as authSsoCallbackRouteImport } from './routes/(auth)/sso-callback'
 import { Route as authRegisterRouteImport } from './routes/(auth)/register'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as appHomeRouteImport } from './routes/(app)/home'
 
-const publicLayoutRoute = publicLayoutRouteImport.update({
-  id: '/(public)',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const authLayoutRoute = authLayoutRouteImport.update({
   id: '/(auth)',
   getParentRoute: () => rootRouteImport,
@@ -36,15 +31,15 @@ const authIndexRoute = authIndexRouteImport.update({
   path: '/',
   getParentRoute: () => authLayoutRoute,
 } as any)
-const publicSsoCallbackRoute = publicSsoCallbackRouteImport.update({
-  id: '/sso-callback',
-  path: '/sso-callback',
-  getParentRoute: () => publicLayoutRoute,
-} as any)
 const onboardingOnboardingRoute = onboardingOnboardingRouteImport.update({
   id: '/(onboarding)/onboarding',
   path: '/onboarding',
   getParentRoute: () => rootRouteImport,
+} as any)
+const authSsoCallbackRoute = authSsoCallbackRouteImport.update({
+  id: '/sso-callback',
+  path: '/sso-callback',
+  getParentRoute: () => authLayoutRoute,
 } as any)
 const authRegisterRoute = authRegisterRouteImport.update({
   id: '/register',
@@ -67,27 +62,26 @@ export interface FileRoutesByFullPath {
   '/home': typeof appHomeRoute
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
+  '/sso-callback': typeof authSsoCallbackRoute
   '/onboarding': typeof onboardingOnboardingRoute
-  '/sso-callback': typeof publicSsoCallbackRoute
 }
 export interface FileRoutesByTo {
   '/': typeof authIndexRoute
   '/home': typeof appHomeRoute
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
+  '/sso-callback': typeof authSsoCallbackRoute
   '/onboarding': typeof onboardingOnboardingRoute
-  '/sso-callback': typeof publicSsoCallbackRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(app)': typeof appLayoutRouteWithChildren
   '/(auth)': typeof authLayoutRouteWithChildren
-  '/(public)': typeof publicLayoutRouteWithChildren
   '/(app)/home': typeof appHomeRoute
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
+  '/(auth)/sso-callback': typeof authSsoCallbackRoute
   '/(onboarding)/onboarding': typeof onboardingOnboardingRoute
-  '/(public)/sso-callback': typeof publicSsoCallbackRoute
   '/(auth)/': typeof authIndexRoute
 }
 export interface FileRouteTypes {
@@ -97,39 +91,30 @@ export interface FileRouteTypes {
     | '/home'
     | '/login'
     | '/register'
-    | '/onboarding'
     | '/sso-callback'
+    | '/onboarding'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/home' | '/login' | '/register' | '/onboarding' | '/sso-callback'
+  to: '/' | '/home' | '/login' | '/register' | '/sso-callback' | '/onboarding'
   id:
     | '__root__'
     | '/(app)'
     | '/(auth)'
-    | '/(public)'
     | '/(app)/home'
     | '/(auth)/login'
     | '/(auth)/register'
+    | '/(auth)/sso-callback'
     | '/(onboarding)/onboarding'
-    | '/(public)/sso-callback'
     | '/(auth)/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   appLayoutRoute: typeof appLayoutRouteWithChildren
   authLayoutRoute: typeof authLayoutRouteWithChildren
-  publicLayoutRoute: typeof publicLayoutRouteWithChildren
   onboardingOnboardingRoute: typeof onboardingOnboardingRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/(public)': {
-      id: '/(public)'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof publicLayoutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/(auth)': {
       id: '/(auth)'
       path: '/'
@@ -151,19 +136,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authIndexRouteImport
       parentRoute: typeof authLayoutRoute
     }
-    '/(public)/sso-callback': {
-      id: '/(public)/sso-callback'
-      path: '/sso-callback'
-      fullPath: '/sso-callback'
-      preLoaderRoute: typeof publicSsoCallbackRouteImport
-      parentRoute: typeof publicLayoutRoute
-    }
     '/(onboarding)/onboarding': {
       id: '/(onboarding)/onboarding'
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof onboardingOnboardingRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/sso-callback': {
+      id: '/(auth)/sso-callback'
+      path: '/sso-callback'
+      fullPath: '/sso-callback'
+      preLoaderRoute: typeof authSsoCallbackRouteImport
+      parentRoute: typeof authLayoutRoute
     }
     '/(auth)/register': {
       id: '/(auth)/register'
@@ -204,12 +189,14 @@ const appLayoutRouteWithChildren = appLayoutRoute._addFileChildren(
 interface authLayoutRouteChildren {
   authLoginRoute: typeof authLoginRoute
   authRegisterRoute: typeof authRegisterRoute
+  authSsoCallbackRoute: typeof authSsoCallbackRoute
   authIndexRoute: typeof authIndexRoute
 }
 
 const authLayoutRouteChildren: authLayoutRouteChildren = {
   authLoginRoute: authLoginRoute,
   authRegisterRoute: authRegisterRoute,
+  authSsoCallbackRoute: authSsoCallbackRoute,
   authIndexRoute: authIndexRoute,
 }
 
@@ -217,22 +204,9 @@ const authLayoutRouteWithChildren = authLayoutRoute._addFileChildren(
   authLayoutRouteChildren,
 )
 
-interface publicLayoutRouteChildren {
-  publicSsoCallbackRoute: typeof publicSsoCallbackRoute
-}
-
-const publicLayoutRouteChildren: publicLayoutRouteChildren = {
-  publicSsoCallbackRoute: publicSsoCallbackRoute,
-}
-
-const publicLayoutRouteWithChildren = publicLayoutRoute._addFileChildren(
-  publicLayoutRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   appLayoutRoute: appLayoutRouteWithChildren,
   authLayoutRoute: authLayoutRouteWithChildren,
-  publicLayoutRoute: publicLayoutRouteWithChildren,
   onboardingOnboardingRoute: onboardingOnboardingRoute,
 }
 export const routeTree = rootRouteImport
