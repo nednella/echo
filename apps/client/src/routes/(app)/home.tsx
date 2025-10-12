@@ -5,7 +5,7 @@ import { createFileRoute } from "@tanstack/react-router"
 
 import { client } from "@/common/api/client"
 
-export const Route = createFileRoute("/(protected)/home")({
+export const Route = createFileRoute("/(app)/home")({
     component: HomePage
 })
 

@@ -4,23 +4,17 @@ import { CallToAction } from "@/features/landing/components/cta"
 import { Footer } from "@/features/landing/components/footer"
 import { Hero } from "@/features/landing/components/hero"
 import { Container } from "@/libs/ui/container"
-import { Page } from "@/libs/ui/page"
 
-export const Route = createFileRoute("/(public)/")({
+export const Route = createFileRoute("/(auth)/")({
     component: LandingPage
 })
 
 function LandingPage() {
     return (
-        <Page
-            center
-            landingGradient
-        >
-            <Container className="max-w-md">
-                <Hero />
-                <CallToAction />
-                <Footer />
-            </Container>
-        </Page>
+        <Container className="max-w-md">
+            <Hero />
+            <CallToAction />
+            <Footer />
+        </Container>
     )
 }
