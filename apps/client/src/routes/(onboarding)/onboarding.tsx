@@ -4,7 +4,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { useEffectOnce } from "@/common/hooks/use-effect-once"
 import { onboardingMutationOptions } from "@/features/onboarding/api/options"
 import { OnboardingAnimation } from "@/features/onboarding/components/multi-step-loader"
-import { Page } from "@/libs/ui/page"
+import { Page } from "@/libs/ui/components/page"
 
 export const Route = createFileRoute("/(onboarding)/onboarding")({
     component: OnboardingPage
