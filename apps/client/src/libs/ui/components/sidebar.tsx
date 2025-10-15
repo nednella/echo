@@ -437,7 +437,7 @@ function SidebarGroupContent({ className, ...props }: React.ComponentProps<"div"
         <div
             data-slot="sidebar-group-content"
             data-sidebar="group-content"
-            className={cn("w-full text-sm", className)}
+            className={cn("w-full", className)}
             {...props}
         />
     )
@@ -476,7 +476,7 @@ const sidebarMenuButtonVariants = cva(
             },
             size: {
                 default: "h-10",
-                sm: "h-7 text-sm",
+                sm: "h-8 text-sm",
                 lg: "h-12 group-data-[collapsible=icon]:p-0!"
             }
         },
