@@ -1,8 +1,9 @@
 import React from "react"
 
 import { useClerk } from "@clerk/clerk-react"
-import { IdCard, LogOut, Settings } from "lucide-react"
+import { IdCard, LogOut, Paintbrush } from "lucide-react"
 
+import { useThemeDialog } from "@/common/stores/theme-dialog.store"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -17,6 +18,7 @@ interface Props {
 
 export function AccountMenu({ trigger }: Readonly<Props>) {
     const { signOut, openUserProfile } = useClerk()
+    const { onOpen: openThemeDialog } = useThemeDialog()
 
     const handleLogout = () => signOut()
 
@@ -33,9 +35,9 @@ export function AccountMenu({ trigger }: Readonly<Props>) {
                     <IdCard />
                     <span>Account</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => console.log("Settings")}>
-                    <Settings />
-                    <span>Settings</span>
+                <DropdownMenuItem onSelect={() => openThemeDialog()}>
+                    <Paintbrush />
+                    <span>Appearance</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="mx-px" />
                 <DropdownMenuItem
