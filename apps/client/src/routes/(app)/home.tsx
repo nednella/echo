@@ -21,7 +21,7 @@ function HomePage() {
 
     return (
         <>
-            <header className="bg-card-foreground h-16 text-black">Optional Content Header</header>
+            <header className="h-16 text-center">Optional Content Header</header>
             <div className="flex h-full items-center justify-center gap-2">
                 Hello "/(app)/home"! <UserButton />
             </div>
