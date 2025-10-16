@@ -3,7 +3,7 @@ import { useEffect } from "react"
 import type { MutationStatus } from "@tanstack/react-query"
 import { AnimatePresence } from "motion/react"
 
-import Spinner from "@/common/components/spinner"
+import { Spinner } from "@/common/components/spinner"
 import { Button } from "@/libs/ui/components/button"
 import { MotionContainer } from "@/libs/ui/components/container"
 

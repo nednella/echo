@@ -1,7 +1,7 @@
 import { EchoLogo } from "@/common/components/logos/echo-logo"
 import { MotionContainer } from "@/libs/ui/components/container"
-import H1 from "@/libs/ui/components/typography/h1"
-import Lead from "@/libs/ui/components/typography/lead"
+import { H1 } from "@/libs/ui/components/typography/h1"
+import { Lead } from "@/libs/ui/components/typography/lead"
 
 export function Hero() {
     return (
