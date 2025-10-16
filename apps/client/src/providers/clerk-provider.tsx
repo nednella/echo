@@ -1,6 +1,7 @@
 import React from "react"
 
 import { ClerkProvider } from "@clerk/clerk-react"
+import { shadcn } from "@clerk/themes"
 
 const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
@@ -14,5 +15,14 @@ interface Props {
 }
 
 export function EchoClerkProvider({ children }: Readonly<Props>) {
-    return <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>{children}</ClerkProvider>
+    return (
+        <ClerkProvider
+            publishableKey={CLERK_PUBLISHABLE_KEY}
+            appearance={{
+                userProfile: { theme: shadcn }
+            }}
+        >
+            {children}
+        </ClerkProvider>
+    )
 }
