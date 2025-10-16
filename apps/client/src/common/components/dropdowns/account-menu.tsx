@@ -1,7 +1,6 @@
 import React from "react"
 
-import { useAuth } from "@clerk/clerk-react"
-import { Link } from "@tanstack/react-router"
+import { useClerk } from "@clerk/clerk-react"
 import { IdCard, LogOut, Settings } from "lucide-react"
 
 import {
@@ -17,7 +16,7 @@ interface Props {
 }
 
 export function AccountMenu({ trigger }: Readonly<Props>) {
-    const { signOut } = useAuth()
+    const { signOut, openUserProfile } = useClerk()
 
     const handleLogout = () => signOut()
 
@@ -25,28 +24,18 @@ export function AccountMenu({ trigger }: Readonly<Props>) {
         <DropdownMenu>
             <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
             <DropdownMenuContent
-                className="w-(--radix-dropdown-menu-trigger-width) rounded-lg"
+                className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
                 side="top"
                 align="start"
                 sideOffset={8}
             >
-                <DropdownMenuItem asChild>
-                    <Link
-                        to="/onboarding" // TODO: temporary avoid type error
-                        className="cursor-pointer"
-                    >
-                        <IdCard />
-                        <span>Account</span>
-                    </Link>
+                <DropdownMenuItem onSelect={() => openUserProfile()}>
+                    <IdCard />
+                    <span>Account</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                    <Link
-                        to="/onboarding" // TODO: temporary avoid type error
-                        className="cursor-pointer"
-                    >
-                        <Settings />
-                        <span>Settings</span>
-                    </Link>
+                <DropdownMenuItem onSelect={() => console.log("Settings")}>
+                    <Settings />
+                    <span>Settings</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="mx-px" />
                 <DropdownMenuItem
