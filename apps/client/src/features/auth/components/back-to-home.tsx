@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router"
 import { ArrowLeft } from "lucide-react"
 
-import { Button } from "@/libs/ui/button"
-import { MotionContainer } from "@/libs/ui/container"
+import { Button } from "@/libs/ui/components/button"
+import { MotionContainer } from "@/libs/ui/components/container"
 
 export function BackToHome() {
     return (

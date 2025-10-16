@@ -1,6 +1,6 @@
 import React from "react"
 
-import { cn } from "@/libs/utils"
+import { cn } from "@/libs/ui/utils"
 
 type Props = React.ComponentPropsWithoutRef<"div"> & { pad?: boolean; center?: boolean; landingGradient?: boolean }
 

@@ -16,6 +16,8 @@ export function App() {
     )
 }
 
+// TODO: refactor loading to better handle changing auth states --> multiple loading screens encountered during login/logout
+
 function EntryPoint() {
     const [isReady, setIsReady] = useState(false)
     const auth = useAuth()

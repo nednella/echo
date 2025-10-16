@@ -1,6 +1,9 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 
+import { AppSidebar } from "@/common/components/sidebar/sidebar"
 import { isAuthenticated, isOnboarded } from "@/common/utils/auth"
+import { ScrollArea } from "@/libs/ui/components/scroll-area"
+import { SidebarProvider } from "@/libs/ui/components/sidebar"
 
 /**
  * Routes nested within the `/(app)` pathless layout should only be accessible
@@ -25,5 +28,16 @@ export const Route = createFileRoute("/(app)")({
             })
         }
     },
-    component: () => <Outlet />
+    component: AppLayout
 })
+
+function AppLayout() {
+    return (
+        <SidebarProvider className="grid h-screen w-screen p-2 md:grid-cols-[max-content_1fr] md:pl-0">
+            <AppSidebar />
+            <ScrollArea className="bg-sidebar relative overflow-y-auto rounded-lg border shadow-sm">
+                <Outlet />
+            </ScrollArea>
+        </SidebarProvider>
+    )
+}

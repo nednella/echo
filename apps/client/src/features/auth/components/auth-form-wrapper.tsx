@@ -1,6 +1,6 @@
 import type React from "react"
 
-import { MotionContainer } from "@/libs/ui/container"
+import { MotionContainer } from "@/libs/ui/components/container"
 
 import { BackToHome } from "./back-to-home"
 

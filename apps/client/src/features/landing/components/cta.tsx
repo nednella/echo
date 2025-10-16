@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router"
 
-import { Button } from "@/libs/ui/button"
-import { MotionContainer } from "@/libs/ui/container"
-import { LabelledSeparator } from "@/libs/ui/separator"
+import { Button } from "@/libs/ui/components/button"
+import { MotionContainer } from "@/libs/ui/components/container"
+import { LabelledSeparator } from "@/libs/ui/components/separator"
 
 export function CallToAction() {
     return (
