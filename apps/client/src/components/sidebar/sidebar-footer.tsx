@@ -1,10 +1,9 @@
 import { useUser } from "@clerk/clerk-react"
 import { ChevronsUpDown, UserRound } from "lucide-react"
 
+import { AccountMenu } from "@/features/account/components/account-dropdown"
 import { Avatar, AvatarFallback, AvatarImage } from "@/libs/ui/components/avatar"
 import { SidebarMenuButton } from "@/libs/ui/components/sidebar"
-
-import { AccountMenu } from "../dropdowns/account-menu"
 
 export function Footer() {
     const { user } = useUser()
