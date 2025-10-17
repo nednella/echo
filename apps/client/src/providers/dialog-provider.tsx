@@ -1,4 +1,4 @@
-import { AppearanceDialog } from "@/components/theme/appearance-dialog"
+import { AppearanceDialog } from "@/features/settings/appearance/components/appearance-dialog"
 
 export function DialogProvider() {
     return (
