@@ -17,7 +17,7 @@ export function Footer() {
                     className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground
                         cursor-pointer"
                 >
-                    <Avatar>
+                    <Avatar className="size-8">
                         <AvatarImage
                             src={user?.imageUrl}
                             alt={user?.username || undefined}
@@ -26,9 +26,11 @@ export function Footer() {
                             <UserRound size={16} />
                         </AvatarFallback>
                     </Avatar>
-                    <div className="grid flex-1 text-left text-sm leading-tight">
+                    <div className="grid flex-1 text-left text-sm leading-tight tracking-tight">
                         <span className="truncate font-medium">{user?.username}</span>
-                        <span className="truncate text-xs">{user?.primaryEmailAddress?.emailAddress}</span>
+                        <span className="text-muted-foreground truncate text-xs">
+                            {user?.primaryEmailAddress?.emailAddress}
+                        </span>
                     </div>
                     <ChevronsUpDown className="ml-auto size-4" />
                 </SidebarMenuButton>

@@ -23,7 +23,7 @@ export function Navigation() {
                             >
                                 <Link
                                     to={option.to}
-                                    inactiveProps={{ className: "opacity-60" }}
+                                    inactiveProps={{ className: "text-muted-foreground" }}
                                 >
                                     <option.icon />
                                     <span>{option.label}</span>
