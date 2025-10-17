@@ -59,14 +59,16 @@ export default tseslint.config([
                 {
                     basePath: "./src",
                     zones: [
-                        // target — director(y/ies) under scrutiny
-                        // from — director(y/ies) that target(s) cannot depend on
+                        // see: https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md
 
-                        // enforce unidirectional codebase (see: https://github.com/alan2207/bulletproof-react/blob/master/docs/project-structure.md)
+                        // target — director(y/ies) under scrutiny
+                        // from — director(y/ies) that target(s) CANNOT depend on
+
+                        // enforce unidirectional codebase:
                         {
                             // 1) shared layers should not depend on higher-level application layers
 
-                            target: ["common", "libs"],
+                            target: ["components", "hooks", "libs", "stores", "types", "utils"],
                             from: ["features", "routes"],
                             message: "❌ common/libs are shared layers — they should not import from features/routes!"
                         },
@@ -78,7 +80,7 @@ export default tseslint.config([
                             message: "❌ features are domain-specific modules — they should not import from routes!"
                         },
 
-                        // disable cross-feature imports
+                        // disable cross-feature imports:
                         {
                             target: "features/auth",
                             from: "features",
@@ -95,12 +97,6 @@ export default tseslint.config([
                             target: "features/onboarding",
                             from: "features",
                             except: ["onboarding"],
-                            message: "❌ features are independent modules — they should not import from other features!"
-                        },
-                        {
-                            target: "features/settings",
-                            from: "features",
-                            except: ["settings"],
                             message: "❌ features are independent modules — they should not import from other features!"
                         }
                     ]
