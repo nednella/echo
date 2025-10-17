@@ -4,6 +4,7 @@ interface Props {
     className?: string
     children: React.ReactNode
 }
-export default function P({ className, children }: Readonly<Props>) {
+
+export function P({ className, children }: Readonly<Props>) {
     return <p className={cn("leading-7 [&:not(:first-child)]:mt-6", className)}>{children}</p>
 }

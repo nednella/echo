@@ -1,5 +1,6 @@
 import { ThemeProvider } from "@/libs/theme/theme-provider"
 import { EchoClerkProvider } from "@/providers/clerk-provider"
+import { DialogProvider } from "@/providers/dialog-provider"
 import { EchoQueryClientProvider } from "@/providers/query-client-provider"
 import { SonnerProvider } from "@/providers/sonner-provider"
 
@@ -14,6 +15,7 @@ export function AppProvider({ children }: Readonly<Props>) {
                 {children}
                 <ThemeProvider />
                 <SonnerProvider />
+                <DialogProvider />
             </EchoQueryClientProvider>
         </EchoClerkProvider>
     )

@@ -1,6 +1,6 @@
 import { ScaleLoader } from "react-spinners"
 
-export default function Spinner() {
+export function Spinner() {
     return (
         <ScaleLoader
             color="#0891b2"

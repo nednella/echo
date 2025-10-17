@@ -1,6 +1,6 @@
 import { Separator } from "@/libs/ui/components/separator"
 import { SidebarTrigger } from "@/libs/ui/components/sidebar"
-import Large from "@/libs/ui/components/typography/large"
+import { Large } from "@/libs/ui/components/typography/large"
 
 export function Header() {
     return (
