@@ -10,7 +10,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/libs/ui/components/dropdown-menu"
-import { useThemeDialog } from "@/stores/theme-dialog.store"
+import { useAppearanceDialog } from "@/stores/appearance-dialog.store"
 
 interface Props {
     trigger: React.ReactNode
@@ -18,7 +18,7 @@ interface Props {
 
 export function AccountMenu({ trigger }: Readonly<Props>) {
     const { signOut, openUserProfile } = useClerk()
-    const { onOpen: openThemeDialog } = useThemeDialog()
+    const { onOpen: openAppearanceDialog } = useAppearanceDialog()
 
     const handleLogout = () => signOut()
 
@@ -35,7 +35,7 @@ export function AccountMenu({ trigger }: Readonly<Props>) {
                     <IdCard />
                     <span>Account</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => openThemeDialog()}>
+                <DropdownMenuItem onSelect={() => openAppearanceDialog()}>
                     <Paintbrush />
                     <span>Appearance</span>
                 </DropdownMenuItem>

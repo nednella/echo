@@ -1,9 +1,9 @@
-import { ThemeDialog } from "@/components/theme/theme-dialog"
+import { AppearanceDialog } from "@/components/theme/appearance-dialog"
 
 export function DialogProvider() {
     return (
         <>
-            <ThemeDialog />
+            <AppearanceDialog />
         </>
     )
 }

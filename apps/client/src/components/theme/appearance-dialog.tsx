@@ -1,16 +1,16 @@
 import { useThemeStore } from "@/libs/theme/theme.store"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/libs/ui/components/dialog"
 import { Separator } from "@/libs/ui/components/separator"
-import { useThemeDialog } from "@/stores/theme-dialog.store"
+import { useAppearanceDialog } from "@/stores/appearance-dialog.store"
 
 import { ThemeCard } from "./theme-card"
 import { options } from "./theme-card.config"
 
-export function ThemeDialog() {
-    const { isOpen, onClose } = useThemeDialog()
+export function AppearanceDialog() {
+    const { isOpen, onClose } = useAppearanceDialog()
     const { theme: activeTheme, setTheme } = useThemeStore()
 
-    const onChange = (open: boolean) => {
+    const onOpenChange = (open: boolean) => {
         if (!open) {
             onClose()
         }
@@ -19,7 +19,7 @@ export function ThemeDialog() {
     return (
         <Dialog
             open={isOpen}
-            onOpenChange={onChange}
+            onOpenChange={onOpenChange}
         >
             <DialogContent className="">
                 <DialogHeader>
