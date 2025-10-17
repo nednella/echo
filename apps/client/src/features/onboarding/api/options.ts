@@ -1,7 +1,7 @@
 import { mutationOptions } from "@tanstack/react-query"
 
-import { delayWithPromise } from "@/common/utils/delay"
 import { client } from "@/libs/api/openapi-client"
+import { delayWithPromise } from "@/utils/delay"
 
 export const onboardingMutationOptions = (minimumDelayMs: number) =>
     mutationOptions({

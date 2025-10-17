@@ -3,7 +3,6 @@ import React from "react"
 import { useClerk } from "@clerk/clerk-react"
 import { IdCard, LogOut, Paintbrush } from "lucide-react"
 
-import { useThemeDialog } from "@/common/stores/theme-dialog.store"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -11,6 +10,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/libs/ui/components/dropdown-menu"
+import { useThemeDialog } from "@/stores/theme-dialog.store"
 
 interface Props {
     trigger: React.ReactNode

@@ -1,6 +1,6 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 
-import { isAuthenticated, isOnboarded } from "@/common/utils/auth"
+import { isAuthenticated, isOnboarded } from "@/utils/auth"
 
 /**
  * Routes nested within the `/(onboarding)` pathless layout should only be accessible

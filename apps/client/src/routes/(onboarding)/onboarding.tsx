@@ -1,9 +1,9 @@
 import { useMutation } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 
-import { useEffectOnce } from "@/common/hooks/use-effect-once"
 import { onboardingMutationOptions } from "@/features/onboarding/api/options"
 import { OnboardingAnimation } from "@/features/onboarding/components/multi-step-loader"
+import { useEffectOnce } from "@/hooks/use-effect-once"
 import { Page } from "@/libs/ui/components/page"
 
 export const Route = createFileRoute("/(onboarding)/onboarding")({

@@ -1,4 +1,4 @@
-import { ThemeDialog } from "@/common/components/theme/theme-dialog"
+import { ThemeDialog } from "@/components/theme/theme-dialog"
 
 export function DialogProvider() {
     return (

@@ -1,9 +1,9 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 
-import { AppSidebar } from "@/common/components/sidebar/sidebar"
-import { isAuthenticated, isOnboarded } from "@/common/utils/auth"
+import { AppSidebar } from "@/components/sidebar/sidebar"
 import { ScrollArea } from "@/libs/ui/components/scroll-area"
 import { SidebarProvider } from "@/libs/ui/components/sidebar"
+import { isAuthenticated, isOnboarded } from "@/utils/auth"
 
 /**
  * Routes nested within the `/(app)` pathless layout should only be accessible
