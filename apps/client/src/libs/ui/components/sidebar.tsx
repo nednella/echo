@@ -13,8 +13,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/libs
 import { useIsMobile } from "@/libs/ui/hooks/use-mobile"
 import { cn } from "@/libs/ui/utils"
 
-const SIDEBAR_COOKIE_NAME = "sidebar_state"
-const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 const SIDEBAR_WIDTH = "16rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
 const SIDEBAR_WIDTH_ICON = "3rem"
@@ -69,14 +67,6 @@ function SidebarProvider({
             } else {
                 _setOpen(openState)
             }
-
-            // This sets the cookie to keep the sidebar state.
-            await cookieStore.set({
-                name: SIDEBAR_COOKIE_NAME,
-                value: `${openState}`,
-                path: "/",
-                expires: Date.now() + SIDEBAR_COOKIE_MAX_AGE
-            })
         },
         [setOpenProperty, open]
     )
