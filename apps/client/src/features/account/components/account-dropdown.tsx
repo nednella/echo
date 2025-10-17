@@ -13,10 +13,10 @@ import {
 import { useAppearanceDialog } from "@/stores/appearance-dialog.store"
 
 interface Props {
-    trigger: React.ReactNode
+    children: React.ReactNode
 }
 
-export function AccountMenu({ trigger }: Readonly<Props>) {
+export function AccountMenu({ children }: Readonly<Props>) {
     const { signOut, openUserProfile } = useClerk()
     const { onOpen: openAppearanceDialog } = useAppearanceDialog()
 
@@ -24,10 +24,10 @@ export function AccountMenu({ trigger }: Readonly<Props>) {
 
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+            <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
             <DropdownMenuContent
                 className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-                side="top"
+                side="bottom"
                 align="start"
                 sideOffset={8}
             >
