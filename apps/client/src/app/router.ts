@@ -11,6 +11,7 @@ declare module "@tanstack/react-router" {
 
 export const router = createRouter({
     routeTree,
+    notFoundMode: "root",
     defaultPreload: "intent",
     scrollRestoration: true, //  https://tanstack.com/router/latest/docs/framework/react/examples/scroll-restoration
     context: {
