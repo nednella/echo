@@ -50,11 +50,11 @@ export function AccountButton({ variant }: Readonly<Props>) {
         return (
             <AccountMenu>
                 <Button
-                    rounded
+                    size="avatar"
                     variant="ghost"
-                    className="data-[state=open]:bg-accent size-fit p-1"
+                    className="data-[state=open]:bg-accent"
                 >
-                    <Avatar className="size-9">
+                    <Avatar className="size-8">
                         <AvatarImage
                             src={imageUrl}
                             alt={username}
