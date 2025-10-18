@@ -8,9 +8,13 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarProvider } from "@/libs/
 import { isAuthenticated, isOnboarded } from "@/utils/auth"
 
 /**
- * Routes nested within the `/(app)` pathless layout should only be accessible
+ * Routes nested within the `/(app)` pathless route group should only be accessible
  * when the user **IS BOTH** authenticated and onboarded, otherwise the user should
  * be redirected accordingly.
+ *
+ * docs: https://tanstack.com/router/v1/docs/framework/react/routing/routing-concepts#pathless-route-group-directories
+ *
+ * note: this should not be possible using pathless route groups, but it is: https://github.com/TanStack/router/discussions/5530
  */
 export const Route = createFileRoute("/(app)")({
     beforeLoad({ context: { auth }, location }) {
