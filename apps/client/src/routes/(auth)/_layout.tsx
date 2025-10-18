@@ -1,6 +1,6 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 
-import { Page } from "@/libs/ui/components/page"
+import { Page } from "@/components/page/page"
 import { isAuthenticated } from "@/utils/auth"
 
 /**
