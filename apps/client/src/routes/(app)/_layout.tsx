@@ -52,7 +52,7 @@ function AppLayout() {
                     <AccountButton variant="sidebar" />
                 </SidebarFooter>
             </Sidebar>
-            <ScrollArea className="bg-sidebar relative overflow-y-auto rounded-lg border shadow-sm">
+            <ScrollArea className="bg-sidebar overflow-y-auto rounded-lg border shadow-sm">
                 <Outlet />
             </ScrollArea>
         </SidebarProvider>
