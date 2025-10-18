@@ -14,7 +14,7 @@ export function CallToAction() {
         >
             <Button
                 asChild
-                fill
+                full
                 rounded
                 size="lg"
                 variant="custom"
@@ -30,7 +30,7 @@ export function CallToAction() {
             </LabelledSeparator>
             <Button
                 asChild
-                fill
+                full
                 rounded
                 size="lg"
                 variant="custom"
