@@ -1,7 +1,7 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 
-import { isAuthenticated } from "@/common/utils/auth"
 import { Page } from "@/libs/ui/components/page"
+import { isAuthenticated } from "@/utils/auth"
 
 /**
  * Routes nested within the `/(auth)` pathless layout should only be accessible

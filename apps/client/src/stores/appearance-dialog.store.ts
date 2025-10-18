@@ -9,7 +9,7 @@ type DialogActions = {
     onClose: () => void
 }
 
-export const useThemeDialog = create<DialogState & DialogActions>((set) => ({
+export const useAppearanceDialog = create<DialogState & DialogActions>((set) => ({
     isOpen: false,
     onOpen: () => set({ isOpen: true }),
     onClose: () => set({ isOpen: false })

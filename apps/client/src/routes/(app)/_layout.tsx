@@ -1,9 +1,11 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 
-import { AppSidebar } from "@/common/components/sidebar/sidebar"
-import { isAuthenticated, isOnboarded } from "@/common/utils/auth"
+import { SidebarHeader } from "@/components/sidebar/sidebar-header"
+import { SidebarNavigation } from "@/components/sidebar/sidebar-nav"
+import { AccountButton } from "@/features/account/components/account-button"
 import { ScrollArea } from "@/libs/ui/components/scroll-area"
-import { SidebarProvider } from "@/libs/ui/components/sidebar"
+import { Sidebar, SidebarContent, SidebarFooter, SidebarProvider } from "@/libs/ui/components/sidebar"
+import { isAuthenticated, isOnboarded } from "@/utils/auth"
 
 /**
  * Routes nested within the `/(app)` pathless layout should only be accessible
@@ -34,7 +36,18 @@ export const Route = createFileRoute("/(app)")({
 function AppLayout() {
     return (
         <SidebarProvider className="grid h-screen w-screen p-2 md:grid-cols-[max-content_1fr] md:pl-0">
-            <AppSidebar />
+            <Sidebar
+                variant="floating"
+                collapsible="icon"
+            >
+                <SidebarHeader />
+                <SidebarContent>
+                    <SidebarNavigation />
+                </SidebarContent>
+                <SidebarFooter>
+                    <AccountButton variant="sidebar" />
+                </SidebarFooter>
+            </Sidebar>
             <ScrollArea className="bg-sidebar relative overflow-y-auto rounded-lg border shadow-sm">
                 <Outlet />
             </ScrollArea>

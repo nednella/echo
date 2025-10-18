@@ -3,7 +3,7 @@ import { useEffect } from "react"
 import { UserButton } from "@clerk/clerk-react"
 import { createFileRoute } from "@tanstack/react-router"
 
-import { client } from "@/common/api/client"
+import { client } from "@/libs/api/openapi-client"
 
 export const Route = createFileRoute("/(app)/home")({
     component: HomePage

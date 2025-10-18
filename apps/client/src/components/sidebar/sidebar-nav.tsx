@@ -10,7 +10,7 @@ import {
 
 import { options } from "./sidebar-nav.config"
 
-export function Navigation() {
+export function SidebarNavigation() {
     return (
         <SidebarGroup>
             <SidebarGroupContent>

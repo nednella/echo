@@ -3,10 +3,9 @@ import { useState } from "react"
 import { useAuth } from "@clerk/clerk-react"
 import { RouterProvider } from "@tanstack/react-router"
 
-import { router } from "@/common/router"
-
 import { LoadingPage } from "./loading"
 import { AppProvider } from "./providers"
+import { router } from "./router"
 
 export function App() {
     return (

@@ -23,6 +23,10 @@
 
 See the [development setup guide](../DEVELOPMENT.md) on how to set up a local development environment.
 
+## Architecture
+
+This application follows [Bulletproof React](https://github.com/alan2207/bulletproof-react).
+
 ## Versioning
 
 This application follows [Semantic Versioning](https://semver.org/).

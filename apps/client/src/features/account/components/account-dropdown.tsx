@@ -3,7 +3,6 @@ import React from "react"
 import { useClerk } from "@clerk/clerk-react"
 import { IdCard, LogOut, Paintbrush } from "lucide-react"
 
-import { useThemeDialog } from "@/common/stores/theme-dialog.store"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -11,23 +10,24 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/libs/ui/components/dropdown-menu"
+import { useAppearanceDialog } from "@/stores/appearance-dialog.store"
 
 interface Props {
-    trigger: React.ReactNode
+    children: React.ReactNode
 }
 
-export function AccountMenu({ trigger }: Readonly<Props>) {
+export function AccountMenu({ children }: Readonly<Props>) {
     const { signOut, openUserProfile } = useClerk()
-    const { onOpen: openThemeDialog } = useThemeDialog()
+    const { onOpen: openAppearanceDialog } = useAppearanceDialog()
 
     const handleLogout = () => signOut()
 
     return (
         <DropdownMenu>
-            <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+            <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
             <DropdownMenuContent
                 className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-                side="top"
+                side="bottom"
                 align="start"
                 sideOffset={8}
             >
@@ -35,7 +35,7 @@ export function AccountMenu({ trigger }: Readonly<Props>) {
                     <IdCard />
                     <span>Account</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => openThemeDialog()}>
+                <DropdownMenuItem onSelect={() => openAppearanceDialog()}>
                     <Paintbrush />
                     <span>Appearance</span>
                 </DropdownMenuItem>
