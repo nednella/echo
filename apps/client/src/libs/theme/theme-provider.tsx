@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useLayoutEffect } from "react"
 
 import { useThemeStore } from "@/libs/theme/theme.store"
 import { applyTheme, onSystemThemeChange } from "@/libs/theme/utils"
@@ -16,7 +16,7 @@ export function ThemeProvider() {
      *
      * The listener is removed on any re-render when the deps change.
      */
-    useEffect(() => {
+    useLayoutEffect(() => {
         applyTheme(theme)
 
         if (theme !== "system") return
