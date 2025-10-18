@@ -3,6 +3,8 @@ import type { QueryClient } from "@tanstack/react-query"
 import { Outlet, createRootRouteWithContext } from "@tanstack/react-router"
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools"
 
+import { PageNotFound } from "@/components/page/page-not-found"
+
 interface RouterContext {
     auth: ReturnType<typeof useAuth>
     queryClient: QueryClient
@@ -14,5 +16,6 @@ export const Route = createRootRouteWithContext<RouterContext>()({
             <Outlet />
             <TanStackRouterDevtools position="bottom-right" />
         </>
-    )
+    ),
+    notFoundComponent: PageNotFound
 })
