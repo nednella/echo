@@ -1,8 +1,8 @@
 import { useEffect } from "react"
 
-import { UserButton } from "@clerk/clerk-react"
 import { createFileRoute } from "@tanstack/react-router"
 
+import { ComingSoon } from "@/components/coming-soon"
 import { client } from "@/libs/api/openapi-client"
 
 export const Route = createFileRoute("/(app)/home")({
@@ -20,11 +20,8 @@ function HomePage() {
     }, [])
 
     return (
-        <>
-            <header className="h-16 text-center">Optional Content Header</header>
-            <div className="flex h-full items-center justify-center gap-2">
-                Hello "/(app)/home"! <UserButton />
-            </div>
-        </>
+        <div className="flex h-full items-center justify-center">
+            <ComingSoon />
+        </div>
     )
 }

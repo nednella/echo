@@ -3,8 +3,8 @@ import { useEffect, useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
 
 import { EchoLogo } from "@/components/logos/echo-logo"
+import { Page } from "@/components/page/page"
 import { MotionContainer } from "@/libs/ui/components/container"
-import { Page } from "@/libs/ui/components/page"
 
 interface Props {
     isReady: boolean
