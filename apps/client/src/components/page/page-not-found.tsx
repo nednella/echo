@@ -21,7 +21,7 @@ export function PageNotFound() {
                 />
                 <div>
                     <H1 className="text-neutral-100">Page not found</H1>
-                    <Lead className="mt-2 text-neutral-100/60">We can't seem to find the page you are looking for</Lead>
+                    <Lead className="mt-2 text-neutral-100/60">we can't seem to find the page you are looking for</Lead>
                 </div>
                 <Button
                     asChild
