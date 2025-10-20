@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.3.0](https://github.com/nednella/echo/compare/client@v0.2.1...client@v0.3.0) (2025-10-19)
+
+
+### Features
+
+* **api:** update controller OpenAPI documentation ([#128](https://github.com/nednella/echo/issues/128)) ([9dd81d1](https://github.com/nednella/echo/commit/9dd81d161bb3f682afe5bf0c1be9df493f0a47ab))
+* **client:** add & configure tanstack query ([#127](https://github.com/nednella/echo/issues/127)) ([5b9587f](https://github.com/nednella/echo/commit/5b9587fd4d4f293be812ac2af91a577ee8d474b1))
+* **client:** add appearance dialog ([#144](https://github.com/nednella/echo/issues/144)) ([aae8318](https://github.com/nednella/echo/commit/aae83189e16d0e4cd7a19c8bb8d0bca1247daec0))
+* **client:** add application layout ([#142](https://github.com/nednella/echo/issues/142)) ([079feca](https://github.com/nednella/echo/commit/079fecab6ebdf7589ce898be991a24321a84d96c))
+* **client:** add auth & error middleware to openapi-fetch client ([#131](https://github.com/nednella/echo/issues/131)) ([710a94b](https://github.com/nednella/echo/commit/710a94bbe38ba3abf3c47143b8cc864c3798e33a))
+* **client:** add avatar size to UI button ([#147](https://github.com/nednella/echo/issues/147)) ([8fbda96](https://github.com/nednella/echo/commit/8fbda967d7a2cfb577e4bdffda075d4b9b158701))
+* **client:** add generic 404 page ([#148](https://github.com/nednella/echo/issues/148)) ([78d3ab7](https://github.com/nednella/echo/commit/78d3ab70795532b89371f2d86e70b4772e480cb1))
+* **client:** add npm generate script for regenerating openapi type file ([#124](https://github.com/nednella/echo/issues/124)) ([7b4b86f](https://github.com/nednella/echo/commit/7b4b86f8af442695b110824ed5d824bc74ed92a4))
+* **client:** add onboarding page ([#132](https://github.com/nednella/echo/issues/132)) ([ca4aedf](https://github.com/nednella/echo/commit/ca4aedf22b10ce83b21679e7fec8c2fd9720ab67))
+* **client:** add sidebar account menu dropdown ([#143](https://github.com/nednella/echo/issues/143)) ([cc6fd48](https://github.com/nednella/echo/commit/cc6fd488f88b6437d218675f5932c9fbebbefa7c))
+* **client:** add typecheck script ([#126](https://github.com/nednella/echo/issues/126)) ([1e9e598](https://github.com/nednella/echo/commit/1e9e5982b6b37b6b325efc375efcece373af652d))
+* **client:** adhere to Bulletproof React ([#145](https://github.com/nednella/echo/issues/145)) ([e9d70a9](https://github.com/nednella/echo/commit/e9d70a9b3a4d32e3cf2ca0da24078fd53e36c235))
+* **client:** set up shadcn & add light/dark theme support ([#136](https://github.com/nednella/echo/issues/136)) ([9652272](https://github.com/nednella/echo/commit/9652272b43a7a7064c717677f09c4d6620ac6b89))
+
+
+### Bug Fixes
+
+* **client:** re-add black/white to tailwind palette ([#137](https://github.com/nednella/echo/issues/137)) ([0c197e1](https://github.com/nednella/echo/commit/0c197e1541098f166ddcc7c688c6f7203f64fb82))
+
 ## [0.2.1](https://github.com/nednella/echo/compare/client@v0.2.0...client@v0.2.1) (2025-09-30)
 
 
