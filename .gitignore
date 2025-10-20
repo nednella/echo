@@ -10,6 +10,7 @@ dist-ssr
 node_modules
 out/
 bin/
+.vercel
 
 # Gradle Wrapper Exception
 !gradle/wrapper/gradle-wrapper.jar
@@ -21,10 +22,6 @@ bin/
 !**/src/test/**/bin/
 !**/src/main/**/out/
 !**/src/test/**/out/
-
-# VS Code
-.vscode/
-!.vscode/extensions.json
 
 # IntelliJ IDEA
 .idea
