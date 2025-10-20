@@ -27,7 +27,7 @@ jobs:
                       client:
                           - 'apps/client/**'
 
-    format-lint:
+    format-lint-build:
         needs: detect-changes # 3rd party solution to required but skipped issue: https://github.com/orgs/community/discussions/44490
         if: ${{ needs.detect-changes.outputs.client == 'true' }}
 
@@ -50,3 +50,6 @@ jobs:
 
             - name: Lint
               run: npm run lint -- --max-warnings=0
+
+            - name: build
+              run: npm run build
