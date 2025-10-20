@@ -22,10 +22,6 @@ bin/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
-# VS Code
-.vscode/
-!.vscode/extensions.json
-
 # IntelliJ IDEA
 .idea
 *.iws
