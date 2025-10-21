@@ -2,13 +2,15 @@ spring:
     application:
         name: echo-api
 
-    sql:
-        init:
-            mode: never # default to disabled, override where required
-            schema-locations:
-                - classpath:sql/schema/*.sql
-                - classpath:sql/function/*.sql
-                - classpath:sql/trigger/*.sql
+    jpa:
+        hibernate:
+            ddl-auto: none
+
+    flyway:
+        enabled: true
+        locations: 
+            - classpath:db/migration
+            - classpath:db/repeatable
 
 springdoc:
     api-docs:

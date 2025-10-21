@@ -2,6 +2,9 @@ server:
     port: ${PORT:8080}
 
 spring:
+    flyway:
+        clean-disabled: true # protect prod db!
+
     security:
         oauth2:
             resourceserver:
