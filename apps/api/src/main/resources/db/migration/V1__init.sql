@@ -6,7 +6,7 @@
 
 CREATE TABLE "user" (
     id             UUID PRIMARY KEY,
-    external_id    VARCHAR(255) UNIQUE NOT NULL,
+    external_id    VARCHAR(255) NOT NULL,
     status         VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
     created_at     TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at     TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -14,7 +14,7 @@ CREATE TABLE "user" (
 
 CREATE TABLE "profile" (
     id            UUID PRIMARY KEY,
-    username      VARCHAR(255) UNIQUE NOT NULL,
+    username      VARCHAR(255) NOT NULL,
     name          VARCHAR(50),
     bio           VARCHAR(160),
     location      VARCHAR(30),
@@ -68,10 +68,10 @@ CREATE TABLE "post_entity" (
 
 -- 2) indexes
 
-CREATE UNIQUE INDEX idx_user_external_id ON "user" (LOWER(external_id));
+CREATE UNIQUE INDEX idx_user_external_id ON "user" (LOWER(external_id)); -- enforce uniqueness on case-insensitive ext. id
 CREATE INDEX idx_user_status ON "user" (status);
 
-CREATE UNIQUE INDEX idx_profile_username ON "profile" (Lower(username));
+CREATE UNIQUE INDEX idx_profile_username ON "profile" (Lower(username)); -- enforce uniqueness on case-insensitive username
 
 CREATE INDEX idx_profile_follow_follower_id ON "profile_follow" (follower_id);
 CREATE INDEX idx_profile_follow_followed_id ON "profile_follow" (followed_id);
