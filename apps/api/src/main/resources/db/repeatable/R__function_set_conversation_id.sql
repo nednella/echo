@@ -24,7 +24,10 @@ AS
 '
 LANGUAGE plpgsql;
 
-CREATE OR REPLACE TRIGGER trigger_set_conversation_id
-BEFORE INSERT ON "post"
+DROP TRIGGER IF EXISTS trigger_set_conversation_id ON "post";
+
+CREATE TRIGGER trigger_set_conversation_id
+BEFORE INSERT
+ON "post"
 FOR EACH row
 EXECUTE FUNCTION set_conversation_id();
