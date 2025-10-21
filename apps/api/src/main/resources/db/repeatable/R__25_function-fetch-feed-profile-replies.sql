@@ -40,7 +40,7 @@ AS
         WITH profile_replies AS (
             SELECT
                 p.id
-            FROM post p
+            FROM posts p
             WHERE p.author_id = p_profile_id
             AND p.parent_id IS NOT NULL
             ORDER BY p.created_at DESC

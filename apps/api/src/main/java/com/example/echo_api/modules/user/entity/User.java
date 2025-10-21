@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
  * Entity class representing a user in the local application.
  */
 @Entity
-@Table(name = "\"user\"")
+@Table(name = "users")
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

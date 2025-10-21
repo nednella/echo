@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
  * Entity class representing a {@link User} profile in the local application.
  */
 @Entity
-@Table
+@Table(name = "profiles")
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

@@ -39,8 +39,8 @@ AS
         WITH profile_likes AS (
             SELECT
                 p.id
-            FROM post p
-            INNER JOIN post_like pl ON p.id = pl.post_id AND pl.author_id = p_profile_id
+            FROM posts p
+            INNER JOIN post_likes pl ON p.id = pl.post_id AND pl.author_id = p_profile_id
             ORDER BY p.created_at DESC
             OFFSET p_offset
             LIMIT p_limit

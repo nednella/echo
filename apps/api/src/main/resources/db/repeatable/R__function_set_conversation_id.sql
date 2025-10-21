@@ -16,7 +16,7 @@ AS
         ELSE
             SELECT conversation_id 
             INTO NEW.conversation_id
-            FROM "post"
+            FROM posts
             WHERE id = NEW.parent_id;
         END IF;
         RETURN NEW;
@@ -24,10 +24,10 @@ AS
 '
 LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS trigger_set_conversation_id ON "post";
+DROP TRIGGER IF EXISTS trigger_set_conversation_id ON posts;
 
 CREATE TRIGGER trigger_set_conversation_id
 BEFORE INSERT
-ON "post"
+ON posts
 FOR EACH row
 EXECUTE FUNCTION set_conversation_id();

@@ -30,21 +30,21 @@ AS
                 p.username,
                 p.name,
                 p.image_url
-            FROM profile p
+            FROM profiles p
             WHERE p.id = p_profile_id
         ),
         relationship AS (
             SELECT
                 CASE WHEN pd.is_self THEN NULL
                     ELSE EXISTS(
-                        SELECT 1 FROM profile_follow
+                        SELECT 1 FROM profile_follows
                         WHERE follower_id = p_authenticated_user_id
                         AND followed_id = pd.id
                     )
                 END AS rel_following,
                 CASE WHEN pd.is_self THEN NULL
                     ELSE EXISTS(
-                        SELECT 1 FROM profile_follow
+                        SELECT 1 FROM profile_follows
                         WHERE follower_id = pd.id
                         AND followed_id = p_authenticated_user_id
                     )

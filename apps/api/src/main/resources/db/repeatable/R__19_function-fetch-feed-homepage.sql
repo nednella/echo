@@ -39,8 +39,8 @@ AS
         WITH homepage_posts AS (
             SELECT
                 p.id
-            FROM post p
-            LEFT JOIN profile_follow f ON p.author_id = f.followed_id
+            FROM posts p
+            LEFT JOIN profile_follows f ON p.author_id = f.followed_id
             WHERE p.parent_id IS NULL
             AND (f.follower_id = p_authenticated_user_id
             OR p.author_id = p_authenticated_user_id)

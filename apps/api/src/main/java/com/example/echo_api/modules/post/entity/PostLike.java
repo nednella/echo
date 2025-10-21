@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
  * {@link Post} in the application.
  */
 @Entity
-@Table(name = "post_like")
+@Table(name = "post_likes")
 @Getter
 @NoArgsConstructor
 @IdClass(PostLikePK.class)
