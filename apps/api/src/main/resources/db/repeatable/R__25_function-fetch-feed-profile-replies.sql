@@ -1,12 +1,13 @@
 
 /*
- * Function fetches posts that form a users profile mentions tab.
+ * Function fetches posts that form a users profile replies tab.
  *
- * Posts that include a mention of the user are fetched and sorted by creation timestamp.
+ * Posts with a non-null parent_id belonging to the user are fetched and sorted
+ * by creation timestamp.
  * 
-*/
+ */
 
-CREATE OR REPLACE FUNCTION fetch_feed_profile_mentions(
+CREATE OR REPLACE FUNCTION fetch_feed_profile_replies(
     p_profile_id UUID,
     p_authenticated_user_id UUID,
     p_offset INTEGER,
@@ -36,20 +37,19 @@ AS
 '
     BEGIN
         RETURN QUERY
-        WITH profile_mentions AS (
+        WITH profile_replies AS (
             SELECT
                 p.id
             FROM post p
-            INNER JOIN post_entity pe ON p.id = pe.post_id AND pe.entity_type = ''MENTION''
-            INNER JOIN profile pr ON pe.text = pr.username AND pr.id = p_profile_id
-            GROUP BY p.id
+            WHERE p.author_id = p_profile_id
+            AND p.parent_id IS NOT NULL
             ORDER BY p.created_at DESC
             OFFSET p_offset
             LIMIT p_limit
         )
         SELECT
             fp.*
-        FROM fetch_posts(ARRAY(SELECT pm.id FROM profile_mentions pm), p_authenticated_user_id) fp
+        FROM fetch_posts(ARRAY(SELECT pr.id FROM profile_replies pr), p_authenticated_user_id) fp
         ORDER BY fp.created_at DESC;
     END;
 '

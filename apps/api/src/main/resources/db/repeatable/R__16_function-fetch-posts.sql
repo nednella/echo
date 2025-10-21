@@ -2,7 +2,7 @@
 /**
  * Function fetches posts and respective contextual information for the given post ID(s).
  *
-*/
+ */
 
 CREATE OR REPLACE FUNCTION fetch_posts(
     p_post_ids UUID[],

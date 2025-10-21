@@ -4,7 +4,7 @@
  * required for building a complete Page<SimplifiedProfileDTO> object that the frontend
  * can display to end users.
  *
-*/
+ */
 
 CREATE OR REPLACE FUNCTION fetch_profile_followers(
     p_profile_id UUID,

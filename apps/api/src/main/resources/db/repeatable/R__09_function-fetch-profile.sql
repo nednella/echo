@@ -6,7 +6,7 @@
  *
  * This function should be called with id OR username, with the other being NULL.
  *
-*/
+ */
 
 CREATE OR REPLACE FUNCTION fetch_profile(
     p_profile_id UUID,
