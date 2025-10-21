@@ -5,7 +5,7 @@
 -- 1) tables
 
 CREATE TABLE "user" (
-    id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id             UUID PRIMARY KEY,
     external_id    VARCHAR(255) UNIQUE NOT NULL,
     status         VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
     created_at     TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
