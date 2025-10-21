@@ -90,14 +90,3 @@ CREATE INDEX idx_post_like_author_created_at ON "post_like"(author_id, created_a
 CREATE INDEX idx_post_entity_post_id ON "post_entity"(post_id); -- retrieve entities by post
 CREATE INDEX idx_post_entity_text ON "post_entity"(LOWER(text)); -- retrieve posts where entity = ...
 CREATE INDEX idx_post_entity_type_text ON "post_entity"(entity_type, LOWER(text)); -- retrieve posts where entity type = ... && entity = ...
-
-
-/*
-* TODO
-* (local) Add schemas to this file
-* (local) Figure out where to put SQL functions within migration
-* (railway) Redeploy, validate that the db accepted the schema
-* (railway) Add backup to the db service
-* (github) Merge and release new API
-* (prod) Validate that production is working as intended, create a new sign-up
-/
