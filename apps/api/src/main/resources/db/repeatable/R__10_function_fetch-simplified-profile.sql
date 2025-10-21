@@ -4,7 +4,7 @@
  * building a complete SimplifiedProfileDTO object that the frontend can display
  * to end users.
  *
-*/
+ */
 
 CREATE OR REPLACE FUNCTION fetch_simplified_profile(
     p_profile_id UUID,

@@ -1,13 +1,12 @@
 
 /*
- * Function fetches posts that form a users profile replies tab.
+ * Function fetches posts that form a users profile likes tab.
  *
- * Posts with a non-null parent_id belonging to the user are fetched and sorted
- * by creation timestamp.
+ * Posts that are liked by the user are fetched and sorted by creation timestamp.
  * 
-*/
+ */
 
-CREATE OR REPLACE FUNCTION fetch_feed_profile_replies(
+CREATE OR REPLACE FUNCTION fetch_feed_profile_likes(
     p_profile_id UUID,
     p_authenticated_user_id UUID,
     p_offset INTEGER,
@@ -37,19 +36,18 @@ AS
 '
     BEGIN
         RETURN QUERY
-        WITH profile_replies AS (
+        WITH profile_likes AS (
             SELECT
                 p.id
             FROM post p
-            WHERE p.author_id = p_profile_id
-            AND p.parent_id IS NOT NULL
+            INNER JOIN post_like pl ON p.id = pl.post_id AND pl.author_id = p_profile_id
             ORDER BY p.created_at DESC
             OFFSET p_offset
             LIMIT p_limit
         )
         SELECT
             fp.*
-        FROM fetch_posts(ARRAY(SELECT pr.id FROM profile_replies pr), p_authenticated_user_id) fp
+        FROM fetch_posts(ARRAY(SELECT pl.id FROM profile_likes pl), p_authenticated_user_id) fp
         ORDER BY fp.created_at DESC;
     END;
 '

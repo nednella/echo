@@ -1,11 +1,13 @@
 
 /*
- * Function fetches posts that form a users discover page.
+ * Function fetches posts that form a users profile mentions tab.
  *
- * Root-level posts from any user are fetched and sorted by creation timestamp.
-*/
+ * Posts that include a mention of the user are fetched and sorted by creation timestamp.
+ * 
+ */
 
-CREATE OR REPLACE FUNCTION fetch_feed_discover(
+CREATE OR REPLACE FUNCTION fetch_feed_profile_mentions(
+    p_profile_id UUID,
     p_authenticated_user_id UUID,
     p_offset INTEGER,
     p_limit INTEGER
@@ -34,18 +36,20 @@ AS
 '
     BEGIN
         RETURN QUERY
-        WITH discover_posts AS (
+        WITH profile_mentions AS (
             SELECT
                 p.id
             FROM post p
-            WHERE p.parent_id IS NULL
+            INNER JOIN post_entity pe ON p.id = pe.post_id AND pe.entity_type = ''MENTION''
+            INNER JOIN profile pr ON pe.text = pr.username AND pr.id = p_profile_id
+            GROUP BY p.id
             ORDER BY p.created_at DESC
             OFFSET p_offset
             LIMIT p_limit
         )
         SELECT
             fp.*
-        FROM fetch_posts(ARRAY(SELECT dp.id FROM discover_posts dp), p_authenticated_user_id) fp
+        FROM fetch_posts(ARRAY(SELECT pm.id FROM profile_mentions pm), p_authenticated_user_id) fp
         ORDER BY fp.created_at DESC;
     END;
 '

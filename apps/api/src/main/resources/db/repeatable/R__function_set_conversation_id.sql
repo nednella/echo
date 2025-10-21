@@ -1,12 +1,10 @@
-
 /*
- * Function ensures all posts belonging to the same conversation thread share
- * the same conversation_id for efficient grouping/filtering.
+ * fn ensures all posts belonging to the same conversation thread share the same
+ * conversation_id.
  * 
- * On INSERT, sets the conversation_id of a new post. For posts with no parent_id,
- * the conversation_id is set to its own id (it becomes the root). For replies, 
- * the conversation_id is set equal to its parents conversation_id.
-*/
+ * Root post: conversation_id = id
+ * Replies:   conversation_id = parent's conversation_id
+ */
 
 CREATE OR REPLACE FUNCTION set_conversation_id()
 RETURNS TRIGGER
@@ -25,3 +23,11 @@ AS
     END;
 '
 LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trigger_set_conversation_id ON "post";
+
+CREATE TRIGGER trigger_set_conversation_id
+BEFORE INSERT
+ON "post"
+FOR EACH row
+EXECUTE FUNCTION set_conversation_id();

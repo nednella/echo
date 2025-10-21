@@ -4,7 +4,7 @@
  *
  * To be consumed as part of a pagination implementation where the total number 
  * of entries available are required.
-*/
+ */
 
 CREATE OR REPLACE FUNCTION fetch_feed_homepage_count(
     p_authenticated_user_id UUID

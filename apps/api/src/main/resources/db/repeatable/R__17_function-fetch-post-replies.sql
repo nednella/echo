@@ -5,7 +5,7 @@
  * Posts are ranked by a unique sorting pattern: those with replies from the original
  * author, then by a combination of post engagement metrics, then by creation timestamp.
  * 
-*/
+ */
 
 CREATE OR REPLACE FUNCTION fetch_post_replies(
     p_post_id UUID,

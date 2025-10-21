@@ -1,13 +1,13 @@
 
 /*
- * Function fetches posts that form a users profile page.
+ * Function fetches posts that form a users homepage.
  *
- * Root-level posts belonging to the user are fetched and sorted by creation timestamp.
+ * Root-level posts belonging to the user, and any users followed by the user, are fetched
+ * and sorted by creation timestamp.
  * 
-*/
+ */
 
-CREATE OR REPLACE FUNCTION fetch_feed_profile(
-    p_profile_id UUID,
+CREATE OR REPLACE FUNCTION fetch_feed_homepage(
     p_authenticated_user_id UUID,
     p_offset INTEGER,
     p_limit INTEGER
@@ -36,19 +36,21 @@ AS
 '
     BEGIN
         RETURN QUERY
-        WITH profile_posts AS (
+        WITH homepage_posts AS (
             SELECT
                 p.id
             FROM post p
-            WHERE p.author_id = p_profile_id
-            AND p.parent_id IS NULL
+            LEFT JOIN profile_follow f ON p.author_id = f.followed_id
+            WHERE p.parent_id IS NULL
+            AND (f.follower_id = p_authenticated_user_id
+            OR p.author_id = p_authenticated_user_id)
             ORDER BY p.created_at DESC
             OFFSET p_offset
             LIMIT p_limit
         )
         SELECT
             fp.*
-        FROM fetch_posts(ARRAY(SELECT pp.id FROM profile_posts pp), p_authenticated_user_id) fp
+        FROM fetch_posts(ARRAY(SELECT hp.id FROM homepage_posts hp), p_authenticated_user_id) fp
         ORDER BY fp.created_at DESC;
     END;
 '
