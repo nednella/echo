@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "post_entity")
+@Table(name = "post_entities")
 @Getter
 @NoArgsConstructor
 @IdClass(PostEntityPK.class)

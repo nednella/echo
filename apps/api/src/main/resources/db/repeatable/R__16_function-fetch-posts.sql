@@ -34,14 +34,14 @@ AS
         RETURN QUERY
         WITH post_data AS (
             SELECT *
-            FROM post p
+            FROM posts p
             WHERE p.id = ANY(p_post_ids)
         ),
         post_metrics AS (
             SELECT
                 pd.id AS post_id,
-                (SELECT COUNT(*) FROM post_like pl WHERE pl.post_id = pd.id) AS post_like_count,
-                (SELECT COUNT(*) FROM post pr WHERE pr.parent_id = pd.id) AS post_reply_count,
+                (SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = pd.id) AS post_like_count,
+                (SELECT COUNT(*) FROM posts pr WHERE pr.parent_id = pd.id) AS post_reply_count,
                 0::BIGINT AS post_share_count
             FROM post_data pd
         ),
@@ -49,7 +49,7 @@ AS
             SELECT
                 pd.id AS post_id,
                 EXISTS(
-                    SELECT 1 FROM post_like pl
+                    SELECT 1 FROM post_likes pl
                     WHERE pl.post_id = pd.id
                     AND pl.author_id = p_authenticated_user_id
                 ) AS post_rel_liked,

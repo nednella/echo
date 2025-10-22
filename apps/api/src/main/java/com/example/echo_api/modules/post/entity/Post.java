@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
  * Entity class representing a user's post in the system.
  */
 @Entity
-@Table
+@Table(name = "posts")
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

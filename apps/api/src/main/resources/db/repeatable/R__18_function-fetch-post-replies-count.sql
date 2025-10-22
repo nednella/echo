@@ -13,7 +13,7 @@ RETURNS BIGINT
 AS
 '
     SELECT COUNT(*)
-    FROM post p
+    FROM posts p
     WHERE p.parent_id = p_post_id;
 '
 LANGUAGE sql;

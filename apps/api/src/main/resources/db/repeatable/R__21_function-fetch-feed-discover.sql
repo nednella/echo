@@ -37,7 +37,7 @@ AS
         WITH discover_posts AS (
             SELECT
                 p.id
-            FROM post p
+            FROM posts p
             WHERE p.parent_id IS NULL
             ORDER BY p.created_at DESC
             OFFSET p_offset

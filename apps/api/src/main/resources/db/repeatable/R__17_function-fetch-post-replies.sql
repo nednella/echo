@@ -41,16 +41,16 @@ AS
             SELECT 
                 p.id,
                 p.created_at,
-                (SELECT COUNT(*) FROM post_like pl WHERE pl.post_id = p.id) AS like_count,
-                (SELECT COUNT(*) FROM post pr WHERE pr.parent_id = p.id) AS reply_count,
+                (SELECT COUNT(*) FROM post_likes pl WHERE pl.post_id = p.id) AS like_count,
+                (SELECT COUNT(*) FROM posts pr WHERE pr.parent_id = p.id) AS reply_count,
                 0::BIGINT AS share_count,
                 EXISTS (
                     SELECT 1
-                    FROM post p2
+                    FROM posts p2
                     WHERE p2.parent_id = p.id
-                    AND p2.author_id = (SELECT p3.author_id FROM post p3 WHERE p3.id = p_post_id)
+                    AND p2.author_id = (SELECT p3.author_id FROM posts p3 WHERE p3.id = p_post_id)
                 ) AS has_original_author_response
-            FROM post p
+            FROM posts p
             WHERE p.parent_id = p_post_id
         ),
         sorted_replies AS (

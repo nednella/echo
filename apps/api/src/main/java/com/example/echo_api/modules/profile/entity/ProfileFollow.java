@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
  * in the application.
  */
 @Entity
-@Table(name = "profile_follow")
+@Table(name = "profile_follows")
 @Getter
 @NoArgsConstructor
 @IdClass(ProfileFollowPK.class)

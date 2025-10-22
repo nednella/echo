@@ -13,7 +13,7 @@ RETURNS BIGINT
 AS
 '
     SELECT COUNT(*)
-    FROM profile_follow f
+    FROM profile_follows f
     WHERE f.follower_id = p_profile_id;
 '
 LANGUAGE sql;

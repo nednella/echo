@@ -28,7 +28,7 @@ AS
                     ''end'', pe.end_index,
                     ''text'', pe.text
                 )) AS hashtags
-                FROM post_entity pe
+                FROM post_entities pe
                 WHERE pe.post_id = p_post_id
                 AND pe.entity_type = ''HASHTAG''
             ), ''[]''::jsonb),
@@ -38,7 +38,7 @@ AS
                     ''end'', pe.end_index,
                     ''text'', pe.text
                 )) AS mentions
-                FROM post_entity pe
+                FROM post_entities pe
                 WHERE pe.post_id = p_post_id
                 AND pe.entity_type = ''MENTION''
             ), ''[]''::jsonb),
@@ -48,7 +48,7 @@ AS
                     ''end'', pe.end_index,
                     ''text'', pe.text
                 )) AS urls
-                FROM post_entity pe
+                FROM post_entities pe
                 WHERE pe.post_id = p_post_id
                 AND pe.entity_type = ''URL''
             ), ''[]''::jsonb)

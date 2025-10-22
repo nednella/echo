@@ -9,10 +9,6 @@ spring:
                     issuer-uri: ${CLERK_ISSUER_URI:}
                     jwk-set-uri: ${CLERK_JWK_SET_URI:}
 
-    sql:
-        init:
-            mode: always
-
 clerk:
     secret-key: ${CLERK_SECRET_KEY:}
     webhook-signing-secret: ${CLERK_WEBHOOK_SIGNING_SECRET:whsec_DUMMYKEY} # default dummy value to pass tests

@@ -43,15 +43,15 @@ AS
                 p.location,
                 p.image_url,
                 p.created_at
-            FROM profile p
+            FROM profiles p
             WHERE (p_profile_id IS NOT NULL AND p.id = p_profile_id)
                OR (p_username IS NOT NULL AND p.username = p_username)
         ),
         metrics AS (
             SELECT
-                (SELECT COUNT(*) FROM profile_follow WHERE followed_id = pd.id) AS followers_count,
-                (SELECT COUNT(*) FROM profile_follow WHERE follower_id = pd.id) AS following_count,
-                (SELECT COUNT(*) FROM post WHERE author_id = pd.id) AS post_count,
+                (SELECT COUNT(*) FROM profile_follows WHERE followed_id = pd.id) AS followers_count,
+                (SELECT COUNT(*) FROM profile_follows WHERE follower_id = pd.id) AS following_count,
+                (SELECT COUNT(*) FROM posts WHERE author_id = pd.id) AS post_count,
                 0::BIGINT AS media_count
             FROM profile_data pd
         ),
@@ -59,14 +59,14 @@ AS
             SELECT
                 CASE WHEN pd.is_self THEN NULL
                     ELSE EXISTS(
-                        SELECT 1 FROM profile_follow
+                        SELECT 1 FROM profile_follows
                         WHERE follower_id = p_authenticated_user_id
                         AND followed_id = pd.id
                     )
                 END AS rel_following,
                 CASE WHEN pd.is_self THEN NULL
                     ELSE EXISTS(
-                        SELECT 1 FROM profile_follow
+                        SELECT 1 FROM profile_follows
                         WHERE follower_id = pd.id
                         AND followed_id = p_authenticated_user_id
                     )
