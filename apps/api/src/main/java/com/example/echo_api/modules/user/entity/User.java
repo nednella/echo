@@ -35,11 +35,6 @@ public class User {
     @Column(name = "external_id", unique = true, nullable = false, updatable = false)
     private String externalId;
 
-    @Builder.Default
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private UserStatus status = UserStatus.ACTIVE;
-
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
@@ -78,12 +73,6 @@ public class User {
             .id(Utils.checkNotNull(id, "ID"))
             .externalId(Utils.checkNotNull(externalId, "External ID"))
             .build();
-    }
-
-    // ---- setters ----
-
-    public void setStatus(UserStatus status) {
-        this.status = status;
     }
 
     // ---- equals & hashcode ----

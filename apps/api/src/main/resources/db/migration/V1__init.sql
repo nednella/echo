@@ -10,7 +10,6 @@
 CREATE TABLE users (
     id             UUID PRIMARY KEY,
     external_id    VARCHAR(255) NOT NULL,   -- case-insensitive unique via index
-    status         VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
     created_at     TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at     TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -76,8 +75,6 @@ CREATE TABLE post_entities (
 -- users
 CREATE UNIQUE INDEX index_users_external_id
     ON users(LOWER(external_id)); -- enforce uniqueness on case-insensitive ext. id
-CREATE INDEX index_users_status
-    ON users(status);
 
 -- profiles
 CREATE UNIQUE INDEX index_profiles_username
