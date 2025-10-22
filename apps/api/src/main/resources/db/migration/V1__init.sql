@@ -87,14 +87,6 @@ CREATE INDEX index_profiles_follow_followed_id
     ON profile_follows(followed_id);
 
 -- posts
-CREATE INDEX index_posts_parent_id
-    ON posts(parent_id);
-CREATE INDEX index_posts_conversation_id
-    ON posts(conversation_id);
-CREATE INDEX index_posts_author_id
-    ON posts(author_id);
-CREATE INDEX index_posts_created_at
-    ON posts(created_at);
 CREATE INDEX index_posts_parent_id_created_at
     ON posts(parent_id, created_at);
 CREATE INDEX index_posts_author_id_created_at
@@ -103,15 +95,11 @@ CREATE INDEX index_posts_author_id_created_at
 -- post_likes
 CREATE INDEX index_post_likes_post_id
     ON post_likes(post_id);
-CREATE INDEX index_post_likes_author_id
-    ON post_likes(author_id);
 CREATE INDEX index_post_likes_author_created_at
     ON post_likes(author_id, created_at);
 
 -- post_entities
 CREATE INDEX index_post_entities_post_id
     ON post_entities(post_id);
-CREATE INDEX index_post_entities_text
-    ON post_entities(LOWER(text));
 CREATE INDEX index_post_entities_type_text
     ON post_entities(entity_type, LOWER(text));
