@@ -95,6 +95,8 @@ CREATE INDEX index_posts_author_id_created_at
 -- post_likes
 CREATE INDEX index_post_likes_post_id
     ON post_likes(post_id);
+CREATE INDEX index_post_likes_post_id_author_id
+    ON post_likes(post_id, author_id);
 CREATE INDEX index_post_likes_author_created_at
     ON post_likes(author_id, created_at);
 
