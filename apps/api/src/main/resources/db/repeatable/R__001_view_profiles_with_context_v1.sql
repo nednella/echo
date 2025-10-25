@@ -10,7 +10,7 @@ SELECT
     frc.follower_count,
     fgc.following_count,
     pc.post_count,
-    0::BIGINT AS media_count
+    0::BIGINT AS media_count -- TODO
 FROM profiles p
 
 LEFT JOIN LATERAL ( -- FOLLOWER COUNT

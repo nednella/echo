@@ -17,7 +17,7 @@ RETURNS TABLE (
     author_name               VARCHAR(50),
     author_image_url          VARCHAR(255),
     post_rel_liked            BOOLEAN,
-    post_rel_shared           BOOLEAN,
+    post_rel_shared           BOOLEAN, -- TODO
     author_rel_is_self        BOOLEAN,
     author_rel_following      BOOLEAN,
     author_rel_followed_by    BOOLEAN

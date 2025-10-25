@@ -7,7 +7,7 @@ SELECT
     p.created_at,
     lc.post_like_count,
     rc.post_reply_count,
-    0::bigint AS post_share_count,
+    0::bigint AS post_share_count,-- TODO
     pe.post_entities,
     a.id AS author_id,
     a.username AS author_username,
