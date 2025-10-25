@@ -1,15 +1,6 @@
-
-/*
- * Function fetches replies to a given post by its ID.
-
- * Posts are ranked by a unique sorting pattern: those with replies from the original
- * author, then by a combination of post engagement metrics, then by creation timestamp.
- * 
- */
-
-CREATE OR REPLACE FUNCTION fetch_post_replies(
-    p_post_id UUID,
-    p_authenticated_user_id UUID,
+CREATE OR REPLACE FUNCTION fetch_post_replies_by_id (
+    p_id UUID,
+    p_viewer_id UUID,
     p_offset INTEGER,
     p_limit INTEGER
 )
@@ -22,22 +13,20 @@ RETURNS TABLE (
     post_like_count           BIGINT,
     post_reply_count          BIGINT,
     post_share_count          BIGINT,
-    post_rel_liked            BOOLEAN,
-    post_rel_shared           BOOLEAN,
-    author_is_self            BOOLEAN,
+    post_entities             JSONB,
     author_id                 UUID,
     author_username           VARCHAR(255),
     author_name               VARCHAR(50),
     author_image_url          VARCHAR(255),
+    post_rel_liked            BOOLEAN,
+    post_rel_shared           BOOLEAN,
+    author_rel_is_self        BOOLEAN,
     author_rel_following      BOOLEAN,
-    author_rel_followed_by    BOOLEAN,
-    post_entities             JSONB
+    author_rel_followed_by    BOOLEAN
 )
 AS
-'
-    BEGIN
-        RETURN QUERY
-        WITH post_replies AS (
+$$
+    WITH post_replies AS (
             SELECT 
                 p.id,
                 p.created_at,
@@ -48,10 +37,10 @@ AS
                     SELECT 1
                     FROM posts p2
                     WHERE p2.parent_id = p.id
-                    AND p2.author_id = (SELECT p3.author_id FROM posts p3 WHERE p3.id = p_post_id)
+                    AND p2.author_id = (SELECT p3.author_id FROM posts p3 WHERE p3.id = p_id)
                 ) AS has_original_author_response
             FROM posts p
-            WHERE p.parent_id = p_post_id
+            WHERE p.parent_id = p_id
         ),
         sorted_replies AS (
             SELECT
@@ -63,11 +52,10 @@ AS
             OFFSET p_offset
             LIMIT p_limit
         )
-        SELECT
-            fp.*
-        FROM fetch_posts(ARRAY(SELECT sr.id FROM sorted_replies sr), p_authenticated_user_id) fp
-        JOIN sorted_replies sr ON fp.id = sr.id
-        ORDER BY sr.sort_order;
-    END;
-'
-LANGUAGE plpgsql;
+    SELECT 
+        pwc.*
+    FROM posts_with_context_and_viewer_v1(ARRAY(SELECT sr.id FROM sorted_replies sr), p_viewer_id) pwc
+    JOIN sorted_replies sr ON sr.id = pwc.id
+    ORDER BY sr.sort_order
+$$
+LANGUAGE SQL
