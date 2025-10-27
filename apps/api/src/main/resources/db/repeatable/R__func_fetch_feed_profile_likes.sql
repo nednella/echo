@@ -41,6 +41,6 @@ $$
         ARRAY(SELECT pl.id FROM profile_likes pl),
         p_viewer_id
     ) pwc
-    ORDER BY pwc.created_at
+    ORDER BY pwc.created_at DESC
 $$
 LANGUAGE SQL

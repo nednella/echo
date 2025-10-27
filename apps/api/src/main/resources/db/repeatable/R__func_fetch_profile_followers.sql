@@ -23,10 +23,10 @@ $$
         OFFSET p_offset
         LIMIT p_limit
     ),
-    order AS (
+    sort_order AS (
         SELECT
             f.id,
-            row_number() OVER (ORDER BY f.created_at DESC) AS order
+            row_number() OVER (ORDER BY f.created_at DESC) AS ord
         FROM followers f
     )
     SELECT
@@ -41,7 +41,7 @@ $$
         ARRAY(SELECT f.id FROM followers f),
         p_viewer_id
     ) pwc
-    JOIN order USING (id)
-    ORDER BY order
+    JOIN sort_order USING (id)
+    ORDER BY ord
 $$
 LANGUAGE SQL

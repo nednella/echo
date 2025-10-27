@@ -42,6 +42,6 @@ $$
         ARRAY(SELECT pp.id FROM profile_posts pp),
         p_viewer_id
     ) pwc
-    ORDER BY pwc.created_at
+    ORDER BY pwc.created_at DESC
 $$
 LANGUAGE SQL
