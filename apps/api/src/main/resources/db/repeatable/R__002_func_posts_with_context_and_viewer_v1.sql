@@ -7,6 +7,8 @@
     
     NOTE: Does not maintain ordering; callers must ORDER after enrichment.
 */
+DROP FUNCTION IF EXISTS posts_with_context_and_viewer_v1;
+
 CREATE OR REPLACE FUNCTION posts_with_context_and_viewer_v1 (
     p_post_ids UUID[],
     p_viewer_id UUID

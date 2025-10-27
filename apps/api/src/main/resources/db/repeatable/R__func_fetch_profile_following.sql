@@ -6,6 +6,8 @@
     
     Final ORDER BY profile_follows.created_at DESC applied after enrichment.
 */
+DROP FUNCTION IF EXISTS fetch_profile_following;
+
 CREATE OR REPLACE FUNCTION fetch_profile_following (
     p_profile_id UUID,
     p_viewer_id UUID,
@@ -52,4 +54,4 @@ $$
     JOIN sort_order USING (id)
     ORDER BY ord
 $$
-LANGUAGE SQL
+LANGUAGE SQL;

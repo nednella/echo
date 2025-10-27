@@ -6,6 +6,8 @@
 
     Final ORDER BY created_at DESC applied after enrichment.
 */
+DROP FUNCTION IF EXISTS fetch_feed_profile_posts;
+
 CREATE OR REPLACE FUNCTION fetch_feed_profile_posts (
     p_profile_id UUID,
     p_viewer_id UUID,
@@ -52,4 +54,4 @@ $$
     ) pwc
     ORDER BY pwc.created_at DESC
 $$
-LANGUAGE SQL
+LANGUAGE SQL;

@@ -4,6 +4,8 @@
     Single-profile fetch by username: returns one profile projected through
     profiles_with_context_and_viewer_v1 for the given profile ID and viewer ID.
 */
+DROP FUNCTION IF EXISTS fetch_profile_by_username;
+
 CREATE OR REPLACE FUNCTION fetch_profile_by_username (
     p_username VARCHAR,
     p_viewer_id UUID
@@ -28,4 +30,4 @@ AS
 $$
     SELECT * FROM profiles_with_context_and_viewer_v1(ARRAY(SELECT id FROM profiles WHERE username = p_username), p_viewer_id)
 $$
-LANGUAGE SQL
+LANGUAGE SQL;

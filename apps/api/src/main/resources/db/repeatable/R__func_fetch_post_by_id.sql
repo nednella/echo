@@ -4,6 +4,8 @@
     Single-post fetch: returns one post projected through
     posts_with_context_and_viewer_v1 for the given post ID and viewer ID.
 */
+DROP FUNCTION IF EXISTS fetch_post_by_id;
+
 CREATE OR REPLACE FUNCTION fetch_post_by_id (
     p_id UUID,
     p_viewer_id UUID
@@ -32,4 +34,4 @@ AS
 $$
     SELECT * FROM posts_with_context_and_viewer_v1(ARRAY[p_id], p_viewer_id)
 $$
-LANGUAGE SQL
+LANGUAGE SQL;

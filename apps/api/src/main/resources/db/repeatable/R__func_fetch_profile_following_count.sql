@@ -1,3 +1,5 @@
+DROP FUNCTION IF EXISTS fetch_profile_following_count;
+
 CREATE OR REPLACE FUNCTION fetch_profile_following_count (
     p_profile_id UUID
 )

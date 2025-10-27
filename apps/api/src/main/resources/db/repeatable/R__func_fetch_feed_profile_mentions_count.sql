@@ -1,3 +1,5 @@
+DROP FUNCTION IF EXISTS fetch_feed_profile_mentions_count;
+
 CREATE OR REPLACE FUNCTION fetch_feed_profile_mentions_count(
     p_profile_id UUID
 )

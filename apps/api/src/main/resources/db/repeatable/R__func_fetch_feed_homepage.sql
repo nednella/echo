@@ -6,6 +6,8 @@
 
     Final ORDER BY created_at DESC applied after enrichment.
 */
+DROP FUNCTION IF EXISTS fetch_feed_homepage;
+
 CREATE OR REPLACE FUNCTION fetch_feed_homepage (
     p_viewer_id UUID,
     p_offset INTEGER,
@@ -53,4 +55,4 @@ $$
     ORDER BY pwc.created_at DESC
     
 $$
-LANGUAGE SQL
+LANGUAGE SQL;

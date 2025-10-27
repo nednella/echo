@@ -9,6 +9,8 @@
     Sort pattern: posts are ranked by those with replies from the original author, then by a
                   combination of post engagement metrics, then by creation timestamp.
 */
+DROP FUNCTION IF EXISTS fetch_post_replies_by_id;
+
 CREATE OR REPLACE FUNCTION fetch_post_replies_by_id (
     p_id UUID,
     p_viewer_id UUID,
@@ -69,4 +71,4 @@ $$
     JOIN sorted_replies sr ON sr.id = pwc.id
     ORDER BY sr.sort_order
 $$
-LANGUAGE SQL
+LANGUAGE SQL;

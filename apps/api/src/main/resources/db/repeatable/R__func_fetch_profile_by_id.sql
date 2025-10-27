@@ -4,6 +4,8 @@
     Single-profile fetch by ID: returns one profile projected through
     profiles_with_context_and_viewer_v1 for the given profile ID and viewer ID.
 */
+DROP FUNCTION IF EXISTS fetch_profile_by_id;
+
 CREATE OR REPLACE FUNCTION fetch_profile_by_id (
     p_id UUID,
     p_viewer_id UUID
@@ -28,4 +30,4 @@ AS
 $$
     SELECT * FROM profiles_with_context_and_viewer_v1(ARRAY[p_id], p_viewer_id)
 $$
-LANGUAGE SQL
+LANGUAGE SQL;
