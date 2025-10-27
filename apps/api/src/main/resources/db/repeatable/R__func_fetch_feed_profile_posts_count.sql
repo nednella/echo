@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION fetch_feed_profile_count (
+CREATE OR REPLACE FUNCTION fetch_feed_profile_posts_count (
     p_profile_id UUID
 )
 RETURNS BIGINT
