@@ -25,13 +25,19 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
 
     private final NamedParameterJdbcTemplate template;
 
+    private static final String ARG_PROFILE_ID = "profile_id";
+    private static final String ARG_PROFILE_USERNAME = "profile_username";
+    private static final String ARG_VIEWER_ID = "viewer_id";
+    private static final String ARG_OFFSET = "offset";
+    private static final String ARG_LIMIT = "limit";
+
     @Override
     public Optional<ProfileDTO> findProfileDtoById(UUID id, UUID authUserId) {
-        String sql = "SELECT * FROM fetch_profile(:id, NULL, :authenticated_user_id)";
+        String sql = "SELECT * FROM fetch_profile_by_id(:profile_id, :viewer_id)";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-            .addValue("id", id)
-            .addValue("authenticated_user_id", authUserId);
+            .addValue(ARG_PROFILE_ID, id)
+            .addValue(ARG_VIEWER_ID, authUserId);
 
         return template.query(
             sql,
@@ -41,11 +47,11 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
 
     @Override
     public Optional<ProfileDTO> findProfileDtoByUsername(String username, UUID authUserId) {
-        String sql = "SELECT * FROM fetch_profile(NULL, :username, :authenticated_user_id)";
+        String sql = "SELECT * FROM fetch_profile_by_username(:profile_username, :viewer_id)";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-            .addValue("username", username)
-            .addValue("authenticated_user_id", authUserId);
+            .addValue(ARG_PROFILE_USERNAME, username)
+            .addValue(ARG_VIEWER_ID, authUserId);
 
         return template.query(
             sql,
@@ -55,28 +61,28 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
 
     @Override
     public Page<SimplifiedProfileDTO> findFollowerDtosById(UUID id, UUID authUserId, Pageable p) {
-        String sql = "SELECT * FROM fetch_profile_followers(:profile_id, :authenticated_user_id, :offset, :limit)";
+        String sql = "SELECT * FROM fetch_profile_followers(:profile_id, :viewer_id, :offset, :limit)";
         String countSql = "SELECT * FROM fetch_profile_followers_count(:profile_id)";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-            .addValue("profile_id", id)
-            .addValue("authenticated_user_id", authUserId)
-            .addValue("offset", (int) p.getOffset())
-            .addValue("limit", p.getPageSize());
+            .addValue(ARG_PROFILE_ID, id)
+            .addValue(ARG_VIEWER_ID, authUserId)
+            .addValue(ARG_OFFSET, (int) p.getOffset())
+            .addValue(ARG_LIMIT, p.getPageSize());
 
         return fetchPaginatedProfiles(sql, countSql, params, p);
     }
 
     @Override
     public Page<SimplifiedProfileDTO> findFollowingDtosById(UUID id, UUID authUserId, Pageable p) {
-        String sql = "SELECT * FROM fetch_profile_following(:profile_id, :authenticated_user_id, :offset, :limit)";
+        String sql = "SELECT * FROM fetch_profile_following(:profile_id, :viewer_id, :offset, :limit)";
         String countSql = "SELECT * FROM fetch_profile_following_count(:profile_id)";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-            .addValue("profile_id", id)
-            .addValue("authenticated_user_id", authUserId)
-            .addValue("offset", (int) p.getOffset())
-            .addValue("limit", p.getPageSize());
+            .addValue(ARG_PROFILE_ID, id)
+            .addValue(ARG_VIEWER_ID, authUserId)
+            .addValue(ARG_OFFSET, (int) p.getOffset())
+            .addValue(ARG_LIMIT, p.getPageSize());
 
         return fetchPaginatedProfiles(sql, countSql, params, p);
     }
@@ -126,7 +132,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
 
         @Override
         public ProfileDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-            boolean isSelf = rs.getBoolean("is_self");
+            boolean isSelf = rs.getBoolean("rel_is_self");
 
             return new ProfileDTO(
                 rs.getString("id"),
@@ -137,7 +143,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                 rs.getString("image_url"),
                 rs.getTimestamp("created_at").toInstant().toString(), // correctly reformats timestamp to ISO-8601
                 new ProfileMetricsDTO(
-                    rs.getInt("followers_count"),
+                    rs.getInt("follower_count"),
                     rs.getInt("following_count"),
                     rs.getInt("post_count")),
                 isSelf
@@ -157,7 +163,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
 
         @Override
         public SimplifiedProfileDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-            boolean isSelf = rs.getBoolean("is_self");
+            boolean isSelf = rs.getBoolean("rel_is_self");
 
             return new SimplifiedProfileDTO(
                 rs.getString("id"),
