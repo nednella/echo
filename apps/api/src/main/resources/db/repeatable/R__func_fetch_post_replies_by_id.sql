@@ -1,3 +1,14 @@
+/* 
+    R__func_fetch_post_replies_by_id.sql
+
+    Post Replies fetch: selects direct replies to a post by parent_id, sorts with a
+    unique pattern, paginates with OFFSET/LIMIT, enriches via via the viewer overlay.
+
+    Final ORDER BY sort_order applied after enrichment.
+
+    Sort pattern: posts are ranked by those with replies from the original author, then by a
+                  combination of post engagement metrics, then by creation timestamp.
+*/
 CREATE OR REPLACE FUNCTION fetch_post_replies_by_id (
     p_id UUID,
     p_viewer_id UUID,

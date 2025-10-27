@@ -1,3 +1,12 @@
+/* 
+    R__func_fetch_feed_profile_mentions.sql
+
+    Profile Mentions feed: selects posts containing MENTION entities matching the
+    target profile’s username, orders by newest first, paginates with OFFSET/LIMIT,
+    enriches via via the viewer overlay.
+
+    Final ORDER BY created_at DESC applied after enrichment.
+*/
 CREATE OR REPLACE FUNCTION fetch_feed_profile_mentions (
     p_profile_id UUID,
     p_viewer_id UUID,

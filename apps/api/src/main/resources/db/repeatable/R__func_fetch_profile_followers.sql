@@ -1,3 +1,11 @@
+/* 
+    R__func_fetch_profile_followers.sql
+
+    Followers list: selects follower edges for a profile, sorts by newest first,
+    paginates with OFFSET/LIMIT, enriches via via the viewer overlay.
+    
+    Final ORDER BY profile_follows.created_at DESC applied after enrichment.
+*/
 CREATE OR REPLACE FUNCTION fetch_profile_followers (
     p_profile_id UUID,
     p_viewer_id UUID,

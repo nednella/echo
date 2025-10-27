@@ -1,3 +1,12 @@
+/* 
+    R__002_func_profiles_with_context_and_viewer_v1.sql
+
+    Viewer overlay for profiles. Accepts an array of profile IDs and a viewer ID,
+    adds viewer-specific relationship flags (self/following/followed_by), and
+    returns the final profile DTO shape.
+    
+    NOTE: Does not maintain ordering; callers must ORDER after enrichment.
+*/
 CREATE OR REPLACE FUNCTION profiles_with_context_and_viewer_v1 (
     p_profile_ids UUID[],
     p_viewer_id UUID

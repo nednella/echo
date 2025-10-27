@@ -1,3 +1,11 @@
+/* 
+    R__func_fetch_profile_following.sql
+
+    Following list: selects following edges from a profile, sorts by newest first,
+    paginates with OFFSET/LIMIT, enriches via via the viewer overlay.
+    
+    Final ORDER BY profile_follows.created_at DESC applied after enrichment.
+*/
 CREATE OR REPLACE FUNCTION fetch_profile_following (
     p_profile_id UUID,
     p_viewer_id UUID,

@@ -1,3 +1,18 @@
+/* 
+    R__001_view_profiles_with_context_v1.sql
+
+    Base read model for profiles.
+    
+    For each profile row, obtains lateral-aggregates contextual counts
+    Designed to be enriched further by viewer-aware functions.
+
+    NOTE: Performing COUNT(*)s like this will degrade in performance heavily with
+          increased row counts, but for a personal project it's fine.
+          
+          In reality, this would be better replaced with a MATERIALIZED VIEW,
+          or _count tables using triggers. Increased write overhead, 
+          but massive read performance gain.
+*/
 CREATE OR REPLACE VIEW profiles_with_context_v1 AS
 SELECT
     p.id,

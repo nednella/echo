@@ -1,11 +1,9 @@
-/*
- * fn ensures all posts belonging to the same conversation thread share the same
- * conversation_id.
- * 
- * Root post: conversation_id = id
- * Replies:   conversation_id = parent's conversation_id
- */
+/* 
+    R__function_set_conversation_id.sql
 
+    Conversation trigger: before-insert hook ensuring roots use their own ID
+    as conversation_id, and replies inherit the parent’s conversation_id.
+*/
 CREATE OR REPLACE FUNCTION set_conversation_id()
 RETURNS TRIGGER
 AS

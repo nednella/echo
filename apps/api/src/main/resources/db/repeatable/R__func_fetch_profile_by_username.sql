@@ -1,3 +1,9 @@
+/* 
+    R__func_fetch_profile_by_username.sql
+
+    Single-profile fetch by username: returns one profile projected through
+    profiles_with_context_and_viewer_v1 for the given profile ID and viewer ID.
+*/
 CREATE OR REPLACE FUNCTION fetch_profile_by_username (
     p_username VARCHAR,
     p_viewer_id UUID

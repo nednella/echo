@@ -1,3 +1,11 @@
+/* 
+    R__func_fetch_feed_discover.sql
+
+    Discover feed: selects root posts (no parent), orders by newest first, paginates
+    with OFFSET/LIMIT, enriches via via the viewer overlay.
+
+    Final ORDER BY created_at DESC applied after enrichment.
+*/
 CREATE OR REPLACE FUNCTION fetch_feed_discover (
     p_viewer_id UUID,
     p_offset INTEGER,

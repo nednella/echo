@@ -1,3 +1,12 @@
+/* 
+    R__func_fetch_feed_profile_replies.sql
+
+    Profile Replies feed: selects posts authored by the target profile that are
+    replies, orders by newest first, paginates with OFFSET/LIMIT, enriches via
+    the viewer overlay.
+
+    Final ORDER BY created_at DESC applied after enrichment.
+*/
 CREATE OR REPLACE FUNCTION fetch_feed_profile_replies (
     p_profile_id UUID,
     p_viewer_id UUID,

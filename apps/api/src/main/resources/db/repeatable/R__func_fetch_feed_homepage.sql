@@ -1,3 +1,11 @@
+/* 
+    R__func_fetch_feed_homepage.sql
+
+    Homepage feed: selects root posts from the viewer and followed profiles, orders by
+    newest first, paginates with OFFSET/LIMIT, enriches via via the viewer overlay.
+
+    Final ORDER BY created_at DESC applied after enrichment.
+*/
 CREATE OR REPLACE FUNCTION fetch_feed_homepage (
     p_viewer_id UUID,
     p_offset INTEGER,
