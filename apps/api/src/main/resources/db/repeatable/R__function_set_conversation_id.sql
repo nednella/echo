@@ -7,7 +7,7 @@
 CREATE OR REPLACE FUNCTION set_conversation_id()
 RETURNS TRIGGER
 AS
-'
+$$
     BEGIN
         IF NEW.parent_id IS NULL THEN
             NEW.conversation_id = NEW.id;
@@ -19,8 +19,8 @@ AS
         END IF;
         RETURN NEW;
     END;
-'
-LANGUAGE plpgsql;
+$$
+LANGUAGE PLPGSQL;
 
 DROP TRIGGER IF EXISTS trigger_set_conversation_id ON posts;
 
