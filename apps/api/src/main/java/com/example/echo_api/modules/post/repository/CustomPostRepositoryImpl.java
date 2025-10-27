@@ -28,13 +28,19 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
 
     private final NamedParameterJdbcTemplate template;
 
+    private static final String ARG_POST_ID = "post_id";
+    private static final String ARG_PROFILE_ID = "profile_id";
+    private static final String ARG_VIEWER_ID = "viewer_id";
+    private static final String ARG_OFFSET = "offset";
+    private static final String ARG_LIMIT = "limit";
+
     @Override
     public Optional<PostDTO> findPostDtoById(UUID id, UUID authUserId) {
-        String sql = "SELECT * FROM fetch_posts(:post_id, :authenticated_user_id)";
+        String sql = "SELECT * FROM fetch_post_by_id(:post_id, :viewer_id)";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-            .addValue("post_id", new UUID[] { id })
-            .addValue("authenticated_user_id", authUserId);
+            .addValue(ARG_POST_ID, id)
+            .addValue(ARG_VIEWER_ID, authUserId);
 
         return template.query(
             sql,
@@ -44,96 +50,96 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
 
     @Override
     public Page<PostDTO> findRepliesById(UUID id, UUID authUserId, Pageable p) {
-        String sql = "SELECT * FROM fetch_post_replies(:post_id, :authenticated_user_id, :offset, :limit)";
-        String countSql = "SELECT * FROM fetch_post_replies_count(:post_id)";
+        String sql = "SELECT * FROM fetch_post_replies_by_id(:post_id, :viewer_id, :offset, :limit)";
+        String countSql = "SELECT * FROM fetch_post_replies_by_id_count(:post_id)";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-            .addValue("post_id", id)
-            .addValue("authenticated_user_id", authUserId)
-            .addValue("offset", (int) p.getOffset())
-            .addValue("limit", p.getPageSize());
+            .addValue(ARG_POST_ID, id)
+            .addValue(ARG_VIEWER_ID, authUserId)
+            .addValue(ARG_OFFSET, (int) p.getOffset())
+            .addValue(ARG_LIMIT, p.getPageSize());
 
         return fetchPaginatedPosts(sql, countSql, params, p);
     }
 
     @Override
     public Page<PostDTO> findHomepagePosts(UUID authUserId, Pageable p) {
-        String sql = "SELECT * FROM fetch_feed_homepage(:authenticated_user_id, :offset, :limit)";
-        String countSql = "SELECT * FROM fetch_feed_homepage_count(:authenticated_user_id)";
+        String sql = "SELECT * FROM fetch_feed_homepage(:viewer_id, :offset, :limit)";
+        String countSql = "SELECT * FROM fetch_feed_homepage_count(:viewer_id)";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-            .addValue("authenticated_user_id", authUserId)
-            .addValue("offset", (int) p.getOffset())
-            .addValue("limit", p.getPageSize());
+            .addValue(ARG_VIEWER_ID, authUserId)
+            .addValue(ARG_OFFSET, (int) p.getOffset())
+            .addValue(ARG_LIMIT, p.getPageSize());
 
         return fetchPaginatedPosts(sql, countSql, params, p);
     }
 
     @Override
     public Page<PostDTO> findDiscoverPosts(UUID authUserId, Pageable p) {
-        String sql = "SELECT * FROM fetch_feed_discover(:authenticated_user_id, :offset, :limit)";
-        String countSql = "SELECT * FROM fetch_feed_discover_count(:authenticated_user_id)";
+        String sql = "SELECT * FROM fetch_feed_discover(:viewer_id, :offset, :limit)";
+        String countSql = "SELECT * FROM fetch_feed_discover_count()";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-            .addValue("authenticated_user_id", authUserId)
-            .addValue("offset", (int) p.getOffset())
-            .addValue("limit", p.getPageSize());
+            .addValue(ARG_VIEWER_ID, authUserId)
+            .addValue(ARG_OFFSET, (int) p.getOffset())
+            .addValue(ARG_LIMIT, p.getPageSize());
 
         return fetchPaginatedPosts(sql, countSql, params, p);
     }
 
     @Override
     public Page<PostDTO> findPostsByProfileId(UUID profileId, UUID authUserId, Pageable p) {
-        String sql = "SELECT * FROM fetch_feed_profile(:profile_id, :authenticated_user_id, :offset, :limit)";
-        String countSql = "SELECT * FROM fetch_feed_profile_count(:profile_id)";
+        String sql = "SELECT * FROM fetch_feed_profile_posts(:profile_id, :viewer_id, :offset, :limit)";
+        String countSql = "SELECT * FROM fetch_feed_profile_posts_count(:profile_id)";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-            .addValue("profile_id", profileId)
-            .addValue("authenticated_user_id", authUserId)
-            .addValue("offset", (int) p.getOffset())
-            .addValue("limit", p.getPageSize());
+            .addValue(ARG_PROFILE_ID, profileId)
+            .addValue(ARG_VIEWER_ID, authUserId)
+            .addValue(ARG_OFFSET, (int) p.getOffset())
+            .addValue(ARG_LIMIT, p.getPageSize());
 
         return fetchPaginatedPosts(sql, countSql, params, p);
     }
 
     @Override
     public Page<PostDTO> findRepliesByProfileId(UUID profileId, UUID authUserId, Pageable p) {
-        String sql = "SELECT * FROM fetch_feed_profile_replies(:profile_id, :authenticated_user_id, :offset, :limit)";
+        String sql = "SELECT * FROM fetch_feed_profile_replies(:profile_id, :viewer_id, :offset, :limit)";
         String countSql = "SELECT * FROM fetch_feed_profile_replies_count(:profile_id)";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-            .addValue("profile_id", profileId)
-            .addValue("authenticated_user_id", authUserId)
-            .addValue("offset", (int) p.getOffset())
-            .addValue("limit", p.getPageSize());
+            .addValue(ARG_PROFILE_ID, profileId)
+            .addValue(ARG_VIEWER_ID, authUserId)
+            .addValue(ARG_OFFSET, (int) p.getOffset())
+            .addValue(ARG_LIMIT, p.getPageSize());
 
         return fetchPaginatedPosts(sql, countSql, params, p);
     }
 
     @Override
     public Page<PostDTO> findPostsLikedByProfileId(UUID profileId, UUID authUserId, Pageable p) {
-        String sql = "SELECT * FROM fetch_feed_profile_likes(:profile_id, :authenticated_user_id, :offset, :limit)";
+        String sql = "SELECT * FROM fetch_feed_profile_likes(:profile_id, :viewer_id, :offset, :limit)";
         String countSql = "SELECT * FROM fetch_feed_profile_likes_count(:profile_id)";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-            .addValue("profile_id", profileId)
-            .addValue("authenticated_user_id", authUserId)
-            .addValue("offset", (int) p.getOffset())
-            .addValue("limit", p.getPageSize());
+            .addValue(ARG_PROFILE_ID, profileId)
+            .addValue(ARG_VIEWER_ID, authUserId)
+            .addValue(ARG_OFFSET, (int) p.getOffset())
+            .addValue(ARG_LIMIT, p.getPageSize());
 
         return fetchPaginatedPosts(sql, countSql, params, p);
     }
 
     @Override
     public Page<PostDTO> findPostsMentioningProfileId(UUID profileId, UUID authUserId, Pageable p) {
-        String sql = "SELECT * FROM fetch_feed_profile_mentions(:profile_id, :authenticated_user_id, :offset, :limit)";
+        String sql = "SELECT * FROM fetch_feed_profile_mentions(:profile_id, :viewer_id, :offset, :limit)";
         String countSql = "SELECT * FROM fetch_feed_profile_mentions_count(:profile_id)";
 
         MapSqlParameterSource params = new MapSqlParameterSource()
-            .addValue("profile_id", profileId)
-            .addValue("authenticated_user_id", authUserId)
-            .addValue("offset", (int) p.getOffset())
-            .addValue("limit", p.getPageSize());
+            .addValue(ARG_PROFILE_ID, profileId)
+            .addValue(ARG_VIEWER_ID, authUserId)
+            .addValue(ARG_OFFSET, (int) p.getOffset())
+            .addValue(ARG_LIMIT, p.getPageSize());
 
         return fetchPaginatedPosts(sql, countSql, params, p);
     }
@@ -188,7 +194,7 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
 
         @Override
         public PostDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-            boolean isSelf = rs.getBoolean("author_is_self");
+            boolean isSelf = rs.getBoolean("author_rel_is_self");
 
             SimplifiedProfileDTO author = new SimplifiedProfileDTO(
                 rs.getString("author_id"),
