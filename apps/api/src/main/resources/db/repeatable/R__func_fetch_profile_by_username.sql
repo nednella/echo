@@ -28,6 +28,9 @@ RETURNS TABLE (
 )
 AS
 $$
-    SELECT * FROM profiles_with_context_and_viewer_v1(ARRAY(SELECT id FROM profiles WHERE username = p_username), p_viewer_id)
+    SELECT * FROM profiles_with_context_and_viewer_v1 (
+        ARRAY(SELECT id FROM profiles WHERE lower(username) = lower(p_username)),
+        p_viewer_id
+    )
 $$
 LANGUAGE SQL;
