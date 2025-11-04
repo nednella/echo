@@ -43,9 +43,9 @@ CREATE TABLE posts (
     author_id          UUID NOT NULL,
     text               VARCHAR(280) NOT NULL,
     created_at         TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_parent_id FOREIGN KEY (parent_id) REFERENCES posts(id),
-    CONSTRAINT fk_conversation_id FOREIGN KEY (conversation_id) REFERENCES posts(id),
-    CONSTRAINT fk_author_id FOREIGN KEY (author_id) REFERENCES profiles(id)
+    CONSTRAINT fk_parent_id FOREIGN KEY (parent_id) REFERENCES posts(id) ON DELETE CASCADE,
+    CONSTRAINT fk_conversation_id FOREIGN KEY (conversation_id) REFERENCES posts(id) ON DELETE CASCADE,
+    CONSTRAINT fk_author_id FOREIGN KEY (author_id) REFERENCES profiles(id) ON DELETE CASCADE
 );
 
 CREATE TABLE post_likes (
