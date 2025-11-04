@@ -555,4 +555,17 @@ class PostRepositoryIT extends AbstractRepositoryTest {
         }
     }
 
+    @Test
+    void PostRepository_Delete_CascadeDeletesRelatedPosts() {
+        Post root = createPost(null, self.getId(), "root.");
+        Post replyToRoot = createPost(root.getId(), self.getId(), "reply to root.");
+        Post replyToReply = createPost(replyToRoot.getId(), self.getId(), "reply to reply.");
+
+        postRepository.delete(root);
+
+        assertFalse(postRepository.existsById(root.getId()));
+        assertFalse(postRepository.existsById(replyToRoot.getId()));
+        assertFalse(postRepository.existsById(replyToReply.getId()));
+    }
+
 }
