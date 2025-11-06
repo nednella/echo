@@ -26,18 +26,14 @@ RETURNS TABLE (
 AS
 $$
     WITH following AS (
-        SELECT followed_id AS id, created_at
+        SELECT
+            followed_id AS id,
+            created_at
         FROM profile_follows
         WHERE follower_id = p_profile_id
         ORDER BY created_at DESC
         OFFSET p_offset
         LIMIT p_limit
-    ),
-    sort_order AS (
-        SELECT
-            f.id,
-            row_number() OVER (ORDER BY f.created_at DESC) AS ord
-        FROM following f
     )
     SELECT
         pwc.id,
@@ -51,7 +47,7 @@ $$
         ARRAY(SELECT f.id FROM following f),
         p_viewer_id
     ) pwc
-    JOIN sort_order USING (id)
-    ORDER BY ord
+    JOIN following f on f.id = pwc.id
+    ORDER BY f.created_at DESC
 $$
 LANGUAGE SQL;
