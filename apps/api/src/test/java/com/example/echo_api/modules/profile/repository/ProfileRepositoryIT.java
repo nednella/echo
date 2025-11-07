@@ -27,7 +27,6 @@ import com.example.echo_api.testing.support.AbstractRepositoryTest;
 /**
  * TODO
  * 
- * 1. Improve test method names
  * 2. Adopt assertj assertThat usage
  * 3. Add additional test coverage if possible
  * 
@@ -69,7 +68,7 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void ProfileRepository_FindByUsername_ReturnProfile() {
+    void findByUsername_ReturnsProfileDto_WhenProfileByUsernameExists() {
         Optional<Profile> foundProfile = profileRepository.findByUsername(source.getUsername());
 
         assertNotNull(foundProfile);
@@ -77,7 +76,7 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void ProfileRepository_FindByUsername_ReturnEmpty() {
+    void findByUsername_ReturnsOptionalEmpty_WhenProfileByUsernameDoesNotExist() {
         Optional<Profile> foundProfile = profileRepository.findByUsername("non-existent-username");
 
         assertNotNull(foundProfile);
@@ -85,7 +84,7 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void ProfileRepository_FindProfileDtoById_ReturnProfileDto() {
+    void findProfileDtoById_ReturnsProfileDto_WhenProfileByIdExists() {
         Optional<ProfileDTO> result = profileRepository.findProfileDtoById(target.getId(), source.getId());
 
         assertNotNull(result);
@@ -94,7 +93,15 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void ProfileRepository_FindProfileDtoById_ReturnProfileDtoWithNullRelationshipDto() {
+    void findProfileDtoById_ReturnsOptionalEmpty_WhenProfileByIdDoesNotExist() {
+        Optional<ProfileDTO> result = profileRepository.findProfileDtoById(UUID.randomUUID(), source.getId());
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void findProfileDtoById_ReturnsProfileDtoWithNullRelationshipDto_WhenProfileByIdIsSelf() {
         Optional<ProfileDTO> result = profileRepository.findProfileDtoById(source.getId(), source.getId());
 
         assertNotNull(result);
@@ -103,15 +110,7 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void ProfileRepository_FindProfileDtoById_ReturnEmpty() {
-        Optional<ProfileDTO> result = profileRepository.findProfileDtoById(UUID.randomUUID(), source.getId());
-
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void ProfileRepository_FindProfileDtoByUsername_ReturnProfileDto() {
+    void findProfileDtoByUsername_ReturnsProfileDto_WhenProfileByUsernameExists() {
         Optional<ProfileDTO> result = profileRepository.findProfileDtoByUsername(target.getUsername(), source.getId());
 
         assertNotNull(result);
@@ -120,7 +119,15 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void ProfileRepository_FindProfileDtoByUsername_ReturnProfileDtoWithNullRelationshipDto() {
+    void findProfileDtoByUsername_ReturnsOptionalEmpty_WhenProfileByUsernameDoesNotExist() {
+        Optional<ProfileDTO> result = profileRepository.findProfileDtoByUsername("non-existent", source.getId());
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void findProfileDtoByUsername_ReturnsProfileDtoWithNullRelationshipDTO_WhenProfileByUsernameIsSelf() {
         Optional<ProfileDTO> result = profileRepository.findProfileDtoByUsername(source.getUsername(), source.getId());
 
         assertNotNull(result);
@@ -129,15 +136,7 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void ProfileRepository_FindProfileDtoByUsername_ReturnEmpty() {
-        Optional<ProfileDTO> result = profileRepository.findProfileDtoByUsername("non-existent", source.getId());
-
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
-    void ProfileRepository_FindFollowerDtosById_ReturnPageOfProfileDto() {
+    void findFollowerDtosById_ReturnsPageDtoOfProfileDto_WhenProfileByIdHasFollowers() {
         Pageable page = OffsetLimitRequest.of(0, 10);
 
         Page<SimplifiedProfileDTO> followersPage = profileRepository.findFollowerDtosById(
@@ -151,7 +150,7 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void ProfileRepository_FindFollowerDtosById_ReturnPageOfEmpty() {
+    void findFollowerDtosById_ReturnsPageDtoOfEmpty_WhenProfileByIdHasNoFollowers() {
         Pageable page = OffsetLimitRequest.of(0, 10);
 
         Page<SimplifiedProfileDTO> followersPage = profileRepository.findFollowerDtosById(
@@ -165,7 +164,7 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void ProfileRepository_FindFollowingDtosById_ReturnPageOfProfileDto() {
+    void findFollowingDtosById_ReturnsPageDtoOfProfileDto_WhenProfileByIdIsFollowingOthers() {
         Pageable page = OffsetLimitRequest.of(0, 10);
 
         Page<SimplifiedProfileDTO> followingPage = profileRepository.findFollowingDtosById(
@@ -179,7 +178,7 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void ProfileRepository_FindFollowingDtosById_ReturnPageOfEmpty() {
+    void findFollowingDtosById_ReturnsPageDtoOfEmpty_WhenProfileByIdIsNotFollowingOthers() {
         Pageable page = OffsetLimitRequest.of(0, 10);
 
         Page<SimplifiedProfileDTO> followingPage = profileRepository.findFollowingDtosById(
