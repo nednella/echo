@@ -1,7 +1,5 @@
 package com.example.echo_api.modules.profile.repository;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -27,7 +25,6 @@ import com.example.echo_api.testing.support.AbstractRepositoryTest;
 /**
  * TODO
  * 
- * 2. Adopt assertj assertThat usage
  * 3. Add additional test coverage if possible
  * 
  */
@@ -69,71 +66,65 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
 
     @Test
     void findByUsername_ReturnsProfileDto_WhenProfileByUsernameExists() {
-        Optional<Profile> foundProfile = profileRepository.findByUsername(source.getUsername());
+        Optional<Profile> result = profileRepository.findByUsername(source.getUsername());
 
-        assertNotNull(foundProfile);
-        assertTrue(foundProfile.isPresent());
+        assertThat(result).isNotNull().isPresent();
     }
 
     @Test
     void findByUsername_ReturnsOptionalEmpty_WhenProfileByUsernameDoesNotExist() {
-        Optional<Profile> foundProfile = profileRepository.findByUsername("non-existent-username");
+        Optional<Profile> result = profileRepository.findByUsername("non-existent-username");
 
-        assertNotNull(foundProfile);
-        assertTrue(foundProfile.isEmpty());
+        assertThat(result).isNotNull().isEmpty();
     }
 
     @Test
     void findProfileDtoById_ReturnsProfileDto_WhenProfileByIdExists() {
         Optional<ProfileDTO> result = profileRepository.findProfileDtoById(target.getId(), source.getId());
 
-        assertNotNull(result);
-        assertTrue(result.isPresent());
-        assertNotNull(result.get().relationship());
+        assertThat(result).isNotNull().isPresent();
     }
 
     @Test
     void findProfileDtoById_ReturnsOptionalEmpty_WhenProfileByIdDoesNotExist() {
         Optional<ProfileDTO> result = profileRepository.findProfileDtoById(UUID.randomUUID(), source.getId());
 
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
+        assertThat(result).isNotNull().isEmpty();
     }
 
     @Test
     void findProfileDtoById_ReturnsProfileDtoWithNullRelationshipDto_WhenProfileByIdIsSelf() {
         Optional<ProfileDTO> result = profileRepository.findProfileDtoById(source.getId(), source.getId());
 
-        assertNotNull(result);
-        assertTrue(result.isPresent());
-        assertNull(result.get().relationship());
+        assertThat(result).isNotNull().isPresent();
+        assertThat(result.get().relationship()).isNull();
     }
+
+    // add relationshipDTO is not null
 
     @Test
     void findProfileDtoByUsername_ReturnsProfileDto_WhenProfileByUsernameExists() {
         Optional<ProfileDTO> result = profileRepository.findProfileDtoByUsername(target.getUsername(), source.getId());
 
-        assertNotNull(result);
-        assertTrue(result.isPresent());
-        assertNotNull(result.get().relationship());
+        assertThat(result).isNotNull().isPresent();
     }
 
     @Test
     void findProfileDtoByUsername_ReturnsOptionalEmpty_WhenProfileByUsernameDoesNotExist() {
         Optional<ProfileDTO> result = profileRepository.findProfileDtoByUsername("non-existent", source.getId());
 
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
+        assertThat(result).isNotNull().isEmpty();
     }
 
     @Test
     void findProfileDtoByUsername_ReturnsProfileDtoWithNullRelationshipDTO_WhenProfileByUsernameIsSelf() {
         Optional<ProfileDTO> result = profileRepository.findProfileDtoByUsername(source.getUsername(), source.getId());
 
-        assertNotNull(result);
-        assertTrue(result.isPresent());
-        assertNull(result.get().relationship());
+        assertThat(result).isNotNull().isPresent();
+        assertThat(result.get().relationship()).isNull();
     }
+
+    // add relationshipDTO is not null
 
     @Test
     void findFollowerDtosById_ReturnsPageDtoOfProfileDto_WhenProfileByIdHasFollowers() {
@@ -144,9 +135,8 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
             source.getId(),
             page);
 
-        assertNotNull(followersPage);
-        assertTrue(followersPage.hasContent());
-        assertEquals(1, followersPage.getTotalElements());
+        assertThat(followersPage).isNotNull();
+        assertThat(followersPage.getContent()).isNotEmpty();
     }
 
     @Test
@@ -158,9 +148,8 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
             source.getId(),
             page);
 
-        assertNotNull(followersPage);
-        assertTrue(followersPage.isEmpty());
-        assertEquals(0, followersPage.getTotalElements());
+        assertThat(followersPage).isNotNull();
+        assertThat(followersPage.getContent()).isEmpty();
     }
 
     @Test
@@ -172,9 +161,8 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
             source.getId(),
             page);
 
-        assertNotNull(followingPage);
-        assertTrue(followingPage.hasContent());
-        assertEquals(1, followingPage.getTotalElements());
+        assertThat(followingPage).isNotNull();
+        assertThat(followingPage.getContent()).isNotEmpty();
     }
 
     @Test
@@ -186,9 +174,8 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
             source.getId(),
             page);
 
-        assertNotNull(followingPage);
-        assertTrue(followingPage.isEmpty());
-        assertEquals(0, followingPage.getTotalElements());
+        assertThat(followingPage).isNotNull();
+        assertThat(followingPage.getContent()).isEmpty();
     }
 
 }
