@@ -22,14 +22,7 @@ import com.example.echo_api.modules.user.repository.UserRepository;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
 import com.example.echo_api.testing.support.AbstractRepositoryTest;
 
-/**
- * TODO
- * 
- * 3. Add additional test coverage if possible
- * 
- */
-
-// TODO: SQL query testing for metrics/relationships
+// TODO: test coverage for profile metrics
 
 /**
  * Integration test class for {@link ProfileRepository}.
@@ -100,7 +93,13 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
         assertThat(result.get().relationship()).isNull();
     }
 
-    // add relationshipDTO is not null
+    @Test
+    void findProfileDtoById_ReturnsProfileDtoWithNonNullRelationshipDto_WhenProfileByIdIsNotSelf() {
+        Optional<ProfileDTO> result = profileRepository.findProfileDtoById(source.getId(), source.getId());
+
+        assertThat(result).isNotNull().isPresent();
+        assertThat(result.get().relationship()).isNotNull();
+    }
 
     @Test
     void findProfileDtoByUsername_ReturnsProfileDto_WhenProfileByUsernameExists() {
@@ -124,7 +123,13 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
         assertThat(result.get().relationship()).isNull();
     }
 
-    // add relationshipDTO is not null
+    @Test
+    void findProfileDtoByUsername_ReturnsProfileDtoWithNonNullRelationshipDTO_WhenProfileByUsernameIsNotSelf() {
+        Optional<ProfileDTO> result = profileRepository.findProfileDtoByUsername(source.getUsername(), source.getId());
+
+        assertThat(result).isNotNull().isPresent();
+        assertThat(result.get().relationship()).isNotNull();
+    }
 
     @Test
     void findFollowerDtosById_ReturnsPageDtoOfProfileDto_WhenProfileByIdHasFollowers() {
