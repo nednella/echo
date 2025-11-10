@@ -30,7 +30,6 @@ import com.example.echo_api.util.PostEntityExtractor;
 /**
  * TODO
  * 
- * 1. Improve test method names
  * 2. Adopt assertj assertThat usage
  * 3. Add additional test coverage if possible
  * 
@@ -117,7 +116,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     } // @formatter:on
 
     @Test
-    void PostRepository_FindPostDtoById_ReturnOptionalPostDto() {
+    void findPostDtoById_ReturnsPostDto_WhenPostByIdExists() {
         UUID postId = postWithReplies.getId();
         UUID authUserId = self.getId();
 
@@ -130,7 +129,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_FindPostDtoById_ReturnOptionalEmpty() {
+    void findPostDtoById_ReturnOptionalEmpty_WhenPostByIdDoesNotExist() {
         UUID postId = UUID.randomUUID();
         UUID authUserId = self.getId();
 
@@ -143,7 +142,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_FindPostDtoById_ReturnPostDtoWithNullAuthorRelationshipDto() {
+    void findPostDtoById_ReturnPostDtoWithNullAuthorRelationshipDto_WhenPostAuthorIsSelf() {
         UUID postId = postWithReplies.getId();
         UUID authUserId = self.getId();
 
@@ -161,7 +160,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_FindPostDtoById_ReturnPostDtoWithAuthorRelationshipDto() {
+    void findPostDtoById_ReturnPostDtoWithAuthorRelationshipDto_WhenPostAuthorIsNotSelf() {
         UUID postId = replyWithOpResponse.getId();
         UUID authUserId = self.getId();
 
@@ -179,7 +178,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_FindPostDtoById_ReturnsNoEntities() {
+    void findPostDtoById_ReturnsPostDtoWithNoEntities_WhenPostTextDoesNotContainAnyEntities() {
         UUID postId = postWithReplies.getId();
         UUID authUserId = self.getId();
 
@@ -196,7 +195,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_FindPostDtoById_ReturnsMultipleEntities() {
+    void FindPostDtoById_ReturnsPostDtoWithMultipleEntities_WhenPostTextDoesContainSomeEntities() {
         UUID postId = postWithEntities.getId();
         UUID authUserId = self.getId();
 
@@ -213,7 +212,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_FindRepliesById_HasRepliesReturnsPageOfPostDto() {
+    void findRepliesById_ReturnsPageOfPostDto_WhenPostByIdHasReplies() {
         UUID postId = postWithReplies.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
@@ -229,7 +228,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_FindRepliesById_HasNoRepliesReturnsEmptyPage() {
+    void findRepliesById_ReturnsEmptyPage_WhenPostByIdHasNoReplies() {
         UUID postId = postWithEntities.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
@@ -245,7 +244,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_FindRepliesById_ReplyWithOpResponseIsRankedHighest() {
+    void findRepliesById_ReplyWithOpResponseIsRankedHighest() {
         UUID postId = postWithReplies.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
@@ -262,7 +261,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_FindRepliesById_ReplyWithEngagementIsRankedHigherThanReplyWithoutEngagement() {
+    void findRepliesById_ReplyWithEngagementIsRankedHigherThanReplyWithoutEngagement() {
         UUID postId = postWithReplies.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
@@ -280,7 +279,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_FindHomepagePosts_RankedByCreatedAtDescending() {
+    void findHomepagePosts_RankedByCreatedAtDescending() {
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
 
@@ -297,7 +296,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_FindHomepagePosts_NoFollowsReturnsSelfPostsOnly() {
+    void findHomepagePosts_ReturnsPostsBySelfOnly_WhenNotFollowingAnyUsers() {
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
 
@@ -318,7 +317,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_FindHomepagePosts_NoFollowsAndNoPostsReturnsEmptyPage() {
+    void findHomepagePosts_ReturnsEmmpty_WhenNoPostsAndNotFollowingAnyUsers() {
         UUID authUserId = randomUser.getId(); // randomUser has no root-level posts, only replies
         Pageable page = PageRequest.of(0, 10);
 
@@ -331,7 +330,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_FindDiscoverPosts_RankedByCreatedAtDescending() {
+    void findDiscoverPosts_RankedByCreatedAtDescending() {
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
 
@@ -348,7 +347,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_FindPostsByProfileId_RankedByCreatedAtDescending() {
+    void findPostsByProfileId_RankedByCreatedAtDescending() {
         UUID profileId = self.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
@@ -367,7 +366,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_FindPostsByProfileId_ContainsOnlyPostsByProfileId() {
+    void findPostsByProfileId_ContainsOnlyPostsAuthoredByProfileId() {
         UUID profileId = self.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
@@ -391,7 +390,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_FindRepliesByProfileId_RankedByCreatedAtDescending() {
+    void findRepliesByProfileId_RankedByCreatedAtDescending() {
         UUID profileId = randomUser.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
@@ -410,7 +409,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_FindRepliesByProfileId_ContainsOnlyPostsAuthoredByProfileId() {
+    void findRepliesByProfileId_ContainsOnlyPostsAuthoredByProfileId() {
         UUID profileId = randomUser.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
@@ -434,7 +433,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_FindPostsLikedByProfileId_RankedByCreatedAtDescending() {
+    void findPostsLikedByProfileId_RankedByCreatedAtDescending() {
         UUID profileId = self.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
@@ -453,7 +452,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_FindPostsLikedByProfileId_ContainsOnlyPostsLikedByProfileId() {
+    void findPostsLikedByProfileId_ContainsOnlyPostsLikedByProfileId() {
         UUID profileId = self.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
@@ -477,7 +476,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_FindPostsMentioningProfileId_RankedByCreatedAtDescending() {
+    void findPostsMentioningProfileId_RankedByCreatedAtDescending() {
         UUID profileId = self.getId();
         UUID authUserId = self.getId();
         Pageable page = PageRequest.of(0, 10);
@@ -496,7 +495,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_FindPostsMentioningProfileId_ContainsOnlyPostsMentioningUserWithProfileId() {
+    void findPostsMentioningProfileId_ContainsOnlyPostsMentioningUsernameAssociatedWithProfileId() {
         String username = self.getUsername();
         UUID profileId = self.getId();
         UUID authUserId = self.getId();
@@ -520,7 +519,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_Delete_CascadeDeletesRelatedPosts() {
+    void delete_CascadeDeletesRelatedPosts() {
         Post root = createPost(null, self.getId(), "root.");
         Post replyToRoot = createPost(root.getId(), self.getId(), "reply to root.");
         Post replyToReply = createPost(replyToRoot.getId(), self.getId(), "reply to reply.");
