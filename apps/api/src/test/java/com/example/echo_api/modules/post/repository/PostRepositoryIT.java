@@ -2,6 +2,8 @@ package com.example.echo_api.modules.post.repository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +26,15 @@ import com.example.echo_api.modules.user.entity.User;
 import com.example.echo_api.modules.user.repository.UserRepository;
 import com.example.echo_api.testing.support.AbstractRepositoryTest;
 import com.example.echo_api.util.PostEntityExtractor;
+
+/**
+ * TODO
+ * 
+ * 1. Improve test method names
+ * 2. Adopt assertj assertThat usage
+ * 3. Add additional test coverage if possible
+ * 
+ */
 
 // TODO: finish JDocs
 // TODO: SQL query testing for metrics/relationships
@@ -105,10 +116,6 @@ class PostRepositoryIT extends AbstractRepositoryTest {
         postEntityRepository.saveAll(PostEntityExtractor.extract(replyWithLike.getId(), replyWithLike.getText()));
     } // @formatter:on
 
-    /**
-     * Test {@link PostRepository#findPostDtoById(UUID, UUID)} to verify that a post
-     * can be found by its {@code id}.
-     */
     @Test
     void PostRepository_FindPostDtoById_ReturnOptionalPostDto() {
         UUID postId = postWithReplies.getId();
@@ -122,10 +129,6 @@ class PostRepositoryIT extends AbstractRepositoryTest {
         assertTrue(optPost.isPresent());
     }
 
-    /**
-     * Test {@link PostRepository#findPostDtoById(UUID, UUID)} to verify that a
-     * non-existent post {@code id} returns an empty {@link Optional}.
-     */
     @Test
     void PostRepository_FindPostDtoById_ReturnOptionalEmpty() {
         UUID postId = UUID.randomUUID();
@@ -139,11 +142,6 @@ class PostRepositoryIT extends AbstractRepositoryTest {
         assertTrue(optPost.isEmpty());
     }
 
-    /**
-     * Test {@link PostRepository#findPostDtoById(UUID, UUID)} to verify that a post
-     * belonging to the authenticated user can be found by its {@code id}, and
-     * returns a {@code null} author relationship object.
-     */
     @Test
     void PostRepository_FindPostDtoById_ReturnPostDtoWithNullAuthorRelationshipDto() {
         UUID postId = postWithReplies.getId();
@@ -162,11 +160,6 @@ class PostRepositoryIT extends AbstractRepositoryTest {
         assertNull(post.author().relationship()); // author is self, thus NULL
     }
 
-    /**
-     * Test {@link PostRepository#findPostDtoById(UUID, UUID)} to verify that a post
-     * NOT belonging to the authenticated user can be found by its {@code id}, and
-     * returns an author relationship object.
-     */
     @Test
     void PostRepository_FindPostDtoById_ReturnPostDtoWithAuthorRelationshipDto() {
         UUID postId = replyWithOpResponse.getId();
@@ -185,10 +178,6 @@ class PostRepositoryIT extends AbstractRepositoryTest {
         assertNotNull(post.author().relationship()); // author is not self, thus NOT NULL
     }
 
-    /**
-     * Test {@link PostRepository#findPostDtoById(UUID, UUID)} to verify that a post
-     * containing no entities returns empty entity arrays.
-     */
     @Test
     void PostRepository_FindPostDtoById_ReturnsNoEntities() {
         UUID postId = postWithReplies.getId();
@@ -206,11 +195,6 @@ class PostRepositoryIT extends AbstractRepositoryTest {
         assertTrue(post.entities().mentions().isEmpty()); // no related mentions
     }
 
-    /**
-     * Test {@link PostRepository#findPostDtoById(UUID, UUID)} to verify that a post
-     * containing some entities returns those entities within their respective
-     * arrays.
-     */
     @Test
     void PostRepository_FindPostDtoById_ReturnsMultipleEntities() {
         UUID postId = postWithEntities.getId();
@@ -228,11 +212,6 @@ class PostRepositoryIT extends AbstractRepositoryTest {
         assertEquals(1, post.entities().urls().size()); // 1 related url
     }
 
-    /**
-     * Test {@link PostRepository#findRepliesById(UUID, UUID, Pageable)} to verify
-     * that searching for a posts' replies by its {@code id} returns a {@link Page}
-     * of {@link PostDTO}.
-     */
     @Test
     void PostRepository_FindRepliesById_HasRepliesReturnsPageOfPostDto() {
         UUID postId = postWithReplies.getId();
@@ -249,11 +228,6 @@ class PostRepositoryIT extends AbstractRepositoryTest {
         assertEquals(3, replies.getTotalElements());
     }
 
-    /**
-     * Test {@link PostRepository#findRepliesById(UUID, UUID, Pageable)} to verify
-     * that searching for a posts' replies by its {@code id}, that has no replies,
-     * returns an empty {@link Page}.
-     */
     @Test
     void PostRepository_FindRepliesById_HasNoRepliesReturnsEmptyPage() {
         UUID postId = postWithEntities.getId();
@@ -270,11 +244,6 @@ class PostRepositoryIT extends AbstractRepositoryTest {
         assertEquals(0, replies.getTotalElements());
     }
 
-    /**
-     * Test {@link PostRepository#findRepliesById(UUID, UUID, Pageable)} to verify
-     * that searching for a posts' replies by its {@code id}, correctly ranks the
-     * reply with an original poster response highest.
-     */
     @Test
     void PostRepository_FindRepliesById_ReplyWithOpResponseIsRankedHighest() {
         UUID postId = postWithReplies.getId();
@@ -292,11 +261,6 @@ class PostRepositoryIT extends AbstractRepositoryTest {
         assertEquals("A reply, where @self will reply back!", replies.getContent().getFirst().text());
     }
 
-    /**
-     * Test {@link PostRepository#findRepliesById(UUID, UUID, Pageable)} to verify
-     * that searching for a posts' replies by its {@code id}, correctly ranks the
-     * reply with engagement higher than those without any engagement.
-     */
     @Test
     void PostRepository_FindRepliesById_ReplyWithEngagementIsRankedHigherThanReplyWithoutEngagement() {
         UUID postId = postWithReplies.getId();
