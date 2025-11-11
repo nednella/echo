@@ -25,14 +25,7 @@ import com.example.echo_api.modules.user.repository.UserRepository;
 import com.example.echo_api.testing.support.AbstractRepositoryTest;
 import com.example.echo_api.util.PostEntityExtractor;
 
-/**
- * TODO
- * 
- * 3. Add additional test coverage if possible
- * 
- */
-
-// TODO: SQL query testing for metrics/relationships
+// TODO: test coverage for metrics/relationships
 
 /**
  * Integration test class for {@link PostRepository}.
