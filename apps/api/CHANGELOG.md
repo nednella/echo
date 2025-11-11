@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.4.0](https://github.com/nednella/echo/compare/api@v0.3.1...api@v0.4.0) (2025-11-11)
+
+
+### Features
+
+* **api:** add flyway db migrations ([#151](https://github.com/nednella/echo/issues/151)) ([7a2d786](https://github.com/nednella/echo/commit/7a2d786841af13a3af713c47ed6f26439ffa1568))
+* **api:** add flyway plugin ([#161](https://github.com/nednella/echo/issues/161)) ([bb343f8](https://github.com/nednella/echo/commit/bb343f866fe8dd3766f038fb0ac6188e3a27fabb))
+* **api:** add OAuth2AuthenticationException handler ([#134](https://github.com/nednella/echo/issues/134)) ([8b15492](https://github.com/nednella/echo/commit/8b15492e01d3c468a252af72e32cd3e6e32db773))
+* **api:** annotate ErrorResponse with NotNull so OpenAPI spec infers as required fields ([#130](https://github.com/nednella/echo/issues/130)) ([4c5f158](https://github.com/nednella/echo/commit/4c5f15820db43a16604cb837be91d99f7fc1ea18))
+* **api:** improve db repeatables ([#155](https://github.com/nednella/echo/issues/155)) ([f1931f2](https://github.com/nednella/echo/commit/f1931f296d866204f9ca520c5723d30c7d6ee229))
+* **api:** remove unused user status enum ([#154](https://github.com/nednella/echo/issues/154)) ([dd24980](https://github.com/nednella/echo/commit/dd24980bd988657bed098bfc945e70b2402f7642))
+* **api:** update controller OpenAPI documentation ([#128](https://github.com/nednella/echo/issues/128)) ([9dd81d1](https://github.com/nednella/echo/commit/9dd81d161bb3f682afe5bf0c1be9df493f0a47ab))
+
+
+### Bug Fixes
+
+* **api:** de-duplicate profile mentions ([#156](https://github.com/nednella/echo/issues/156)) ([8f73e28](https://github.com/nednella/echo/commit/8f73e28a8e7d50c7296d51a98815e748207d8dfe))
+* **api:** ensure posts are cascade deleted on author_id, conversation_id, parent_id ([#158](https://github.com/nednella/echo/issues/158)) ([b46233e](https://github.com/nednella/echo/commit/b46233e988ab03ee8da5b67fef558c2797188091))
+* **api:** update profile lookups and mentions to use case-insensitive usernames ([#157](https://github.com/nednella/echo/issues/157)) ([ddd9d5b](https://github.com/nednella/echo/commit/ddd9d5bb69aecf40beda8a52282748d915d8011e))
+
+
+### Performance Improvements
+
+* **api:** reduce application idle memory consumption ([#162](https://github.com/nednella/echo/issues/162)) ([95833b0](https://github.com/nednella/echo/commit/95833b05a08f8983f58cfbc6570b49ae8ee71d8d))
+
 ## [0.3.1](https://github.com/nednella/echo/compare/api@v0.3.0...api@v0.3.1) (2025-09-30)
 
 
