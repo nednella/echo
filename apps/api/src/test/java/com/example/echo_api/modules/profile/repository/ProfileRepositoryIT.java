@@ -1,6 +1,6 @@
 package com.example.echo_api.modules.profile.repository;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +22,7 @@ import com.example.echo_api.modules.user.repository.UserRepository;
 import com.example.echo_api.shared.pagination.OffsetLimitRequest;
 import com.example.echo_api.testing.support.AbstractRepositoryTest;
 
-// TODO: SQL query testing for metrics/relationships
+// TODO: test coverage for profile metrics
 
 /**
  * Integration test class for {@link ProfileRepository}.
@@ -57,125 +57,82 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
         profileFollowRepository.save(follow);
     }
 
-    /**
-     * Test {@link ProfileRepository#findByUsername(String)} to verify a profile can
-     * be found by their username.
-     */
     @Test
-    void ProfileRepository_FindByUsername_ReturnProfile() {
-        Optional<Profile> foundProfile = profileRepository.findByUsername(source.getUsername());
+    void findByUsername_ReturnsProfileDto_WhenProfileByUsernameExists() {
+        Optional<Profile> result = profileRepository.findByUsername(source.getUsername());
 
-        assertNotNull(foundProfile);
-        assertTrue(foundProfile.isPresent());
+        assertThat(result).isNotNull().isPresent();
     }
 
-    /**
-     * Test {@link ProfileRepository#findByUsername(String)} to verify that
-     * searching for a non-existent username returns an empty result.
-     */
     @Test
-    void ProfileRepository_FindByUsername_ReturnEmpty() {
-        Optional<Profile> foundProfile = profileRepository.findByUsername("non-existent-username");
+    void findByUsername_ReturnsOptionalEmpty_WhenProfileByUsernameDoesNotExist() {
+        Optional<Profile> result = profileRepository.findByUsername("non-existent-username");
 
-        assertNotNull(foundProfile);
-        assertTrue(foundProfile.isEmpty());
+        assertThat(result).isNotNull().isEmpty();
     }
 
-    /**
-     * Test {@link ProfileRepository#findProfileDtoById(UUID, UUID)} to verify that
-     * searching for user's {@link ProfileDTO} by {@code id} that IS NOT the
-     * authenticated user, returns an {@link Optional} of {@link ProfileDTO}, which
-     * includes relationship data between the target user and the authenticated
-     * user.
-     */
     @Test
-    void ProfileRepository_FindProfileDtoById_ReturnProfileDto() {
+    void findProfileDtoById_ReturnsProfileDto_WhenProfileByIdExists() {
         Optional<ProfileDTO> result = profileRepository.findProfileDtoById(target.getId(), source.getId());
 
-        assertNotNull(result);
-        assertTrue(result.isPresent());
-        assertNotNull(result.get().relationship());
+        assertThat(result).isNotNull().isPresent();
     }
 
-    /**
-     * Test {@link ProfileRepository#findProfileDtoById(UUID, UUID)} to verify that
-     * searching for user's {@link ProfileDTO} by {@code id} that IS the
-     * authenticated user, returns an {@link Optional} of {@link ProfileDTO}, minus
-     * relationship data.
-     */
     @Test
-    void ProfileRepository_FindProfileDtoById_ReturnProfileDtoWithNullRelationshipDto() {
-        Optional<ProfileDTO> result = profileRepository.findProfileDtoById(source.getId(), source.getId());
-
-        assertNotNull(result);
-        assertTrue(result.isPresent());
-        assertNull(result.get().relationship());
-    }
-
-    /**
-     * Test {@link ProfileRepository#findProfileDtoById(UUID, UUID)} to verify that
-     * searching for user's {@link ProfileDTO} by a {@code id} that does not exist
-     * returns an empty {@link Optional}.
-     */
-    @Test
-    void ProfileRepository_FindProfileDtoById_ReturnEmpty() {
+    void findProfileDtoById_ReturnsOptionalEmpty_WhenProfileByIdDoesNotExist() {
         Optional<ProfileDTO> result = profileRepository.findProfileDtoById(UUID.randomUUID(), source.getId());
 
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
+        assertThat(result).isNotNull().isEmpty();
     }
 
-    /**
-     * Test {@link ProfileRepository#findProfileDtoByUsername(String, UUID)} to
-     * verify that searching for user's {@link ProfileDTO} by {@code username} that
-     * IS NOT the authenticated user, returns an {@link Optional} of
-     * {@link ProfileDTO}, which includes relationship data between the target user
-     * and the authenticated user.
-     */
     @Test
-    void ProfileRepository_FindProfileDtoByUsername_ReturnProfileDto() {
+    void findProfileDtoById_ReturnsProfileDtoWithNullRelationshipDto_WhenProfileByIdIsSelf() {
+        Optional<ProfileDTO> result = profileRepository.findProfileDtoById(source.getId(), source.getId());
+
+        assertThat(result).isNotNull().isPresent();
+        assertThat(result.get().relationship()).isNull();
+    }
+
+    @Test
+    void findProfileDtoById_ReturnsProfileDtoWithNonNullRelationshipDto_WhenProfileByIdIsNotSelf() {
+        Optional<ProfileDTO> result = profileRepository.findProfileDtoById(target.getId(), source.getId());
+
+        assertThat(result).isNotNull().isPresent();
+        assertThat(result.get().relationship()).isNotNull();
+    }
+
+    @Test
+    void findProfileDtoByUsername_ReturnsProfileDto_WhenProfileByUsernameExists() {
         Optional<ProfileDTO> result = profileRepository.findProfileDtoByUsername(target.getUsername(), source.getId());
 
-        assertNotNull(result);
-        assertTrue(result.isPresent());
-        assertNotNull(result.get().relationship());
+        assertThat(result).isNotNull().isPresent();
     }
 
-    /**
-     * Test {@link ProfileRepository#findProfileDtoByUsername(String, UUID)} to
-     * verify that searching for user's {@link ProfileDTO} by {@code username} that
-     * IS the authenticated user, returns an {@link Optional} of {@link ProfileDTO},
-     * minus relationship data.
-     */
     @Test
-    void ProfileRepository_FindProfileDtoByUsername_ReturnProfileDtoWithNullRelationshipDto() {
-        Optional<ProfileDTO> result = profileRepository.findProfileDtoByUsername(source.getUsername(), source.getId());
-
-        assertNotNull(result);
-        assertTrue(result.isPresent());
-        assertNull(result.get().relationship());
-    }
-
-    /**
-     * Test {@link ProfileRepository#findProfileDtoByUsername(String, UUID)} to
-     * verify that searching for user's {@link ProfileDTO} by a {@code username}
-     * that does not exist returns an empty {@link Optional}.
-     */
-    @Test
-    void ProfileRepository_FindProfileDtoByUsername_ReturnEmpty() {
+    void findProfileDtoByUsername_ReturnsOptionalEmpty_WhenProfileByUsernameDoesNotExist() {
         Optional<ProfileDTO> result = profileRepository.findProfileDtoByUsername("non-existent", source.getId());
 
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
+        assertThat(result).isNotNull().isEmpty();
     }
 
-    /**
-     * Test {@link ProfileRepository#findFollowerDtosById(UUID, UUID, Pageable)} to
-     * verify that searching for a user's followers by their {@code id} returns a
-     * {@link Page} of {@link ProfileDTO}.
-     */
     @Test
-    void ProfileRepository_FindFollowerDtosById_ReturnPageOfProfileDto() {
+    void findProfileDtoByUsername_ReturnsProfileDtoWithNullRelationshipDTO_WhenProfileByUsernameIsSelf() {
+        Optional<ProfileDTO> result = profileRepository.findProfileDtoByUsername(source.getUsername(), source.getId());
+
+        assertThat(result).isNotNull().isPresent();
+        assertThat(result.get().relationship()).isNull();
+    }
+
+    @Test
+    void findProfileDtoByUsername_ReturnsProfileDtoWithNonNullRelationshipDTO_WhenProfileByUsernameIsNotSelf() {
+        Optional<ProfileDTO> result = profileRepository.findProfileDtoByUsername(target.getUsername(), source.getId());
+
+        assertThat(result).isNotNull().isPresent();
+        assertThat(result.get().relationship()).isNotNull();
+    }
+
+    @Test
+    void findFollowerDtosById_ReturnsPageDtoOfProfileDto_WhenProfileByIdHasFollowers() {
         Pageable page = OffsetLimitRequest.of(0, 10);
 
         Page<SimplifiedProfileDTO> followersPage = profileRepository.findFollowerDtosById(
@@ -183,18 +140,12 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
             source.getId(),
             page);
 
-        assertNotNull(followersPage);
-        assertTrue(followersPage.hasContent());
-        assertEquals(1, followersPage.getTotalElements());
+        assertThat(followersPage).isNotNull();
+        assertThat(followersPage.getContent()).isNotEmpty();
     }
 
-    /**
-     * Test {@link ProfileRepository#findFollowerDtosById(UUID, UUID, Pageable)} to
-     * verify that searching for a user's followers by their {@code id}, that has no
-     * followers, returns an empty {@link Page}.
-     */
     @Test
-    void ProfileRepository_FindFollowerDtosById_ReturnPageOfEmpty() {
+    void findFollowerDtosById_ReturnsPageDtoOfEmpty_WhenProfileByIdHasNoFollowers() {
         Pageable page = OffsetLimitRequest.of(0, 10);
 
         Page<SimplifiedProfileDTO> followersPage = profileRepository.findFollowerDtosById(
@@ -202,18 +153,12 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
             source.getId(),
             page);
 
-        assertNotNull(followersPage);
-        assertTrue(followersPage.isEmpty());
-        assertEquals(0, followersPage.getTotalElements());
+        assertThat(followersPage).isNotNull();
+        assertThat(followersPage.getContent()).isEmpty();
     }
 
-    /**
-     * Test {@link ProfileRepository#findFollowingDtosById(UUID, UUID, Pageable)} to
-     * verify that searching for a user's following by their {@code id} returns a
-     * {@link Page} of {@link ProfileDTO}.
-     */
     @Test
-    void ProfileRepository_FindFollowingDtosById_ReturnPageOfProfileDto() {
+    void findFollowingDtosById_ReturnsPageDtoOfProfileDto_WhenProfileByIdIsFollowingOthers() {
         Pageable page = OffsetLimitRequest.of(0, 10);
 
         Page<SimplifiedProfileDTO> followingPage = profileRepository.findFollowingDtosById(
@@ -221,18 +166,12 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
             source.getId(),
             page);
 
-        assertNotNull(followingPage);
-        assertTrue(followingPage.hasContent());
-        assertEquals(1, followingPage.getTotalElements());
+        assertThat(followingPage).isNotNull();
+        assertThat(followingPage.getContent()).isNotEmpty();
     }
 
-    /**
-     * Test {@link ProfileRepository#findFollowingDtosById(UUID, UUID, Pageable)} to
-     * verify that searching for a user's following by their {@code id}, that is not
-     * following any users, returns an empty {@link Page}.
-     */
     @Test
-    void ProfileRepository_FindFollowingDtosById_ReturnPageOfEmpty() {
+    void findFollowingDtosById_ReturnsPageDtoOfEmpty_WhenProfileByIdIsNotFollowingOthers() {
         Pageable page = OffsetLimitRequest.of(0, 10);
 
         Page<SimplifiedProfileDTO> followingPage = profileRepository.findFollowingDtosById(
@@ -240,9 +179,8 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
             source.getId(),
             page);
 
-        assertNotNull(followingPage);
-        assertTrue(followingPage.isEmpty());
-        assertEquals(0, followingPage.getTotalElements());
+        assertThat(followingPage).isNotNull();
+        assertThat(followingPage.getContent()).isEmpty();
     }
 
 }

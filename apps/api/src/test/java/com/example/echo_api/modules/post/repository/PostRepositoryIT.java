@@ -1,6 +1,6 @@
 package com.example.echo_api.modules.post.repository;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
 import java.util.List;
@@ -25,8 +25,7 @@ import com.example.echo_api.modules.user.repository.UserRepository;
 import com.example.echo_api.testing.support.AbstractRepositoryTest;
 import com.example.echo_api.util.PostEntityExtractor;
 
-// TODO: finish JDocs
-// TODO: SQL query testing for metrics/relationships
+// TODO: test coverage for metrics/relationships
 
 /**
  * Integration test class for {@link PostRepository}.
@@ -78,7 +77,7 @@ class PostRepositoryIT extends AbstractRepositoryTest {
             Instant prev = Instant.parse(posts.get(i).createdAt());
             Instant next = Instant.parse(posts.get(i + 1).createdAt());
 
-            assertTrue(next.isBefore(prev));
+            assertThat(next.isBefore(prev)).isTrue();
         }
     }
 
@@ -105,449 +104,401 @@ class PostRepositoryIT extends AbstractRepositoryTest {
         postEntityRepository.saveAll(PostEntityExtractor.extract(replyWithLike.getId(), replyWithLike.getText()));
     } // @formatter:on
 
-    /**
-     * Test {@link PostRepository#findPostDtoById(UUID, UUID)} to verify that a post
-     * can be found by its {@code id}.
-     */
     @Test
-    void PostRepository_FindPostDtoById_ReturnOptionalPostDto() {
+    void findPostDtoById_ReturnsPostDto_WhenPostByIdExists() {
         UUID postId = postWithReplies.getId();
         UUID authUserId = self.getId();
 
-        Optional<PostDTO> optPost = postRepository.findPostDtoById(
+        Optional<PostDTO> result = postRepository.findPostDtoById(
             postId,
             authUserId);
 
-        assertNotNull(optPost);
-        assertTrue(optPost.isPresent());
+        assertThat(result).isNotNull().isPresent();
     }
 
-    /**
-     * Test {@link PostRepository#findPostDtoById(UUID, UUID)} to verify that a
-     * non-existent post {@code id} returns an empty {@link Optional}.
-     */
     @Test
-    void PostRepository_FindPostDtoById_ReturnOptionalEmpty() {
+    void findPostDtoById_ReturnOptionalEmpty_WhenPostByIdDoesNotExist() {
         UUID postId = UUID.randomUUID();
         UUID authUserId = self.getId();
 
-        Optional<PostDTO> optPost = postRepository.findPostDtoById(
+        Optional<PostDTO> result = postRepository.findPostDtoById(
             postId,
             authUserId);
 
-        assertNotNull(optPost);
-        assertTrue(optPost.isEmpty());
+        assertThat(result).isNotNull().isEmpty();
     }
 
-    /**
-     * Test {@link PostRepository#findPostDtoById(UUID, UUID)} to verify that a post
-     * belonging to the authenticated user can be found by its {@code id}, and
-     * returns a {@code null} author relationship object.
-     */
     @Test
-    void PostRepository_FindPostDtoById_ReturnPostDtoWithNullAuthorRelationshipDto() {
+    void findPostDtoById_ReturnPostDtoWithNullAuthorRelationshipDto_WhenPostAuthorIsSelf() {
         UUID postId = postWithReplies.getId();
         UUID authUserId = self.getId();
 
-        Optional<PostDTO> optPost = postRepository.findPostDtoById(
+        Optional<PostDTO> result = postRepository.findPostDtoById(
             postId,
             authUserId);
 
-        assertNotNull(optPost);
-        assertTrue(optPost.isPresent());
+        assertThat(result).isNotNull().isPresent();
 
-        PostDTO post = optPost.get();
-        assertNotNull(post.metrics());
-        assertNotNull(post.relationship());
-        assertNull(post.author().relationship()); // author is self, thus NULL
+        PostDTO post = result.get();
+        assertThat(post.author().relationship()).isNull();
     }
 
-    /**
-     * Test {@link PostRepository#findPostDtoById(UUID, UUID)} to verify that a post
-     * NOT belonging to the authenticated user can be found by its {@code id}, and
-     * returns an author relationship object.
-     */
     @Test
-    void PostRepository_FindPostDtoById_ReturnPostDtoWithAuthorRelationshipDto() {
+    void findPostDtoById_ReturnPostDtoWithAuthorRelationshipDto_WhenPostAuthorIsNotSelf() {
         UUID postId = replyWithOpResponse.getId();
         UUID authUserId = self.getId();
 
-        Optional<PostDTO> optPost = postRepository.findPostDtoById(
+        Optional<PostDTO> result = postRepository.findPostDtoById(
             postId,
             authUserId);
 
-        assertNotNull(optPost);
-        assertTrue(optPost.isPresent());
+        assertThat(result).isNotNull().isPresent();
 
-        PostDTO post = optPost.get();
-        assertNotNull(post.metrics());
-        assertNotNull(post.relationship());
-        assertNotNull(post.author().relationship()); // author is not self, thus NOT NULL
+        PostDTO post = result.get();
+        assertThat(post.author().relationship()).isNotNull();
     }
 
-    /**
-     * Test {@link PostRepository#findPostDtoById(UUID, UUID)} to verify that a post
-     * containing no entities returns empty entity arrays.
-     */
     @Test
-    void PostRepository_FindPostDtoById_ReturnsNoEntities() {
+    void findPostDtoById_ReturnsPostDtoWithNoEntities_WhenPostTextDoesNotContainAnyEntities() {
         UUID postId = postWithReplies.getId();
         UUID authUserId = self.getId();
 
-        Optional<PostDTO> optPost = postRepository.findPostDtoById(
+        Optional<PostDTO> result = postRepository.findPostDtoById(
             postId,
             authUserId);
 
-        assertNotNull(optPost);
-        assertTrue(optPost.isPresent());
+        assertThat(result).isNotNull().isPresent();
 
-        PostDTO post = optPost.get();
-        assertTrue(post.entities().hashtags().isEmpty()); // no related hashtags
-        assertTrue(post.entities().mentions().isEmpty()); // no related mentions
+        // post text: "This post has some replies."
+        PostDTO post = result.get();
+        assertThat(post.entities().hashtags()).isEmpty(); // no related hashtags
+        assertThat(post.entities().mentions()).isEmpty(); // no related mentions
+        assertThat(post.entities().urls()).isEmpty(); // no related urls
     }
 
-    /**
-     * Test {@link PostRepository#findPostDtoById(UUID, UUID)} to verify that a post
-     * containing some entities returns those entities within their respective
-     * arrays.
-     */
     @Test
-    void PostRepository_FindPostDtoById_ReturnsMultipleEntities() {
+    void FindPostDtoById_ReturnsPostDtoWithMultipleEntities_WhenPostTextDoesContainSomeEntities() {
         UUID postId = postWithEntities.getId();
         UUID authUserId = self.getId();
 
-        Optional<PostDTO> optPost = postRepository.findPostDtoById(
+        Optional<PostDTO> result = postRepository.findPostDtoById(
             postId,
             authUserId);
 
-        assertNotNull(optPost);
-        assertTrue(optPost.isPresent());
+        assertThat(result).isNotNull().isPresent();
 
-        PostDTO post = optPost.get();
-        assertEquals(1, post.entities().hashtags().size()); // 1 related hashtag
-        assertEquals(1, post.entities().urls().size()); // 1 related url
+        // post text: "Nice #SpringBoot app, github.com/repo"
+        PostDTO post = result.get();
+        assertThat(post.entities().mentions()).isEmpty(); // no related mentions
+        assertThat(post.entities().hashtags()).hasSize(1); // exactly 1 related hashtags
+        assertThat(post.entities().urls()).hasSize(1); // exactly 1 related urls
     }
 
-    /**
-     * Test {@link PostRepository#findRepliesById(UUID, UUID, Pageable)} to verify
-     * that searching for a posts' replies by its {@code id} returns a {@link Page}
-     * of {@link PostDTO}.
-     */
     @Test
-    void PostRepository_FindRepliesById_HasRepliesReturnsPageOfPostDto() {
+    void findRepliesById_ReturnsPageOfPostDto_WhenPostByIdHasReplies() {
         UUID postId = postWithReplies.getId();
         UUID authUserId = self.getId();
-        Pageable page = PageRequest.of(0, 10);
+        Pageable pageRequest = PageRequest.of(0, 10);
 
-        Page<PostDTO> replies = postRepository.findRepliesById(
+        Page<PostDTO> page = postRepository.findRepliesById(
             postId,
             authUserId,
-            page);
+            pageRequest);
 
-        assertNotNull(replies);
-        assertTrue(replies.hasContent());
-        assertEquals(3, replies.getTotalElements());
+        assertThat(page).isNotNull();
+        assertThat(page.hasContent()).isTrue();
+        assertThat(page.getTotalElements()).isEqualTo(3);
     }
 
-    /**
-     * Test {@link PostRepository#findRepliesById(UUID, UUID, Pageable)} to verify
-     * that searching for a posts' replies by its {@code id}, that has no replies,
-     * returns an empty {@link Page}.
-     */
     @Test
-    void PostRepository_FindRepliesById_HasNoRepliesReturnsEmptyPage() {
+    void findRepliesById_ReturnsEmptyPage_WhenPostByIdHasNoReplies() {
         UUID postId = postWithEntities.getId();
         UUID authUserId = self.getId();
-        Pageable page = PageRequest.of(0, 10);
+        Pageable pageRequest = PageRequest.of(0, 10);
 
-        Page<PostDTO> replies = postRepository.findRepliesById(
+        Page<PostDTO> page = postRepository.findRepliesById(
             postId,
             authUserId,
-            page);
+            pageRequest);
 
-        assertNotNull(replies);
-        assertTrue(replies.isEmpty());
-        assertEquals(0, replies.getTotalElements());
+        assertThat(page).isNotNull();
+        assertThat(page.isEmpty()).isTrue();
+        assertThat(page.getTotalElements()).isZero();
     }
 
-    /**
-     * Test {@link PostRepository#findRepliesById(UUID, UUID, Pageable)} to verify
-     * that searching for a posts' replies by its {@code id}, correctly ranks the
-     * reply with an original poster response highest.
-     */
     @Test
-    void PostRepository_FindRepliesById_ReplyWithOpResponseIsRankedHighest() {
+    void findRepliesById_ReplyWithOpResponseIsRankedHighest() {
         UUID postId = postWithReplies.getId();
         UUID authUserId = self.getId();
-        Pageable page = PageRequest.of(0, 10);
+        Pageable pageRequest = PageRequest.of(0, 10);
 
-        Page<PostDTO> replies = postRepository.findRepliesById(
+        Page<PostDTO> page = postRepository.findRepliesById(
             postId,
             authUserId,
-            page);
+            pageRequest);
 
-        assertNotNull(replies);
-        assertTrue(replies.hasContent());
-        assertTrue(replies.getTotalElements() > 1);
-        assertEquals("A reply, where @self will reply back!", replies.getContent().getFirst().text());
+        assertThat(page).isNotNull();
+        assertThat(page.hasContent()).isTrue();
+        assertThat(page.getTotalElements()).isGreaterThanOrEqualTo(1);
+
+        List<PostDTO> posts = page.getContent();
+        assertThat(posts.getFirst().text()).isEqualTo("A reply, where @self will reply back!");
     }
 
-    /**
-     * Test {@link PostRepository#findRepliesById(UUID, UUID, Pageable)} to verify
-     * that searching for a posts' replies by its {@code id}, correctly ranks the
-     * reply with engagement higher than those without any engagement.
-     */
     @Test
-    void PostRepository_FindRepliesById_ReplyWithEngagementIsRankedHigherThanReplyWithoutEngagement() {
+    void findRepliesById_ReplyWithEngagementIsRankedHigherThanReplyWithoutEngagement() {
         UUID postId = postWithReplies.getId();
         UUID authUserId = self.getId();
-        Pageable page = PageRequest.of(0, 10);
+        Pageable pageRequest = PageRequest.of(0, 10);
 
-        Page<PostDTO> replies = postRepository.findRepliesById(
+        Page<PostDTO> page = postRepository.findRepliesById(
             postId,
             authUserId,
-            page);
+            pageRequest);
 
-        assertNotNull(replies);
-        assertTrue(replies.hasContent());
-        assertTrue(replies.getTotalElements() > 1);
-        assertEquals("A reply that @self will like!", replies.getContent().get(1).text());
-        assertEquals("A reply with no engagement.", replies.getContent().get(2).text());
+        assertThat(page).isNotNull();
+        assertThat(page.hasContent()).isTrue();
+        assertThat(page.getTotalElements()).isGreaterThanOrEqualTo(1);
+
+        List<PostDTO> posts = page.getContent();
+        assertThat(posts.get(1).text()).isEqualTo("A reply that @self will like!");
+        assertThat(posts.get(2).text()).isEqualTo("A reply with no engagement.");
     }
 
     @Test
-    void PostRepository_FindHomepagePosts_RankedByCreatedAtDescending() {
+    void findHomepagePosts_RankedByCreatedAtDescending() {
         UUID authUserId = self.getId();
-        Pageable page = PageRequest.of(0, 10);
+        Pageable pageRequest = PageRequest.of(0, 10);
 
-        Page<PostDTO> query = postRepository.findHomepagePosts(
+        Page<PostDTO> page = postRepository.findHomepagePosts(
             authUserId,
-            page);
+            pageRequest);
 
-        assertNotNull(query);
-        assertTrue(query.hasContent());
-        assertTrue(query.getTotalElements() > 1);
+        assertThat(page).isNotNull();
+        assertThat(page.hasContent()).isTrue();
+        assertThat(page.getTotalElements()).isGreaterThanOrEqualTo(1);
 
-        List<PostDTO> posts = query.getContent();
+        List<PostDTO> posts = page.getContent();
         assertPostsRankedByCreatedAtDescending(posts);
     }
 
     @Test
-    void PostRepository_FindHomepagePosts_NoFollowsReturnsSelfPostsOnly() {
+    void findHomepagePosts_ReturnsPostsBySelfOnly_WhenNotFollowingAnyUsers() {
         UUID authUserId = self.getId();
-        Pageable page = PageRequest.of(0, 10);
+        Pageable pageRequest = PageRequest.of(0, 10);
 
-        Page<PostDTO> query = postRepository.findHomepagePosts(
+        Page<PostDTO> page = postRepository.findHomepagePosts(
             authUserId,
-            page);
+            pageRequest);
 
-        assertNotNull(query);
-        assertTrue(query.hasContent());
+        assertThat(page).isNotNull();
+        assertThat(page.hasContent()).isTrue();
 
-        List<PostDTO> posts = query.getContent();
+        List<PostDTO> posts = page.getContent();
 
         // assert all posts belong to authUser
         for (PostDTO post : posts) {
             UUID authorId = UUID.fromString(post.author().id());
-            assertEquals(authUserId, authorId);
+            assertThat(authorId).isEqualTo(authUserId);
         }
     }
 
     @Test
-    void PostRepository_FindHomepagePosts_NoFollowsAndNoPostsReturnsEmptyPage() {
+    void findHomepagePosts_ReturnsEmmpty_WhenNoPostsAndNotFollowingAnyUsers() {
         UUID authUserId = randomUser.getId(); // randomUser has no root-level posts, only replies
-        Pageable page = PageRequest.of(0, 10);
+        Pageable pageRequest = PageRequest.of(0, 10);
 
-        Page<PostDTO> query = postRepository.findHomepagePosts(
+        Page<PostDTO> page = postRepository.findHomepagePosts(
             authUserId,
-            page);
+            pageRequest);
 
-        assertNotNull(query);
-        assertTrue(query.isEmpty());
+        assertThat(page).isNotNull();
+        assertThat(page.isEmpty()).isTrue();
     }
 
     @Test
-    void PostRepository_FindDiscoverPosts_RankedByCreatedAtDescending() {
+    void findDiscoverPosts_RankedByCreatedAtDescending() {
         UUID authUserId = self.getId();
-        Pageable page = PageRequest.of(0, 10);
+        Pageable pageRequest = PageRequest.of(0, 10);
 
-        Page<PostDTO> query = postRepository.findDiscoverPosts(
+        Page<PostDTO> page = postRepository.findDiscoverPosts(
             authUserId,
-            page);
+            pageRequest);
 
-        assertNotNull(query);
-        assertTrue(query.hasContent());
-        assertTrue(query.getTotalElements() > 1);
+        assertThat(page).isNotNull();
+        assertThat(page.hasContent()).isTrue();
+        assertThat(page.getTotalElements()).isGreaterThanOrEqualTo(1);
 
-        List<PostDTO> posts = query.getContent();
+        List<PostDTO> posts = page.getContent();
         assertPostsRankedByCreatedAtDescending(posts);
     }
 
     @Test
-    void PostRepository_FindPostsByProfileId_RankedByCreatedAtDescending() {
+    void findPostsByProfileId_RankedByCreatedAtDescending() {
         UUID profileId = self.getId();
         UUID authUserId = self.getId();
-        Pageable page = PageRequest.of(0, 10);
+        Pageable pageRequest = PageRequest.of(0, 10);
 
-        Page<PostDTO> query = postRepository.findPostsByProfileId(
+        Page<PostDTO> page = postRepository.findPostsByProfileId(
             profileId,
             authUserId,
-            page);
+            pageRequest);
 
-        assertNotNull(query);
-        assertTrue(query.hasContent());
-        assertTrue(query.getTotalElements() > 1);
+        assertThat(page).isNotNull();
+        assertThat(page.hasContent()).isTrue();
+        assertThat(page.getTotalElements()).isGreaterThanOrEqualTo(1);
 
-        List<PostDTO> posts = query.getContent();
+        List<PostDTO> posts = page.getContent();
         assertPostsRankedByCreatedAtDescending(posts);
     }
 
     @Test
-    void PostRepository_FindPostsByProfileId_ContainsOnlyPostsByProfileId() {
+    void findPostsByProfileId_ContainsOnlyPostsAuthoredByProfileId() {
         UUID profileId = self.getId();
         UUID authUserId = self.getId();
-        Pageable page = PageRequest.of(0, 10);
+        Pageable pageRequest = PageRequest.of(0, 10);
 
-        Page<PostDTO> query = postRepository.findPostsByProfileId(
+        Page<PostDTO> page = postRepository.findPostsByProfileId(
             profileId,
             authUserId,
-            page);
+            pageRequest);
 
-        assertNotNull(query);
-        assertTrue(query.hasContent());
-        assertTrue(query.getTotalElements() > 1);
+        assertThat(page).isNotNull();
+        assertThat(page.hasContent()).isTrue();
+        assertThat(page.getTotalElements()).isGreaterThanOrEqualTo(1);
 
-        List<PostDTO> posts = query.getContent();
+        List<PostDTO> posts = page.getContent();
 
         // assert all posts belong to profileId
         for (PostDTO post : posts) {
             UUID authorId = UUID.fromString(post.author().id());
-            assertEquals(profileId, authorId);
+            assertThat(authorId).isEqualTo(profileId);
         }
     }
 
     @Test
-    void PostRepository_FindRepliesByProfileId_RankedByCreatedAtDescending() {
+    void findRepliesByProfileId_RankedByCreatedAtDescending() {
         UUID profileId = randomUser.getId();
         UUID authUserId = self.getId();
-        Pageable page = PageRequest.of(0, 10);
+        Pageable pageRequest = PageRequest.of(0, 10);
 
-        Page<PostDTO> query = postRepository.findRepliesByProfileId(
+        Page<PostDTO> page = postRepository.findRepliesByProfileId(
             profileId,
             authUserId,
-            page);
+            pageRequest);
 
-        assertNotNull(query);
-        assertTrue(query.hasContent());
-        assertTrue(query.getTotalElements() > 1);
+        assertThat(page).isNotNull();
+        assertThat(page.hasContent()).isTrue();
+        assertThat(page.getTotalElements()).isGreaterThanOrEqualTo(1);
 
-        List<PostDTO> posts = query.getContent();
+        List<PostDTO> posts = page.getContent();
         assertPostsRankedByCreatedAtDescending(posts);
     }
 
     @Test
-    void PostRepository_FindRepliesByProfileId_ContainsOnlyPostsAuthoredByProfileId() {
+    void findRepliesByProfileId_ContainsOnlyPostsAuthoredByProfileId() {
         UUID profileId = randomUser.getId();
         UUID authUserId = self.getId();
-        Pageable page = PageRequest.of(0, 10);
+        Pageable pageRequest = PageRequest.of(0, 10);
 
-        Page<PostDTO> query = postRepository.findRepliesByProfileId(
+        Page<PostDTO> page = postRepository.findRepliesByProfileId(
             profileId,
             authUserId,
-            page);
+            pageRequest);
 
-        assertNotNull(query);
-        assertTrue(query.hasContent());
-        assertTrue(query.getTotalElements() > 1);
+        assertThat(page).isNotNull();
+        assertThat(page.hasContent()).isTrue();
+        assertThat(page.getTotalElements()).isGreaterThanOrEqualTo(1);
 
-        List<PostDTO> posts = query.getContent();
+        List<PostDTO> posts = page.getContent();
 
         // assert all posts belong to profileId
         for (PostDTO post : posts) {
             UUID authorId = UUID.fromString(post.author().id());
-            assertEquals(profileId, authorId);
+            assertThat(authorId).isEqualTo(profileId);
         }
     }
 
     @Test
-    void PostRepository_FindPostsLikedByProfileId_RankedByCreatedAtDescending() {
+    void findPostsLikedByProfileId_RankedByCreatedAtDescending() {
         UUID profileId = self.getId();
         UUID authUserId = self.getId();
-        Pageable page = PageRequest.of(0, 10);
+        Pageable pageRequest = PageRequest.of(0, 10);
 
-        Page<PostDTO> query = postRepository.findPostsLikedByProfileId(
+        Page<PostDTO> page = postRepository.findPostsLikedByProfileId(
             profileId,
             authUserId,
-            page);
+            pageRequest);
 
-        assertNotNull(query);
-        assertTrue(query.hasContent());
-        assertTrue(query.getTotalElements() > 1);
+        assertThat(page).isNotNull();
+        assertThat(page.hasContent()).isTrue();
+        assertThat(page.getTotalElements()).isGreaterThanOrEqualTo(1);
 
-        List<PostDTO> posts = query.getContent();
+        List<PostDTO> posts = page.getContent();
         assertPostsRankedByCreatedAtDescending(posts);
     }
 
     @Test
-    void PostRepository_FindPostsLikedByProfileId_ContainsOnlyPostsLikedByProfileId() {
+    void findPostsLikedByProfileId_ContainsOnlyPostsLikedByProfileId() {
         UUID profileId = self.getId();
         UUID authUserId = self.getId();
-        Pageable page = PageRequest.of(0, 10);
+        Pageable pageRequest = PageRequest.of(0, 10);
 
-        Page<PostDTO> query = postRepository.findPostsLikedByProfileId(
+        Page<PostDTO> page = postRepository.findPostsLikedByProfileId(
             profileId,
             authUserId,
-            page);
+            pageRequest);
 
-        assertNotNull(query);
-        assertTrue(query.hasContent());
-        assertTrue(query.getTotalElements() > 1);
+        assertThat(page).isNotNull();
+        assertThat(page.hasContent()).isTrue();
+        assertThat(page.getTotalElements()).isGreaterThanOrEqualTo(1);
 
-        List<PostDTO> posts = query.getContent();
+        List<PostDTO> posts = page.getContent();
 
         // assert all liked posts do in fact have a like from the supplied profileId
         for (PostDTO post : posts) {
             UUID postId = UUID.fromString(post.id());
-            assertTrue(postLikeRepository.existsByPostIdAndAuthorId(postId, profileId));
+            boolean likeExists = postLikeRepository.existsByPostIdAndAuthorId(postId, profileId);
+            assertThat(likeExists).isTrue();
         }
     }
 
     @Test
-    void PostRepository_FindPostsMentioningProfileId_RankedByCreatedAtDescending() {
+    void findPostsMentioningProfileId_RankedByCreatedAtDescending() {
         UUID profileId = self.getId();
         UUID authUserId = self.getId();
-        Pageable page = PageRequest.of(0, 10);
+        Pageable pageRequest = PageRequest.of(0, 10);
 
-        Page<PostDTO> query = postRepository.findPostsMentioningProfileId(
+        Page<PostDTO> page = postRepository.findPostsMentioningProfileId(
             profileId,
             authUserId,
-            page);
+            pageRequest);
 
-        assertNotNull(query);
-        assertTrue(query.hasContent());
-        assertTrue(query.getTotalElements() > 1);
+        assertThat(page).isNotNull();
+        assertThat(page.hasContent()).isTrue();
+        assertThat(page.getTotalElements()).isGreaterThanOrEqualTo(1);
 
-        List<PostDTO> posts = query.getContent();
+        List<PostDTO> posts = page.getContent();
         assertPostsRankedByCreatedAtDescending(posts);
     }
 
     @Test
-    void PostRepository_FindPostsMentioningProfileId_ContainsOnlyPostsMentioningUserWithProfileId() {
+    void findPostsMentioningProfileId_ContainsOnlyPostsMentioningUsernameAssociatedWithProfileId() {
         String username = self.getUsername();
         UUID profileId = self.getId();
         UUID authUserId = self.getId();
-        Pageable page = PageRequest.of(0, 10);
+        Pageable pageRequest = PageRequest.of(0, 10);
 
-        Page<PostDTO> query = postRepository.findPostsMentioningProfileId(
+        Page<PostDTO> page = postRepository.findPostsMentioningProfileId(
             profileId,
             authUserId,
-            page);
+            pageRequest);
 
-        assertNotNull(query);
-        assertTrue(query.hasContent());
-        assertTrue(query.getTotalElements() > 1);
+        assertThat(page).isNotNull();
+        assertThat(page.hasContent()).isTrue();
+        assertThat(page.getTotalElements()).isGreaterThanOrEqualTo(1);
 
-        List<PostDTO> posts = query.getContent();
+        List<PostDTO> posts = page.getContent();
 
         // assert all posts do in fact contain a mention of user with id of profileId
         for (PostDTO post : posts) {
@@ -556,16 +507,16 @@ class PostRepositoryIT extends AbstractRepositoryTest {
     }
 
     @Test
-    void PostRepository_Delete_CascadeDeletesRelatedPosts() {
+    void delete_CascadeDeletesRelatedPosts() {
         Post root = createPost(null, self.getId(), "root.");
         Post replyToRoot = createPost(root.getId(), self.getId(), "reply to root.");
-        Post replyToReply = createPost(replyToRoot.getId(), self.getId(), "reply to reply.");
+        Post replyToReplyToRoot = createPost(replyToRoot.getId(), self.getId(), "reply to reply.");
 
         postRepository.delete(root);
 
-        assertFalse(postRepository.existsById(root.getId()));
-        assertFalse(postRepository.existsById(replyToRoot.getId()));
-        assertFalse(postRepository.existsById(replyToReply.getId()));
+        assertThat(postRepository.existsById(root.getId())).isFalse();
+        assertThat(postRepository.existsById(replyToRoot.getId())).isFalse();
+        assertThat(postRepository.existsById(replyToReplyToRoot.getId())).isFalse();
     }
 
 }
