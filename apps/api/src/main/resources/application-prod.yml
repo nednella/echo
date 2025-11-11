@@ -17,6 +17,14 @@ spring:
         username: ${DB_USERNAME:}
         password: ${DB_PASSWORD:}
 
+management:
+    endpoints:
+        access:
+            default: none
+    endpoint:
+        health:
+            access: read-only
+
 clerk:
     secret-key: ${CLERK_SECRET_KEY:}
     webhook-signing-secret: ${CLERK_WEBHOOK_SIGNING_SECRET:}
