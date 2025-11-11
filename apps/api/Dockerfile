@@ -24,5 +24,5 @@ COPY --from=extract /extract/extracted/spring-boot-loader/ ./
 COPY --from=extract /extract/extracted/snapshot-dependencies/ ./
 COPY --from=extract /extract/extracted/application/ ./
 
-ENV JVM_OPTIONS="-Xms128m -Xmx256m"
+ENV JVM_OPTIONS="-Xms128m -Xmx256m -XX:+UseG1GC"
 ENTRYPOINT ["sh","-c","java $JVM_OPTIONS -jar application.jar"]
