@@ -95,7 +95,7 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
 
     @Test
     void findProfileDtoById_ReturnsProfileDtoWithNonNullRelationshipDto_WhenProfileByIdIsNotSelf() {
-        Optional<ProfileDTO> result = profileRepository.findProfileDtoById(source.getId(), source.getId());
+        Optional<ProfileDTO> result = profileRepository.findProfileDtoById(target.getId(), source.getId());
 
         assertThat(result).isNotNull().isPresent();
         assertThat(result.get().relationship()).isNotNull();
@@ -125,7 +125,7 @@ class ProfileRepositoryIT extends AbstractRepositoryTest {
 
     @Test
     void findProfileDtoByUsername_ReturnsProfileDtoWithNonNullRelationshipDTO_WhenProfileByUsernameIsNotSelf() {
-        Optional<ProfileDTO> result = profileRepository.findProfileDtoByUsername(source.getUsername(), source.getId());
+        Optional<ProfileDTO> result = profileRepository.findProfileDtoByUsername(target.getUsername(), source.getId());
 
         assertThat(result).isNotNull().isPresent();
         assertThat(result.get().relationship()).isNotNull();
