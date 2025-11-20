@@ -21,7 +21,7 @@
 
 ## Local development
 
-See the [development setup guide](../DEVELOPMENT.md) on how to set up a local development environment.
+See the [development setup guide](../../DEVELOPMENT.md) on how to set up a local development environment.
 
 ## Architecture
 
