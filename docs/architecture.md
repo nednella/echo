@@ -15,30 +15,30 @@
 <!-- TODO: validate doc links once complete -->
 
 - [Motivation](#motivation)
-  - ["Why another boring social media app?"](#why-another-boring-social-media-app)
-  - [Learning objectives](#learning-objectives)
+    - ["Why another boring social media app?"](#why-another-boring-social-media-app)
+    - [Learning objectives](#learning-objectives)
 - [Backend](#backend)
-  - [Settling on a language and framework](#settling-on-a-language-and-framework)
-  - [Structuring the codebase](#structuring-the-codebase)
-  - [Defining the API contract vs. the domain model](#defining-the-api-contract-vs-the-domain-model)
-  - [Defining a consistent error model](#defining-a-consistent-error-model)
-  - [Ensuring data integrity through validation](#ensuring-data-integrity-through-validation)
-  - [Choosing a DBMS](#choosing-a-dbms)
-  - [Mixing data access methods](#mixing-data-access-methods)
-  - [The trade-offs of using Spring JDBC](#the-trade-offs-of-using-spring-jdbc)
-  - [Testing the application](#testing-the-application)
+    - [Settling on a language and framework](#settling-on-a-language-and-framework)
+    - [Structuring the codebase](#structuring-the-codebase)
+    - [Defining the API contract vs. the domain model](#defining-the-api-contract-vs-the-domain-model)
+    - [Defining a consistent error model](#defining-a-consistent-error-model)
+    - [Ensuring data integrity through validation](#ensuring-data-integrity-through-validation)
+    - [Choosing a DBMS](#choosing-a-dbms)
+    - [Mixing data access methods](#mixing-data-access-methods)
+    - [The trade-offs of using Spring JDBC](#the-trade-offs-of-using-spring-jdbc)
+    - [Testing the application](#testing-the-application)
 - [Authentication & security](#authentication--security)
-  - [Starting with username-password form authentication](#starting-with-username-password-form-authentication)
-  - ["Why switch to Clerk, then?"](#why-switch-to-clerk-then)
-  - [The challenge of synchronising databases](#the-challenge-of-synchronising-databases)
+    - [Starting with username-password form authentication](#starting-with-username-password-form-authentication)
+    - ["Why switch to Clerk, then?"](#why-switch-to-clerk-then)
+    - [The challenge of synchronising databases](#the-challenge-of-synchronising-databases)
 - [Frontend](#frontend)
 - [DevOps & CI/CD](#devops--cicd)
-  - [Git workflow](#git-workflow)
-  - [Conventional commits](#conventional-commits)
-  - [Branch protection rules](#branch-protection-rules)
-  - [Continuous integration](#continuous-integration)
-  - [Continuous deployment](#continuous-deployment)
-  - [Deployment services](#deployment-services)
+    - [Git workflow](#git-workflow)
+    - [Conventional commits](#conventional-commits)
+    - [Branch protection rules](#branch-protection-rules)
+    - [Continuous integration](#continuous-integration)
+    - [Continuous deployment](#continuous-deployment)
+    - [Deployment services](#deployment-services)
 - [Finishing up](#finishing-up)
 
 ## Motivation
@@ -60,29 +60,29 @@ By choosing a well-understood domain, I was free to explore the underlying syste
 I set out to use this project as a lab of sorts, for learning and experimenting with multiple aspects of software engineering — lots of which would be new to me.
 
 - **General practices**:
-  - Build a well-structured codebase, using clear separation of concerns and SOLID principles
-  - Focus on longer-term maintainability and reduce time spend on refactors
-- **Frontend engineering**: 
-  - Build upon my React foundation and improve upon writing reusable, performant components
-  - Experiment with different approaches to state and data fetching
-  - Enforce code quality through strong linting/formatting rules
-  - Explore more frontend tooling, e.g., TanStack Router. Built-in type-safe routing and preloading sound great!
+    - Build a well-structured codebase, using clear separation of concerns and SOLID principles
+    - Focus on longer-term maintainability and reduce time spend on refactors
+- **Frontend engineering**:
+    - Build upon my React foundation and improve upon writing reusable, performant components
+    - Experiment with different approaches to state and data fetching
+    - Enforce code quality through strong linting/formatting rules
+    - Explore more frontend tooling, e.g., TanStack Router. Built-in type-safe routing and preloading sound great!
 - **Backend engineering**:
-  - Build upon my Java language knowledge
-  - Learn the Spring Boot framework & the wider Spring ecosystem from the ground up
-  - Design and implement a complex relational schema
-  - Stray into more advanced SQL & consider database performance
+    - Build upon my Java language knowledge
+    - Learn the Spring Boot framework & the wider Spring ecosystem from the ground up
+    - Design and implement a complex relational schema
+    - Stray into more advanced SQL & consider database performance
 - **Authentication & security**:
-  - Build upon understanding of authentication & authorisation fundamentals
-  - Learn more about RESTful services and how state is managed in an otherwise stateless environment
+    - Build upon understanding of authentication & authorisation fundamentals
+    - Learn more about RESTful services and how state is managed in an otherwise stateless environment
 - **Code testing**:
-  - Design unit and integration test suites, explore code coverage and learn how and when to test different applications layers
+    - Design unit and integration test suites, explore code coverage and learn how and when to test different applications layers
 - **Git workflow**:
-  - Practice team-friendly workflows: proper branching, squash merging for clean commit history and structured releases
+    - Practice team-friendly workflows: proper branching, squash merging for clean commit history and structured releases
 - **DevOps & CI/CD**:
-  - Build pipelines to automatically run tests and enforce code quality before merges
-  - Understand how to manage different development environments
-  - Explore tooling for improved developer experience, e.g. Docker
+    - Build pipelines to automatically run tests and enforce code quality before merges
+    - Understand how to manage different development environments
+    - Explore tooling for improved developer experience, e.g. Docker
 
 <p align="right">
   <sub><a href="#top">back to the top</a></sub>
@@ -94,7 +94,7 @@ I set out to use this project as a lab of sorts, for learning and experimenting 
 
 ### Settling on a language and framework
 
-Before starting out on this project, I had long since settled on building a Java Spring Boot backend service. I had previously covered Node Express backend services, and didn't like the lack of structure in the framework. 
+Before starting out on this project, I had long since settled on building a Java Spring Boot backend service. I had previously covered Node Express backend services, and didn't like the lack of structure in the framework.
 
 Prior to this project, I was new to Java. I learned the language initially to cover the [Princeton Algorithms I](https://www.coursera.org/learn/algorithms-part1) online course content. The strictness of a statically typed language (minus the sheer quantity of boilerplate) was really refreshing, coming from JS.
 
@@ -149,7 +149,7 @@ public record ErrorResponse(
 
 Starting with the desired client response makes the implementation straightforward. Any explicitly handled exceptions (using Spring's `@ControllerAdvice` and `@ExceptionHandler` annotations) are formatted into the standardised response object.
 
-Any given application exception should be able to be mapped into a particular HTTP status code and a descriptive error message, so I opted to error enums per-feature implemented against an `ErrorCode` interface. Each declared error should contain its own HTTP status code, a message template, and the number of arguments that the template expects. This way, a template can be formatted while avoiding runtime errors, and tested against accordingly.
+Any given application exception should be able to be mapped into a particular HTTP status code and a descriptive error message, so I opted to use error enums per-feature, implemented against an `ErrorCode` interface. Each declared error should contain its own HTTP status code, a message template, and the number of arguments that the template expects. This way, a template can be formatted while avoiding runtime errors, and tested against accordingly.
 
 ```java
 public interface ErrorCode {
@@ -179,7 +179,7 @@ This was done using the recommended Spring approach — where possible, client-s
 
 In some cases, simple controller input validation doesn't suffice. Taking the post replies feature for example, when a post is created in reply to another, the request includes the ID of the parent post. In this case, existence of records are also validated within the application business logic. This way, invalid data never finds its way into the database, even when the request shape looks good.
 
-Finally, the database schema itself acts as a last wall of defence. Constraints and indexes ensure that even if bad data splips through, it cannot be persisted.
+Finally, the database schema itself acts as a last wall of defence. Constraints and indexes ensure that even if bad data slips through, it cannot be persisted.
 
 For cases where the request itself is invalid, and not the contained client inputs, Spring does a good job of raising exceptions. Cases like malformed JSON, unsupported HTTP methods, or mismatched argument types (`MethodArgumentTypeMismatch`, `HttpMessageNotReadable`, `HttpRequestMethodNotSupported`) are all thrown automatically.
 
@@ -191,7 +191,7 @@ Not much to talk about here. I knew before starting out that a relational model 
 
 ### Mixing data access methods
 
-Spring offers [various approaches](https://docs.spring.io/spring-framework/reference/data-access.html) to data access within your application. You have [full-feature ORMs](https://docs.spring.io/spring-framework/reference/data-access/orm.html) like Hibernate and JPA, and some barebones abstractions like [Spring JDBC](https://docs.spring.io/spring-framework/reference/data-access/jdbc.html). 
+Spring offers [various approaches](https://docs.spring.io/spring-framework/reference/data-access.html) to data access within your application. You have [full-feature ORMs](https://docs.spring.io/spring-framework/reference/data-access/orm.html) like Hibernate and JPA, and some bare bones abstractions like [Spring JDBC](https://docs.spring.io/spring-framework/reference/data-access/jdbc.html).
 
 For simple CRUD operations, I leaned on Spring Data JPA's [repository interfaces](https://docs.spring.io/spring-data/jpa/reference/repositories/definition.html). The basics are covered very well with these, and it's easy to [define custom query methods](https://docs.spring.io/spring-data/jpa/reference/repositories/query-methods-details.html) if the defaults don't suffice. The best part is that, since JPA generates the query method implementations, you don't need to write any integration tests.
 
@@ -254,7 +254,7 @@ For integration testing, I use [Testcontainers](https://testcontainers.com/) to 
 
 ### Starting with username-password form authentication
 
-The application revolves around users and interactions between those users, and the groundwork for those social interactions starts with authentication. Developing features before authentication didn't make sense when the app revolves around knowing *who* the authenticated user is.
+The application revolves around users and interactions between those users, and the groundwork for those social interactions starts with authentication. Developing features before authentication didn't make sense when the app revolves around knowing _who_ the authenticated user is.
 
 When I began working on the backend, I spent time learning the Spring framework, including Spring Security, a trusted and highly customisable authentication and access-control framework. It supports [numerous popular authentication mechanisms](https://docs.spring.io/spring-security/reference/servlet/authentication/index.html) with minimal setup required.
 
@@ -288,7 +288,7 @@ The trade-off for integrating with Clerk was losing control of the `user` table 
 
 Clerk currently does not offer exposure to their underlying database, nor do they provide triggers to synchronise state directly. What they do offer (at the time of writing) is asynchronous, non-guaranteed [webhook](https://clerk.com/docs/webhooks/sync-data) events.
 
-Webhooks are useful for maintaining sync of PUTs and DELETEs, but not for critical actions like user registration. A new user should immediately be able to access and navigate the application without error, *guaranteed*. This requires the user to be present in the local database immediately after the point of registration.
+Webhooks are useful for maintaining sync of PUTs and DELETEs, but not for critical actions like user registration. A new user should immediately be able to access and navigate the application without error, _guaranteed_. This requires the user to be present in the local database immediately after the point of registration.
 
 Clerk discusses an ["onboarding flow"](https://clerk.com/blog/add-onboarding-flow-for-your-application-with-clerk) that you can use to collect key information from your user post-registration, and use that information to drive application state. [I chose to adapt this flow with a twist](https://github.com/nednella/echo/pull/61). Rather than collecting information from the user, an onboarding page will automatically send an authenticated request to the server as soon as registration completes. From that request, I can run a database upsert:
 
@@ -359,7 +359,7 @@ Upon merging a release PR, the tool executes the following tasks:
 
 The tool is configured to look at each application individually using the [manifest-driven configuration](https://github.com/googleapis/release-please/blob/main/docs/manifest-releaser.md). As a result, each application maintains its own changelog and version, allowing deployment on a per-application basis.
 
-From there, GitHub Actions picks up a pushed tag and runs the relevant deployment pipeline. The end result is that deployment for a given application within the project requires no manual intevention, except one click on the green button within the release PR.
+From there, GitHub Actions picks up a pushed tag and runs the relevant deployment pipeline. The end result is that deployment for a given application within the project requires no manual intervention, except one click on the green button within the release PR.
 
 The process is entirely hands-off and reliable when matched with the afore mentioned branch protection ruleset. Implementing this tool was probably the best thing I did for myself throughout the entire project.
 

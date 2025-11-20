@@ -19,21 +19,9 @@
   </p>
 </div>
 
-## 🖼️ Showcase
-
-WIP
-
-## 📜 Introduction
-
-WIP
-
-## 📚 Documentation
-
-WIP
-
 ---
 
 <!-- FOOTER -->
-<p align="center">
+<!-- <p align="center">
   <sub><a href="#top">back to the top</a></sub>
-</p>
+</p> -->

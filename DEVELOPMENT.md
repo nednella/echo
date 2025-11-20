@@ -9,7 +9,6 @@
 
 This file provides guidance for getting started with your local development environment when working with code in this repository.
 
-
 ## Table of contents
 
 - [Overview](#overview)
@@ -32,7 +31,6 @@ The Echo project is organised as a monorepo consisting of the following componen
   <sub><a href="#top">back to the top</a></sub>
 </p>
 
-
 ## Architecture
 
 ```
@@ -50,7 +48,7 @@ echo/
 │       ├── package.json     # Application dependencies & scripts
 │       └── ...
 │
-├── docs/                    # Documentation andrelated assets
+├── docs/                    # Documentation and related assets
 │   ├── assets/              # Documentation images
 │   ├── logo/                # Documentation logos
 │   ├── architecture.md      # Application architecture discussion
@@ -68,7 +66,7 @@ echo/
 
 The project requires a pre-configured Clerk application, as described in the [Clerk setup guide](./docs/clerk-setup.md).
 
-You will require [Java](https://www.oracle.com/europe/java/technologies/downloads/), [Node](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) and [Docker](https://docs.docker.com/get-started/get-docker/) installations. 
+You will require [Java](https://www.oracle.com/europe/java/technologies/downloads/), [Node](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) and [Docker](https://docs.docker.com/get-started/get-docker/) installations.
 
 You should use a version manager (e.g. `sdkman` for Java, `nvm` for Node) so that you can easily switch to the required versions.
 
@@ -97,9 +95,7 @@ Each application’s root directory includes an `.env.*.template` file per envir
 ```sh
 # Frontend
 cp ./apps/client/.env.local.template ./apps/client/.env.local
-```
 
-```sh
 # Backend
 cp ./apps/api/.env.dev.template ./apps/api/.env.dev
 ```
@@ -112,7 +108,6 @@ cp ./apps/api/.env.dev.template ./apps/api/.env.dev
 
 > [!TIP]
 > Use multiple terminal tabs to run applications in parallel.
-
 
 ### Start backend
 

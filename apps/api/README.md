@@ -2,7 +2,7 @@
 <br id="top" />
 <p align="center">
   <a href="https://github.com/nednella/echo" target="_blank" rel="noopener noreferrer">
-    <img src="../docs/logo/echo-logo-256-light-gradient.svg" width="48" />
+    <img src="../../docs/logo/echo-logo-256-light-gradient.svg" width="48" />
   </a>
 </p>
 <div align="center">
@@ -24,7 +24,7 @@ The REST application is described with an OpenAPI spec located at `/openapi-spec
 
 ## Local development
 
-See the [development setup guide](../DEVELOPMENT.md) on how to set up a local development environment.
+See the [development setup guide](../../DEVELOPMENT.md) on how to set up a local development environment.
 
 ## Versioning
 
