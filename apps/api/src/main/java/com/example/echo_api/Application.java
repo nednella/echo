@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
     info = @Info(
         title = "Echo API",
         description = "A REST API implementation to serve the Echo client.",
-        version = "0.3.1" // x-release-please-version
+        version = "0.4.0" // x-release-please-version
     ),
     servers = {
         @Server(url = "https://api.echo-social.app", description = "Production server"),
