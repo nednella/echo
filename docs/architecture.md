@@ -149,7 +149,7 @@ public record ErrorResponse(
 
 Starting with the desired client response makes the implementation straightforward. Any explicitly handled exceptions (using Spring's `@ControllerAdvice` and `@ExceptionHandler` annotations) are formatted into the standardised response object.
 
-Any given application exception should be able to be mapped into a particular HTTP status code and a descriptive error message, so I opted to error enums per-feature implemented against an `ErrorCode` interface. Each declared error should contain its own HTTP status code, a message template, and the number of arguments that the template expects. This way, a template can be formatted while avoiding runtime errors, and tested against accordingly.
+Any given application exception should be able to be mapped into a particular HTTP status code and a descriptive error message, so I opted to use error enums per-feature, implemented against an `ErrorCode` interface. Each declared error should contain its own HTTP status code, a message template, and the number of arguments that the template expects. This way, a template can be formatted while avoiding runtime errors, and tested against accordingly.
 
 ```java
 public interface ErrorCode {
