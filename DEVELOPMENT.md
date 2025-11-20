@@ -55,7 +55,7 @@ echo/
 │   └── clerk-setup.md       # Clerk configuration guide
 │
 ├── DEVELOPMENT.md           # Developer setup guide
-└── README.md                # Project overview and quick start
+└── README.md                # Project overview
 ```
 
 <p align="right">
@@ -186,6 +186,8 @@ npm run format:fix          # run prettier to fix any formatting errors
 npm run lint                # run eslint to check for any linting errors
 
 npm run lint:fix            # run eslint to fix any linting errors
+
+npm run openapi             # pull latest production API spec types into /libs/api
 ```
 
 <p align="right">
