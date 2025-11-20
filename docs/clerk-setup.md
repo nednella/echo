@@ -93,6 +93,9 @@ For the Spring Boot REST API, you will need:
 
 ## OPTIONAL: Webhooks
 
+> [!IMPORTANT]
+> By default, the `.env.dev.template` file contains a dummy webhook signing secret that will prevent exceptions from being thrown upon boot.
+
 > [!IMPORTANT]  
 > You will require a tunnelling service to expose your localhost port to the web. [Ngrok is the recommended option by Clerk](https://clerk.com/docs/webhooks/sync-data), but you may use any tunnelling service of your choice.
 
@@ -108,7 +111,7 @@ For the Spring Boot REST API, you will need:
 <br />
 
 ```
-{YOUR_TUNNEL_URL}/api/v1/clerk/webhook
+{YOUR_TUNNEL_URL}/v1/clerk/webhook
 ```
 
 <img src="./assets/clerk_webhook_configuration.png" width="600">
