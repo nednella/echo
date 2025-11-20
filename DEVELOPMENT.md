@@ -55,7 +55,7 @@ echo/
 │   └── clerk-setup.md       # Clerk configuration guide
 │
 ├── DEVELOPMENT.md           # Developer setup guide
-└── README.md                # Project overview and quick start
+└── README.md                # Project overview
 ```
 
 <p align="right">
