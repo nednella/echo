@@ -20,8 +20,8 @@ This documentation contains instructions for validating that the Clerk applicati
 ## Table of contents
 
 - [Creating a Clerk application](#creating-a-clerk-application)
-  - [Requiring usernames at sign-up](#requiring-usernames-at-sign-up)
-  - [Adding custom session token claims](#adding-custom-session-token-claims)
+    - [Requiring usernames at sign-up](#requiring-usernames-at-sign-up)
+    - [Adding custom session token claims](#adding-custom-session-token-claims)
 - [Obtaining the API keys](#obtaining-the-api-keys)
 - [OPTIONAL: Webhooks](#optional-webhooks)
 - [OPTIONAL: Local integration testing](#optional-local-integration-testing)
@@ -94,7 +94,7 @@ For the Spring Boot REST API, you will need:
 ## OPTIONAL: Webhooks
 
 > [!IMPORTANT]  
-> You will require a tunneling service to expose your localhost port to the web. [Ngrok is the recommended option by Clerk](https://clerk.com/docs/webhooks/sync-data), but you may use any tunneling service of your choice.
+> You will require a tunnelling service to expose your localhost port to the web. [Ngrok is the recommended option by Clerk](https://clerk.com/docs/webhooks/sync-data), but you may use any tunnelling service of your choice.
 
 > [!IMPORTANT]  
 > The Echo REST API is currently only configured to accept `user` events; any other event type will be rejected.
