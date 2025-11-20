@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.4.1](https://github.com/nednella/echo/compare/api@v0.4.0...api@v0.4.1) (2025-11-20)
+
+
+### Bug Fixes
+
+* **docs:** add note to highlight default dummy clerk webhook signing secret ([#166](https://github.com/nednella/echo/issues/166)) ([1585c0d](https://github.com/nednella/echo/commit/1585c0d2667d16cb87c0ddc98a1dc01f69c53f26))
+* **docs:** correct spelling/wording errors and numerous broken hyperlinks/references ([#163](https://github.com/nednella/echo/issues/163)) ([4cf1a0c](https://github.com/nednella/echo/commit/4cf1a0c459fd68af5f3ad7bd378da0712ecbe42b))
+
 ## [0.4.0](https://github.com/nednella/echo/compare/api@v0.3.1...api@v0.4.0) (2025-11-11)
 
 
