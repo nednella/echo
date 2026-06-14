@@ -1,11 +1,11 @@
 import { useEffect } from "react"
 
 import type { MutationStatus } from "@tanstack/react-query"
-import { AnimatePresence } from "motion/react"
+import { AnimatePresence, motion } from "motion/react"
 
-import { Spinner } from "@/components/spinner"
-import { Button } from "@/libs/ui/components/button"
-import { MotionContainer } from "@/libs/ui/components/container"
+import { ErrorState } from "./error-state"
+import { SetupState } from "./setup-state"
+import { SuccessState } from "./success-state"
 
 interface Props {
     status: MutationStatus
@@ -28,26 +28,27 @@ export function OnboardingAnimation({
     }, [status, onSuccessAutoContinueMs, onSuccessContinue])
 
     return (
-        <AnimatePresence mode="wait">
-            {(status === "idle" || status === "pending") && (
-                <MotionContainer className="flex w-fit flex-col items-center gap-4">
-                    <Spinner />
-                    <p>Just getting things set up for you, hold on!</p>
-                </MotionContainer>
-            )}
-
-            {status === "success" && (
-                <MotionContainer className="w-fit">
-                    <p>Success!</p>
-                </MotionContainer>
-            )}
-
-            {status === "error" && (
-                <MotionContainer className="flex w-fit flex-col items-center gap-4">
-                    <p>Something went wrong :(</p>
-                    <Button onClick={onErrorRetry}>Retry</Button>
-                </MotionContainer>
-            )}
-        </AnimatePresence>
+        <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            className="bg-card w-full max-w-md rounded-2xl border p-8 text-center shadow-sm"
+        >
+            <AnimatePresence mode="wait">
+                {(status === "idle" || status === "pending") && <SetupState key="setup" />}
+                {status === "success" && (
+                    <SuccessState
+                        key="success"
+                        onContinue={onSuccessContinue}
+                    />
+                )}
+                {status === "error" && (
+                    <ErrorState
+                        key="error"
+                        onRetry={onErrorRetry}
+                    />
+                )}
+            </AnimatePresence>
+        </motion.div>
     )
 }
