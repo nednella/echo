@@ -14,9 +14,10 @@ import { useAppearanceDialog } from "@/stores/appearance-dialog.store"
 
 interface Props {
     children: React.ReactNode
+    align?: "start" | "center" | "end"
 }
 
-export function AccountMenu({ children }: Readonly<Props>) {
+export function AccountMenu({ children, align = "end" }: Readonly<Props>) {
     const { signOut, openUserProfile } = useClerk()
     const { onOpen: openAppearanceDialog } = useAppearanceDialog()
 
@@ -26,10 +27,10 @@ export function AccountMenu({ children }: Readonly<Props>) {
         <DropdownMenu>
             <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
             <DropdownMenuContent
-                className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+                className="w-56 rounded-lg"
                 side="bottom"
-                align="start"
-                sideOffset={8}
+                align={align}
+                sideOffset={10}
             >
                 <DropdownMenuItem onSelect={() => openUserProfile()}>
                     <IdCard />
