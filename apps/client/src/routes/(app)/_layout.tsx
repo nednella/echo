@@ -39,7 +39,7 @@ function AppLayout() {
     return (
         <div className="bg-background text-foreground flex h-screen flex-col">
             <TopNav />
-            <ScrollArea className="flex-1">
+            <ScrollArea className="min-h-0 flex-1">
                 <Outlet />
             </ScrollArea>
         </div>
