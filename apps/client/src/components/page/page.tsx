@@ -4,6 +4,9 @@ import { cn } from "@/libs/ui/utils"
 
 type Props = React.ComponentPropsWithoutRef<"div"> & { pad?: boolean; center?: boolean; landingGradient?: boolean }
 
+/**
+ * static page shell
+ */
 export function Page({ className, pad = false, center = false, landingGradient = false, ...props }: Readonly<Props>) {
     return (
         <div
