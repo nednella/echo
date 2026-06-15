@@ -13,9 +13,7 @@ function HomePage() {
     return (
         <AppPage>
             <FeedContainer>
-                <div className="hidden border-b px-4 py-4 lg:block">
-                    <PostComposerPrompt />
-                </div>
+                <PostComposerPrompt />
                 <div className="flex flex-1 items-center justify-center">
                     <ComingSoon />
                 </div>

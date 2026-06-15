@@ -10,16 +10,18 @@ export function PostComposerPrompt() {
     const { onOpen } = useCreatePostDialog()
 
     return (
-        <div className="flex w-full items-center gap-3">
-            <AccountAvatar className="size-10" />
-            <button
-                type="button"
-                onClick={onOpen}
-                className="bg-muted/60 text-muted-foreground hover:bg-muted h-11 flex-1 cursor-pointer rounded-full px-5
-                    text-left text-base transition-colors"
-            >
-                {`What's on your mind, ${user?.username}?`}
-            </button>
+        <div className="hidden border-b px-4 py-4 lg:block">
+            <div className="flex w-full items-center gap-3">
+                <AccountAvatar className="size-10" />
+                <button
+                    type="button"
+                    onClick={onOpen}
+                    className="bg-muted/60 text-muted-foreground hover:bg-muted h-11 flex-1 cursor-pointer rounded-full
+                        px-5 text-left text-base transition-colors"
+                >
+                    {`What's on your mind, ${user?.username}?`}
+                </button>
+            </div>
         </div>
     )
 }
