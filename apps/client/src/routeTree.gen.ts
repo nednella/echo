@@ -19,6 +19,7 @@ import { Route as authRegisterRouteImport } from './routes/(auth)/register'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as appHomeLayoutRouteImport } from './routes/(app)/home/_layout'
 import { Route as appHomeIndexRouteImport } from './routes/(app)/home/index'
+import { Route as appProfileUsernameRouteImport } from './routes/(app)/profile/$username'
 import { Route as appHomeFeedRouteImport } from './routes/(app)/home/feed'
 import { Route as appHomeDiscoverRouteImport } from './routes/(app)/home/discover'
 
@@ -69,6 +70,11 @@ const appHomeIndexRoute = appHomeIndexRouteImport.update({
   path: '/',
   getParentRoute: () => appHomeLayoutRoute,
 } as any)
+const appProfileUsernameRoute = appProfileUsernameRouteImport.update({
+  id: '/profile/$username',
+  path: '/profile/$username',
+  getParentRoute: () => appLayoutRoute,
+} as any)
 const appHomeFeedRoute = appHomeFeedRouteImport.update({
   id: '/feed',
   path: '/feed',
@@ -89,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof onboardingOnboardingRoute
   '/home/discover': typeof appHomeDiscoverRoute
   '/home/feed': typeof appHomeFeedRoute
+  '/profile/$username': typeof appProfileUsernameRoute
   '/home/': typeof appHomeIndexRoute
 }
 export interface FileRoutesByTo {
@@ -99,6 +106,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof onboardingOnboardingRoute
   '/home/discover': typeof appHomeDiscoverRoute
   '/home/feed': typeof appHomeFeedRoute
+  '/profile/$username': typeof appProfileUsernameRoute
   '/home': typeof appHomeIndexRoute
 }
 export interface FileRoutesById {
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/(auth)/': typeof authIndexRoute
   '/(app)/home/discover': typeof appHomeDiscoverRoute
   '/(app)/home/feed': typeof appHomeFeedRoute
+  '/(app)/profile/$username': typeof appProfileUsernameRoute
   '/(app)/home/': typeof appHomeIndexRoute
 }
 export interface FileRouteTypes {
@@ -127,6 +136,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/home/discover'
     | '/home/feed'
+    | '/profile/$username'
     | '/home/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -137,6 +147,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/home/discover'
     | '/home/feed'
+    | '/profile/$username'
     | '/home'
   id:
     | '__root__'
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/(auth)/'
     | '/(app)/home/discover'
     | '/(app)/home/feed'
+    | '/(app)/profile/$username'
     | '/(app)/home/'
   fileRoutesById: FileRoutesById
 }
@@ -232,6 +244,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appHomeIndexRouteImport
       parentRoute: typeof appHomeLayoutRoute
     }
+    '/(app)/profile/$username': {
+      id: '/(app)/profile/$username'
+      path: '/profile/$username'
+      fullPath: '/profile/$username'
+      preLoaderRoute: typeof appProfileUsernameRouteImport
+      parentRoute: typeof appLayoutRoute
+    }
     '/(app)/home/feed': {
       id: '/(app)/home/feed'
       path: '/feed'
@@ -267,10 +286,12 @@ const appHomeLayoutRouteWithChildren = appHomeLayoutRoute._addFileChildren(
 
 interface appLayoutRouteChildren {
   appHomeLayoutRoute: typeof appHomeLayoutRouteWithChildren
+  appProfileUsernameRoute: typeof appProfileUsernameRoute
 }
 
 const appLayoutRouteChildren: appLayoutRouteChildren = {
   appHomeLayoutRoute: appHomeLayoutRouteWithChildren,
+  appProfileUsernameRoute: appProfileUsernameRoute,
 }
 
 const appLayoutRouteWithChildren = appLayoutRoute._addFileChildren(
