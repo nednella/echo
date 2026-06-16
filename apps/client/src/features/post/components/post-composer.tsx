@@ -6,6 +6,7 @@ import { toast } from "sonner"
 
 import { AccountAvatar } from "@/features/account/components/account-avatar"
 import { createPostMutationOptions } from "@/features/post/api/options"
+import { PostText } from "@/features/post/components/post-text"
 import { MAX_POST_LENGTH } from "@/features/post/constants"
 import { ApiException } from "@/libs/api/exception"
 import { Button } from "@/libs/ui/components/button"
@@ -56,18 +57,31 @@ export function PostComposer({ autoFocus = false, onPosted }: Readonly<Props>) {
         <div className="flex w-full gap-3">
             <AccountAvatar className="size-10" />
             <div className="flex flex-1 flex-col gap-2">
-                <Textarea
-                    autoFocus={autoFocus}
-                    rows={1}
-                    value={text}
-                    onChange={(event) => setText(event.target.value)}
-                    onKeyDown={handleKeyDown}
-                    placeholder={`What's on your mind, ${user?.username}?`}
-                    aria-invalid={isOverLimit}
-                    disabled={isPending}
-                    className="min-h-0 resize-none border-0 bg-transparent px-0 py-2 text-base shadow-none
-                        focus-visible:ring-0 md:text-base dark:bg-transparent"
-                />
+                <div className="relative">
+                    <div
+                        aria-hidden
+                        className="pointer-events-none absolute inset-0 py-2 text-base wrap-break-word
+                            whitespace-pre-wrap"
+                    >
+                        <PostText
+                            text={text}
+                            interactive={false}
+                        />
+                    </div>
+                    <Textarea
+                        autoFocus={autoFocus}
+                        rows={1}
+                        value={text}
+                        onChange={(event) => setText(event.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder={`What's on your mind, ${user?.username}?`}
+                        aria-invalid={isOverLimit}
+                        disabled={isPending}
+                        className="caret-foreground relative min-h-0 resize-none border-0 bg-transparent px-0 py-2
+                            text-base text-transparent shadow-none focus-visible:ring-0 md:text-base
+                            dark:bg-transparent"
+                    />
+                </div>
                 <div className="flex items-center justify-end gap-3">
                     <span
                         className={cn(

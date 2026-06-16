@@ -3,6 +3,7 @@ import type { ReactNode } from "react"
 import { Link } from "@tanstack/react-router"
 
 import type { schemas } from "@/libs/api/openapi-client"
+import { parseEntities } from "@/libs/twitter-text/parse-entities"
 import { cn } from "@/libs/ui/utils"
 
 type Entities = schemas["PostEntities"]
@@ -22,18 +23,21 @@ function withProtocol(url: string) {
     return /^https?:\/\//i.test(url) ? url : `https://${url}`
 }
 
-// Backend offsets are UTF-16 (twitter-text, unconverted), so plain string slicing aligns.
-export function PostText({ text, entities }: Readonly<{ text: string; entities: Entities }>) {
+export function PostText({
+    text,
+    entities,
+    interactive = true
+}: Readonly<{ text: string; entities?: Entities; interactive?: boolean }>) {
     const nodes: ReactNode[] = []
     let cursor = 0
 
-    for (const [index, entity] of ordered(entities).entries()) {
+    for (const [index, entity] of ordered(entities ?? parseEntities(text)).entries()) {
         if (entity.start < cursor) continue
         if (entity.start > cursor) nodes.push(text.slice(cursor, entity.start))
 
         const display = text.slice(entity.start, entity.end)
 
-        if (entity.kind === "mention") {
+        if (interactive && entity.kind === "mention") {
             nodes.push(
                 <Link
                     key={index}
@@ -44,7 +48,7 @@ export function PostText({ text, entities }: Readonly<{ text: string; entities: 
                     {display}
                 </Link>
             )
-        } else if (entity.kind === "url") {
+        } else if (interactive && entity.kind === "url") {
             nodes.push(
                 <a
                     key={index}
@@ -60,7 +64,7 @@ export function PostText({ text, entities }: Readonly<{ text: string; entities: 
             nodes.push(
                 <span
                     key={index}
-                    className={cn(ENTITY_CLASS, "cursor-pointer")}
+                    className={cn(ENTITY_CLASS, interactive && "cursor-pointer")}
                 >
                     {display}
                 </span>
