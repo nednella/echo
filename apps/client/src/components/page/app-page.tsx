@@ -8,7 +8,7 @@ import { cn } from "@/libs/ui/utils"
 export function AppPage({ className, ...props }: Readonly<React.ComponentPropsWithoutRef<"div">>) {
     return (
         <div
-            className={cn("flex min-h-full w-full flex-col", className)}
+            className={cn("flex w-full flex-1 flex-col", className)}
             {...props}
         />
     )
