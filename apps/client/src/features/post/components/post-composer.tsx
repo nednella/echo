@@ -27,7 +27,6 @@ export function PostComposer({ autoFocus = false, onPosted }: Readonly<Props>) {
         onSuccess: () => {
             setText("")
             queryClient.invalidateQueries({ queryKey: ["feed"] })
-            toast.success("Your post was published")
             onPosted?.()
         },
         onError: (error) => {
