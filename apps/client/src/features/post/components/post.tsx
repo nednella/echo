@@ -1,5 +1,6 @@
 import { Heart, MessageCircle, UserRound } from "lucide-react"
 
+import { PostText } from "@/features/post/components/post-text"
 import type { schemas } from "@/libs/api/openapi-client"
 import { Avatar, AvatarFallback, AvatarImage } from "@/libs/ui/components/avatar"
 import { cn } from "@/libs/ui/utils"
@@ -26,7 +27,12 @@ export function Post({ post }: Readonly<{ post: schemas["Post"] }>) {
                     <span className="text-muted-foreground">·</span>
                     <span className="text-muted-foreground shrink-0">{relativeTime(post.created_at)}</span>
                 </div>
-                <p className="mt-0.5 text-[15px] wrap-break-word whitespace-pre-wrap">{post.text}</p>
+                <p className="mt-0.5 text-[15px] wrap-break-word whitespace-pre-wrap">
+                    <PostText
+                        text={post.text}
+                        entities={post.entities}
+                    />
+                </p>
                 <div className="text-muted-foreground mt-2 flex items-center gap-8 text-sm">
                     <span className="flex items-center gap-1.5">
                         <MessageCircle className="size-4" />
