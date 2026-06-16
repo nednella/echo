@@ -1,24 +1,22 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { Outlet, createFileRoute } from "@tanstack/react-router"
 
-import { ComingSoon } from "@/components/coming-soon"
 import { AppPage } from "@/components/page/app-page"
 import { FeedContainer } from "@/features/feed/components/feed-container"
+import { FeedTabs } from "@/features/feed/components/feed-tabs"
 import { PostComposerButton, PostComposerPrompt } from "@/features/post/components/post-composer-triggers"
 
 export const Route = createFileRoute("/(app)/home")({
-    component: HomePage
+    component: HomeLayout
 })
 
-function HomePage() {
+function HomeLayout() {
     return (
         <AppPage>
             <FeedContainer>
+                <FeedTabs />
                 <PostComposerPrompt />
-                <div className="flex flex-1 items-center justify-center">
-                    <ComingSoon />
-                </div>
+                <Outlet />
             </FeedContainer>
-
             <PostComposerButton />
         </AppPage>
     )

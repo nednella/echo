@@ -1,7 +1,7 @@
 import { useState } from "react"
 
 import { useUser } from "@clerk/clerk-react"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
 import { AccountAvatar } from "@/features/account/components/account-avatar"
@@ -20,12 +20,13 @@ interface Props {
 export function PostComposer({ autoFocus = false, onPosted }: Readonly<Props>) {
     const { user } = useUser()
     const [text, setText] = useState("")
+    const queryClient = useQueryClient()
 
     const { mutate, isPending } = useMutation({
         ...createPostMutationOptions(),
         onSuccess: () => {
             setText("")
-            toast.success("Your post was published")
+            queryClient.invalidateQueries({ queryKey: ["feed"] })
             onPosted?.()
         },
         onError: (error) => {

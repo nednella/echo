@@ -17,7 +17,10 @@ import { Route as onboardingOnboardingRouteImport } from './routes/(onboarding)/
 import { Route as authSsoCallbackRouteImport } from './routes/(auth)/sso-callback'
 import { Route as authRegisterRouteImport } from './routes/(auth)/register'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
-import { Route as appHomeRouteImport } from './routes/(app)/home'
+import { Route as appHomeLayoutRouteImport } from './routes/(app)/home/_layout'
+import { Route as appHomeIndexRouteImport } from './routes/(app)/home/index'
+import { Route as appHomeFeedRouteImport } from './routes/(app)/home/feed'
+import { Route as appHomeDiscoverRouteImport } from './routes/(app)/home/discover'
 
 const onboardingLayoutRoute = onboardingLayoutRouteImport.update({
   id: '/(onboarding)',
@@ -56,39 +59,62 @@ const authLoginRoute = authLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => authLayoutRoute,
 } as any)
-const appHomeRoute = appHomeRouteImport.update({
+const appHomeLayoutRoute = appHomeLayoutRouteImport.update({
   id: '/home',
   path: '/home',
   getParentRoute: () => appLayoutRoute,
 } as any)
+const appHomeIndexRoute = appHomeIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => appHomeLayoutRoute,
+} as any)
+const appHomeFeedRoute = appHomeFeedRouteImport.update({
+  id: '/feed',
+  path: '/feed',
+  getParentRoute: () => appHomeLayoutRoute,
+} as any)
+const appHomeDiscoverRoute = appHomeDiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
+  getParentRoute: () => appHomeLayoutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof authIndexRoute
-  '/home': typeof appHomeRoute
+  '/home': typeof appHomeLayoutRouteWithChildren
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
   '/sso-callback': typeof authSsoCallbackRoute
   '/onboarding': typeof onboardingOnboardingRoute
+  '/home/discover': typeof appHomeDiscoverRoute
+  '/home/feed': typeof appHomeFeedRoute
+  '/home/': typeof appHomeIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof authIndexRoute
-  '/home': typeof appHomeRoute
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
   '/sso-callback': typeof authSsoCallbackRoute
   '/onboarding': typeof onboardingOnboardingRoute
+  '/home/discover': typeof appHomeDiscoverRoute
+  '/home/feed': typeof appHomeFeedRoute
+  '/home': typeof appHomeIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(app)': typeof appLayoutRouteWithChildren
   '/(auth)': typeof authLayoutRouteWithChildren
   '/(onboarding)': typeof onboardingLayoutRouteWithChildren
-  '/(app)/home': typeof appHomeRoute
+  '/(app)/home': typeof appHomeLayoutRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
   '/(auth)/sso-callback': typeof authSsoCallbackRoute
   '/(onboarding)/onboarding': typeof onboardingOnboardingRoute
   '/(auth)/': typeof authIndexRoute
+  '/(app)/home/discover': typeof appHomeDiscoverRoute
+  '/(app)/home/feed': typeof appHomeFeedRoute
+  '/(app)/home/': typeof appHomeIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -99,8 +125,19 @@ export interface FileRouteTypes {
     | '/register'
     | '/sso-callback'
     | '/onboarding'
+    | '/home/discover'
+    | '/home/feed'
+    | '/home/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/home' | '/login' | '/register' | '/sso-callback' | '/onboarding'
+  to:
+    | '/'
+    | '/login'
+    | '/register'
+    | '/sso-callback'
+    | '/onboarding'
+    | '/home/discover'
+    | '/home/feed'
+    | '/home'
   id:
     | '__root__'
     | '/(app)'
@@ -112,6 +149,9 @@ export interface FileRouteTypes {
     | '/(auth)/sso-callback'
     | '/(onboarding)/onboarding'
     | '/(auth)/'
+    | '/(app)/home/discover'
+    | '/(app)/home/feed'
+    | '/(app)/home/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -182,18 +222,55 @@ declare module '@tanstack/react-router' {
       id: '/(app)/home'
       path: '/home'
       fullPath: '/home'
-      preLoaderRoute: typeof appHomeRouteImport
+      preLoaderRoute: typeof appHomeLayoutRouteImport
       parentRoute: typeof appLayoutRoute
+    }
+    '/(app)/home/': {
+      id: '/(app)/home/'
+      path: '/'
+      fullPath: '/home/'
+      preLoaderRoute: typeof appHomeIndexRouteImport
+      parentRoute: typeof appHomeLayoutRoute
+    }
+    '/(app)/home/feed': {
+      id: '/(app)/home/feed'
+      path: '/feed'
+      fullPath: '/home/feed'
+      preLoaderRoute: typeof appHomeFeedRouteImport
+      parentRoute: typeof appHomeLayoutRoute
+    }
+    '/(app)/home/discover': {
+      id: '/(app)/home/discover'
+      path: '/discover'
+      fullPath: '/home/discover'
+      preLoaderRoute: typeof appHomeDiscoverRouteImport
+      parentRoute: typeof appHomeLayoutRoute
     }
   }
 }
 
+interface appHomeLayoutRouteChildren {
+  appHomeDiscoverRoute: typeof appHomeDiscoverRoute
+  appHomeFeedRoute: typeof appHomeFeedRoute
+  appHomeIndexRoute: typeof appHomeIndexRoute
+}
+
+const appHomeLayoutRouteChildren: appHomeLayoutRouteChildren = {
+  appHomeDiscoverRoute: appHomeDiscoverRoute,
+  appHomeFeedRoute: appHomeFeedRoute,
+  appHomeIndexRoute: appHomeIndexRoute,
+}
+
+const appHomeLayoutRouteWithChildren = appHomeLayoutRoute._addFileChildren(
+  appHomeLayoutRouteChildren,
+)
+
 interface appLayoutRouteChildren {
-  appHomeRoute: typeof appHomeRoute
+  appHomeLayoutRoute: typeof appHomeLayoutRouteWithChildren
 }
 
 const appLayoutRouteChildren: appLayoutRouteChildren = {
-  appHomeRoute: appHomeRoute,
+  appHomeLayoutRoute: appHomeLayoutRouteWithChildren,
 }
 
 const appLayoutRouteWithChildren = appLayoutRoute._addFileChildren(

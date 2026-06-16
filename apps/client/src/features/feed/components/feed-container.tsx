@@ -8,7 +8,7 @@ import { cn } from "@/libs/ui/utils"
 export function FeedContainer({ className, ...props }: Readonly<React.ComponentPropsWithoutRef<"div">>) {
     return (
         <div
-            className={cn("mx-auto flex w-full max-w-[600px] flex-1 flex-col", className)}
+            className={cn("mx-auto flex w-full max-w-150 flex-1 flex-col", className)}
             {...props}
         />
     )
