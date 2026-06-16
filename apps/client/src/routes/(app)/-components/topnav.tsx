@@ -20,7 +20,7 @@ export function TopNav() {
         >
             {/* accent: gradient hairline under the bar */}
             <div
-                className="via-echo-400/50 pointer-events-none absolute inset-x-0 -bottom-px h-px bg-gradient-to-r
+                className="via-echo-400/50 pointer-events-none absolute inset-x-0 -bottom-px h-px bg-linear-to-r
                     from-transparent to-transparent"
             />
 
