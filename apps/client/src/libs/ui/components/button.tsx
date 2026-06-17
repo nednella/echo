@@ -35,18 +35,12 @@ const buttonVariants = cva(
     }
 )
 
-type ButtonProps = React.ComponentProps<"button"> &
-    VariantProps<typeof buttonVariants> & { asChild?: boolean; rounded?: boolean; full?: boolean }
+type ButtonProps = Readonly<
+    React.ComponentProps<"button"> &
+        VariantProps<typeof buttonVariants> & { asChild?: boolean; rounded?: boolean; full?: boolean }
+>
 
-function Button({
-    className,
-    variant,
-    size,
-    asChild = false,
-    rounded = false,
-    full = false,
-    ...props
-}: Readonly<ButtonProps>) {
+function Button({ className, variant, size, asChild = false, rounded = false, full = false, ...props }: ButtonProps) {
     const Comp = asChild ? Slot : "button"
     return (
         <Comp

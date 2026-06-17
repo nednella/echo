@@ -10,7 +10,9 @@ const fade = {
     transition: { duration: 0.25 }
 }
 
-export function ErrorState({ onRetry }: Readonly<{ onRetry: () => void }>) {
+type ErrorStateProps = Readonly<{ onRetry: () => void }>
+
+export function ErrorState({ onRetry }: ErrorStateProps) {
     return (
         <motion.div {...fade}>
             <motion.div

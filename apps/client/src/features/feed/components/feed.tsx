@@ -6,7 +6,9 @@ import { Spinner } from "@/components/spinner"
 import { type FeedType, feedInfiniteQueryOptions } from "@/features/feed/api/options"
 import { Post } from "@/features/post/components/post"
 
-export function Feed({ feed }: Readonly<{ feed: FeedType }>) {
+type FeedProps = Readonly<{ feed: FeedType }>
+
+export function Feed({ feed }: FeedProps) {
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(feedInfiniteQueryOptions(feed))
     const posts = data?.pages.flatMap((page) => page.items) ?? []
 

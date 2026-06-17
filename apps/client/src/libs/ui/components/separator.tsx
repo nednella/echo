@@ -4,9 +4,9 @@ import * as SeparatorPrimitive from "@radix-ui/react-separator"
 
 import { cn } from "@/libs/ui/utils"
 
-type SeparatorProps = React.ComponentProps<typeof SeparatorPrimitive.Root>
+type SeparatorProps = Readonly<React.ComponentProps<typeof SeparatorPrimitive.Root>>
 
-function Separator({ className, orientation = "horizontal", decorative = true, ...props }: Readonly<SeparatorProps>) {
+function Separator({ className, orientation = "horizontal", decorative = true, ...props }: SeparatorProps) {
     return (
         <SeparatorPrimitive.Root
             data-slot="separator"
@@ -22,7 +22,7 @@ function Separator({ className, orientation = "horizontal", decorative = true, .
     )
 }
 
-type LabelledSeparatorProps = SeparatorProps & { children?: React.ReactNode; childrenClassName?: string }
+type LabelledSeparatorProps = Readonly<SeparatorProps & { children?: React.ReactNode; childrenClassName?: string }>
 
 function LabelledSeparator({
     className,
@@ -30,7 +30,7 @@ function LabelledSeparator({
     children,
     childrenClassName,
     ...props
-}: Readonly<LabelledSeparatorProps>) {
+}: LabelledSeparatorProps) {
     return (
         <SeparatorPrimitive.Root
             data-slot="separator"

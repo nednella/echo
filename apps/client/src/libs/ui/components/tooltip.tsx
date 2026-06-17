@@ -4,10 +4,9 @@ import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 
 import { cn } from "@/libs/ui/utils.ts"
 
-function TooltipProvider({
-    delayDuration = 0,
-    ...props
-}: Readonly<React.ComponentProps<typeof TooltipPrimitive.Provider>>) {
+type TooltipProviderProps = Readonly<React.ComponentProps<typeof TooltipPrimitive.Provider>>
+
+function TooltipProvider({ delayDuration = 0, ...props }: TooltipProviderProps) {
     return (
         <TooltipPrimitive.Provider
             data-slot="tooltip-provider"
@@ -17,7 +16,9 @@ function TooltipProvider({
     )
 }
 
-function Tooltip({ ...props }: Readonly<React.ComponentProps<typeof TooltipPrimitive.Root>>) {
+type TooltipProps = Readonly<React.ComponentProps<typeof TooltipPrimitive.Root>>
+
+function Tooltip({ ...props }: TooltipProps) {
     return (
         <TooltipProvider>
             <TooltipPrimitive.Root
@@ -28,7 +29,9 @@ function Tooltip({ ...props }: Readonly<React.ComponentProps<typeof TooltipPrimi
     )
 }
 
-function TooltipTrigger({ ...props }: Readonly<React.ComponentProps<typeof TooltipPrimitive.Trigger>>) {
+type TooltipTriggerProps = Readonly<React.ComponentProps<typeof TooltipPrimitive.Trigger>>
+
+function TooltipTrigger({ ...props }: TooltipTriggerProps) {
     return (
         <TooltipPrimitive.Trigger
             data-slot="tooltip-trigger"
@@ -37,12 +40,9 @@ function TooltipTrigger({ ...props }: Readonly<React.ComponentProps<typeof Toolt
     )
 }
 
-function TooltipContent({
-    className,
-    sideOffset = 0,
-    children,
-    ...props
-}: Readonly<React.ComponentProps<typeof TooltipPrimitive.Content>>) {
+type TooltipContentProps = Readonly<React.ComponentProps<typeof TooltipPrimitive.Content>>
+
+function TooltipContent({ className, sideOffset = 0, children, ...props }: TooltipContentProps) {
     return (
         <TooltipPrimitive.Portal>
             <TooltipPrimitive.Content
@@ -60,8 +60,8 @@ function TooltipContent({
             >
                 {children}
                 <TooltipPrimitive.Arrow
-                    className="bg-foreground fill-foreground z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45
-                        rounded-[2px]"
+                    className="bg-foreground fill-foreground z-50 size-2.5 translate-y-[calc(-50%-2px)] rotate-45
+                        rounded-xs"
                 />
             </TooltipPrimitive.Content>
         </TooltipPrimitive.Portal>

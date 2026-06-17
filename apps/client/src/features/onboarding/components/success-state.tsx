@@ -10,7 +10,9 @@ const fade = {
     transition: { duration: 0.25 }
 }
 
-export function SuccessState({ onContinue }: Readonly<{ onContinue: () => void }>) {
+type SuccessStateProps = Readonly<{ onContinue: () => void }>
+
+export function SuccessState({ onContinue }: SuccessStateProps) {
     return (
         <motion.div {...fade}>
             <motion.div
@@ -32,8 +34,7 @@ export function SuccessState({ onContinue }: Readonly<{ onContinue: () => void }
                 rounded
                 variant="custom"
                 onClick={onContinue}
-                className="from-echo-400 to-echo-600 mt-6 bg-gradient-to-br font-semibold text-white
-                    hover:brightness-110"
+                className="from-echo-400 to-echo-600 mt-6 bg-linear-to-br font-semibold text-white hover:brightness-110"
             >
                 Continue
             </Button>

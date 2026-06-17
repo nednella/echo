@@ -6,13 +6,13 @@ import { EchoLogo } from "@/components/logos/echo-logo"
 import { Page } from "@/components/page/page"
 import { MotionContainer } from "@/libs/ui/components/container"
 
-interface Props {
+type LoadingPageProps = Readonly<{
     isReady: boolean
     minimumLoadingTimeMs: number
     onAnimationComplete: () => void
-}
+}>
 
-export function LoadingPage({ isReady, minimumLoadingTimeMs, onAnimationComplete }: Readonly<Props>) {
+export function LoadingPage({ isReady, minimumLoadingTimeMs, onAnimationComplete }: LoadingPageProps) {
     const [shouldExit, setShouldExit] = useState(false)
     const [minLoadingTimeReached, setMinLoadingTimeReached] = useState(false)
 
@@ -39,7 +39,7 @@ export function LoadingPage({ isReady, minimumLoadingTimeMs, onAnimationComplete
                     <>
                         {/* Background gradient */}
                         <motion.div
-                            className="from-gradient-teal to-gradient-navy absolute inset-0 bg-gradient-to-br"
+                            className="from-gradient-teal to-gradient-navy absolute inset-0 bg-linear-to-br"
                             initial={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ delay: 0.2 }}

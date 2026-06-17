@@ -9,8 +9,7 @@ import { navItems } from "./navbar.config"
 
 const navBase = "grid size-10 place-items-center rounded-lg transition-colors"
 const navInactive = "text-muted-foreground hover:bg-accent hover:text-foreground"
-const navActive =
-    "from-echo-400 to-echo-600 bg-gradient-to-br text-white shadow-[0_4px_14px_-5px_var(--color-echo-500)]"
+const navActive = "from-echo-400 to-echo-600 bg-linear-to-br text-white shadow-[0_4px_14px_-5px_var(--color-echo-500)]"
 
 export function TopNav() {
     return (

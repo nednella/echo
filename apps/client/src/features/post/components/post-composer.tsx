@@ -13,12 +13,12 @@ import { Button } from "@/libs/ui/components/button"
 import { Textarea } from "@/libs/ui/components/textarea"
 import { cn } from "@/libs/ui/utils"
 
-interface Props {
+type PostComposerProps = Readonly<{
     autoFocus?: boolean
     onPosted?: () => void
-}
+}>
 
-export function PostComposer({ autoFocus = false, onPosted }: Readonly<Props>) {
+export function PostComposer({ autoFocus = false, onPosted }: PostComposerProps) {
     const { user } = useUser()
     const [text, setText] = useState("")
     const queryClient = useQueryClient()

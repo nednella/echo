@@ -7,19 +7,19 @@ import { ErrorState } from "./error-state"
 import { SetupState } from "./setup-state"
 import { SuccessState } from "./success-state"
 
-interface Props {
+type OnboardingAnimationProps = Readonly<{
     status: MutationStatus
     onSuccessAutoContinueMs: number
     onSuccessContinue: () => void
     onErrorRetry: () => void
-}
+}>
 
 export function OnboardingAnimation({
     status,
     onSuccessAutoContinueMs,
     onSuccessContinue,
     onErrorRetry
-}: Readonly<Props>) {
+}: OnboardingAnimationProps) {
     useEffect(() => {
         if (status === "success") {
             const id = setTimeout(onSuccessContinue, onSuccessAutoContinueMs)

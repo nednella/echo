@@ -61,7 +61,7 @@ export function SetupState() {
 
             <div className="bg-muted mt-6 h-1.5 overflow-hidden rounded-full">
                 <motion.div
-                    className="from-echo-600 to-echo-400 h-full rounded-full bg-gradient-to-r"
+                    className="from-echo-600 to-echo-400 h-full rounded-full bg-linear-to-r"
                     initial={{ width: "8%" }}
                     animate={{ width: `${progress}%` }}
                     transition={{ duration: 0.5, ease: "easeOut" }}
@@ -72,7 +72,9 @@ export function SetupState() {
     )
 }
 
-function Step({ label, state }: Readonly<{ label: string; state: StepState }>) {
+type StepProps = Readonly<{ label: string; state: StepState }>
+
+function Step({ label, state }: StepProps) {
     return (
         <li
             className={cn(

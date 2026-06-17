@@ -4,11 +4,11 @@ import { MotionContainer } from "@/libs/ui/components/container"
 
 import { BackToHome } from "./back-to-home"
 
-interface Props {
+type AuthFormWrapperProps = Readonly<{
     children: React.ReactNode
-}
+}>
 
-export function AuthFormWrapper({ children }: Readonly<Props>) {
+export function AuthFormWrapper({ children }: AuthFormWrapperProps) {
     return (
         <MotionContainer
             className="w-fit"

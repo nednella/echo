@@ -3,7 +3,9 @@ import { UserRound } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/libs/ui/components/avatar"
 
-export function AccountAvatar({ className }: Readonly<{ className?: string }>) {
+type AccountAvatarProps = Readonly<{ className?: string }>
+
+export function AccountAvatar({ className }: AccountAvatarProps) {
     const { user } = useUser()
 
     return (
