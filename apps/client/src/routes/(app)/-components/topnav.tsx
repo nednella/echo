@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router"
 
+import { AccountAvatar } from "@/components/account-avatar"
 import { EchoLogo } from "@/components/logos/echo-logo"
-import { AccountAvatar } from "@/features/account/components/account-avatar"
 import { AccountMenu } from "@/features/account/components/account-dropdown"
 import { Button } from "@/libs/ui/components/button"
 

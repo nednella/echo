@@ -1,7 +1,7 @@
 import { useUser } from "@clerk/clerk-react"
 import { PenLine } from "lucide-react"
 
-import { AccountAvatar } from "@/features/account/components/account-avatar"
+import { AccountAvatar } from "@/components/account-avatar"
 import { Button } from "@/libs/ui/components/button"
 import { useCreatePostDialog } from "@/stores/create-post-dialog.store"
 

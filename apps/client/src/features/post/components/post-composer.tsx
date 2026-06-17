@@ -4,7 +4,7 @@ import { useUser } from "@clerk/clerk-react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
-import { AccountAvatar } from "@/features/account/components/account-avatar"
+import { AccountAvatar } from "@/components/account-avatar"
 import { createPostMutationOptions } from "@/features/post/api/options"
 import { PostText } from "@/features/post/components/post-text"
 import { MAX_POST_LENGTH } from "@/features/post/constants"
