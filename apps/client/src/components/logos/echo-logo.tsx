@@ -1,10 +1,10 @@
 type Variant = "white" | "black" | "light-gradient" | "gradient"
 
-interface Props {
+type EchoLogoProps = Readonly<{
     className?: string
     size?: number
     variant?: Variant
-}
+}>
 
 function getGradient(variant: Variant) {
     switch (variant) {
@@ -34,7 +34,7 @@ function getGradient(variant: Variant) {
         }
     }
 }
-export function EchoLogo({ className, size, variant = "white" }: Readonly<Props>) {
+export function EchoLogo({ className, size, variant = "white" }: EchoLogoProps) {
     const colours = getGradient(variant)
 
     // static

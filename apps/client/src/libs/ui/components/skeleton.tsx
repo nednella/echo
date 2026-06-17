@@ -1,6 +1,8 @@
 import { cn } from "@/libs/ui/utils.ts"
 
-function Skeleton({ className, ...props }: Readonly<React.ComponentProps<"div">>) {
+type SkeletonProps = Readonly<React.ComponentProps<"div">>
+
+function Skeleton({ className, ...props }: SkeletonProps) {
     return (
         <div
             data-slot="skeleton"

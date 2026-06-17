@@ -23,11 +23,9 @@ function withProtocol(url: string) {
     return /^https?:\/\//i.test(url) ? url : `https://${url}`
 }
 
-export function PostText({
-    text,
-    entities,
-    interactive = true
-}: Readonly<{ text: string; entities?: Entities; interactive?: boolean }>) {
+type PostTextProps = Readonly<{ text: string; entities?: Entities; interactive?: boolean }>
+
+export function PostText({ text, entities, interactive = true }: PostTextProps) {
     const nodes: ReactNode[] = []
     let cursor = 0
 

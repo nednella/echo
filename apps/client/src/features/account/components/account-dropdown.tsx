@@ -12,12 +12,12 @@ import {
 } from "@/libs/ui/components/dropdown-menu"
 import { useAppearanceDialog } from "@/stores/appearance-dialog.store"
 
-interface Props {
+type AccountMenuProps = Readonly<{
     children: React.ReactNode
     align?: "start" | "center" | "end"
-}
+}>
 
-export function AccountMenu({ children, align = "end" }: Readonly<Props>) {
+export function AccountMenu({ children, align = "end" }: AccountMenuProps) {
     const { signOut, openUserProfile } = useClerk()
     const { onOpen: openAppearanceDialog } = useAppearanceDialog()
 

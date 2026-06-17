@@ -10,11 +10,11 @@ if (!CLERK_PUBLISHABLE_KEY) {
     throw new Error("Clerk Publishable Key missing from .env file!")
 }
 
-interface Props {
+type EchoClerkProviderProps = Readonly<{
     children: React.ReactNode
-}
+}>
 
-export function EchoClerkProvider({ children }: Readonly<Props>) {
+export function EchoClerkProvider({ children }: EchoClerkProviderProps) {
     return (
         <ClerkProvider
             publishableKey={CLERK_PUBLISHABLE_KEY}

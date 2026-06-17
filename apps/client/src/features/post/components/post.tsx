@@ -6,7 +6,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/libs/ui/components/avatar
 import { cn } from "@/libs/ui/utils"
 import { relativeTime } from "@/utils/datetime"
 
-export function Post({ post }: Readonly<{ post: schemas["Post"] }>) {
+type PostProps = Readonly<{ post: schemas["Post"] }>
+
+export function Post({ post }: PostProps) {
     const { author, metrics, relationship } = post
 
     return (

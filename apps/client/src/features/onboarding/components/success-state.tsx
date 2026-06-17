@@ -10,7 +10,9 @@ const fade = {
     transition: { duration: 0.25 }
 }
 
-export function SuccessState({ onContinue }: Readonly<{ onContinue: () => void }>) {
+type SuccessStateProps = Readonly<{ onContinue: () => void }>
+
+export function SuccessState({ onContinue }: SuccessStateProps) {
     return (
         <motion.div {...fade}>
             <motion.div

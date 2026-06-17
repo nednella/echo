@@ -72,7 +72,9 @@ export function SetupState() {
     )
 }
 
-function Step({ label, state }: Readonly<{ label: string; state: StepState }>) {
+type StepProps = Readonly<{ label: string; state: StepState }>
+
+function Step({ label, state }: StepProps) {
     return (
         <li
             className={cn(

@@ -4,11 +4,11 @@ import { DialogProvider } from "@/providers/dialog-provider"
 import { EchoQueryClientProvider } from "@/providers/query-client-provider"
 import { SonnerProvider } from "@/providers/sonner-provider"
 
-interface Props {
+type AppProviderProps = Readonly<{
     children: React.ReactNode
-}
+}>
 
-export function AppProvider({ children }: Readonly<Props>) {
+export function AppProvider({ children }: AppProviderProps) {
     return (
         <EchoClerkProvider>
             <EchoQueryClientProvider>

@@ -4,10 +4,12 @@ import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 
 import { cn } from "@/libs/ui/utils.ts"
 
+type TooltipProviderProps = Readonly<React.ComponentProps<typeof TooltipPrimitive.Provider>>
+
 function TooltipProvider({
     delayDuration = 0,
     ...props
-}: Readonly<React.ComponentProps<typeof TooltipPrimitive.Provider>>) {
+}: TooltipProviderProps) {
     return (
         <TooltipPrimitive.Provider
             data-slot="tooltip-provider"
@@ -17,7 +19,9 @@ function TooltipProvider({
     )
 }
 
-function Tooltip({ ...props }: Readonly<React.ComponentProps<typeof TooltipPrimitive.Root>>) {
+type TooltipProps = Readonly<React.ComponentProps<typeof TooltipPrimitive.Root>>
+
+function Tooltip({ ...props }: TooltipProps) {
     return (
         <TooltipProvider>
             <TooltipPrimitive.Root
@@ -28,7 +32,9 @@ function Tooltip({ ...props }: Readonly<React.ComponentProps<typeof TooltipPrimi
     )
 }
 
-function TooltipTrigger({ ...props }: Readonly<React.ComponentProps<typeof TooltipPrimitive.Trigger>>) {
+type TooltipTriggerProps = Readonly<React.ComponentProps<typeof TooltipPrimitive.Trigger>>
+
+function TooltipTrigger({ ...props }: TooltipTriggerProps) {
     return (
         <TooltipPrimitive.Trigger
             data-slot="tooltip-trigger"
@@ -37,12 +43,14 @@ function TooltipTrigger({ ...props }: Readonly<React.ComponentProps<typeof Toolt
     )
 }
 
+type TooltipContentProps = Readonly<React.ComponentProps<typeof TooltipPrimitive.Content>>
+
 function TooltipContent({
     className,
     sideOffset = 0,
     children,
     ...props
-}: Readonly<React.ComponentProps<typeof TooltipPrimitive.Content>>) {
+}: TooltipContentProps) {
     return (
         <TooltipPrimitive.Portal>
             <TooltipPrimitive.Content

@@ -6,13 +6,13 @@ import { EchoLogo } from "@/components/logos/echo-logo"
 import { Page } from "@/components/page/page"
 import { MotionContainer } from "@/libs/ui/components/container"
 
-interface Props {
+type LoadingPageProps = Readonly<{
     isReady: boolean
     minimumLoadingTimeMs: number
     onAnimationComplete: () => void
-}
+}>
 
-export function LoadingPage({ isReady, minimumLoadingTimeMs, onAnimationComplete }: Readonly<Props>) {
+export function LoadingPage({ isReady, minimumLoadingTimeMs, onAnimationComplete }: LoadingPageProps) {
     const [shouldExit, setShouldExit] = useState(false)
     const [minLoadingTimeReached, setMinLoadingTimeReached] = useState(false)
 

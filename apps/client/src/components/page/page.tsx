@@ -2,12 +2,14 @@ import React from "react"
 
 import { cn } from "@/libs/ui/utils"
 
-type Props = React.ComponentPropsWithoutRef<"div"> & { pad?: boolean; center?: boolean; landingGradient?: boolean }
+type PageProps = Readonly<
+    React.ComponentPropsWithoutRef<"div"> & { pad?: boolean; center?: boolean; landingGradient?: boolean }
+>
 
 /**
  * static page shell
  */
-export function Page({ className, pad = false, center = false, landingGradient = false, ...props }: Readonly<Props>) {
+export function Page({ className, pad = false, center = false, landingGradient = false, ...props }: PageProps) {
     return (
         <div
             className={cn(

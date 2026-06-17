@@ -5,16 +5,16 @@ import { cn } from "@/libs/ui/utils"
 
 import type { ThemeOption } from "./theme-card.config"
 
-interface Props {
+type ThemeCardProps = Readonly<{
     active: boolean
     label: ThemeOption["label"]
     src: ThemeOption["src"]
     onClick: () => void
-}
+}>
 
 // TODO: add info colour to tailwind --> blue-500
 
-export function ThemeCard({ active, label, src, onClick }: Readonly<Props>) {
+export function ThemeCard({ active, label, src, onClick }: ThemeCardProps) {
     return (
         <div className="flex max-w-40 flex-col gap-2">
             <button
