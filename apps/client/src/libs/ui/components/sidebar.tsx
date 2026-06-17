@@ -139,7 +139,14 @@ type SidebarProps = React.ComponentProps<"div"> & {
     collapsible?: "offcanvas" | "icon" | "none"
 }
 
-function Sidebar({ side = "left", variant = "sidebar", collapsible = "offcanvas", className, children, ...props }: SidebarProps) {
+function Sidebar({
+    side = "left",
+    variant = "sidebar",
+    collapsible = "offcanvas",
+    className,
+    children,
+    ...props
+}: SidebarProps) {
     const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
 
     if (collapsible === "none") {
@@ -275,7 +282,7 @@ function SidebarRail({ className, ...props }: SidebarRailProps) {
             className={cn(
                 `hover:after:bg-sidebar-border absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all
                 ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute
-                after:inset-y-0 after:left-1/2 after:w-[2px] sm:flex`,
+                after:inset-y-0 after:left-1/2 after:w-0.5 sm:flex`,
                 "in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize",
                 `[[data-side=left][data-state=collapsed]_&]:cursor-e-resize
                 [[data-side=right][data-state=collapsed]_&]:cursor-w-resize`,
@@ -354,7 +361,7 @@ function SidebarSeparator({ className, ...props }: SidebarSeparatorProps) {
         <Separator
             data-slot="sidebar-separator"
             data-sidebar="separator"
-            className={cn("bg-sidebar-border mx-2 !w-auto", className)}
+            className={cn("bg-sidebar-border mx-2 w-auto!", className)}
             {...props}
         />
     )
@@ -675,7 +682,13 @@ type SidebarMenuSubButtonProps = React.ComponentProps<"a"> & {
     isActive?: boolean
 }
 
-function SidebarMenuSubButton({ asChild = false, size = "md", isActive = false, className, ...props }: SidebarMenuSubButtonProps) {
+function SidebarMenuSubButton({
+    asChild = false,
+    size = "md",
+    isActive = false,
+    className,
+    ...props
+}: SidebarMenuSubButtonProps) {
     const Comp = asChild ? Slot : "a"
 
     return (

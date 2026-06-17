@@ -17,7 +17,7 @@ export function Page({ className, pad = false, center = false, landingGradient =
                 className,
                 pad && "p-2",
                 center && "flex items-center justify-center",
-                landingGradient && "from-gradient-teal to-gradient-navy bg-gradient-to-br"
+                landingGradient && "from-gradient-teal to-gradient-navy bg-linear-to-br"
             )}
             {...props}
         />
