@@ -3,10 +3,13 @@ import { PostInteractions } from "@/features/post/components/post-interactions"
 import { PostMetadata } from "@/features/post/components/post-metadata"
 import { PostText } from "@/features/post/components/post-text"
 import type { schemas } from "@/libs/api/openapi-client"
+import { useCreatePostDialog } from "@/stores/create-post-dialog.store"
 
 type PostProps = Readonly<{ post: schemas["Post"] }>
 
 export function Post({ post }: PostProps) {
+    const onOpen = useCreatePostDialog((state) => state.onOpen)
+
     return (
         <article className="relative flex gap-3 px-4 py-3">
             <PostAvatar author={post.author} />
@@ -22,9 +25,11 @@ export function Post({ post }: PostProps) {
                     />
                 </p>
                 <PostInteractions
+                    postId={post.id}
                     replies={post.metrics.replies}
                     likes={post.metrics.likes}
                     liked={post.relationship.liked}
+                    onReply={() => onOpen(post)}
                     className="mt-2"
                 />
             </div>

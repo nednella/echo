@@ -9,3 +9,11 @@ export const createPostMutationOptions = () =>
             return data
         }
     })
+
+export const toggleLikeMutationOptions = () =>
+    mutationOptions({
+        mutationFn: ({ id, liked }: { id: string; liked: boolean }) =>
+            liked
+                ? client.DELETE("/v1/post/{id}/like", { params: { path: { id } } })
+                : client.POST("/v1/post/{id}/like", { params: { path: { id } } })
+    })
