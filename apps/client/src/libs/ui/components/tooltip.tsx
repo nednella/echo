@@ -6,10 +6,7 @@ import { cn } from "@/libs/ui/utils.ts"
 
 type TooltipProviderProps = Readonly<React.ComponentProps<typeof TooltipPrimitive.Provider>>
 
-function TooltipProvider({
-    delayDuration = 0,
-    ...props
-}: TooltipProviderProps) {
+function TooltipProvider({ delayDuration = 0, ...props }: TooltipProviderProps) {
     return (
         <TooltipPrimitive.Provider
             data-slot="tooltip-provider"
@@ -45,12 +42,7 @@ function TooltipTrigger({ ...props }: TooltipTriggerProps) {
 
 type TooltipContentProps = Readonly<React.ComponentProps<typeof TooltipPrimitive.Content>>
 
-function TooltipContent({
-    className,
-    sideOffset = 0,
-    children,
-    ...props
-}: TooltipContentProps) {
+function TooltipContent({ className, sideOffset = 0, children, ...props }: TooltipContentProps) {
     return (
         <TooltipPrimitive.Portal>
             <TooltipPrimitive.Content
@@ -68,8 +60,8 @@ function TooltipContent({
             >
                 {children}
                 <TooltipPrimitive.Arrow
-                    className="bg-foreground fill-foreground z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45
-                        rounded-[2px]"
+                    className="bg-foreground fill-foreground z-50 size-2.5 translate-y-[calc(-50%-2px)] rotate-45
+                        rounded-xs"
                 />
             </TooltipPrimitive.Content>
         </TooltipPrimitive.Portal>
