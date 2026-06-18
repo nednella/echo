@@ -6,7 +6,7 @@ type EchoLogoProps = Readonly<{
     variant?: Variant
 }>
 
-function getGradient(variant: Variant) {
+const getGradient = (variant: Variant) => {
     switch (variant) {
         case "white": {
             return {

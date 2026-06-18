@@ -49,7 +49,10 @@ export function PostComposer({ autoFocus = false, onPosted, parentId, placeholde
 
     const handleSubmit = () => {
         if (!canSubmit) return
-        mutate({ text: trimmed, parent_id: parentId })
+        mutate({
+            text: trimmed,
+            parent_id: parentId
+        })
     }
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
