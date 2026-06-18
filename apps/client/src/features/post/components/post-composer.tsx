@@ -4,7 +4,7 @@ import { useUser } from "@clerk/clerk-react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
-import { AccountAvatar } from "@/features/account/components/account-avatar"
+import { AccountAvatar } from "@/components/account-avatar"
 import { createPostMutationOptions } from "@/features/post/api/options"
 import { PostText } from "@/features/post/components/post-text"
 import { MAX_POST_LENGTH } from "@/features/post/constants"
@@ -16,9 +16,11 @@ import { cn } from "@/libs/ui/utils"
 type PostComposerProps = Readonly<{
     autoFocus?: boolean
     onPosted?: () => void
+    parentId?: string
+    placeholder?: string
 }>
 
-export function PostComposer({ autoFocus = false, onPosted }: PostComposerProps) {
+export function PostComposer({ autoFocus = false, onPosted, parentId, placeholder }: PostComposerProps) {
     const { user } = useUser()
     const [text, setText] = useState("")
     const queryClient = useQueryClient()
@@ -41,9 +43,13 @@ export function PostComposer({ autoFocus = false, onPosted }: PostComposerProps)
     const isOverLimit = remaining < 0
     const canSubmit = trimmed.length > 0 && !isOverLimit && !isPending
 
+    const idleLabel = parentId ? "Reply" : "Post"
+    const pendingLabel = parentId ? "Replying…" : "Posting…"
+    const submitLabel = isPending ? pendingLabel : idleLabel
+
     const handleSubmit = () => {
         if (!canSubmit) return
-        mutate({ text: trimmed })
+        mutate({ text: trimmed, parent_id: parentId })
     }
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -74,7 +80,7 @@ export function PostComposer({ autoFocus = false, onPosted }: PostComposerProps)
                         value={text}
                         onChange={(event) => setText(event.target.value)}
                         onKeyDown={handleKeyDown}
-                        placeholder={`What's on your mind, ${user?.username}?`}
+                        placeholder={placeholder ?? `What's on your mind, ${user?.username}?`}
                         aria-invalid={isOverLimit}
                         disabled={isPending}
                         className="caret-foreground relative min-h-0 resize-none border-0 bg-transparent px-0 py-2
@@ -97,7 +103,7 @@ export function PostComposer({ autoFocus = false, onPosted }: PostComposerProps)
                         disabled={!canSubmit}
                         onClick={handleSubmit}
                     >
-                        {isPending ? "Posting…" : "Post"}
+                        {submitLabel}
                     </Button>
                 </div>
             </div>

@@ -1,50 +1,37 @@
-import { Heart, MessageCircle, UserRound } from "lucide-react"
-
+import { PostAvatar } from "@/features/post/components/post-avatar"
+import { PostInteractions } from "@/features/post/components/post-interactions"
+import { PostMetadata } from "@/features/post/components/post-metadata"
 import { PostText } from "@/features/post/components/post-text"
 import type { schemas } from "@/libs/api/openapi-client"
-import { Avatar, AvatarFallback, AvatarImage } from "@/libs/ui/components/avatar"
-import { cn } from "@/libs/ui/utils"
-import { relativeTime } from "@/utils/datetime"
+import { useCreatePostDialog } from "@/stores/create-post-dialog.store"
 
 type PostProps = Readonly<{ post: schemas["Post"] }>
 
 export function Post({ post }: PostProps) {
-    const { author, metrics, relationship } = post
+    const onOpen = useCreatePostDialog((state) => state.onOpen)
 
     return (
-        <article className="relative flex cursor-pointer gap-3 px-4 py-3">
-            <Avatar className="size-10 shrink-0">
-                <AvatarImage
-                    src={author.image_url}
-                    alt={author.username}
-                />
-                <AvatarFallback>
-                    <UserRound className="size-1/2" />
-                </AvatarFallback>
-            </Avatar>
+        <article className="relative flex gap-3 px-4 py-3">
+            <PostAvatar author={post.author} />
             <div className="min-w-0 flex-1">
-                <div className="flex items-baseline gap-1.5 text-sm">
-                    <span className="truncate font-semibold">{author.name ?? author.username}</span>
-                    <span className="text-muted-foreground truncate">@{author.username}</span>
-                    <span className="text-muted-foreground">·</span>
-                    <span className="text-muted-foreground shrink-0">{relativeTime(post.created_at)}</span>
-                </div>
+                <PostMetadata
+                    author={post.author}
+                    createdAt={post.created_at}
+                />
                 <p className="mt-0.5 text-[15px] wrap-break-word whitespace-pre-wrap">
                     <PostText
                         text={post.text}
                         entities={post.entities}
                     />
                 </p>
-                <div className="text-muted-foreground mt-2 flex items-center gap-8 text-sm">
-                    <span className="flex items-center gap-1.5">
-                        <MessageCircle className="size-4" />
-                        {metrics.replies}
-                    </span>
-                    <span className={cn("flex items-center gap-1.5", relationship.liked && "text-destructive")}>
-                        <Heart className={cn("size-4", relationship.liked && "fill-current")} />
-                        {metrics.likes}
-                    </span>
-                </div>
+                <PostInteractions
+                    postId={post.id}
+                    replies={post.metrics.replies}
+                    likes={post.metrics.likes}
+                    liked={post.relationship.liked}
+                    onReply={() => onOpen(post)}
+                    className="mt-2"
+                />
             </div>
             <div className="via-border absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent to-transparent" />
         </article>

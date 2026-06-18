@@ -1,7 +1,7 @@
 import { useUser } from "@clerk/clerk-react"
 import { PenLine } from "lucide-react"
 
-import { AccountAvatar } from "@/features/account/components/account-avatar"
+import { AccountAvatar } from "@/components/account-avatar"
 import { Button } from "@/libs/ui/components/button"
 import { useCreatePostDialog } from "@/stores/create-post-dialog.store"
 
@@ -15,7 +15,7 @@ export function PostComposerPrompt() {
                 <AccountAvatar className="size-10" />
                 <button
                     type="button"
-                    onClick={onOpen}
+                    onClick={() => onOpen()}
                     className="bg-muted/60 text-muted-foreground hover:bg-muted h-11 flex-1 cursor-pointer rounded-full
                         px-5 text-left text-base transition-colors"
                 >
@@ -32,7 +32,7 @@ export function PostComposerButton() {
     return (
         <Button
             variant="custom"
-            onClick={onOpen}
+            onClick={() => onOpen()}
             aria-label="Create post"
             className="from-echo-400 to-echo-600 fixed right-5 bottom-5 z-30 size-14 rounded-full bg-linear-to-br
                 text-white shadow-[0_8px_24px_-6px_var(--color-echo-500)] hover:brightness-110 lg:hidden"

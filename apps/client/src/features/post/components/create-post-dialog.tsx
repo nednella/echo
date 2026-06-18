@@ -1,10 +1,10 @@
+import { PostComposer } from "@/features/post/components/post-composer"
+import { PostPreview } from "@/features/post/components/post-preview"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/libs/ui/components/dialog"
 import { useCreatePostDialog } from "@/stores/create-post-dialog.store"
 
-import { PostComposer } from "./post-composer"
-
 export function CreatePostDialog() {
-    const { isOpen, onClose } = useCreatePostDialog()
+    const { isOpen, inReplyTo, onClose } = useCreatePostDialog()
 
     const onOpenChange = (open: boolean) => {
         if (!open) onClose()
@@ -17,13 +17,24 @@ export function CreatePostDialog() {
         >
             <DialogContent className="sm:max-w-xl">
                 <DialogHeader className="sr-only">
-                    <DialogTitle>Create post</DialogTitle>
-                    <DialogDescription>{"Share what's happening"}</DialogDescription>
+                    <DialogTitle>{inReplyTo ? "Reply" : "Create post"}</DialogTitle>
+                    <DialogDescription>{inReplyTo ? "Reply to this post" : "Share what's happening"}</DialogDescription>
                 </DialogHeader>
-                <PostComposer
-                    autoFocus
-                    onPosted={onClose}
-                />
+                <div className="flex flex-col">
+                    {inReplyTo && (
+                        <PostPreview post={inReplyTo}>
+                            <p className="text-muted-foreground mt-3 text-sm">
+                                Replying to <span className="text-echo-500">@{inReplyTo.author.username}</span>
+                            </p>
+                        </PostPreview>
+                    )}
+                    <PostComposer
+                        parentId={inReplyTo?.id}
+                        placeholder={inReplyTo ? "Post your reply" : undefined}
+                        autoFocus
+                        onPosted={onClose}
+                    />
+                </div>
             </DialogContent>
         </Dialog>
     )

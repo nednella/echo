@@ -98,6 +98,30 @@ export default tseslint.config([
                             from: "features",
                             except: ["onboarding"],
                             message: "❌ features are independent modules — they should not import from other features!"
+                        },
+                        {
+                            target: "features/account",
+                            from: "features",
+                            except: ["account"],
+                            message: "❌ features are independent modules — they should not import from other features!"
+                        },
+                        {
+                            target: "features/feed",
+                            from: "features",
+                            except: ["feed"],
+                            message: "❌ features are independent modules — they should not import from other features!"
+                        },
+                        {
+                            target: "features/post",
+                            from: "features",
+                            except: ["post"],
+                            message: "❌ features are independent modules — they should not import from other features!"
+                        },
+                        {
+                            target: "features/settings",
+                            from: "features",
+                            except: ["settings"],
+                            message: "❌ features are independent modules — they should not import from other features!"
                         }
                     ]
                 }
