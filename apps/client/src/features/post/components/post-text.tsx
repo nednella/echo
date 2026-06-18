@@ -11,7 +11,7 @@ type Kind = "mention" | "hashtag" | "url"
 
 const ENTITY_CLASS = "text-echo-500 hover:underline"
 
-function ordered(entities: Entities) {
+const ordered = (entities: Entities) => {
     return [
         ...entities.mentions.map((entity) => ({ ...entity, kind: "mention" as Kind })),
         ...entities.hashtags.map((entity) => ({ ...entity, kind: "hashtag" as Kind })),
@@ -19,11 +19,15 @@ function ordered(entities: Entities) {
     ].toSorted((a, b) => a.start - b.start)
 }
 
-function withProtocol(url: string) {
+const withProtocol = (url: string) => {
     return /^https?:\/\//i.test(url) ? url : `https://${url}`
 }
 
-type PostTextProps = Readonly<{ text: string; entities?: Entities; interactive?: boolean }>
+type PostTextProps = Readonly<{
+    text: string
+    entities?: Entities
+    interactive?: boolean
+}>
 
 export function PostText({ text, entities, interactive = true }: PostTextProps) {
     const nodes: ReactNode[] = []

@@ -15,6 +15,14 @@ type DialogActions = {
 export const useCreatePostDialog = create<DialogState & DialogActions>((set) => ({
     isOpen: false,
     inReplyTo: undefined,
-    onOpen: (inReplyTo) => set({ isOpen: true, inReplyTo }),
-    onClose: () => set({ isOpen: false, inReplyTo: undefined })
+    onOpen: (inReplyTo) =>
+        set({
+            isOpen: true,
+            inReplyTo
+        }),
+    onClose: () =>
+        set({
+            isOpen: false,
+            inReplyTo: undefined
+        })
 }))

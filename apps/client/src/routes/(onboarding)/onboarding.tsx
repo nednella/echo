@@ -27,7 +27,10 @@ function OnboardingPage() {
      */
     const handleSuccess = async () => {
         await auth.getToken({ skipCache: true })
-        navigate({ to: "/home", replace: true })
+        navigate({
+            to: "/home",
+            replace: true
+        })
     }
 
     const handleRetry = () => {
