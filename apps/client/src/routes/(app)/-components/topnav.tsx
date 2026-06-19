@@ -1,7 +1,8 @@
+import { useUser } from "@clerk/clerk-react"
 import { Link } from "@tanstack/react-router"
 
-import { AccountAvatar } from "@/components/account-avatar"
 import { EchoLogo } from "@/components/logos/echo-logo"
+import { UserAvatar } from "@/components/user-avatar"
 import { AccountMenu } from "@/features/account/components/account-dropdown"
 import { Button } from "@/libs/ui/components/button"
 
@@ -12,6 +13,8 @@ const navInactive = "text-muted-foreground hover:bg-accent hover:text-foreground
 const navActive = "from-echo-400 to-echo-600 bg-linear-to-br text-white shadow-[0_4px_14px_-5px_var(--color-echo-500)]"
 
 export function TopNav() {
+    const { user } = useUser()
+
     return (
         <header
             className="bg-background/80 sticky top-0 z-20 grid h-14 grid-cols-[1fr_auto_1fr] items-center gap-4 border-b
@@ -57,7 +60,10 @@ export function TopNav() {
                         variant="ghost"
                         className="data-[state=open]:bg-accent"
                     >
-                        <AccountAvatar />
+                        <UserAvatar
+                            src={user?.imageUrl}
+                            alt={user?.username ?? undefined}
+                        />
                     </Button>
                 </AccountMenu>
             </div>

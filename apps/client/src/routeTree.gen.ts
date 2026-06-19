@@ -19,9 +19,13 @@ import { Route as authRegisterRouteImport } from './routes/(auth)/register'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as appHomeLayoutRouteImport } from './routes/(app)/home/_layout'
 import { Route as appHomeIndexRouteImport } from './routes/(app)/home/index'
-import { Route as appProfileUsernameRouteImport } from './routes/(app)/profile/$username'
 import { Route as appHomeFeedRouteImport } from './routes/(app)/home/feed'
 import { Route as appHomeDiscoverRouteImport } from './routes/(app)/home/discover'
+import { Route as appProfileUsernameLayoutRouteImport } from './routes/(app)/profile/$username/_layout'
+import { Route as appProfileUsernameIndexRouteImport } from './routes/(app)/profile/$username/index'
+import { Route as appProfileUsernameRepliesRouteImport } from './routes/(app)/profile/$username/replies'
+import { Route as appProfileUsernameMentionsRouteImport } from './routes/(app)/profile/$username/mentions'
+import { Route as appProfileUsernameLikesRouteImport } from './routes/(app)/profile/$username/likes'
 
 const onboardingLayoutRoute = onboardingLayoutRouteImport.update({
   id: '/(onboarding)',
@@ -70,11 +74,6 @@ const appHomeIndexRoute = appHomeIndexRouteImport.update({
   path: '/',
   getParentRoute: () => appHomeLayoutRoute,
 } as any)
-const appProfileUsernameRoute = appProfileUsernameRouteImport.update({
-  id: '/profile/$username',
-  path: '/profile/$username',
-  getParentRoute: () => appLayoutRoute,
-} as any)
 const appHomeFeedRoute = appHomeFeedRouteImport.update({
   id: '/feed',
   path: '/feed',
@@ -85,6 +84,34 @@ const appHomeDiscoverRoute = appHomeDiscoverRouteImport.update({
   path: '/discover',
   getParentRoute: () => appHomeLayoutRoute,
 } as any)
+const appProfileUsernameLayoutRoute =
+  appProfileUsernameLayoutRouteImport.update({
+    id: '/profile/$username',
+    path: '/profile/$username',
+    getParentRoute: () => appLayoutRoute,
+  } as any)
+const appProfileUsernameIndexRoute = appProfileUsernameIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => appProfileUsernameLayoutRoute,
+} as any)
+const appProfileUsernameRepliesRoute =
+  appProfileUsernameRepliesRouteImport.update({
+    id: '/replies',
+    path: '/replies',
+    getParentRoute: () => appProfileUsernameLayoutRoute,
+  } as any)
+const appProfileUsernameMentionsRoute =
+  appProfileUsernameMentionsRouteImport.update({
+    id: '/mentions',
+    path: '/mentions',
+    getParentRoute: () => appProfileUsernameLayoutRoute,
+  } as any)
+const appProfileUsernameLikesRoute = appProfileUsernameLikesRouteImport.update({
+  id: '/likes',
+  path: '/likes',
+  getParentRoute: () => appProfileUsernameLayoutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof authIndexRoute
@@ -93,10 +120,14 @@ export interface FileRoutesByFullPath {
   '/register': typeof authRegisterRoute
   '/sso-callback': typeof authSsoCallbackRoute
   '/onboarding': typeof onboardingOnboardingRoute
+  '/profile/$username': typeof appProfileUsernameLayoutRouteWithChildren
   '/home/discover': typeof appHomeDiscoverRoute
   '/home/feed': typeof appHomeFeedRoute
-  '/profile/$username': typeof appProfileUsernameRoute
   '/home/': typeof appHomeIndexRoute
+  '/profile/$username/likes': typeof appProfileUsernameLikesRoute
+  '/profile/$username/mentions': typeof appProfileUsernameMentionsRoute
+  '/profile/$username/replies': typeof appProfileUsernameRepliesRoute
+  '/profile/$username/': typeof appProfileUsernameIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof authIndexRoute
@@ -106,8 +137,11 @@ export interface FileRoutesByTo {
   '/onboarding': typeof onboardingOnboardingRoute
   '/home/discover': typeof appHomeDiscoverRoute
   '/home/feed': typeof appHomeFeedRoute
-  '/profile/$username': typeof appProfileUsernameRoute
   '/home': typeof appHomeIndexRoute
+  '/profile/$username/likes': typeof appProfileUsernameLikesRoute
+  '/profile/$username/mentions': typeof appProfileUsernameMentionsRoute
+  '/profile/$username/replies': typeof appProfileUsernameRepliesRoute
+  '/profile/$username': typeof appProfileUsernameIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -120,10 +154,14 @@ export interface FileRoutesById {
   '/(auth)/sso-callback': typeof authSsoCallbackRoute
   '/(onboarding)/onboarding': typeof onboardingOnboardingRoute
   '/(auth)/': typeof authIndexRoute
+  '/(app)/profile/$username': typeof appProfileUsernameLayoutRouteWithChildren
   '/(app)/home/discover': typeof appHomeDiscoverRoute
   '/(app)/home/feed': typeof appHomeFeedRoute
-  '/(app)/profile/$username': typeof appProfileUsernameRoute
   '/(app)/home/': typeof appHomeIndexRoute
+  '/(app)/profile/$username/likes': typeof appProfileUsernameLikesRoute
+  '/(app)/profile/$username/mentions': typeof appProfileUsernameMentionsRoute
+  '/(app)/profile/$username/replies': typeof appProfileUsernameRepliesRoute
+  '/(app)/profile/$username/': typeof appProfileUsernameIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -134,10 +172,14 @@ export interface FileRouteTypes {
     | '/register'
     | '/sso-callback'
     | '/onboarding'
+    | '/profile/$username'
     | '/home/discover'
     | '/home/feed'
-    | '/profile/$username'
     | '/home/'
+    | '/profile/$username/likes'
+    | '/profile/$username/mentions'
+    | '/profile/$username/replies'
+    | '/profile/$username/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -147,8 +189,11 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/home/discover'
     | '/home/feed'
-    | '/profile/$username'
     | '/home'
+    | '/profile/$username/likes'
+    | '/profile/$username/mentions'
+    | '/profile/$username/replies'
+    | '/profile/$username'
   id:
     | '__root__'
     | '/(app)'
@@ -160,10 +205,14 @@ export interface FileRouteTypes {
     | '/(auth)/sso-callback'
     | '/(onboarding)/onboarding'
     | '/(auth)/'
+    | '/(app)/profile/$username'
     | '/(app)/home/discover'
     | '/(app)/home/feed'
-    | '/(app)/profile/$username'
     | '/(app)/home/'
+    | '/(app)/profile/$username/likes'
+    | '/(app)/profile/$username/mentions'
+    | '/(app)/profile/$username/replies'
+    | '/(app)/profile/$username/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -244,13 +293,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appHomeIndexRouteImport
       parentRoute: typeof appHomeLayoutRoute
     }
-    '/(app)/profile/$username': {
-      id: '/(app)/profile/$username'
-      path: '/profile/$username'
-      fullPath: '/profile/$username'
-      preLoaderRoute: typeof appProfileUsernameRouteImport
-      parentRoute: typeof appLayoutRoute
-    }
     '/(app)/home/feed': {
       id: '/(app)/home/feed'
       path: '/feed'
@@ -264,6 +306,41 @@ declare module '@tanstack/react-router' {
       fullPath: '/home/discover'
       preLoaderRoute: typeof appHomeDiscoverRouteImport
       parentRoute: typeof appHomeLayoutRoute
+    }
+    '/(app)/profile/$username': {
+      id: '/(app)/profile/$username'
+      path: '/profile/$username'
+      fullPath: '/profile/$username'
+      preLoaderRoute: typeof appProfileUsernameLayoutRouteImport
+      parentRoute: typeof appLayoutRoute
+    }
+    '/(app)/profile/$username/': {
+      id: '/(app)/profile/$username/'
+      path: '/'
+      fullPath: '/profile/$username/'
+      preLoaderRoute: typeof appProfileUsernameIndexRouteImport
+      parentRoute: typeof appProfileUsernameLayoutRoute
+    }
+    '/(app)/profile/$username/replies': {
+      id: '/(app)/profile/$username/replies'
+      path: '/replies'
+      fullPath: '/profile/$username/replies'
+      preLoaderRoute: typeof appProfileUsernameRepliesRouteImport
+      parentRoute: typeof appProfileUsernameLayoutRoute
+    }
+    '/(app)/profile/$username/mentions': {
+      id: '/(app)/profile/$username/mentions'
+      path: '/mentions'
+      fullPath: '/profile/$username/mentions'
+      preLoaderRoute: typeof appProfileUsernameMentionsRouteImport
+      parentRoute: typeof appProfileUsernameLayoutRoute
+    }
+    '/(app)/profile/$username/likes': {
+      id: '/(app)/profile/$username/likes'
+      path: '/likes'
+      fullPath: '/profile/$username/likes'
+      preLoaderRoute: typeof appProfileUsernameLikesRouteImport
+      parentRoute: typeof appProfileUsernameLayoutRoute
     }
   }
 }
@@ -284,14 +361,34 @@ const appHomeLayoutRouteWithChildren = appHomeLayoutRoute._addFileChildren(
   appHomeLayoutRouteChildren,
 )
 
+interface appProfileUsernameLayoutRouteChildren {
+  appProfileUsernameLikesRoute: typeof appProfileUsernameLikesRoute
+  appProfileUsernameMentionsRoute: typeof appProfileUsernameMentionsRoute
+  appProfileUsernameRepliesRoute: typeof appProfileUsernameRepliesRoute
+  appProfileUsernameIndexRoute: typeof appProfileUsernameIndexRoute
+}
+
+const appProfileUsernameLayoutRouteChildren: appProfileUsernameLayoutRouteChildren =
+  {
+    appProfileUsernameLikesRoute: appProfileUsernameLikesRoute,
+    appProfileUsernameMentionsRoute: appProfileUsernameMentionsRoute,
+    appProfileUsernameRepliesRoute: appProfileUsernameRepliesRoute,
+    appProfileUsernameIndexRoute: appProfileUsernameIndexRoute,
+  }
+
+const appProfileUsernameLayoutRouteWithChildren =
+  appProfileUsernameLayoutRoute._addFileChildren(
+    appProfileUsernameLayoutRouteChildren,
+  )
+
 interface appLayoutRouteChildren {
   appHomeLayoutRoute: typeof appHomeLayoutRouteWithChildren
-  appProfileUsernameRoute: typeof appProfileUsernameRoute
+  appProfileUsernameLayoutRoute: typeof appProfileUsernameLayoutRouteWithChildren
 }
 
 const appLayoutRouteChildren: appLayoutRouteChildren = {
   appHomeLayoutRoute: appHomeLayoutRouteWithChildren,
-  appProfileUsernameRoute: appProfileUsernameRoute,
+  appProfileUsernameLayoutRoute: appProfileUsernameLayoutRouteWithChildren,
 }
 
 const appLayoutRouteWithChildren = appLayoutRoute._addFileChildren(

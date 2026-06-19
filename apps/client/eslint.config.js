@@ -122,6 +122,12 @@ export default tseslint.config([
                             from: "features",
                             except: ["settings"],
                             message: "❌ features are independent modules — they should not import from other features!"
+                        },
+                        {
+                            target: "features/profile",
+                            from: "features",
+                            except: ["profile"],
+                            message: "❌ features are independent modules — they should not import from other features!"
                         }
                     ]
                 }

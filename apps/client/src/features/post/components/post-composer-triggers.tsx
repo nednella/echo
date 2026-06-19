@@ -1,7 +1,7 @@
 import { useUser } from "@clerk/clerk-react"
 import { PenLine } from "lucide-react"
 
-import { AccountAvatar } from "@/components/account-avatar"
+import { UserAvatar } from "@/components/user-avatar"
 import { Button } from "@/libs/ui/components/button"
 import { useCreatePostDialog } from "@/stores/create-post-dialog.store"
 
@@ -12,7 +12,11 @@ export function PostComposerPrompt() {
     return (
         <div className="hidden border-b px-4 py-4 lg:block">
             <div className="flex w-full items-center gap-3">
-                <AccountAvatar className="size-10" />
+                <UserAvatar
+                    src={user?.imageUrl}
+                    alt={user?.username ?? undefined}
+                    className="size-10"
+                />
                 <button
                     type="button"
                     onClick={() => onOpen()}

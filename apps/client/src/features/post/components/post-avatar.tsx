@@ -1,8 +1,7 @@
 import { Link } from "@tanstack/react-router"
-import { UserRound } from "lucide-react"
 
+import { UserAvatar } from "@/components/user-avatar"
 import type { schemas } from "@/libs/api/openapi-client"
-import { Avatar, AvatarFallback, AvatarImage } from "@/libs/ui/components/avatar"
 import { cn } from "@/libs/ui/utils"
 
 type PostAvatarProps = Readonly<{
@@ -13,15 +12,11 @@ type PostAvatarProps = Readonly<{
 
 export function PostAvatar({ author, interactive = true, className }: PostAvatarProps) {
     const avatar = (
-        <Avatar className={cn("size-10 shrink-0", className)}>
-            <AvatarImage
-                src={author.image_url}
-                alt={author.username}
-            />
-            <AvatarFallback>
-                <UserRound className="size-1/2" />
-            </AvatarFallback>
-        </Avatar>
+        <UserAvatar
+            src={author.image_url}
+            alt={author.username}
+            className={cn("size-10 shrink-0", className)}
+        />
     )
 
     if (!interactive) return avatar

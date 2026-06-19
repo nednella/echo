@@ -4,7 +4,7 @@ import { useUser } from "@clerk/clerk-react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 
-import { AccountAvatar } from "@/components/account-avatar"
+import { UserAvatar } from "@/components/user-avatar"
 import { createPostMutationOptions } from "@/features/post/api/options"
 import { PostText } from "@/features/post/components/post-text"
 import { MAX_POST_LENGTH } from "@/features/post/constants"
@@ -64,7 +64,11 @@ export function PostComposer({ autoFocus = false, onPosted, parentId, placeholde
 
     return (
         <div className="flex w-full gap-3">
-            <AccountAvatar className="size-10" />
+            <UserAvatar
+                src={user?.imageUrl}
+                alt={user?.username ?? undefined}
+                className="size-10"
+            />
             <div className="flex flex-1 flex-col gap-2">
                 <div className="relative">
                     <div

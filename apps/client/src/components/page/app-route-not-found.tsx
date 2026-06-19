@@ -6,22 +6,25 @@ import { H1 } from "@/libs/ui/components/typography/h1"
 import { Lead } from "@/libs/ui/components/typography/lead"
 
 import { EchoLogo } from "../logos/echo-logo"
-import { Page } from "./page"
+import { AppRoute } from "./app-route"
 
-export function PageNotFound() {
+type AppRouteNotFoundProps = Readonly<{
+    path?: string
+}>
+
+export function AppRouteNotFound({ path }: AppRouteNotFoundProps) {
+    const heading = `${path ?? "page"} not found`
+    const subheading = `we can't seem to find the ${path ?? "page"} you are looking for`
     return (
-        <Page
-            center
-            landingGradient
-        >
+        <AppRoute center>
             <Container className="flex flex-col items-center gap-8">
                 <EchoLogo
                     size={64}
                     variant="light-gradient"
                 />
                 <div>
-                    <H1 className="text-neutral-100">page not found</H1>
-                    <Lead className="mt-2 text-neutral-100/60">we can't seem to find the page you are looking for</Lead>
+                    <H1 className="text-neutral-100">{heading}</H1>
+                    <Lead className="mt-2 text-neutral-100/60">{subheading}</Lead>
                 </div>
                 <Button
                     asChild
@@ -33,6 +36,6 @@ export function PageNotFound() {
                     <Link to="/">home</Link>
                 </Button>
             </Container>
-        </Page>
+        </AppRoute>
     )
 }

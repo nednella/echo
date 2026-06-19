@@ -1,7 +1,8 @@
 import React from "react"
 
-import { useClerk } from "@clerk/clerk-react"
-import { IdCard, LogOut, Paintbrush } from "lucide-react"
+import { useClerk, useUser } from "@clerk/clerk-react"
+import { Link } from "@tanstack/react-router"
+import { IdCard, LogOut, Paintbrush, User } from "lucide-react"
 
 import {
     DropdownMenu,
@@ -19,6 +20,7 @@ type AccountMenuProps = Readonly<{
 
 export function AccountMenu({ children, align = "end" }: AccountMenuProps) {
     const { signOut, openUserProfile } = useClerk()
+    const { user } = useUser()
     const { onOpen: openAppearanceDialog } = useAppearanceDialog()
 
     const handleLogout = () => signOut()
@@ -32,6 +34,15 @@ export function AccountMenu({ children, align = "end" }: AccountMenuProps) {
                 align={align}
                 sideOffset={10}
             >
+                <DropdownMenuItem asChild>
+                    <Link
+                        to="/profile/$username"
+                        params={{ username: user!.username! }}
+                    >
+                        <User />
+                        <span>Profile</span>
+                    </Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem onSelect={() => openUserProfile()}>
                     <IdCard />
                     <span>Account</span>
