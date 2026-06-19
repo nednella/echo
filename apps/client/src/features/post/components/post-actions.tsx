@@ -11,7 +11,7 @@ import {
     DropdownMenuTrigger
 } from "@/libs/ui/components/dropdown-menu"
 import { useDeletePostDialog } from "@/stores/delete-post-dialog.store"
-import { copyCurrentUrl } from "@/utils/clipboard"
+import { copyLink } from "@/utils/clipboard"
 
 type PostActionsProps = Readonly<{ post: schemas["Post"] }>
 
@@ -35,7 +35,7 @@ export function PostActions({ post }: PostActionsProps) {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuItem onSelect={() => copyCurrentUrl()}>
+                <DropdownMenuItem onSelect={() => copyLink(`/post/${post.id}`)}>
                     <Link2 />
                     Copy link to post
                 </DropdownMenuItem>
