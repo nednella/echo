@@ -62,7 +62,7 @@ class PostViewControllerTest {
             UUID.randomUUID().toString(),
             UUID.randomUUID().toString(),
             UUID.randomUUID().toString(),
-            new SimplifiedProfileDTO(UUID.randomUUID().toString(), "username", "name", null, null),
+            new SimplifiedProfileDTO(UUID.randomUUID().toString(), "username", "name", null, null, null),
             "Example post.",
             Instant.now().toString(),
             new PostMetricsDTO(0, 0),

@@ -75,6 +75,7 @@ class PostViewServiceTest {
                 "username",
                 "name",
                 null,
+                null,
                 null),
             text,
             null,
