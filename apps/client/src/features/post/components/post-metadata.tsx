@@ -28,7 +28,7 @@ export function PostMetadata({ author, createdAt, interactive = true }: PostMeta
 
     return (
         <div className="flex items-baseline gap-1.5 text-sm">
-            {profileLink(author.name ?? author.username, "truncate font-semibold")}
+            {author.name && profileLink(author.name, "truncate font-semibold")}
             {profileLink(`@${author.username}`, "text-muted-foreground truncate")}
             <span className="text-muted-foreground">·</span>
             <span className="text-muted-foreground shrink-0">{relativeTime(createdAt)}</span>
