@@ -19,6 +19,7 @@ import { Route as authRegisterRouteImport } from './routes/(auth)/register'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as appHomeLayoutRouteImport } from './routes/(app)/home/_layout'
 import { Route as appHomeIndexRouteImport } from './routes/(app)/home/index'
+import { Route as appPostIdRouteImport } from './routes/(app)/post/$id'
 import { Route as appHomeFeedRouteImport } from './routes/(app)/home/feed'
 import { Route as appHomeDiscoverRouteImport } from './routes/(app)/home/discover'
 import { Route as appProfileUsernameLayoutRouteImport } from './routes/(app)/profile/$username/_layout'
@@ -74,6 +75,11 @@ const appHomeIndexRoute = appHomeIndexRouteImport.update({
   path: '/',
   getParentRoute: () => appHomeLayoutRoute,
 } as any)
+const appPostIdRoute = appPostIdRouteImport.update({
+  id: '/post/$id',
+  path: '/post/$id',
+  getParentRoute: () => appLayoutRoute,
+} as any)
 const appHomeFeedRoute = appHomeFeedRouteImport.update({
   id: '/feed',
   path: '/feed',
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/profile/$username': typeof appProfileUsernameLayoutRouteWithChildren
   '/home/discover': typeof appHomeDiscoverRoute
   '/home/feed': typeof appHomeFeedRoute
+  '/post/$id': typeof appPostIdRoute
   '/home/': typeof appHomeIndexRoute
   '/profile/$username/likes': typeof appProfileUsernameLikesRoute
   '/profile/$username/mentions': typeof appProfileUsernameMentionsRoute
@@ -137,6 +144,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof onboardingOnboardingRoute
   '/home/discover': typeof appHomeDiscoverRoute
   '/home/feed': typeof appHomeFeedRoute
+  '/post/$id': typeof appPostIdRoute
   '/home': typeof appHomeIndexRoute
   '/profile/$username/likes': typeof appProfileUsernameLikesRoute
   '/profile/$username/mentions': typeof appProfileUsernameMentionsRoute
@@ -157,6 +165,7 @@ export interface FileRoutesById {
   '/(app)/profile/$username': typeof appProfileUsernameLayoutRouteWithChildren
   '/(app)/home/discover': typeof appHomeDiscoverRoute
   '/(app)/home/feed': typeof appHomeFeedRoute
+  '/(app)/post/$id': typeof appPostIdRoute
   '/(app)/home/': typeof appHomeIndexRoute
   '/(app)/profile/$username/likes': typeof appProfileUsernameLikesRoute
   '/(app)/profile/$username/mentions': typeof appProfileUsernameMentionsRoute
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
     | '/profile/$username'
     | '/home/discover'
     | '/home/feed'
+    | '/post/$id'
     | '/home/'
     | '/profile/$username/likes'
     | '/profile/$username/mentions'
@@ -189,6 +199,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/home/discover'
     | '/home/feed'
+    | '/post/$id'
     | '/home'
     | '/profile/$username/likes'
     | '/profile/$username/mentions'
@@ -208,6 +219,7 @@ export interface FileRouteTypes {
     | '/(app)/profile/$username'
     | '/(app)/home/discover'
     | '/(app)/home/feed'
+    | '/(app)/post/$id'
     | '/(app)/home/'
     | '/(app)/profile/$username/likes'
     | '/(app)/profile/$username/mentions'
@@ -292,6 +304,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/home/'
       preLoaderRoute: typeof appHomeIndexRouteImport
       parentRoute: typeof appHomeLayoutRoute
+    }
+    '/(app)/post/$id': {
+      id: '/(app)/post/$id'
+      path: '/post/$id'
+      fullPath: '/post/$id'
+      preLoaderRoute: typeof appPostIdRouteImport
+      parentRoute: typeof appLayoutRoute
     }
     '/(app)/home/feed': {
       id: '/(app)/home/feed'
@@ -384,11 +403,13 @@ const appProfileUsernameLayoutRouteWithChildren =
 interface appLayoutRouteChildren {
   appHomeLayoutRoute: typeof appHomeLayoutRouteWithChildren
   appProfileUsernameLayoutRoute: typeof appProfileUsernameLayoutRouteWithChildren
+  appPostIdRoute: typeof appPostIdRoute
 }
 
 const appLayoutRouteChildren: appLayoutRouteChildren = {
   appHomeLayoutRoute: appHomeLayoutRouteWithChildren,
   appProfileUsernameLayoutRoute: appProfileUsernameLayoutRouteWithChildren,
+  appPostIdRoute: appPostIdRoute,
 }
 
 const appLayoutRouteWithChildren = appLayoutRoute._addFileChildren(
