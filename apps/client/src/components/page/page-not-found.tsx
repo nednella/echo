@@ -20,7 +20,7 @@ export function PageNotFound() {
                     variant="light-gradient"
                 />
                 <div>
-                    <H1 className="text-neutral-100">Page not found</H1>
+                    <H1 className="text-neutral-100">page not found</H1>
                     <Lead className="mt-2 text-neutral-100/60">we can't seem to find the page you are looking for</Lead>
                 </div>
                 <Button
@@ -30,7 +30,7 @@ export function PageNotFound() {
                     variant="custom"
                     className="bg-neutral-50 text-neutral-900 hover:opacity-80"
                 >
-                    <Link to="/">Home</Link>
+                    <Link to="/">home</Link>
                 </Button>
             </Container>
         </Page>
