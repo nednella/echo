@@ -32,7 +32,11 @@ export function PostList({ options, emptyMessage }: PostListProps) {
     }, [hasNextPage, fetchNextPage])
 
     if (posts.length === 0) {
-        return <p className="text-muted-foreground py-16 text-center text-sm">{emptyMessage ?? "No posts here yet."}</p>
+        return (
+            <p className="text-muted-foreground py-16 text-center text-sm">
+                {emptyMessage ?? "Nothing to see here yet."}
+            </p>
+        )
     }
 
     return (
