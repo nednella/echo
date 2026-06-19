@@ -308,8 +308,6 @@ export interface components {
             /** Format: uuid */
             id?: string;
             externalId?: string;
-            /** @enum {string} */
-            status?: "ACTIVE" | "BANNED" | "DELETED";
             /** Format: date-time */
             createdAt?: string;
             /** Format: date-time */
@@ -359,6 +357,7 @@ export interface components {
             id: string;
             username: string;
             name?: string;
+            bio?: string;
             image_url?: string;
             readonly relationship?: components["schemas"]["ProfileRelationship"];
         };

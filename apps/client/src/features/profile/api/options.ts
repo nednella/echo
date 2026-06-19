@@ -62,6 +62,22 @@ export const updateProfileMutationOptions = () =>
         }
     })
 
+export const followersInfiniteQueryOptions = (id: string) =>
+    pagedInfiniteQueryOptions<schemas["SimplifiedProfile"]>(["profile", id, "followers"], async (offset) => {
+        const { data } = await client.GET("/v1/profile/{id}/followers", {
+            params: { path: { id }, query: { offset: String(offset), limit: String(PAGE_SIZE) } }
+        })
+        return data!
+    })
+
+export const followingInfiniteQueryOptions = (id: string) =>
+    pagedInfiniteQueryOptions<schemas["SimplifiedProfile"]>(["profile", id, "following"], async (offset) => {
+        const { data } = await client.GET("/v1/profile/{id}/following", {
+            params: { path: { id }, query: { offset: String(offset), limit: String(PAGE_SIZE) } }
+        })
+        return data!
+    })
+
 export const toggleFollowMutationOptions = () =>
     mutationOptions({
         mutationFn: ({ id, following }: { id: string; following: boolean }) =>
