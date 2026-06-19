@@ -1,3 +1,4 @@
+import { PostActions } from "@/features/post/components/post-actions"
 import { PostAvatar } from "@/features/post/components/post-avatar"
 import { PostInteractions } from "@/features/post/components/post-interactions"
 import { PostMetadata } from "@/features/post/components/post-metadata"
@@ -14,10 +15,13 @@ export function Post({ post }: PostProps) {
         <article className="relative flex gap-3 px-4 py-3">
             <PostAvatar author={post.author} />
             <div className="min-w-0 flex-1">
-                <PostMetadata
-                    author={post.author}
-                    createdAt={post.created_at}
-                />
+                <div className="flex items-start justify-between gap-2">
+                    <PostMetadata
+                        author={post.author}
+                        createdAt={post.created_at}
+                    />
+                    <PostActions post={post} />
+                </div>
                 <p className="mt-0.5 text-[15px] wrap-break-word whitespace-pre-wrap">
                     <PostText
                         text={post.text}

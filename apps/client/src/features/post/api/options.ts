@@ -17,3 +17,8 @@ export const toggleLikeMutationOptions = () =>
                 ? client.DELETE("/v1/post/{id}/like", { params: { path: { id } } })
                 : client.POST("/v1/post/{id}/like", { params: { path: { id } } })
     })
+
+export const deletePostMutationOptions = () =>
+    mutationOptions({
+        mutationFn: ({ id }: { id: string }) => client.DELETE("/v1/post/{id}", { params: { path: { id } } })
+    })
