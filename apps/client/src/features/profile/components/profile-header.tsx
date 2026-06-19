@@ -8,6 +8,7 @@ import { toggleFollowMutationOptions } from "@/features/profile/api/options"
 import { ApiException } from "@/libs/api/exception"
 import type { schemas } from "@/libs/api/openapi-client"
 import { Button } from "@/libs/ui/components/button"
+import { useFollowListDialog } from "@/stores/follow-list-dialog.store"
 import { useUpdateProfileDialog } from "@/stores/update-profile-dialog.store"
 
 type ProfileHeaderProps = Readonly<{
@@ -18,6 +19,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
     const { user } = useUser()
     const isOwn = profile.username === user?.username
     const { onOpen } = useUpdateProfileDialog()
+    const { onOpen: openFollowList } = useFollowListDialog()
     const queryClient = useQueryClient()
 
     const { mutate: toggleFollow, isPending } = useMutation({
@@ -91,14 +93,22 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
                 </div>
 
                 <div className="flex gap-4 text-sm">
-                    <span>
+                    <button
+                        type="button"
+                        className="cursor-pointer hover:underline"
+                        onClick={() => openFollowList(profile.id, "following")}
+                    >
                         <strong>{profile.metrics.following}</strong>{" "}
                         <span className="text-muted-foreground">Following</span>
-                    </span>
-                    <span>
+                    </button>
+                    <button
+                        type="button"
+                        className="cursor-pointer hover:underline"
+                        onClick={() => openFollowList(profile.id, "followers")}
+                    >
                         <strong>{profile.metrics.followers}</strong>{" "}
                         <span className="text-muted-foreground">Followers</span>
-                    </span>
+                    </button>
                 </div>
             </div>
         </div>

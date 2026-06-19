@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
  * @param id           the id of the user associated to the profile
  * @param username     the username of the user associated to the profile
  * @param name         the profile name (nullable)
+ * @param bio          the profile bio (nullable)
  * @param imageUrl     the URL of the profile avatar image (nullable)
  * @param relationship the relationships between the profile and the
  *                     authenticated user (nullable)
@@ -28,6 +29,7 @@ public record SimplifiedProfileDTO(
     @NotNull String id,
     @NotNull String username,
     String name,
+    String bio,
     @JsonProperty("image_url") String imageUrl,
     @JsonInclude(Include.NON_NULL) ProfileRelationshipDTO relationship
 ) {}

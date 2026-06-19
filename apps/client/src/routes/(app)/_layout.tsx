@@ -1,6 +1,7 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 
 import { ScrollArea } from "@/libs/ui/components/scroll-area"
+import { DialogProvider } from "@/providers/dialog-provider"
 import { isAuthenticated, isOnboarded } from "@/utils/auth"
 
 import { TopNav } from "./-components/topnav"
@@ -42,6 +43,7 @@ function AppLayout() {
             <ScrollArea className="min-h-0 flex-1">
                 <Outlet />
             </ScrollArea>
+            <DialogProvider />
         </div>
     )
 }

@@ -75,6 +75,7 @@ class ProfileViewControllerTest {
             UUID.randomUUID().toString(),
             "username",
             "name",
+            "bio",
             "imageUrl",
             new ProfileRelationshipDTO(false, false));
     }

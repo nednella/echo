@@ -78,6 +78,7 @@ class FeedServiceTest {
                 "username",
                 "name",
                 null,
+                null,
                 null),
             text,
             null,

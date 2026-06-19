@@ -28,6 +28,7 @@ SELECT
     a.id AS author_id,
     a.username AS author_username,
     a.name AS author_name,
+    a.bio AS author_bio,
     a.image_url AS author_image_url
 FROM posts p
 

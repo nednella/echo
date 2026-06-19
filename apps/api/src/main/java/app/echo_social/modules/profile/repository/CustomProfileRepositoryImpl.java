@@ -169,6 +169,7 @@ public class CustomProfileRepositoryImpl implements CustomProfileRepository {
                 rs.getString("id"),
                 rs.getString("username"),
                 rs.getString("name"),
+                rs.getString("bio"),
                 rs.getString("image_url"),
                 isSelf
                     ? null

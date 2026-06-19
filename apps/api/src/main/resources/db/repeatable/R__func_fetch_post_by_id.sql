@@ -23,6 +23,7 @@ RETURNS TABLE (
     author_id                 UUID,
     author_username           VARCHAR(255),
     author_name               VARCHAR(50),
+    author_bio                VARCHAR(160),
     author_image_url          VARCHAR(255),
     post_rel_liked            BOOLEAN,
     post_rel_shared           BOOLEAN,
