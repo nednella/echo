@@ -1,5 +1,5 @@
 import { useUser } from "@clerk/clerk-react"
-import { MoreHorizontal, Trash2 } from "lucide-react"
+import { Link2, MoreHorizontal, Trash2 } from "lucide-react"
 
 import type { schemas } from "@/libs/api/openapi-client"
 import { Button } from "@/libs/ui/components/button"
@@ -7,9 +7,11 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/libs/ui/components/dropdown-menu"
 import { useDeletePostDialog } from "@/stores/delete-post-dialog.store"
+import { copyCurrentUrl } from "@/utils/clipboard"
 
 type PostActionsProps = Readonly<{ post: schemas["Post"] }>
 
@@ -17,9 +19,7 @@ export function PostActions({ post }: PostActionsProps) {
     const { user } = useUser()
     const { onOpen: openDeletePostDialog } = useDeletePostDialog()
 
-    const isOwn = post.author.username === user?.username
-
-    if (!isOwn) return
+    const isOwn = post.author.id === user?.externalId
 
     return (
         <DropdownMenu>
@@ -35,13 +35,22 @@ export function PostActions({ post }: PostActionsProps) {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                    variant="destructive"
-                    onSelect={() => openDeletePostDialog(post.id)}
-                >
-                    <Trash2 />
-                    Delete
+                <DropdownMenuItem onSelect={() => copyCurrentUrl()}>
+                    <Link2 />
+                    Copy link to post
                 </DropdownMenuItem>
+                {isOwn && (
+                    <>
+                        <DropdownMenuSeparator className="mx-px" />
+                        <DropdownMenuItem
+                            variant="destructive"
+                            onSelect={() => openDeletePostDialog(post.id)}
+                        >
+                            <Trash2 />
+                            Delete
+                        </DropdownMenuItem>
+                    </>
+                )}
             </DropdownMenuContent>
         </DropdownMenu>
     )

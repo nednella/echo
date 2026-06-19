@@ -30,7 +30,7 @@ export function ProfileListItem({ profile }: ProfileListItemProps) {
         }
     })
 
-    const isOwn = profile.username === user?.username
+    const isOwn = profile.id === user?.externalId
 
     return (
         <div className="flex items-start gap-3 px-4 py-3">

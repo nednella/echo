@@ -5,6 +5,7 @@ import { toast } from "sonner"
 
 import { UserAvatar } from "@/components/user-avatar"
 import { toggleFollowMutationOptions } from "@/features/profile/api/options"
+import { ProfileActions } from "@/features/profile/components/profile-actions"
 import { ApiException } from "@/libs/api/exception"
 import type { schemas } from "@/libs/api/openapi-client"
 import { Button } from "@/libs/ui/components/button"
@@ -17,7 +18,7 @@ type ProfileHeaderProps = Readonly<{
 
 export function ProfileHeader({ profile }: ProfileHeaderProps) {
     const { user } = useUser()
-    const isOwn = profile.username === user?.username
+    const isOwn = profile.id === user?.externalId
     const { onOpen } = useUpdateProfileDialog()
     const { onOpen: openFollowList } = useFollowListDialog()
     const queryClient = useQueryClient()
@@ -47,28 +48,31 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
                     className="size-20 shrink-0"
                 />
 
-                {isOwn ? (
-                    <Button
-                        variant="outline"
-                        rounded
-                        onClick={onOpen}
-                    >
-                        Edit profile
-                    </Button>
-                ) : (
-                    <Button
-                        rounded
-                        disabled={isPending}
-                        onClick={() =>
-                            toggleFollow({
-                                id: profile.id,
-                                following: profile.relationship?.following ?? false
-                            })
-                        }
-                    >
-                        {profile.relationship?.following ? "Following" : "Follow"}
-                    </Button>
-                )}
+                <div className="flex items-center gap-2">
+                    <ProfileActions />
+                    {isOwn ? (
+                        <Button
+                            variant="outline"
+                            rounded
+                            onClick={onOpen}
+                        >
+                            Edit profile
+                        </Button>
+                    ) : (
+                        <Button
+                            rounded
+                            disabled={isPending}
+                            onClick={() =>
+                                toggleFollow({
+                                    id: profile.id,
+                                    following: profile.relationship?.following ?? false
+                                })
+                            }
+                        >
+                            {profile.relationship?.following ? "Following" : "Follow"}
+                        </Button>
+                    )}
+                </div>
             </div>
 
             <div className="mt-3 flex flex-col gap-2">
