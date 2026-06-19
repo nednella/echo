@@ -7,9 +7,11 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "@/libs/ui/components/dropdown-menu"
-import { copyCurrentUrl } from "@/utils/clipboard"
+import { copyLink } from "@/utils/clipboard"
 
-export function ProfileActions() {
+type ProfileActionsProps = Readonly<{ username: string }>
+
+export function ProfileActions({ username }: ProfileActionsProps) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -23,7 +25,7 @@ export function ProfileActions() {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuItem onSelect={() => copyCurrentUrl()}>
+                <DropdownMenuItem onSelect={() => copyLink(`/profile/${username}`)}>
                     <Link2 />
                     Copy link to profile
                 </DropdownMenuItem>

@@ -1,8 +1,8 @@
 import { toast } from "sonner"
 
-export const copyCurrentUrl = async () => {
+export const copyLink = async (path: string) => {
     try {
-        await navigator.clipboard.writeText(globalThis.location.href)
+        await navigator.clipboard.writeText(`${globalThis.location.origin}${path}`)
         toast.success("Copied to clipboard")
     } catch {
         toast.error("Could not copy link")

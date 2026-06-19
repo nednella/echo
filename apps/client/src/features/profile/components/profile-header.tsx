@@ -49,7 +49,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
                 />
 
                 <div className="flex items-center gap-2">
-                    <ProfileActions />
+                    <ProfileActions username={profile.username} />
                     {isOwn ? (
                         <Button
                             variant="outline"
