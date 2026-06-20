@@ -26,7 +26,7 @@ export function PostPreview({ post, children }: PostPreviewProps) {
                     createdAt={post.created_at}
                     interactive={false}
                 />
-                <p className="mt-0.5 text-[15px] wrap-break-word whitespace-pre-wrap">
+                <p className="mt-0.5 text-[15px] wrap-anywhere whitespace-pre-wrap">
                     <PostText
                         text={post.text}
                         entities={post.entities}

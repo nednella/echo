@@ -17,8 +17,8 @@ export function TopNav() {
 
     return (
         <header
-            className="bg-background/80 sticky top-0 z-20 grid h-14 grid-cols-[1fr_auto_1fr] items-center gap-4 border-b
-                px-4 backdrop-blur-md md:px-6"
+            className="bg-background/80 sticky top-0 z-20 grid h-(--header) grid-cols-[1fr_auto_1fr] items-center gap-4
+                border-b px-4 backdrop-blur-md md:px-6"
         >
             {/* accent: gradient hairline under the bar */}
             <div

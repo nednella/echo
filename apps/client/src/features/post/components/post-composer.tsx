@@ -69,11 +69,11 @@ export function PostComposer({ autoFocus = false, onPosted, parentId, placeholde
                 alt={user?.username ?? undefined}
                 className="size-10"
             />
-            <div className="flex flex-1 flex-col gap-2">
+            <div className="flex min-w-0 flex-1 flex-col gap-2">
                 <div className="relative">
                     <div
                         aria-hidden
-                        className="pointer-events-none absolute inset-0 py-2 text-base wrap-break-word
+                        className="pointer-events-none absolute inset-0 py-2 text-base wrap-anywhere
                             whitespace-pre-wrap"
                     >
                         <PostText
@@ -91,8 +91,7 @@ export function PostComposer({ autoFocus = false, onPosted, parentId, placeholde
                         aria-invalid={isOverLimit}
                         disabled={isPending}
                         className="caret-foreground relative min-h-0 resize-none border-0 bg-transparent px-0 py-2
-                            text-base text-transparent shadow-none focus-visible:ring-0 md:text-base
-                            dark:bg-transparent"
+                            text-base text-transparent shadow-none focus-visible:ring-0 md:text-base"
                     />
                 </div>
                 <div className="flex items-center justify-end gap-3">

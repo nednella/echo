@@ -80,6 +80,7 @@
 :root {
     /* generics */
     --radius: 0.625rem;
+    --header: 3.5rem;
 
     /* palettes */
     --neutral-50: oklch(0.985 0 0);
