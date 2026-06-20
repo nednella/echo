@@ -20,7 +20,7 @@ export function CreatePostDialog() {
                     <DialogTitle>{inReplyTo ? "Reply" : "Create post"}</DialogTitle>
                     <DialogDescription>{inReplyTo ? "Reply to this post" : "Share what's happening"}</DialogDescription>
                 </DialogHeader>
-                <div className="flex flex-col">
+                <div className="flex min-w-0 flex-col">
                     {inReplyTo && (
                         <PostPreview post={inReplyTo}>
                             <p className="text-muted-foreground mt-3 text-sm">
