@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.4.0](https://github.com/nednella/echo/compare/client@v0.3.0...client@v0.4.0) (2026-06-20)
+
+
+### Features
+
+* **client:** add feeds ([#174](https://github.com/nednella/echo/issues/174)) ([d6840cc](https://github.com/nednella/echo/commit/d6840cce421ed072ad89fccc87b1b97eaf320fe8))
+* **client:** add post composer ([#173](https://github.com/nednella/echo/issues/173)) ([7eecc56](https://github.com/nednella/echo/commit/7eecc56a882e5ed628c8bf45b29885c6842ef9ae))
+* **client:** add post entity parsing support in UI ([#175](https://github.com/nednella/echo/issues/175)) ([3236ae2](https://github.com/nednella/echo/commit/3236ae2158b79edebcfccc4925ac12d2bcf847b0))
+* **client:** add profile follow lists ([#180](https://github.com/nednella/echo/issues/180)) ([13002f0](https://github.com/nednella/echo/commit/13002f0f9f5ced7978e585d8851bc2bc30ac5fd0))
+* **client:** app shell ([#171](https://github.com/nednella/echo/issues/171)) ([2c0a560](https://github.com/nednella/echo/commit/2c0a560950543515995aa77f7bfdcfdefe3a0673))
+* **client:** copy URL link to post and profile ([#182](https://github.com/nednella/echo/issues/182)) ([a8a5c66](https://github.com/nednella/echo/commit/a8a5c66c6fee3a4cdf2455d96ee868aec8775009))
+* **client:** delete post UI ([#181](https://github.com/nednella/echo/issues/181)) ([6e6fb25](https://github.com/nednella/echo/commit/6e6fb2546f68c3205a88dcf56966e2d54de7ebc9))
+* **client:** polish onboarding flow ([#172](https://github.com/nednella/echo/issues/172)) ([fa94643](https://github.com/nednella/echo/commit/fa9464379a0001852161f6b374f36e96a740db57))
+* **client:** post interactivity (likes & replies) ([#177](https://github.com/nednella/echo/issues/177)) ([808c015](https://github.com/nednella/echo/commit/808c0151606ab13c9f6fe637e2b291bd93ea2d9e))
+* **client:** profile page ([#179](https://github.com/nednella/echo/issues/179)) ([23050b5](https://github.com/nednella/echo/commit/23050b5aa27fd6f82b12515b586f1877c3037494))
+
+
+### Bug Fixes
+
+* **client:** copy resource permalink instead of current url ([#183](https://github.com/nednella/echo/issues/183)) ([690a43c](https://github.com/nednella/echo/commit/690a43c7ca1f9b99e29597f6131b267fa5658d48))
+* **client:** prevent long text and names from overflowing post UI ([#184](https://github.com/nednella/echo/issues/184)) ([652bc0e](https://github.com/nednella/echo/commit/652bc0e6b24db90054c6d46addd5eac618323614))
+* **docs:** correct spelling/wording errors and numerous broken hyperlinks/references ([#163](https://github.com/nednella/echo/issues/163)) ([4cf1a0c](https://github.com/nednella/echo/commit/4cf1a0c459fd68af5f3ad7bd378da0712ecbe42b))
+
 ## [0.3.0](https://github.com/nednella/echo/compare/client@v0.2.1...client@v0.3.0) (2025-10-19)
 
 
